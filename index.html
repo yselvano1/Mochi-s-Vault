@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mochi's Vault — Keuangan Yosa & Fani</title>
+  
+  <!-- PWA & Manifest Integration -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192">
+  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192">
+
+  <!-- Tailwind CSS & Lucide Icons via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --bg-app: #F8FAFC;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F8FAFC;
+      --bg-subtle-2: #F1F5F9;
+      --text-primary: #1E293B;
+      --text-secondary: #64748B;
+      --text-tertiary: #94A3B8;
+      --border-color: #E2E8F0;
+      --border-color-soft: #F1F5F9;
+    }
+    html.dark {
+      --bg-app: #0B1120;
+      --bg-card: #161F2E;
+      --bg-subtle: #1E293B;
+      --bg-subtle-2: #223049;
+      --text-primary: #F1F5F9;
+      --text-secondary: #94A3B8;
+      --text-tertiary: #64748B;
+      --border-color: #2A3B54;
+      --border-color-soft: #1E293B;
+    }
+
+    * { font-variant-numeric: tabular-nums; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-app);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .surface-card { background-color: var(--bg-card); border-color: var(--border-color); }
+    .surface-subtle { background-color: var(--bg-subtle); border-color: var(--border-color); }
+    .surface-subtle-2 { background-color: var(--bg-subtle-2); }
+    .text-main { color: var(--text-primary); }
+    .text-muted { color: var(--text-secondary); }
+    .text-faint { color: var(--text-tertiary); }
+    .border-soft { border-color: var(--border-color); }
+    .border-softer { border-color: var(--border-color-soft); }
+    .divide-soft > * + * { border-color: var(--border-color-soft); }
+
+    .nav-active { color: #14B8A6; border-top: 2px solid #14B8A6; font-weight: 700; background-color: rgba(20,184,166,0.08); }
+    .badge-pemasukan { background-color: rgba(16,185,129,0.14); color: #10B981; }
+    .badge-pengeluaran { background-color: rgba(244,63,94,0.14); color: #FB7185; }
+    .badge-transfer { background-color: rgba(148,163,184,0.18); color: var(--text-secondary); }
+    .badge-hutang { background-color: rgba(245,158,11,0.16); color: #F59E0B; }
+
+    .amount-in { color: #10B981; }
+    .amount-out { color: #FB7185; }
+    .amount-neutral { color: var(--text-primary); }
+
+    .icon-chip {
+      width: 34px; height: 34px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .chip-pemasukan { background: rgba(16,185,129,0.14); color: #10B981; }
+    .chip-pengeluaran { background: rgba(244,63,94,0.14); color: #FB7185; }
+    .chip-transfer { background: rgba(148,163,184,0.18); color: var(--text-secondary); }
+    .chip-hutang { background: rgba(245,158,11,0.16); color: #F59E0B; }
+    .chip-piutang { background: rgba(245,158,11,0.16); color: #F59E0B; }
+
+    .card-hover { transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s ease; }
+    .card-hover:active { transform: scale(0.97); }
+    .tap-shrink { transition: transform 0.15s ease; }
+    .tap-shrink:active { transform: scale(0.94); }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .page-animate { animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+    @keyframes shimmer {
+      0% { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, var(--bg-subtle-2) 25%, var(--border-color) 37%, var(--bg-subtle-2) 63%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s ease-in-out infinite;
+      border-radius: 8px;
+    }
+
+    .modal-backdrop { transition: opacity 0.3s ease; opacity: 0; }
+    .modal-backdrop.show { opacity: 1; }
+    .modal-content-bottom { transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .modal-content-bottom.show { transform: translateY(0); }
+    .modal-content-center { transform: scale(0.92); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    .modal-content-center.show { transform: scale(1); opacity: 1; }
+
+    input, select, textarea { color: var(--text-primary); }
+    ::placeholder { color: var(--text-tertiary); }
+
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+  </style>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW reg error:', err));
+      });
+    }
+  </script>
+</head>
+<body class="min-h-screen pb-24">
+
+  <!-- TOP BAR -->
+  <header class="surface-card border-b border-soft sticky top-0 z-40 px-4 py-3 flex items-center justify-between shadow-sm">
+    <div class="flex items-center space-x-2.5">
+      <div class="w-9 h-9 rounded-xl bg-teal-600 overflow-hidden flex items-center justify-center font-bold text-lg shadow-sm text-white">
+        <img src="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192" alt="Mochi" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentNode.innerText='Y&F';">
+      </div>
+      <div>
+        <h1 class="text-sm font-extrabold text-main leading-tight">Mochi's Vault</h1>
+        <p class="text-xs text-muted">Keuangan Yosa & Fani</p>
+      </div>
+    </div>
+    <div class="flex items-center space-x-2">
+      <button onclick="toggleDarkMode()" class="tap-shrink w-9 h-9 rounded-lg surface-subtle border border-soft flex items-center justify-center text-main" aria-label="Toggle Mode">
+        <i data-lucide="sun" id="icon-sun" class="w-4 h-4 hidden"></i>
+        <i data-lucide="moon" id="icon-moon" class="w-4 h-4"></i>
+      </button>
+      <button onclick="openModal('modalInputTrx')" class="tap-shrink bg-teal-600 hover:bg-teal-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center shadow-sm">
+        <i data-lucide="plus" class="w-4 h-4 mr-1"></i> Transaksi
+      </button>
+    </div>
+  </header>
+
+  <!-- LOADING SKELETON -->
+  <div id="loader" class="max-w-3xl mx-auto px-4 py-4 space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div class="skeleton h-24 rounded-2xl"></div>
+      <div class="skeleton h-24 rounded-2xl"></div>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+      <div class="skeleton h-16 rounded-xl"></div>
+      <div class="skeleton h-16 rounded-xl"></div>
+      <div class="skeleton h-16 rounded-xl"></div>
+      <div class="skeleton h-16 rounded-xl"></div>
+    </div>
+    <div class="skeleton h-40 rounded-2xl"></div>
+    <div class="skeleton h-40 rounded-2xl"></div>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <main id="main-content" class="max-w-3xl mx-auto px-4 py-4 hidden">
+
+    <!-- 1. HALAMAN DASHBOARD -->
+    <section id="page-dashboard" class="space-y-4 page-animate">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div onclick="showKpiDetail('Net Worth')" class="bg-gradient-to-br from-teal-700 to-teal-900 text-white p-4 rounded-2xl shadow-sm cursor-pointer card-hover">
+          <div class="flex justify-between items-center opacity-80 mb-1">
+            <span class="text-xs font-medium">Net Worth (Kekayaan Bersih)</span>
+            <i data-lucide="info" class="w-4 h-4"></i>
+          </div>
+          <div id="kpi-networth" class="text-2xl font-extrabold tracking-tight">-</div>
+          <p class="text-[11px] opacity-75 mt-1">Klik untuk detail komponen kekayaan</p>
+        </div>
+        <div onclick="showKpiDetail('Disposable Income')" class="bg-gradient-to-br from-slate-700 to-slate-900 text-white p-4 rounded-2xl shadow-sm cursor-pointer card-hover">
+          <div class="flex justify-between items-center opacity-80 mb-1">
+            <span class="text-xs font-medium">Disposable Income</span>
+            <i data-lucide="info" class="w-4 h-4"></i>
+          </div>
+          <div id="kpi-disposable" class="text-2xl font-extrabold tracking-tight">-</div>
+          <p class="text-[11px] opacity-75 mt-1">Sisa dana bebas konsumsi & tabungan</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+        <div onclick="showKpiDetail('Total Kas')" class="surface-card p-3 rounded-xl border border-soft cursor-pointer card-hover shadow-sm">
+          <span class="text-[11px] text-muted font-medium block">Total Kas</span>
+          <span id="kpi-kas" class="text-sm font-bold text-main block mt-0.5">-</span>
+        </div>
+        <div onclick="showKpiDetail('Total Piutang')" class="surface-card p-3 rounded-xl border border-soft cursor-pointer card-hover shadow-sm">
+          <span class="text-[11px] text-muted font-medium block">Total Piutang</span>
+          <span id="kpi-piutang" class="text-sm font-bold amount-in block mt-0.5">-</span>
+        </div>
+        <div onclick="showKpiDetail('Total Hutang')" class="surface-card p-3 rounded-xl border border-soft cursor-pointer card-hover shadow-sm">
+          <span class="text-[11px] text-muted font-medium block">Total Hutang</span>
+          <span id="kpi-hutang" class="text-sm font-bold amount-out block mt-0.5">-</span>
+        </div>
+        <div onclick="showKpiDetail('Net Savings Operasional')" class="surface-card p-3 rounded-xl border border-soft cursor-pointer card-hover shadow-sm">
+          <span class="text-[11px] text-muted font-medium block">Net Savings</span>
+          <span id="kpi-savings" class="text-sm font-bold text-teal-500 block mt-0.5">-</span>
+        </div>
+      </div>
+
+      <div class="surface-card rounded-2xl border border-soft p-4 shadow-sm mt-6">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="text-sm font-bold text-main">Analisa Pengeluaran Bulan Ini</h3>
+          <span class="text-[10px] text-faint font-medium">per Kategori Utama</span>
+        </div>
+        <div id="dashboard-kategori-analysis" class="space-y-3"></div>
+      </div>
+
+      <div class="surface-card rounded-2xl border border-soft p-4 shadow-sm mt-6">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="text-sm font-bold text-main">5 Transaksi Terbaru</h3>
+          <button onclick="switchTab('riwayat')" class="text-xs font-semibold text-teal-500 hover:underline">Lihat Semua</button>
+        </div>
+        <div id="dashboard-trx-list" class="divide-soft space-y-2"></div>
+      </div>
+    </section>
+
+    <!-- 2. HALAMAN RIWAYAT TRANSAKSI -->
+    <section id="page-riwayat" class="hidden space-y-4 page-animate">
+      <div class="surface-card p-4 rounded-2xl border border-soft shadow-sm space-y-3">
+        <div class="flex items-center justify-between border-b border-softer pb-2">
+          <div class="flex items-center space-x-1.5 text-main">
+            <i data-lucide="file-text" class="w-4 h-4 text-teal-500"></i>
+            <span class="text-xs font-bold uppercase tracking-wider">e-Statement & Mutasi Rekening</span>
+          </div>
+          <button onclick="downloadEStatement()" class="tap-shrink bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center shadow-sm">
+            <i data-lucide="download" class="w-3.5 h-3.5 mr-1.5"></i> Download e-Statement
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div>
+            <label class="block text-[10px] font-semibold text-muted uppercase mb-1">Bulan</label>
+            <select id="filter-bulan" onchange="renderRiwayat()" class="w-full text-xs surface-subtle border border-soft rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-teal-600 font-medium">
+              <option value="ALL">Semua Bulan</option>
+              <option value="01">01 - Januari</option>
+              <option value="02">02 - Februari</option>
+              <option value="03">03 - Maret</option>
+              <option value="04">04 - April</option>
+              <option value="05">05 - Mei</option>
+              <option value="06">06 - Juni</option>
+              <option value="07">07 - Juli</option>
+              <option value="08">08 - Agustus</option>
+              <option value="09">09 - September</option>
+              <option value="10">10 - Oktober</option>
+              <option value="11">11 - November</option>
+              <option value="12">12 - Desember</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-semibold text-muted uppercase mb-1">Tahun</label>
+            <select id="filter-tahun" onchange="renderRiwayat()" class="w-full text-xs surface-subtle border border-soft rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-teal-600 font-medium">
+              <option value="ALL">Semua Tahun</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-semibold text-muted uppercase mb-1">Jenis Mutasi</label>
+            <select id="filter-jenis" onchange="renderRiwayat()" class="w-full text-xs surface-subtle border border-soft rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-teal-600 font-medium">
+              <option value="ALL">Semua Transaksi</option>
+              <option value="Pemasukan">Pemasukan (+)</option>
+              <option value="Pengeluaran">Pengeluaran (-)</option>
+              <option value="Transfer Internal">Transfer Internal</option>
+              <option value="Beri Piutang (Menalangi)">Beri Piutang</option>
+              <option value="Terima Piutang">Terima Piutang</option>
+              <option value="Terima Hutang (Pinjam)">Terima Hutang</option>
+              <option value="Bayar Hutang/Cicilan">Bayar Hutang/Cicilan</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-semibold text-muted uppercase mb-1">User / Anggota</label>
+            <select id="filter-user" onchange="renderRiwayat()" class="w-full text-xs surface-subtle border border-soft rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-teal-600 font-medium">
+              <option value="ALL">Semua User</option>
+              <option value="Yosa">Yosa</option>
+              <option value="Fani">Fani</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="relative">
+          <i data-lucide="search" class="w-3.5 h-3.5 text-faint absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input type="text" id="filter-search" oninput="renderRiwayat()" placeholder="Cari deskripsi transaksi..." class="w-full text-xs surface-subtle border border-soft rounded-lg pl-8 pr-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-600">
+        </div>
+
+        <div id="statement-summary" class="surface-subtle border border-soft rounded-xl p-3 flex justify-between items-center text-xs">
+          <div>
+            <span class="text-muted block text-[11px]">Total Masuk (Periode Ini):</span>
+            <span id="sum-masuk" class="font-bold amount-in">Rp 0</span>
+          </div>
+          <div>
+            <span class="text-muted block text-[11px]">Total Keluar (Periode Ini):</span>
+            <span id="sum-keluar" class="font-bold amount-out">Rp 0</span>
+          </div>
+          <div class="text-right">
+            <span class="text-muted block text-[11px]">Surplus / Defisit:</span>
+            <span id="sum-net" class="font-extrabold text-main">Rp 0</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="riwayat-trx-list" class="surface-card rounded-2xl border border-soft p-3 shadow-sm divide-soft"></div>
+    </section>
+
+    <!-- 3. HALAMAN SALDO AKUN -->
+    <section id="page-saldo" class="hidden space-y-6 page-animate">
+      <div>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-muted mb-2 px-1">Operasional Harian</h3>
+        <div id="list-akun-operasional" class="grid grid-cols-1 md:grid-cols-2 gap-2.5"></div>
+      </div>
+      <div>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-muted mb-2 px-1">Dana Darurat & Tabungan</h3>
+        <div id="list-akun-tabungan" class="grid grid-cols-1 md:grid-cols-2 gap-2.5"></div>
+      </div>
+    </section>
+
+    <!-- 4. HALAMAN HUTANG & PIUTANG -->
+    <section id="page-hutang" class="hidden space-y-6 page-animate">
+      <div>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-rose-500 mb-2 px-1 flex items-center">
+          <i data-lucide="alert-circle" class="w-4 h-4 mr-1"></i> Hutang Aktif (Urut Sisa Terbesar)
+        </h3>
+        <div id="list-hutang-aktif" class="space-y-2"></div>
+      </div>
+      <div>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-amber-500 mb-2 px-1 flex items-center">
+          <i data-lucide="clock" class="w-4 h-4 mr-1"></i> Piutang Belum Lunas
+        </h3>
+        <div id="list-piutang-aktif" class="space-y-2"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- NAVIGATION TABS -->
+  <nav class="fixed bottom-0 left-0 right-0 surface-card border-t border-soft grid grid-cols-4 text-xs font-medium text-muted z-40 shadow-lg">
+    <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tap-shrink py-2.5 px-1 nav-active flex flex-col items-center justify-center transition">
+      <i data-lucide="layout-dashboard" class="w-5 h-5 mb-1"></i>
+      <span class="text-[11px] font-bold">Dashboard</span>
+    </button>
+    <button onclick="switchTab('riwayat')" id="tab-riwayat" class="tap-shrink py-2.5 px-1 flex flex-col items-center justify-center transition">
+      <i data-lucide="list" class="w-5 h-5 mb-1"></i>
+      <span class="text-[11px] font-bold">e-Statement</span>
+    </button>
+    <button onclick="switchTab('saldo')" id="tab-saldo" class="tap-shrink py-2.5 px-1 flex flex-col items-center justify-center transition">
+      <i data-lucide="wallet" class="w-5 h-5 mb-1"></i>
+      <span class="text-[11px] font-bold">Balances</span>
+    </button>
+    <button onclick="switchTab('hutang')" id="tab-hutang" class="tap-shrink py-2.5 px-1 flex flex-col items-center justify-center transition relative">
+      <i data-lucide="credit-card" class="w-5 h-5 mb-1"></i>
+      <span class="text-[10px] leading-tight font-bold text-center">Debts &<br>Receivables</span>
+      <span id="badge-hutang-nav" class="hidden absolute top-1 right-3 w-2 h-2 rounded-full bg-rose-500"></span>
+    </button>
+  </nav>
+
+  <!-- FLOATING ACTION BUTTON (+) FOR MOBILE -->
+  <button onclick="openModal('modalInputTrx')" class="tap-shrink md:hidden fixed bottom-20 right-6 w-14 h-14 bg-teal-600 hover:bg-teal-700 text-white rounded-full shadow-lg flex items-center justify-center z-40" aria-label="Tambah Transaksi">
+    <i data-lucide="plus" class="w-7 h-7"></i>
+  </button>
+
+  <!-- MODAL 1: FORM INPUT TRANSAKSI -->
+  <div id="modalInputTrx" class="fixed inset-0 bg-slate-900/60 z-50 hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop">
+    <div id="modalInputTrx-content" class="surface-card w-full max-w-lg rounded-t-2xl md:rounded-2xl max-h-[90vh] overflow-y-auto p-5 shadow-xl modal-content-bottom md:modal-content-center">
+      <div class="flex justify-between items-center border-b border-softer pb-3 mb-4">
+        <h3 class="font-bold text-main text-sm">Tambah Transaksi Baru</h3>
+        <button onclick="closeModal('modalInputTrx')" class="tap-shrink text-faint hover:text-main p-1 rounded-lg hover:surface-subtle transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="formTransaksi" onsubmit="handleSaveTransaksi(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-semibold text-main block mb-1">Input Oleh</label>
+            <select id="form-user" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2 font-medium">
+              <option value="Yosa">Yosa</option>
+              <option value="Fani">Fani</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-semibold text-main block mb-1">Tanggal</label>
+            <input type="date" id="form-tgl" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2 font-medium" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="font-semibold text-main block mb-1">Jenis Transaksi</label>
+          <select id="form-jenis" onchange="handleJenisChange()" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2 font-medium text-main" required>
+            <option value="Pengeluaran">Pengeluaran</option>
+            <option value="Pemasukan">Pemasukan</option>
+            <option value="Transfer Internal">Transfer Internal</option>
+            <option value="Beri Piutang (Menalangi)">Beri Piutang (Menalangi)</option>
+            <option value="Terima Piutang">Terima Piutang</option>
+            <option value="Terima Hutang (Pinjam)">Terima Hutang (Pinjam)</option>
+            <option value="Bayar Hutang/Cicilan">Bayar Hutang/Cicilan</option>
+          </select>
+        </div>
+
+        <div id="wrap-akunsumber" class="space-y-1">
+          <div class="flex justify-between items-center">
+            <label class="font-semibold text-main">Akun Sumber</label>
+            <button type="button" onclick="openMasterModal('akun')" class="text-[11px] text-teal-500 font-bold hover:underline">+ Akun Baru</button>
+          </div>
+          <select id="form-akunsumber" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2"></select>
+        </div>
+
+        <div id="wrap-akuntujuan" class="space-y-1 hidden">
+          <div class="flex justify-between items-center">
+            <label class="font-semibold text-main">Akun Tujuan</label>
+            <button type="button" onclick="openMasterModal('akun')" class="text-[11px] text-teal-500 font-bold hover:underline">+ Akun Baru</button>
+          </div>
+          <select id="form-akuntujuan" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2"></select>
+        </div>
+
+        <div class="space-y-1">
+          <div class="flex justify-between items-center">
+            <label class="font-semibold text-main">Kategori</label>
+            <button type="button" onclick="openMasterModal('kategori')" class="text-[11px] text-teal-500 font-bold hover:underline">+ Kategori Baru</button>
+          </div>
+          <button type="button" onclick="openKategoriPicker()" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2 text-left flex justify-between items-center">
+            <span id="form-kategori-display" class="text-faint">-- Pilih Kategori --</span>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-faint"></i>
+          </button>
+          <input type="hidden" id="form-kategori">
+        </div>
+
+        <div id="wrap-hutang" class="space-y-1 hidden">
+          <div class="flex justify-between items-center">
+            <label class="font-semibold text-main">Terkait Hutang</label>
+            <button type="button" onclick="openMasterModal('hutang')" class="text-[11px] text-teal-500 font-bold hover:underline">+ Hutang Baru</button>
+          </div>
+          <select id="form-hutang" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2"></select>
+        </div>
+
+        <div id="wrap-piutang" class="space-y-1 hidden">
+          <div class="flex justify-between items-center">
+            <label class="font-semibold text-main">Terkait Piutang</label>
+            <button type="button" onclick="openMasterModal('piutang')" class="text-[11px] text-teal-500 font-bold hover:underline">+ Piutang Baru</button>
+          </div>
+          <select id="form-piutang" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2"></select>
+        </div>
+
+        <div>
+          <label class="font-semibold text-main block mb-1">Jumlah (Rp)</label>
+          <input type="text" id="form-jumlah-display" oninput="formatInputRupiah(this)" placeholder="Rp 0" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2 text-sm font-bold text-main" required>
+          <input type="hidden" id="form-jumlah-val" required>
+        </div>
+
+        <div>
+          <label class="font-semibold text-main block mb-1">Deskripsi / Judul Transaksi</label>
+          <input type="text" id="form-deskripsi" placeholder="Contoh: Belanja Bulanan" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2">
+        </div>
+        <div>
+          <label class="font-semibold text-main block mb-1">Catatan Tambahan (Opsional)</label>
+          <textarea id="form-catatan" rows="2" placeholder="Catatan opsional..." class="w-full surface-subtle border border-soft rounded-lg px-3 py-2"></textarea>
+        </div>
+
+        <div class="pt-3">
+          <button type="submit" id="btn-submit-trx" class="tap-shrink w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow-md">
+            Simpan Transaksi
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: DETAIL TRANSAKSI / RIWAYAT AKUN -->
+  <div id="modalDetail" class="fixed inset-0 bg-slate-900/60 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
+    <div id="modalDetail-content" class="surface-card w-full max-w-md rounded-2xl p-5 shadow-xl relative max-h-[85vh] overflow-y-auto modal-content-center">
+      <button onclick="closeModal('modalDetail')" class="tap-shrink absolute top-4 right-4 text-faint hover:text-main p-1 rounded-lg hover:surface-subtle transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div id="modal-detail-inner"></div>
+    </div>
+  </div>
+
+  <!-- MODAL 2b: PILIH KATEGORI (GROUPED) -->
+  <div id="modalKategoriPicker" class="fixed inset-0 bg-slate-900/60 z-50 hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop">
+    <div id="modalKategoriPicker-content" class="surface-card w-full max-w-lg rounded-t-2xl md:rounded-2xl max-h-[85vh] overflow-y-auto p-5 shadow-xl modal-content-bottom md:modal-content-center">
+      <div class="flex justify-between items-center border-b border-softer pb-3 mb-2 sticky top-0 surface-card">
+        <h3 class="font-bold text-main text-sm">Pilih Kategori</h3>
+        <button onclick="closeModal('modalKategoriPicker')" class="tap-shrink text-faint hover:text-main p-1 rounded-lg hover:surface-subtle transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div id="kategori-picker-list" class="text-xs divide-soft"></div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: TAMBAH MASTER DATA -->
+  <div id="modalMaster" class="fixed inset-0 bg-slate-900/70 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
+    <div id="modalMaster-content" class="surface-card w-full max-w-sm rounded-2xl p-5 shadow-xl modal-content-center">
+      <div class="flex justify-between items-center border-b border-softer pb-2 mb-3">
+        <h4 id="master-title" class="font-bold text-main text-sm">Tambah Data</h4>
+        <button onclick="closeModal('modalMaster')" class="tap-shrink text-faint p-1 rounded-lg hover:surface-subtle transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="master-type">
+        <div id="master-kategoriutama-wrap" class="hidden">
+          <label class="font-semibold text-main block mb-1">Kategori Utama</label>
+          <select id="master-kategoriutama-select" onchange="handleKategoriUtamaSelectChange()" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2"></select>
+        </div>
+        <div id="master-kategoriutama-baru-wrap" class="hidden">
+          <label class="font-semibold text-main block mb-1">Nama Kategori Utama Baru</label>
+          <input type="text" id="master-kategoriutama-baru" placeholder="Contoh: Investasi" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2">
+        </div>
+        <div>
+          <label class="font-semibold text-main block mb-1" id="master-nama-label">Nama</label>
+          <input type="text" id="master-nama" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2" required>
+        </div>
+        <div id="master-extra-field"></div>
+        <button type="submit" class="tap-shrink w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-lg shadow-sm">Simpan Master Data</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // CONFIGURATION: GANTI DENGAN URL DEPLOYMENT GOOGLE APPS SCRIPT WEB APP ANDA
+    // ==========================================
+    const API_URL = "https://script.google.com/macros/s/AKfycbx-3KXlM8TlP-S-e4BkAV6_d7-1qGEg09RTcoTn0KEtTUFu4kqGpTx5rqeidbRji3FyXQ/exec";
+
+    let GLOBAL_DATA = {};
+    let currentModalBackFn = null;
+
+    // ==========================================
+    // DARK MODE
+    // ==========================================
+    function applyDarkModePref() {
+      const pref = localStorage.getItem('yf-theme');
+      const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = pref ? pref === 'dark' : systemDark;
+      document.documentElement.classList.toggle('dark', isDark);
+      updateDarkModeIcon(isDark);
+    }
+    function toggleDarkMode() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('yf-theme', isDark ? 'dark' : 'light');
+      updateDarkModeIcon(isDark);
+    }
+    function updateDarkModeIcon(isDark) {
+      document.getElementById('icon-sun').classList.toggle('hidden', !isDark);
+      document.getElementById('icon-moon').classList.toggle('hidden', isDark);
+    }
+
+    // INIT
+    window.addEventListener('DOMContentLoaded', () => {
+      applyDarkModePref();
+      lucide.createIcons();
+      document.getElementById('form-tgl').valueAsDate = new Date();
+      loadAppData();
+    });
+
+    async function loadAppData() {
+      document.getElementById('loader').classList.remove('hidden');
+      document.getElementById('main-content').classList.add('hidden');
+
+      try {
+        const res = await fetch(API_URL + "?action=getAppData", { redirect: 'follow' });
+        const result = await res.json();
+        if (result.status === 'error') throw new Error(result.message);
+
+        GLOBAL_DATA = result.data || result;
+        document.getElementById('loader').classList.add('hidden');
+        document.getElementById('main-content').classList.remove('hidden');
+        populateFormDropdowns();
+        populateYearFilter();
+        renderDashboard();
+        renderKategoriAnalysis();
+        renderRiwayat();
+        renderSaldo();
+        renderHutangPiutang();
+        lucide.createIcons();
+      } catch (err) {
+        alert("Gagal memuat data: " + err.message);
+      }
+    }
+
+    function populateYearFilter() {
+      const yearSelect = document.getElementById('filter-tahun');
+      const years = new Set();
+      const currentYear = new Date().getFullYear().toString();
+      years.add(currentYear);
+
+      (GLOBAL_DATA.transaksi || []).forEach(t => {
+        if (t.tanggal && t.tanggal.length >= 4) years.add(t.tanggal.substring(0, 4));
+      });
+
+      const sortedYears = Array.from(years).sort().reverse();
+      let html = `<option value="ALL">Semua Tahun</option>`;
+      sortedYears.forEach(y => { html += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`; });
+      yearSelect.innerHTML = html;
+
+      const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
+      document.getElementById('filter-bulan').value = currentMonth;
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('nav button').forEach(el => el.classList.remove('nav-active'));
+      document.getElementById('tab-' + tabId).classList.add('nav-active');
+
+      document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
+
+      const activeSection = document.getElementById('page-' + tabId);
+      activeSection.classList.remove('hidden');
+      activeSection.classList.remove('page-animate');
+      void activeSection.offsetWidth;
+      activeSection.classList.add('page-animate');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function formatRupiah(number) {
+      if (number === undefined || number === null) return "Rp 0";
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0
+      }).format(number);
+    }
+
+    function formatInputRupiah(input) {
+      let val = input.value.replace(/[^0-9]/g, '');
+      let numberVal = Number(val) || 0;
+      document.getElementById('form-jumlah-val').value = numberVal;
+      input.value = numberVal > 0 ? formatRupiah(numberVal) : "";
+    }
+
+    function getBadgeClass(jenis) {
+      if (jenis === 'Pemasukan') return 'badge-pemasukan';
+      if (jenis === 'Pengeluaran') return 'badge-pengeluaran';
+      if (jenis === 'Transfer Internal') return 'badge-transfer';
+      return 'badge-hutang';
+    }
+
+    function getAmountMeta(jenis) {
+      if (['Pemasukan', 'Terima Piutang', 'Terima Hutang (Pinjam)'].includes(jenis)) {
+        return { cls: 'amount-in', prefix: '+' };
+      }
+      if (['Pengeluaran', 'Beri Piutang (Menalangi)', 'Bayar Hutang/Cicilan'].includes(jenis)) {
+        return { cls: 'amount-out', prefix: '-' };
+      }
+      return { cls: 'amount-neutral', prefix: '' };
+    }
+
+    function getIconMeta(jenis) {
+      switch (jenis) {
+        case 'Pemasukan': return { icon: 'arrow-down-left', chip: 'chip-pemasukan' };
+        case 'Pengeluaran': return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
+        case 'Transfer Internal': return { icon: 'arrow-right-left', chip: 'chip-transfer' };
+        case 'Beri Piutang (Menalangi)': return { icon: 'hand-coins', chip: 'chip-piutang' };
+        case 'Terima Piutang': return { icon: 'hand-coins', chip: 'chip-pemasukan' };
+        case 'Terima Hutang (Pinjam)': return { icon: 'credit-card', chip: 'chip-pemasukan' };
+        case 'Bayar Hutang/Cicilan': return { icon: 'credit-card', chip: 'chip-hutang' };
+        default: return { icon: 'circle', chip: 'chip-transfer' };
+      }
+    }
+
+    function iconChipHtml(jenis) {
+      const m = getIconMeta(jenis);
+      return `<div class="icon-chip ${m.chip}"><i data-lucide="${m.icon}" class="w-4 h-4"></i></div>`;
+    }
+
+    function animateNumber(el, targetValue, duration = 700) {
+      const start = 0;
+      const startTime = performance.now();
+      function tick(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(start + (targetValue - start) * eased);
+        el.innerText = formatRupiah(current);
+        if (progress < 1) requestAnimationFrame(tick);
+        else el.innerText = formatRupiah(targetValue);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      const content = document.getElementById(id + '-content');
+      modal.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        modal.classList.add('show');
+        content.classList.add('show');
+      });
+      lucide.createIcons();
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      const content = document.getElementById(id + '-content');
+      modal.classList.remove('show');
+      content.classList.remove('show');
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    function renderDashboard() {
+      const kpi = GLOBAL_DATA.kpi || {};
+      animateNumber(document.getElementById('kpi-networth'), kpi['Net Worth'] || 0);
+      animateNumber(document.getElementById('kpi-disposable'), kpi['Disposable Income'] || 0);
+      document.getElementById('kpi-kas').innerText = formatRupiah(kpi['Total Kas']);
+      document.getElementById('kpi-piutang').innerText = formatRupiah(kpi['Total Piutang']);
+      document.getElementById('kpi-hutang').innerText = formatRupiah(kpi['Total Hutang']);
+      document.getElementById('kpi-savings').innerText = formatRupiah(kpi['Net Savings Operasional']);
+
+      const hasHutangAktif = (GLOBAL_DATA.hutang || []).some(h => h.status === 'Aktif');
+      document.getElementById('badge-hutang-nav').classList.toggle('hidden', !hasHutangAktif);
+
+      const trxList = GLOBAL_DATA.transaksi || [];
+      const dashListEl = document.getElementById('dashboard-trx-list');
+      dashListEl.innerHTML = "";
+
+      if (trxList.length === 0) {
+        dashListEl.innerHTML = emptyStateHtml('receipt', 'Belum ada transaksi', 'Mulai catat transaksi pertamamu.');
+        return;
+      }
+
+      trxList.slice(0, 5).forEach(trx => {
+        const meta = getAmountMeta(trx.jenis);
+        const div = document.createElement('div');
+        div.className = "py-2.5 flex justify-between items-center cursor-pointer hover:surface-subtle px-1 rounded-lg transition tap-shrink";
+        div.onclick = () => { currentModalBackFn = null; showTrxDetail(trx.idTransaksi); };
+        div.innerHTML = `
+          <div class="flex items-center space-x-3">
+            ${iconChipHtml(trx.jenis)}
+            <div>
+              <p class="text-xs font-semibold text-main">${trx.deskripsi || trx.kategori}</p>
+              <p class="text-[11px] text-faint">${trx.tanggal} • ${trx.inputOleh}</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold ${meta.cls}">${meta.prefix}${formatRupiah(trx.jumlah)}</span>
+        `;
+        dashListEl.appendChild(div);
+      });
+      lucide.createIcons();
+    }
+
+    function emptyStateHtml(icon, title, subtitle) {
+      return `
+        <div class="flex flex-col items-center justify-center py-10 text-center">
+          <div class="w-12 h-12 rounded-full surface-subtle-2 flex items-center justify-center mb-3">
+            <i data-lucide="${icon}" class="w-5 h-5 text-faint"></i>
+          </div>
+          <p class="text-xs font-semibold text-main">${title}</p>
+          <p class="text-[11px] text-faint mt-0.5">${subtitle}</p>
+        </div>`;
+    }
+
+    let kategoriAnalysisExpanded = {};
+
+    function toggleKategoriAnalysis(utama) {
+      kategoriAnalysisExpanded[utama] = !kategoriAnalysisExpanded[utama];
+      renderKategoriAnalysis();
+    }
+
+    function renderKategoriAnalysis() {
+      const el = document.getElementById('dashboard-kategori-analysis');
+      if (!el) return;
+
+      const now = new Date();
+      const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+
+      const trxBulanIni = (GLOBAL_DATA.transaksi || []).filter(t =>
+        t.jenis === 'Pengeluaran' && t.tanggal && t.tanggal.substring(0, 7) === ym
+      );
+
+      if (trxBulanIni.length === 0) {
+        el.innerHTML = emptyStateHtml('pie-chart', 'Belum ada pengeluaran', 'Belum ada transaksi pengeluaran bulan ini.');
+        lucide.createIcons();
+        return;
+      }
+
+      const groups = {};
+      let grandTotal = 0;
+      trxBulanIni.forEach(t => {
+        const utama = t.kategoriUtama || t.kategori || 'Lainnya';
+        const jumlah = Number(t.jumlah) || 0;
+        grandTotal += jumlah;
+        if (!groups[utama]) groups[utama] = { total: 0, subs: {} };
+        groups[utama].total += jumlah;
+        const subKey = t.kategori || utama;
+        groups[utama].subs[subKey] = (groups[utama].subs[subKey] || 0) + jumlah;
+      });
+
+      const sortedUtama = Object.keys(groups).sort((a, b) => groups[b].total - groups[a].total);
+
+      let html = "";
+      sortedUtama.forEach(utama => {
+        const g = groups[utama];
+        const pct = grandTotal > 0 ? (g.total / grandTotal * 100) : 0;
+        const isExpanded = !!kategoriAnalysisExpanded[utama];
+        const subKeys = Object.keys(g.subs).sort((a, b) => g.subs[b] - g.subs[a]);
+        const hasMultipleSubs = subKeys.length > 1 || (subKeys.length === 1 && subKeys[0] !== utama);
+
+        html += `<div class="border-b border-softer last:border-0 pb-2.5">`;
+        html += `
+          <div ${hasMultipleSubs ? `onclick="toggleKategoriAnalysis('${escapeAttr(utama)}')" class="cursor-pointer"` : ''}>
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-semibold text-main flex items-center">
+                ${hasMultipleSubs ? `<i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-3.5 h-3.5 mr-1 text-faint"></i>` : ''}
+                ${utama}
+              </span>
+              <span class="text-xs font-bold text-main">${formatRupiah(g.total)} <span class="text-faint font-medium">(${pct.toFixed(0)}%)</span></span>
+            </div>
+            <div class="w-full surface-subtle-2 rounded-full h-1.5">
+              <div class="bg-teal-500 h-1.5 rounded-full transition-all duration-500" style="width:${pct}%"></div>
+            </div>
+          </div>`;
+
+        if (hasMultipleSubs) {
+          html += `<div class="${isExpanded ? '' : 'hidden'} mt-2 pl-4 space-y-1.5">`;
+          subKeys.forEach(sub => {
+            html += `
+              <div class="flex justify-between items-center text-[11px] text-muted">
+                <span>${sub}</span>
+                <span class="font-semibold text-main">${formatRupiah(g.subs[sub])}</span>
+              </div>`;
+          });
+          html += `</div>`;
+        }
+        html += `</div>`;
+      });
+
+      el.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function renderRiwayat() {
+      const filterBulan = document.getElementById('filter-bulan').value;
+      const filterTahun = document.getElementById('filter-tahun').value;
+      const filterJenis = document.getElementById('filter-jenis').value;
+      const filterUser = document.getElementById('filter-user').value;
+      const filterSearch = (document.getElementById('filter-search').value || '').toLowerCase().trim();
+      const listEl = document.getElementById('riwayat-trx-list');
+      listEl.innerHTML = "";
+
+      let totalMasuk = 0;
+      let totalKeluar = 0;
+
+      const filtered = (GLOBAL_DATA.transaksi || []).filter(trx => {
+        const tgl = trx.tanggal || "";
+        const tTahun = tgl.length >= 4 ? tgl.substring(0, 4) : "";
+        const tBulan = tgl.length >= 7 ? tgl.substring(5, 7) : "";
+
+        const matchBulan = (filterBulan === 'ALL' || tBulan === filterBulan);
+        const matchTahun = (filterTahun === 'ALL' || tTahun === filterTahun);
+        const matchJenis = (filterJenis === 'ALL' || trx.jenis === filterJenis);
+        const matchUser = (filterUser === 'ALL' || trx.inputOleh === filterUser);
+        const matchSearch = !filterSearch ||
+          (trx.deskripsi || '').toLowerCase().includes(filterSearch) ||
+          (trx.kategori || '').toLowerCase().includes(filterSearch);
+
+        return matchBulan && matchTahun && matchJenis && matchUser && matchSearch;
+      });
+
+      filtered.forEach(trx => {
+        const val = Number(trx.jumlah) || 0;
+        if (trx.jenis === 'Pemasukan' || trx.jenis === 'Terima Piutang' || trx.jenis === 'Terima Hutang (Pinjam)') {
+          totalMasuk += val;
+        } else if (trx.jenis === 'Pengeluaran' || trx.jenis === 'Beri Piutang (Menalangi)' || trx.jenis === 'Bayar Hutang/Cicilan') {
+          totalKeluar += val;
+        }
+      });
+
+      document.getElementById('sum-masuk').innerText = formatRupiah(totalMasuk);
+      document.getElementById('sum-keluar').innerText = formatRupiah(totalKeluar);
+      const net = totalMasuk - totalKeluar;
+      const elNet = document.getElementById('sum-net');
+      elNet.innerText = (net >= 0 ? '+' : '') + formatRupiah(net);
+      elNet.className = net >= 0 ? "font-extrabold amount-in" : "font-extrabold amount-out";
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = emptyStateHtml('search-x', 'Tidak ada hasil', 'Tidak ada riwayat mutasi pada periode & filter terpilih.');
+        lucide.createIcons();
+        return;
+      }
+
+      filtered.forEach(trx => {
+        const meta = getAmountMeta(trx.jenis);
+        const div = document.createElement('div');
+        div.className = "py-3 flex justify-between items-center cursor-pointer hover:surface-subtle px-2 rounded-xl transition tap-shrink";
+        div.onclick = () => { currentModalBackFn = null; showTrxDetail(trx.idTransaksi); };
+        div.innerHTML = `
+          <div class="flex items-start space-x-3">
+            ${iconChipHtml(trx.jenis)}
+            <div>
+              <p class="text-xs font-bold text-main">${trx.deskripsi || trx.kategori}</p>
+              <p class="text-[11px] text-muted mt-0.5">
+                ${trx.akunSumber ? trx.akunSumber : ''}
+                ${trx.akunSumber && trx.akunTujuan ? ' ➝ ' : ''}
+                ${trx.akunTujuan ? trx.akunTujuan : ''}
+              </p>
+              <p class="text-[10px] text-faint mt-0.5">${trx.tanggal} • ${trx.inputOleh}</p>
+            </div>
+          </div>
+          <span class="text-xs font-extrabold ${meta.cls}">${meta.prefix}${formatRupiah(trx.jumlah)}</span>
+        `;
+        listEl.appendChild(div);
+      });
+      lucide.createIcons();
+    }
+
+    function downloadEStatement() {
+      const filterBulan = document.getElementById('filter-bulan').value;
+      const filterTahun = document.getElementById('filter-tahun').value;
+      const filterJenis = document.getElementById('filter-jenis').value;
+      const filterUser = document.getElementById('filter-user').value;
+
+      const filtered = (GLOBAL_DATA.transaksi || []).filter(trx => {
+        const tgl = trx.tanggal || "";
+        const tTahun = tgl.length >= 4 ? tgl.substring(0, 4) : "";
+        const tBulan = tgl.length >= 7 ? tgl.substring(5, 7) : "";
+        const matchBulan = (filterBulan === 'ALL' || tBulan === filterBulan);
+        const matchTahun = (filterTahun === 'ALL' || tTahun === filterTahun);
+        const matchJenis = (filterJenis === 'ALL' || trx.jenis === filterJenis);
+        const matchUser = (filterUser === 'ALL' || trx.inputOleh === filterUser);
+        return matchBulan && matchTahun && matchJenis && matchUser;
+      });
+
+      if (filtered.length === 0) {
+        alert("Tidak ada data transaksi pada periode yang dipilih untuk diunduh.");
+        return;
+      }
+
+      let csvContent = "\uFEFF";
+      csvContent += "sep=;\r\n";
+      csvContent += "e-STATEMENT MUTASI KEUANGAN RUMAH TANGGA — MOCHI'S VAULT\r\n";
+      csvContent += `Periode Bulan: ${filterBulan} | Tahun: ${filterTahun}\r\n`;
+      csvContent += `Diunduh Pada: ${new Date().toLocaleDateString('id-ID')}\r\n\r\n`;
+
+      csvContent += "ID Transaksi;Tanggal;Oleh;Jenis Mutasi;Kategori;Akun Sumber;Akun Tujuan;Deskripsi;Jumlah (Rp);Catatan\r\n";
+
+      filtered.forEach(t => {
+        const row = [
+          t.idTransaksi || "",
+          t.tanggal || "",
+          t.inputOleh || "",
+          t.jenis || "",
+          t.kategori || "",
+          t.akunSumber || "",
+          t.akunTujuan || "",
+          `"${(t.deskripsi || "").replace(/"/g, '""')}"`,
+          t.jumlah || 0,
+          `"${(t.catatan || "").replace(/"/g, '""')}"`
+        ];
+        csvContent += row.join(";") + "\r\n";
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      const namaFile = `eStatement_MochiVault_${filterTahun}-${filterBulan}.csv`;
+      link.setAttribute("download", namaFile);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function renderSaldo() {
+      const operasionalEl = document.getElementById('list-akun-operasional');
+      const tabunganEl = document.getElementById('list-akun-tabungan');
+      operasionalEl.innerHTML = "";
+      tabunganEl.innerHTML = "";
+
+      if (!GLOBAL_DATA.akun || GLOBAL_DATA.akun.length === 0) {
+        operasionalEl.innerHTML = emptyStateHtml('wallet', 'Belum ada akun', 'Tambahkan akun lewat form transaksi.');
+        lucide.createIcons();
+        return;
+      }
+
+      GLOBAL_DATA.akun.forEach(akun => {
+        const initial = (akun.pemilik || '?').trim().charAt(0).toUpperCase();
+        const div = document.createElement('div');
+        div.className = "surface-card p-3.5 rounded-xl border border-soft shadow-sm cursor-pointer hover:border-teal-500 transition card-hover";
+        div.onclick = () => showAkunHistory(akun.namaAkun);
+        div.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-8 h-8 rounded-full bg-teal-600/90 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">${initial}</div>
+              <div>
+                <h4 class="text-xs font-bold text-main">${akun.namaAkun}</h4>
+                <p class="text-[10px] text-faint">${akun.pemilik} • ${akun.jenisAkun}</p>
+              </div>
+            </div>
+            <span class="text-xs font-extrabold text-main">${formatRupiah(akun.saldoBerjalan)}</span>
+          </div>
+        `;
+        if (akun.kategoriFungsi && akun.kategoriFungsi.toLowerCase().includes('operasional')) {
+          operasionalEl.appendChild(div);
+        } else {
+          tabunganEl.appendChild(div);
+        }
+      });
+    }
+
+    function renderHutangPiutang() {
+      const hutangEl = document.getElementById('list-hutang-aktif');
+      const piutangEl = document.getElementById('list-piutang-aktif');
+      hutangEl.innerHTML = "";
+      piutangEl.innerHTML = "";
+
+      const hutangAktif = (GLOBAL_DATA.hutang || [])
+        .filter(h => h.status === 'Aktif')
+        .sort((a, b) => b.sisaHutang - a.sisaHutang);
+
+      if (hutangAktif.length === 0) {
+        hutangEl.innerHTML = emptyStateHtml('check-circle', 'Tidak ada hutang aktif', 'Semua hutang sudah lunas.');
+      } else {
+        hutangAktif.forEach(h => {
+          const pct = h.totalHutangAwal > 0 ? Math.min(100, ((h.totalHutangAwal - h.sisaHutang) / h.totalHutangAwal) * 100) : 0;
+          const div = document.createElement('div');
+          div.className = "surface-card p-3.5 rounded-xl border border-soft shadow-sm cursor-pointer card-hover hover:border-rose-500 transition";
+          div.onclick = () => showHutangDetail(h);
+          div.innerHTML = `
+            <div class="flex justify-between items-center mb-2">
+              <div>
+                <h4 class="text-xs font-bold text-main">${h.namaHutang}</h4>
+                <span class="text-[10px] text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded font-medium">${h.jenisHutang || 'Cicilan/Hutang'}</span>
+              </div>
+              <span class="text-xs font-extrabold amount-out">${formatRupiah(h.sisaHutang)}</span>
+            </div>
+            <div class="w-full surface-subtle-2 rounded-full h-1.5">
+              <div class="bg-rose-500 h-1.5 rounded-full transition-all duration-500" style="width:${pct}%"></div>
+            </div>
+          `;
+          hutangEl.appendChild(div);
+        });
+      }
+
+      const piutangAktif = (GLOBAL_DATA.piutang || []).filter(p => p.status === 'Belum Lunas' || p.status === 'Aktif');
+      if (piutangAktif.length === 0) {
+        piutangEl.innerHTML = emptyStateHtml('check-circle', 'Tidak ada piutang aktif', 'Semua piutang sudah diterima.');
+      } else {
+        piutangAktif.forEach(p => {
+          const div = document.createElement('div');
+          div.className = "surface-card p-3.5 rounded-xl border border-soft shadow-sm flex justify-between items-center cursor-pointer card-hover hover:border-amber-500 transition";
+          div.onclick = () => showPiutangDetail(p);
+          div.innerHTML = `
+            <div>
+              <h4 class="text-xs font-bold text-main">${p.namaPiutang}</h4>
+              <span class="text-[10px] text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded font-medium">${p.jenisPiutang || 'Piutang'}</span>
+            </div>
+            <span class="text-xs font-extrabold text-amber-500">${formatRupiah(p.sisaPiutang)}</span>
+          `;
+          piutangEl.appendChild(div);
+        });
+      }
+      lucide.createIcons();
+    }
+
+    function populateFormDropdowns() {
+      const fillSelect = (id, items, key) => {
+        const sel = document.getElementById(id);
+        sel.innerHTML = `<option value="">-- Pilih --</option>`;
+        items.forEach(item => { sel.innerHTML += `<option value="${item[key]}">${item[key]}</option>`; });
+      };
+      fillSelect('form-akunsumber', GLOBAL_DATA.akun, 'namaAkun');
+      fillSelect('form-akuntujuan', GLOBAL_DATA.akun, 'namaAkun');
+      fillSelect('form-hutang', GLOBAL_DATA.hutang, 'namaHutang');
+      fillSelect('form-piutang', GLOBAL_DATA.piutang, 'namaPiutang');
+      resetKategoriPicker();
+      handleJenisChange();
+    }
+
+    let kategoriPickerExpanded = {};
+
+    function escapeAttr(str) {
+      return String(str).replace(/'/g, "\\'");
+    }
+
+    function resetKategoriPicker() {
+      document.getElementById('form-kategori').value = "";
+      const displayEl = document.getElementById('form-kategori-display');
+      displayEl.innerText = "-- Pilih Kategori --";
+      displayEl.classList.add('text-faint');
+    }
+
+    function groupKategoriData() {
+      const groups = {};
+      const order = [];
+      (GLOBAL_DATA.kategori || []).forEach(k => {
+        const utama = k.kategoriUtama || k.namaKategori;
+        if (!groups[utama]) { groups[utama] = { jenis: k.jenis, items: [] }; order.push(utama); }
+        groups[utama].items.push(k);
+      });
+      return { groups, order };
+    }
+
+    function openKategoriPicker() {
+      renderKategoriPickerList();
+      openModal('modalKategoriPicker');
+    }
+
+    function renderKategoriPickerList() {
+      const { groups, order } = groupKategoriData();
+      const listEl = document.getElementById('kategori-picker-list');
+      let html = "";
+
+      order.forEach(utama => {
+        const group = groups[utama];
+        const isExpanded = !!kategoriPickerExpanded[utama];
+        const badgeColor = group.jenis === 'Pemasukan' ? 'text-teal-500 bg-teal-500/10' : 'text-muted surface-subtle-2';
+        const onlyMainItem = group.items.length === 1 &&
+          (!group.items[0].subKategori || group.items[0].subKategori === group.items[0].namaKategori);
+
+        if (onlyMainItem) {
+          html += `
+            <div onclick="selectKategori('${escapeAttr(group.items[0].namaKategori)}')" class="flex justify-between items-center px-2 py-3 cursor-pointer hover:surface-subtle rounded-lg transition tap-shrink">
+              <span class="font-semibold text-main">${utama}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded ${badgeColor}">${group.jenis}</span>
+            </div>`;
+        } else {
+          html += `
+            <div class="py-1">
+              <div onclick="toggleKategoriGroup('${escapeAttr(utama)}')" class="flex justify-between items-center px-2 py-2.5 cursor-pointer hover:surface-subtle rounded-lg transition">
+                <span class="font-bold text-main">${utama}</span>
+                <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-4 h-4 text-faint"></i>
+              </div>
+              <div class="${isExpanded ? '' : 'hidden'} pl-3 ml-2 border-l-2 border-softer space-y-0.5 pb-1">`;
+          group.items.forEach(item => {
+            const label = (item.subKategori && item.subKategori !== item.namaKategori) ? item.subKategori : item.namaKategori;
+            html += `
+                <div onclick="selectKategori('${escapeAttr(item.namaKategori)}')" class="px-3 py-2 rounded-lg hover:surface-subtle cursor-pointer text-muted tap-shrink">${label}</div>`;
+          });
+          html += `
+              </div>
+            </div>`;
+        }
+      });
+
+      listEl.innerHTML = html || emptyStateHtml('tag', 'Belum ada kategori', 'Tambah dulu lewat "+ Kategori Baru".');
+      lucide.createIcons();
+    }
+
+    function toggleKategoriGroup(utama) {
+      kategoriPickerExpanded[utama] = !kategoriPickerExpanded[utama];
+      renderKategoriPickerList();
+    }
+
+    function selectKategori(namaKategori) {
+      document.getElementById('form-kategori').value = namaKategori;
+      const displayEl = document.getElementById('form-kategori-display');
+      displayEl.innerText = namaKategori;
+      displayEl.classList.remove('text-faint');
+      closeModal('modalKategoriPicker');
+    }
+
+    function handleJenisChange() {
+      const jenis = document.getElementById('form-jenis').value;
+      const show = (id, isShow) => {
+        const el = document.getElementById(id);
+        if (isShow) el.classList.remove('hidden'); else el.classList.add('hidden');
+      };
+      const hasSumber = ['Pengeluaran', 'Transfer Internal', 'Beri Piutang (Menalangi)', 'Bayar Hutang/Cicilan'].includes(jenis);
+      const hasTujuan = ['Pemasukan', 'Transfer Internal', 'Terima Piutang', 'Terima Hutang (Pinjam)'].includes(jenis);
+      const hasHutang = ['Terima Hutang (Pinjam)', 'Bayar Hutang/Cicilan'].includes(jenis);
+      const hasPiutang = ['Beri Piutang (Menalangi)', 'Terima Piutang'].includes(jenis);
+
+      show('wrap-akunsumber', hasSumber);
+      show('wrap-akuntujuan', hasTujuan);
+      show('wrap-hutang', hasHutang);
+      show('wrap-piutang', hasPiutang);
+    }
+
+    function showKpiDetail(kpiName) {
+      currentModalBackFn = null;
+      let html = `
+        <div class="space-y-3">
+          <div class="border-b border-softer pb-2 pr-8">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-teal-500/10 text-teal-500">Detail KPI</span>
+            <h3 class="text-base font-bold text-main mt-1">${kpiName}</h3>
+            <p class="text-xl font-extrabold text-teal-500 mt-1">${formatRupiah(GLOBAL_DATA.kpi[kpiName])}</p>
+          </div>
+          <div class="surface-subtle p-3 rounded-xl space-y-2 text-xs text-muted">
+      `;
+      if (kpiName === 'Net Worth') {
+        html += `
+          <p class="font-semibold text-main mb-1">Komponen Kekayaan Bersih:</p>
+          <div class="flex justify-between"><span>Total Kas & Tabungan:</span> <span class="font-semibold text-main">${formatRupiah(GLOBAL_DATA.kpi['Total Kas'])}</span></div>
+          <div class="flex justify-between"><span>Total Piutang:</span> <span class="font-semibold text-main">${formatRupiah(GLOBAL_DATA.kpi['Total Piutang'])}</span></div>
+          <div class="flex justify-between amount-out"><span>Total Hutang (-):</span> <span class="font-semibold">${formatRupiah(GLOBAL_DATA.kpi['Total Hutang'])}</span></div>
+          <hr class="border-softer my-1">
+          <div class="flex justify-between font-bold text-main"><span>Net Worth:</span> <span>${formatRupiah(GLOBAL_DATA.kpi['Net Worth'])}</span></div>
+        `;
+      } else if (kpiName === 'Disposable Income') {
+        html += `
+          <p class="font-semibold text-main mb-1">Keterangan Disposable Income:</p>
+          <p class="text-muted leading-relaxed">Dana atau sisa kas operasional harian yang bebas digunakan untuk konsumsi dan tabungan setelah memperhitungkan kewajiban dan alokasi terkait.</p>
+          <div class="flex justify-between mt-3 pt-2 border-t border-softer font-bold text-main">
+            <span>Nilai Saat Ini:</span> <span class="text-teal-500">${formatRupiah(GLOBAL_DATA.kpi['Disposable Income'])}</span>
+          </div>
+        `;
+      } else if (kpiName === 'Total Kas') {
+        html += `<p class="font-semibold text-main mb-1">Rincian Saldo Akun:</p><div class="space-y-1.5 max-h-48 overflow-y-auto">`;
+        GLOBAL_DATA.akun.forEach(a => {
+          html += `<div class="flex justify-between py-1 border-b border-softer"><span>${a.namaAkun} (${a.pemilik}):</span> <span class="font-semibold">${formatRupiah(a.saldoBerjalan)}</span></div>`;
+        });
+        html += `</div>`;
+      } else if (kpiName === 'Total Piutang') {
+        html += `<p class="font-semibold text-main mb-1">Rincian Piutang:</p><div class="space-y-1.5 max-h-48 overflow-y-auto">`;
+        GLOBAL_DATA.piutang.forEach(p => {
+          html += `<div class="flex justify-between py-1 border-b border-softer"><span>${p.namaPiutang} (${p.status}):</span> <span class="font-semibold text-amber-500">${formatRupiah(p.sisaPiutang)}</span></div>`;
+        });
+        html += `</div>`;
+      } else if (kpiName === 'Total Hutang') {
+        html += `<p class="font-semibold text-main mb-1">Rincian Hutang:</p><div class="space-y-1.5 max-h-48 overflow-y-auto">`;
+        GLOBAL_DATA.hutang.forEach(h => {
+          html += `<div class="flex justify-between py-1 border-b border-softer"><span>${h.namaHutang} (${h.status}):</span> <span class="font-semibold amount-out">${formatRupiah(h.sisaHutang)}</span></div>`;
+        });
+        html += `</div>`;
+      } else if (kpiName === 'Net Savings Operasional') {
+        html += `
+          <p class="font-semibold text-main mb-1">Keterangan Net Savings:</p>
+          <p class="text-muted leading-relaxed">Selisih antara total pemasukan dan total pengeluaran operasional.</p>
+          <div class="flex justify-between mt-3 pt-2 border-t border-softer font-bold text-main">
+            <span>Net Savings:</span> <span class="text-teal-500">${formatRupiah(GLOBAL_DATA.kpi['Net Savings Operasional'])}</span>
+          </div>
+        `;
+      }
+      html += `</div></div>`;
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+    }
+
+    function showTrxDetail(idTrx) {
+      const trx = GLOBAL_DATA.transaksi.find(t => t.idTransaksi === idTrx);
+      if (!trx) return;
+      const meta = getAmountMeta(trx.jenis);
+
+      let html = `<div class="space-y-3">`;
+      if (currentModalBackFn) {
+        html += `
+          <button onclick="currentModalBackFn()" class="tap-shrink text-xs font-semibold text-teal-500 flex items-center mb-1 hover:underline">
+            <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Kembali
+          </button>
+        `;
+      }
+      html += `
+        <div class="flex justify-between items-center border-b border-softer pb-2 pr-8">
+          <span class="text-[11px] font-bold px-2 py-0.5 rounded ${getBadgeClass(trx.jenis)}">${trx.jenis}</span>
+          <span class="text-[10px] text-faint font-mono surface-subtle-2 px-2 py-0.5 rounded">${trx.idTransaksi}</span>
+        </div>
+        <div class="flex items-center space-x-3">
+          ${iconChipHtml(trx.jenis)}
+          <div>
+            <h3 class="text-base font-bold text-main leading-tight">${trx.deskripsi || trx.kategori}</h3>
+            <p class="text-xl font-extrabold ${meta.cls}">${meta.prefix}${formatRupiah(trx.jumlah)}</p>
+          </div>
+        </div>
+
+        <div class="surface-subtle p-3 rounded-xl space-y-1.5 text-xs text-muted">
+          <div class="flex justify-between"><span>Tanggal:</span> <span class="font-semibold text-main">${trx.tanggal}</span></div>
+          <div class="flex justify-between"><span>Kategori:</span> <span class="font-semibold text-main">${trx.kategori}</span></div>
+          ${trx.akunSumber ? `<div class="flex justify-between"><span>Akun Sumber:</span> <span class="font-semibold text-main">${trx.akunSumber}</span></div>` : ''}
+          ${trx.akunTujuan ? `<div class="flex justify-between"><span>Akun Tujuan:</span> <span class="font-semibold text-main">${trx.akunTujuan}</span></div>` : ''}
+          ${trx.terkaitHutang ? `<div class="flex justify-between"><span>Terkait Hutang:</span> <span class="font-semibold text-main">${trx.terkaitHutang}</span></div>` : ''}
+          ${trx.terkaitPiutang ? `<div class="flex justify-between"><span>Terkait Piutang:</span> <span class="font-semibold text-main">${trx.terkaitPiutang}</span></div>` : ''}
+          <div class="flex justify-between"><span>Input Oleh:</span> <span class="font-semibold text-main">${trx.inputOleh}</span></div>
+        </div>
+        ${trx.catatan ? `<div class="text-xs bg-amber-500/10 p-2.5 rounded-lg text-amber-500"><b>Catatan:</b> ${trx.catatan}</div>` : ''}
+      </div>`;
+
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+    }
+
+    function showAkunHistory(namaAkun) {
+      currentModalBackFn = () => showAkunHistory(namaAkun);
+      
+      const fullHistory = GLOBAL_DATA.transaksi.filter(t => t.akunSumber === namaAkun || t.akunTujuan === namaAkun);
+      const history = fullHistory.slice(0, 50);
+
+      let html = `
+        <div class="border-b border-softer pb-2 mb-3 pr-8">
+          <h3 class="text-sm font-bold text-main">Riwayat Mutasi Akun</h3>
+          <p class="text-xs text-teal-500 font-semibold">${namaAkun}</p>
+          <p class="text-[10px] text-faint mt-1 font-medium bg-teal-500/10 px-2 py-0.5 rounded inline-block">Menampilkan max. ${history.length} transaksi terbaru</p>
+        </div>
+        <div class="space-y-2 max-h-60 overflow-y-auto pr-1">
+      `;
+      if (history.length === 0) {
+        html += emptyStateHtml('inbox', 'Belum ada riwayat', 'Belum ada mutasi untuk akun ini.');
+      } else {
+        history.forEach(t => {
+          const isKeluar = (t.akunSumber === namaAkun);
+          html += `
+            <div onclick="showTrxDetail('${t.idTransaksi}')" class="flex justify-between items-center text-xs p-2.5 surface-subtle border border-soft rounded-lg cursor-pointer hover:surface-subtle-2 transition tap-shrink">
+              <div>
+                <p class="font-bold text-main">${t.deskripsi || t.kategori}</p>
+                <p class="text-[10px] text-faint">${t.tanggal} • ${t.jenis}</p>
+              </div>
+              <span class="font-bold ${isKeluar ? 'amount-out' : 'amount-in'}">
+                ${isKeluar ? '-' : '+'}${formatRupiah(t.jumlah)}
+              </span>
+            </div>
+          `;
+        });
+      }
+      html += `</div>`;
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+      lucide.createIcons();
+    }
+
+    function showHutangDetail(h) {
+      currentModalBackFn = () => showHutangDetail(h);
+      const relatedTrx = GLOBAL_DATA.transaksi.filter(t => t.terkaitHutang === h.namaHutang);
+      let html = `
+        <div class="space-y-3">
+          <div class="border-b border-softer pb-2 pr-8">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/10 text-rose-500">Hutang Aktif</span>
+            <h3 class="text-base font-bold text-main mt-1">${h.namaHutang}</h3>
+          </div>
+          <div class="surface-subtle p-3 rounded-xl space-y-2 text-xs text-muted">
+            <div class="flex justify-between"><span>Jenis Hutang:</span> <span class="font-semibold text-main">${h.jenisHutang || '-'}</span></div>
+            <div class="flex justify-between"><span>Sisa Hutang:</span> <span class="font-extrabold amount-out text-sm">${formatRupiah(h.sisaHutang)}</span></div>
+            <div class="flex justify-between"><span>Status:</span> <span class="font-semibold text-main">${h.status}</span></div>
+          </div>
+          <div>
+            <p class="font-bold text-xs text-main mb-2">Riwayat Transaksi Terkait Hutang:</p>
+            <div class="space-y-2 max-h-48 overflow-y-auto pr-1">
+      `;
+      if (relatedTrx.length === 0) {
+        html += emptyStateHtml('inbox', 'Belum ada transaksi', 'Belum ada transaksi terkait hutang ini.');
+      } else {
+        relatedTrx.forEach(t => {
+          html += `
+            <div onclick="showTrxDetail('${t.idTransaksi}')" class="flex justify-between items-center text-xs p-2.5 surface-subtle border border-soft rounded-lg cursor-pointer hover:surface-subtle-2 transition tap-shrink">
+              <div>
+                <p class="font-bold text-main">${t.deskripsi || t.kategori}</p>
+                <p class="text-[10px] text-faint">${t.tanggal} • ${t.jenis} • Oleh: ${t.inputOleh}</p>
+              </div>
+              <span class="font-extrabold amount-out">${formatRupiah(t.jumlah)}</span>
+            </div>
+          `;
+        });
+      }
+      html += `</div></div></div>`;
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+      lucide.createIcons();
+    }
+
+    function showPiutangDetail(p) {
+      currentModalBackFn = () => showPiutangDetail(p);
+      const relatedTrx = GLOBAL_DATA.transaksi.filter(t => t.terkaitPiutang === p.namaPiutang);
+      let html = `
+        <div class="space-y-3">
+          <div class="border-b border-softer pb-2 pr-8">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-500">Piutang Belum Lunas</span>
+            <h3 class="text-base font-bold text-main mt-1">${p.namaPiutang}</h3>
+          </div>
+          <div class="surface-subtle p-3 rounded-xl space-y-2 text-xs text-muted">
+            <div class="flex justify-between"><span>Jenis Piutang:</span> <span class="font-semibold text-main">${p.jenisPiutang || '-'}</span></div>
+            <div class="flex justify-between"><span>Sisa Piutang:</span> <span class="font-extrabold text-amber-500 text-sm">${formatRupiah(p.sisaPiutang)}</span></div>
+            <div class="flex justify-between"><span>Status:</span> <span class="font-semibold text-main">${p.status}</span></div>
+          </div>
+          <div>
+            <p class="font-bold text-xs text-main mb-2">Riwayat Transaksi Terkait Piutang:</p>
+            <div class="space-y-2 max-h-48 overflow-y-auto pr-1">
+      `;
+      if (relatedTrx.length === 0) {
+        html += emptyStateHtml('inbox', 'Belum ada transaksi', 'Belum ada transaksi terkait piutang ini.');
+      } else {
+        relatedTrx.forEach(t => {
+          html += `
+            <div onclick="showTrxDetail('${t.idTransaksi}')" class="flex justify-between items-center text-xs p-2.5 surface-subtle border border-soft rounded-lg cursor-pointer hover:surface-subtle-2 transition tap-shrink">
+              <div>
+                <p class="font-bold text-main">${t.deskripsi || t.kategori}</p>
+                <p class="text-[10px] text-faint">${t.tanggal} • ${t.jenis} • Oleh: ${t.inputOleh}</p>
+              </div>
+              <span class="font-extrabold text-amber-500">${formatRupiah(t.jumlah)}</span>
+            </div>
+          `;
+        });
+      }
+      html += `</div></div></div>`;
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+      lucide.createIcons();
+    }
+
+    async function handleSaveTransaksi(event) {
+      event.preventDefault();
+
+      if (!document.getElementById('form-kategori').value) {
+        alert("Silakan pilih kategori transaksi terlebih dahulu.");
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit-trx');
+      btn.disabled = true;
+      btn.innerText = "Menyimpan...";
+
+      const payload = {
+        inputOleh: document.getElementById('form-user').value,
+        tanggal: document.getElementById('form-tgl').value,
+        jenis: document.getElementById('form-jenis').value,
+        akunSumber: document.getElementById('form-akunsumber').value,
+        akunTujuan: document.getElementById('form-akuntujuan').value,
+        kategori: document.getElementById('form-kategori').value,
+        terkaitHutang: document.getElementById('form-hutang').value,
+        terkaitPiutang: document.getElementById('form-piutang').value,
+        jumlah: document.getElementById('form-jumlah-val').value,
+        deskripsi: document.getElementById('form-deskripsi').value,
+        catatan: document.getElementById('form-catatan').value
+      };
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          redirect: 'follow',
+          body: JSON.stringify({ action: 'saveTransaksi', payload: payload })
+        });
+        const result = await res.json();
+        if (result.status === 'error') throw new Error(result.message);
+
+        alert(result.message || "Transaksi berhasil disimpan!");
+        closeModal('modalInputTrx');
+        document.getElementById('formTransaksi').reset();
+        document.getElementById('form-tgl').valueAsDate = new Date();
+        resetKategoriPicker();
+        btn.disabled = false;
+        btn.innerText = "Simpan Transaksi";
+        loadAppData();
+      } catch (err) {
+        alert("Gagal menyimpan: " + err.message);
+        btn.disabled = false;
+        btn.innerText = "Simpan Transaksi";
+      }
+    }
+
+    function handleKategoriUtamaSelectChange() {
+      const val = document.getElementById('master-kategoriutama-select').value;
+      const baruWrap = document.getElementById('master-kategoriutama-baru-wrap');
+      if (val === '__BARU__') baruWrap.classList.remove('hidden');
+      else baruWrap.classList.add('hidden');
+    }
+
+    function openMasterModal(type) {
+      document.getElementById('master-type').value = type;
+      const titleEl = document.getElementById('master-title');
+      const extraEl = document.getElementById('master-extra-field');
+      extraEl.innerHTML = "";
+
+      const namaLabelEl = document.getElementById('master-nama-label');
+      const namaInputEl = document.getElementById('master-nama');
+      const kategoriUtamaWrap = document.getElementById('master-kategoriutama-wrap');
+      const kategoriUtamaBaruWrap = document.getElementById('master-kategoriutama-baru-wrap');
+
+      kategoriUtamaWrap.classList.add('hidden');
+      kategoriUtamaBaruWrap.classList.add('hidden');
+      namaLabelEl.innerText = "Nama";
+      namaInputEl.required = true;
+      namaInputEl.placeholder = "";
+
+      if (type === 'kategori') {
+        namaLabelEl.innerText = "Nama Sub-Kategori (opsional)";
+        namaInputEl.required = false;
+        namaInputEl.placeholder = "Kosongkan jika ini kategori utama saja";
+
+        kategoriUtamaWrap.classList.remove('hidden');
+        const { order } = groupKategoriData();
+        let optHtml = `<option value="__BARU__">+ Buat Kategori Utama Baru</option>`;
+        order.forEach(u => { optHtml += `<option value="${u}">${u}</option>`; });
+        const sel = document.getElementById('master-kategoriutama-select');
+        sel.innerHTML = optHtml;
+        sel.value = "__BARU__";
+        handleKategoriUtamaSelectChange();
+      }
+
+      if (type === 'akun') {
+        titleEl.innerText = "Tambah Akun Baru";
+        extraEl.innerHTML = `
+          <div class="mt-2">
+            <label class="font-semibold text-main block mb-1">Jenis Akun</label>
+            <select id="master-jenisakun" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2">
+              <option value="Bank">Bank</option>
+              <option value="E-Wallet">E-Wallet</option>
+              <option value="Cash">Cash / Tunai</option>
+            </select>
+          </div>
+          <div class="mt-2">
+            <label class="font-semibold text-main block mb-1">Fungsi / Kategori</label>
+            <select id="master-fungsialiran" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2">
+              <option value="Operasional Harian">Operasional Harian</option>
+              <option value="Dana Darurat & Tabungan">Dana Darurat & Tabungan</option>
+            </select>
+          </div>
+          <div class="mt-2">
+            <label class="font-semibold text-main block mb-1">Saldo Awal (Rp)</label>
+            <input type="number" id="master-saldoawal" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2" value="0">
+          </div>
+        `;
+      } else if (type === 'kategori') {
+        titleEl.innerText = "Tambah Kategori Baru";
+        extraEl.innerHTML = `
+          <div class="mt-2">
+            <label class="font-semibold text-main block mb-1">Jenis Kategori</label>
+            <select id="master-jeniskat" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2">
+              <option value="Pengeluaran">Pengeluaran</option>
+              <option value="Pemasukan">Pemasukan</option>
+            </select>
+          </div>
+        `;
+      } else if (type === 'hutang') {
+        titleEl.innerText = "Tambah Hutang Baru";
+        extraEl.innerHTML = `
+          <div class="mt-2">
+            <label class="font-semibold text-main block mb-1">Jenis Hutang</label>
+            <select id="master-jenishutang" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2">
+              <option value="Cicilan Kendaraan">Cicilan Kendaraan</option>
+              <option value="KTA / Bank">KTA / Bank</option>
+              <option value="Pinjaman Personal">Pinjaman Personal</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div class="mt-2">
+            <label class="font-semibold text-main block mb-1">Total Hutang Awal (Rp)</label>
+            <input type="number" id="master-totalhutang" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2" value="0" required>
+          </div>
+          <div class="mt-2">
+            <label class="font-semibold text-main block mb-1">Keterangan</label>
+            <input type="text" id="master-kethutang" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2" placeholder="Catatan cicilan...">
+          </div>
+        `;
+      } else if (type === 'piutang') {
+        titleEl.innerText = "Tambah Piutang Baru";
+        extraEl.innerHTML = `
+          <div class="mt-2">
+            <label class="font-semibold text-main block mb-1">Jenis Piutang</label>
+            <select id="master-jenispiutang" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2">
+              <option value="Talangan Belanja">Talangan Belanja</option>
+              <option value="Pinjaman Teman/Keluarga">Pinjaman Teman/Keluarga</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div class="mt-2">
+            <label class="font-semibold text-main block mb-1">Total Piutang Awal (Rp)</label>
+            <input type="number" id="master-totalpiutang" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2" value="0" required>
+          </div>
+          <div class="mt-2">
+            <label class="font-semibold text-main block mb-1">Rincian / Keterangan</label>
+            <textarea id="master-ketpiutang" rows="2" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2" placeholder="Contoh: Titip belanja token, galon, dll"></textarea>
+          </div>
+        `;
+      }
+      openModal('modalMaster');
+    }
+
+    async function handleSaveMaster(event) {
+      event.preventDefault();
+      const type = document.getElementById('master-type').value;
+      const nama = document.getElementById('master-nama').value;
+      let payload = { namaAkun: nama, namaKategori: nama, namaHutang: nama, namaPiutang: nama };
+
+      if (type === 'akun') {
+        payload.jenisAkun = document.getElementById('master-jenisakun').value;
+        payload.kategoriFungsi = document.getElementById('master-fungsialiran').value;
+        payload.saldoAwal = Number(document.getElementById('master-saldoawal').value) || 0;
+      } else if (type === 'kategori') {
+        const selVal = document.getElementById('master-kategoriutama-select').value;
+        const kategoriUtama = selVal === '__BARU__'
+          ? document.getElementById('master-kategoriutama-baru').value.trim()
+          : selVal;
+        if (!kategoriUtama) {
+          alert("Nama Kategori Utama wajib diisi.");
+          return;
+        }
+        payload.kategoriUtama = kategoriUtama;
+        payload.subKategori = nama.trim();
+        payload.namaKategori = nama.trim() ? nama.trim() : kategoriUtama;
+        payload.jenis = document.getElementById('master-jeniskat').value;
+      } else if (type === 'hutang') {
+        payload.jenisHutang = document.getElementById('master-jenishutang').value;
+        payload.totalHutangAwal = Number(document.getElementById('master-totalhutang').value) || 0;
+        payload.keterangan = document.getElementById('master-kethutang').value;
+      } else if (type === 'piutang') {
+        payload.jenisPiutang = document.getElementById('master-jenispiutang').value;
+        payload.totalPiutangAwal = Number(document.getElementById('master-totalpiutang').value) || 0;
+        payload.keterangan = document.getElementById('master-ketpiutang').value;
+      }
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          redirect: 'follow',
+          body: JSON.stringify({ action: 'addMasterData', type: type, payload: payload })
+        });
+        const result = await res.json();
+        if (result.status === 'error') throw new Error(result.message);
+
+        alert("Master data berhasil ditambahkan!");
+        closeModal('modalMaster');
+        document.getElementById('formMaster').reset();
+        loadAppData();
+      } catch (err) {
+        alert("Gagal: " + err.message);
+      }
+    }
+  </script>
+</body>
+</html>
