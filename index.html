@@ -738,7 +738,7 @@
       </div>
     </div>
   </div>
- <!-- SCRIPT JAVASCRIPT DIMULAI DI SINI -->
+<!-- SCRIPT JAVASCRIPT DIMULAI DI SINI -->
   <script>
     // ==========================================
     // CONFIGURATION URL GOOGLE APPS SCRIPT
@@ -753,24 +753,25 @@
     // 1. SYSTEM, UX HELPERS & HISTORY API
     // ==========================================
 
-    // Inisialisasi History API untuk Native Back Button
     let activeModals = []; 
     history.replaceState({ modal: null }, '');
+    window.isNestedModalView = false; // Satpam Anti-Loop Modal
 
     window.addEventListener('popstate', (e) => {
       // OS Back Button atau Edge Swipe (Native) Ditekan
       if (activeModals.length > 0) {
         const topModal = activeModals[activeModals.length - 1];
         
-        // Logika Khusus Nested Modal (Dari Riwayat Akun -> Detail Trx)
-        if (topModal === 'modalDetail' && currentModalBackFn) {
+        // Hanya memicu fungsi kembali jika sedang ada di dalam nested modal (Detail Transaksi)
+        if (topModal === 'modalDetail' && window.isNestedModalView && currentModalBackFn) {
           let fn = currentModalBackFn;
-          currentModalBackFn = null;
-          // Karena OS memundurkan history, kita maju 1 langkah lagi agar modalDetail tidak tertutup
+          window.isNestedModalView = false; // Lepas pengaman, kita mundur 1 langkah
           history.pushState({ modal: 'modalDetail' }, '');
-          fn(); // Render ulang tampilan sebelumnya (Kembali ke Riwayat Akun)
+          fn(); // Kembali ke Riwayat Akun / AP/R
         } else {
-          // Tutup modal secara visual
+          // Jika tidak ada nested view, tutup modal sepenuhnya!
+          window.isNestedModalView = false;
+          currentModalBackFn = null;
           performVisualClose(topModal);
         }
       }
@@ -884,6 +885,10 @@
 
     function closeModal(id) {
       if (activeModals.includes(id)) {
+        // Paksa lepas status nested jika menekan X agar benar-benar tertutup
+        if (id === 'modalDetail') {
+          window.isNestedModalView = false;
+        }
         // Memicu native popstate agar sinkron dengan history browser OS
         history.back();
       } else {
@@ -950,18 +955,16 @@
       let dx = tEndX - tStartX;
       let dy = tEndY - tStartY;
 
-      // Cek apakah gesture horizontal dominan (menghindari salah deteksi saat scroll vertikal)
       if (Math.abs(dx) > 60 && Math.abs(dy) < 40) {
-        // Deteksi zona ujung layar (Edge Zone) - diserahkan ke Native OS (Back Button)
+        // Diserahkan 100% kepada OS untuk Edge Swipe Back
         let isEdgeSwipe = (tStartX < 40) || (tStartX > window.innerWidth - 40);
         
-        // Pindah Tab hanya aktif jika menggeser di area tengah layar (Non-Edge) & tidak ada modal terbuka
         if (!isEdgeSwipe && activeModals.length === 0) {
           let currentIndex = tabs.indexOf(currentTab);
-          if (dx < -60 && currentIndex < tabs.length - 1) { // Swipe Kiri -> Tab Selanjutnya
+          if (dx < -60 && currentIndex < tabs.length - 1) { 
              vibrate(10);
              switchTab(tabs[currentIndex + 1]);
-          } else if (dx > 60 && currentIndex > 0) { // Swipe Kanan -> Tab Sebelumnya
+          } else if (dx > 60 && currentIndex > 0) { 
              vibrate(10);
              switchTab(tabs[currentIndex - 1]);
           }
@@ -969,13 +972,13 @@
       }
     }, {passive: true});
 
-    // Long Press (Hold) Sensor
     let holdTimer;
     let holdActive = false;
     let holdStartX = 0;
     let holdStartY = 0;
 
-    window.startHold = function(e, idTrx) {
+    // clearBackFn digunakan agar Hold di Riwayat Akun tidak menghapus memori kembali ke akun tersebut
+    window.startHold = function(e, idTrx, clearBackFn = true) {
       holdActive = true;
       let clientX = e.touches ? e.touches[0].clientX : e.clientX;
       let clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -986,7 +989,7 @@
         if(holdActive) {
           holdActive = false;
           vibrate([20, 20]); 
-          currentModalBackFn = null;
+          if(clearBackFn) currentModalBackFn = null;
           showTrxDetail(idTrx);
         }
       }, 450); 
@@ -1253,10 +1256,10 @@
         div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-2 last:mb-0 select-none";
         div.style.animationDelay = `${i * 0.05}s`;
         
-        div.setAttribute("ontouchstart", `startHold(event, '${trx.idTransaksi}')`);
+        div.setAttribute("ontouchstart", `startHold(event, '${trx.idTransaksi}', true)`);
         div.setAttribute("ontouchend", "endHold()");
         div.setAttribute("ontouchmove", "cancelHold(event)");
-        div.setAttribute("onmousedown", `startHold(event, '${trx.idTransaksi}')`);
+        div.setAttribute("onmousedown", `startHold(event, '${trx.idTransaksi}', true)`);
         div.setAttribute("onmouseup", "endHold()");
         div.setAttribute("onmouseleave", "cancelHold(event)");
         div.setAttribute("oncontextmenu", "event.preventDefault();");
@@ -1417,10 +1420,10 @@
         div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-3 select-none";
         div.style.animationDelay = `${(i%10)*0.05}s`;
         
-        div.setAttribute("ontouchstart", `startHold(event, '${trx.idTransaksi}')`);
+        div.setAttribute("ontouchstart", `startHold(event, '${trx.idTransaksi}', true)`);
         div.setAttribute("ontouchend", "endHold()");
         div.setAttribute("ontouchmove", "cancelHold(event)");
-        div.setAttribute("onmousedown", `startHold(event, '${trx.idTransaksi}')`);
+        div.setAttribute("onmousedown", `startHold(event, '${trx.idTransaksi}', true)`);
         div.setAttribute("onmouseup", "endHold()");
         div.setAttribute("onmouseleave", "cancelHold(event)");
         div.setAttribute("oncontextmenu", "event.preventDefault();");
@@ -1749,11 +1752,14 @@
 
       let html = `<div class="space-y-4">`;
       if (currentModalBackFn) {
+        window.isNestedModalView = true;
         html += `
-          <button onclick="vibrate(10); currentModalBackFn()" class="tap-shrink text-xs font-extrabold text-mochi dark:text-mochi-light flex items-center mb-1 transition-colors">
+          <button onclick="vibrate(10); window.isNestedModalView = false; currentModalBackFn()" class="tap-shrink text-xs font-extrabold text-mochi dark:text-mochi-light flex items-center mb-1 transition-colors">
             <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Kembali
           </button>
         `;
+      } else {
+        window.isNestedModalView = false;
       }
       
       html += `
@@ -1787,6 +1793,8 @@
 
     function showAkunHistory(namaAkun) {
       currentModalBackFn = () => showAkunHistory(namaAkun);
+      window.isNestedModalView = false;
+      
       const fullHistory = GLOBAL_DATA.transaksi.filter(t => t.akunSumber === namaAkun || t.akunTujuan === namaAkun);
       const history = fullHistory.slice(0, 50);
 
@@ -1804,7 +1812,7 @@
           const isKeluar = (t.akunSumber === namaAkun);
           html += `
             <div 
-              ontouchstart="startHold(event, '${t.idTransaksi}')" ontouchend="endHold()" ontouchmove="cancelHold(event)" onmousedown="startHold(event, '${t.idTransaksi}')" onmouseup="endHold()" onmouseleave="cancelHold(event)" oncontextmenu="event.preventDefault();" onclick="vibrate(10); showTrxDetail('${t.idTransaksi}')"
+              ontouchstart="startHold(event, '${t.idTransaksi}', false)" ontouchend="endHold()" ontouchmove="cancelHold(event)" onmousedown="startHold(event, '${t.idTransaksi}', false)" onmouseup="endHold()" onmouseleave="cancelHold(event)" oncontextmenu="event.preventDefault();" onclick="vibrate(10); showTrxDetail('${t.idTransaksi}')"
               class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
               <div class="truncate pr-3 pointer-events-none">
                 <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
@@ -1825,6 +1833,8 @@
 
     function showHutangDetail(h) {
       currentModalBackFn = () => showHutangDetail(h);
+      window.isNestedModalView = false;
+      
       const relatedTrx = GLOBAL_DATA.transaksi.filter(t => t.terkaitHutang === h.namaHutang);
       let html = `
         <div class="space-y-4 pt-1">
@@ -1847,7 +1857,7 @@
         relatedTrx.forEach(t => {
           html += `
             <div 
-              ontouchstart="startHold(event, '${t.idTransaksi}')" ontouchend="endHold()" ontouchmove="cancelHold(event)" onmousedown="startHold(event, '${t.idTransaksi}')" onmouseup="endHold()" onmouseleave="cancelHold(event)" oncontextmenu="event.preventDefault();" onclick="vibrate(10); showTrxDetail('${t.idTransaksi}')"
+              ontouchstart="startHold(event, '${t.idTransaksi}', false)" ontouchend="endHold()" ontouchmove="cancelHold(event)" onmousedown="startHold(event, '${t.idTransaksi}', false)" onmouseup="endHold()" onmouseleave="cancelHold(event)" oncontextmenu="event.preventDefault();" onclick="vibrate(10); showTrxDetail('${t.idTransaksi}')"
               class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
               <div class="truncate pr-3 pointer-events-none">
                 <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
@@ -1866,6 +1876,8 @@
 
     function showPiutangDetail(p) {
       currentModalBackFn = () => showPiutangDetail(p);
+      window.isNestedModalView = false;
+      
       const relatedTrx = GLOBAL_DATA.transaksi.filter(t => t.terkaitPiutang === p.namaPiutang);
       let html = `
         <div class="space-y-4 pt-1">
@@ -1888,7 +1900,7 @@
         relatedTrx.forEach(t => {
           html += `
             <div 
-              ontouchstart="startHold(event, '${t.idTransaksi}')" ontouchend="endHold()" ontouchmove="cancelHold(event)" onmousedown="startHold(event, '${t.idTransaksi}')" onmouseup="endHold()" onmouseleave="cancelHold(event)" oncontextmenu="event.preventDefault();" onclick="vibrate(10); showTrxDetail('${t.idTransaksi}')"
+              ontouchstart="startHold(event, '${t.idTransaksi}', false)" ontouchend="endHold()" ontouchmove="cancelHold(event)" onmousedown="startHold(event, '${t.idTransaksi}', false)" onmouseup="endHold()" onmouseleave="cancelHold(event)" oncontextmenu="event.preventDefault();" onclick="vibrate(10); showTrxDetail('${t.idTransaksi}')"
               class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
               <div class="truncate pr-3 pointer-events-none">
                 <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
