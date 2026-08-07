@@ -5,293 +5,90 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mochi's Vault — Keuangan Yosa & Fani</title>
   
-  <!-- PWA & Manifest Integration -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#F8FAFC">
   <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192">
   <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192">
 
-  <!-- Tailwind CSS & Lucide Icons via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { darkMode: 'class' }
-  </script>
+  <script>tailwind.config = { darkMode: 'class' }</script>
   <script src="https://unpkg.com/lucide@latest"></script>
   
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
     :root {
-      /* Base Backgrounds (Soft UI) */
-      --bg-app: #F4F7FB; 
-      --bg-card: #FFFFFF;
-      --bg-input: #F8FAFC;
-      
-      --text-primary: #0F172A;
-      --text-secondary: #475569;
-      --text-tertiary: #64748B;
-      
-      --border-color: #E2E8F0;
-      --border-color-soft: #F1F5F9;
-
-      /* Premium Glass Variables */
-      --glass-bg: rgba(255, 255, 255, 0.85);
-      --glass-modal-bg: rgba(255, 255, 255, 0.95);
-      
-      /* iOS Style Soft Shadows */
+      --bg-app: #F4F7FB; --bg-card: #FFFFFF; --bg-input: #F8FAFC;
+      --text-primary: #0F172A; --text-secondary: #475569; --text-tertiary: #64748B;
+      --border-color: #E2E8F0; --border-color-soft: #F1F5F9;
+      --glass-bg: rgba(255, 255, 255, 0.85); --glass-modal-bg: rgba(255, 255, 255, 0.95);
       --shadow-soft: 0 12px 40px -12px rgba(0, 0, 0, 0.06);
       --shadow-float: 0 6px 24px -6px rgba(0, 0, 0, 0.04);
     }
 
     html.dark {
-      --bg-app: #0B1120;
-      --bg-card: #161F2E;
-      --bg-input: #1E293B;
-      
-      --text-primary: #F8FAFC;   
-      --text-secondary: #94A3B8; 
-      --text-tertiary: #64748B;  
-
-      --glass-bg: rgba(22, 31, 46, 0.85); 
-      --glass-modal-bg: rgba(22, 31, 46, 0.95);
-      
+      --bg-app: #0B1120; --bg-card: #161F2E; --bg-input: #1E293B;
+      --text-primary: #F8FAFC; --text-secondary: #94A3B8; --text-tertiary: #64748B;  
+      --glass-bg: rgba(22, 31, 46, 0.85); --glass-modal-bg: rgba(22, 31, 46, 0.95);
       --shadow-soft: 0 12px 40px -12px rgba(0, 0, 0, 0.4);
       --shadow-float: 0 6px 24px -6px rgba(0, 0, 0, 0.3);
     }
 
-    * { 
-      font-variant-numeric: tabular-nums; 
-      -webkit-tap-highlight-color: transparent; 
-    }
-    
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: var(--bg-app);
-      color: var(--text-primary);
-      overflow-x: hidden;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
+    * { font-variant-numeric: tabular-nums; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-app); color: var(--text-primary); overflow-x: hidden; transition: background-color 0.3s ease, color 0.3s ease; }
 
-    /* === SOFT UI COMPONENTS === */
-    .soft-card {
-      background-color: var(--bg-card);
-      border-radius: 1.5rem;
-      box-shadow: var(--shadow-soft);
-      border: none;
-    }
+    .soft-card { background-color: var(--bg-card); border-radius: 1.5rem; box-shadow: var(--shadow-soft); }
+    .trx-card { background-color: var(--bg-card); border-radius: 1.25rem; padding: 0.875rem 1rem; margin-bottom: 0.6rem; box-shadow: var(--shadow-float); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; }
+    .trx-card:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
 
-    .trx-card {
-      background-color: var(--bg-card);
-      border-radius: 1.25rem;
-      padding: 0.875rem 1rem;
-      margin-bottom: 0.6rem;
-      box-shadow: var(--shadow-float);
-      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    
-    .trx-card:active { 
-      transform: scale(0.96); 
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
-    }
+    .soft-input { background-color: var(--bg-input); border-radius: 1rem; padding: 0.875rem 1.25rem; font-weight: 600; color: var(--text-primary); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); width: 100%; outline: none; transition: all 0.3s ease; border: none; }
+    html.dark .soft-input { box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+    .soft-input:focus { box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2); background-color: var(--bg-card); }
 
-    .soft-input {
-      background-color: var(--bg-input);
-      border-radius: 1rem;
-      border: none;
-      padding: 0.875rem 1.25rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-      transition: all 0.3s ease;
-      width: 100%;
-      outline: none;
-    }
+    .text-main { color: var(--text-primary); } .text-muted { color: var(--text-secondary); } .text-faint { color: var(--text-tertiary); }
+    .amount-in { color: #10B981; } .amount-out { color: #FB7185; }
     
-    html.dark .soft-input { 
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); 
-    }
-    
-    .soft-input:focus { 
-      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2); 
-      background-color: var(--bg-card); 
-    }
+    .icon-chip { width: 40px; height: 40px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .chip-pemasukan { background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05)); color: #10B981; }
+    .chip-pengeluaran { background: linear-gradient(135deg, rgba(244,63,94,0.15), rgba(244,63,94,0.05)); color: #FB7185; }
+    .chip-transfer { background: linear-gradient(135deg, rgba(148,163,184,0.15), rgba(148,163,184,0.05)); color: var(--text-secondary); }
+    .chip-hutang { background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05)); color: #F59E0B; }
+    .chip-piutang { background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(56,189,248,0.05)); color: #38BDF8; }
 
-    /* Chips & Texts */
-    .text-main { color: var(--text-primary); }
-    .text-muted { color: var(--text-secondary); }
-    .text-faint { color: var(--text-tertiary); }
-    .amount-in { color: #10B981; }
-    .amount-out { color: #FB7185; }
-    
-    .icon-chip {
-      width: 40px; 
-      height: 40px; 
-      border-radius: 14px;
-      display: flex; 
-      align-items: center; 
-      justify-content: center;
-      flex-shrink: 0; 
-    }
-    
-    .chip-pemasukan { 
-      background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05)); 
-      color: #10B981; 
-    }
-    .chip-pengeluaran { 
-      background: linear-gradient(135deg, rgba(244,63,94,0.15), rgba(244,63,94,0.05)); 
-      color: #FB7185; 
-    }
-    .chip-transfer { 
-      background: linear-gradient(135deg, rgba(148,163,184,0.15), rgba(148,163,184,0.05)); 
-      color: var(--text-secondary); 
-    }
-    .chip-hutang { 
-      background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05)); 
-      color: #F59E0B; 
-    }
-    .chip-piutang { 
-      background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(56,189,248,0.05)); 
-      color: #38BDF8; 
-    }
+    .clean-topbar { background: linear-gradient(180deg, var(--bg-app) 60%, transparent 100%); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .nav-bar-bottom { background-color: var(--glass-bg) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 -10px 40px rgba(0,0,0,0.04); }
+    html.dark .nav-bar-bottom { box-shadow: 0 -10px 40px rgba(0,0,0,0.3); }
 
-    /* Top Bar & Bottom Nav */
-    .clean-topbar {
-      background: linear-gradient(180deg, var(--bg-app) 60%, transparent 100%);
-      backdrop-filter: blur(8px); 
-      -webkit-backdrop-filter: blur(8px);
-    }
-    
-    .nav-bar-bottom {
-      background-color: var(--glass-bg) !important;
-      backdrop-filter: blur(20px); 
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 -10px 40px rgba(0,0,0,0.04);
-      border: none;
-    }
-    
-    html.dark .nav-bar-bottom { 
-      box-shadow: 0 -10px 40px rgba(0,0,0,0.3); 
-    }
+    .glass-modal-content { background-color: var(--glass-modal-bg) !important; backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); box-shadow: var(--shadow-soft); }
 
-    /* Glassmorphism Modals */
-    .glass-modal-content {
-      background-color: var(--glass-modal-bg) !important;
-      backdrop-filter: blur(24px); 
-      -webkit-backdrop-filter: blur(24px);
-      box-shadow: var(--shadow-soft); 
-      border: none;
-    }
+    .tap-shrink { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); } .tap-shrink:active { transform: scale(0.92); }
+    .card-hover { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); } .card-hover:hover { transform: translateY(-3px) scale(1.01); box-shadow: var(--shadow-soft); } .card-hover:active { transform: scale(0.96); }
 
-    /* Animations */
-    .tap-shrink { 
-      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-    }
-    .tap-shrink:active { 
-      transform: scale(0.92); 
-    }
-    
-    .card-hover { 
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-    }
-    .card-hover:hover { 
-      transform: translateY(-3px) scale(1.01); 
-      box-shadow: var(--shadow-soft); 
-    }
-    .card-hover:active { 
-      transform: scale(0.96); 
-    }
+    @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    .stagger-item { animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+    .page-animate { animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
-    @keyframes slideUpFade { 
-      from { opacity: 0; transform: translateY(15px); } 
-      to { opacity: 1; transform: translateY(0); } 
-    }
-    
-    .stagger-item { 
-      animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards; 
-    }
-    .page-animate { 
-      animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
-    }
+    @keyframes pawPulse { 0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(20, 184, 166, 0); } 100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); } }
+    .paw-fab { animation: pawPulse 2.5s infinite; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .paw-fab:active { transform: scale(0.9); }
+    @keyframes highFive { 0%, 100% { transform: rotate(0deg) scale(1); } 25% { transform: rotate(-15deg) scale(1.1); } 50% { transform: rotate(10deg) scale(1.1); } 75% { transform: rotate(-10deg) scale(1.1); } }
+    .paw-fab:active svg { animation: highFive 0.4s ease; }
 
-    @keyframes pawPulse { 
-      0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4); } 
-      70% { box-shadow: 0 0 0 15px rgba(20, 184, 166, 0); } 
-      100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); } 
-    }
-    
-    .paw-fab { 
-      animation: pawPulse 2.5s infinite; 
-      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-    }
-    .paw-fab:active { 
-      transform: scale(0.9); 
-    }
-    
-    @keyframes highFive { 
-      0%, 100% { transform: rotate(0deg) scale(1); } 
-      25% { transform: rotate(-15deg) scale(1.1); } 
-      50% { transform: rotate(10deg) scale(1.1); } 
-      75% { transform: rotate(-10deg) scale(1.1); } 
-    }
-    
-    .paw-fab:active svg { 
-      animation: highFive 0.4s ease; 
-    }
+    @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+    .skeleton { background: linear-gradient(90deg, var(--bg-subtle-2) 25%, var(--border-color) 37%, var(--bg-subtle-2) 63%); background-size: 400px 100%; animation: shimmer 1.5s ease-in-out infinite; border-radius: 1.5rem; }
 
-    @keyframes shimmer { 
-      0% { background-position: -400px 0; } 
-      100% { background-position: 400px 0; } 
-    }
-    
-    .skeleton {
-      background: linear-gradient(90deg, var(--bg-subtle-2) 25%, var(--border-color) 37%, var(--bg-subtle-2) 63%);
-      background-size: 400px 100%; 
-      animation: shimmer 1.5s ease-in-out infinite; 
-      border-radius: 1.5rem;
-    }
+    .modal-backdrop { transition: opacity 0.3s ease; opacity: 0; backdrop-filter: blur(0px); }
+    .modal-backdrop.show { opacity: 1; backdrop-filter: blur(3px); }
+    .modal-content-bottom { transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1); }
+    .modal-content-bottom.show { transform: translateY(0); }
+    .modal-content-center { transform: scale(0.9) translateY(20px); opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); }
+    .modal-content-center.show { transform: scale(1) translateY(0); opacity: 1; }
 
-    .modal-backdrop { 
-      transition: opacity 0.3s ease; 
-      opacity: 0; 
-      backdrop-filter: blur(0px); 
-    }
-    .modal-backdrop.show { 
-      opacity: 1; 
-      backdrop-filter: blur(3px); 
-    }
-    
-    .modal-content-bottom { 
-      transform: translateY(100%); 
-      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1); 
-    }
-    .modal-content-bottom.show { 
-      transform: translateY(0); 
-    }
-    
-    .modal-content-center { 
-      transform: scale(0.9) translateY(20px); 
-      opacity: 0; 
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); 
-    }
-    .modal-content-center.show { 
-      transform: scale(1) translateY(0); 
-      opacity: 1; 
-    }
-
-    ::-webkit-scrollbar { 
-      width: 0px; 
-      height: 0px; 
-    }
+    ::-webkit-scrollbar { width: 0px; height: 0px; }
   </style>
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => { 
-        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err)); 
-      });
+      window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err)); });
     }
   </script>
 </head>
@@ -306,23 +103,18 @@
         <div class="w-24 h-24 bg-gradient-to-tr from-teal-500 to-emerald-400 rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(20,184,166,0.8)] relative z-10 border-4 border-white dark:border-[#0B1120]">
           <svg class="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 21.5c-3 0-5.5-2-6-5-.5-2.5.5-4 2-5 1.5-1 3-1.5 4-1.5s2.5.5 4 1.5c1.5 1 2.5 2.5 2 5-.5 3-3 5-6 5z" />
-            <circle cx="7.5" cy="8.5" r="2.5"/>
-            <circle cx="11.5" cy="5.5" r="2.8"/>
-            <circle cx="16.5" cy="8.5" r="2.5"/>
+            <circle cx="7.5" cy="8.5" r="2.5"/><circle cx="11.5" cy="5.5" r="2.8"/><circle cx="16.5" cy="8.5" r="2.5"/>
           </svg>
         </div>
       </div>
       <h2 class="text-white text-3xl font-black mt-6 drop-shadow-lg tracking-tight">Purr-fect! 🐾</h2>
-      <p id="reward-subtitle" class="text-teal-100 font-bold mt-1.5 drop-shadow-md text-sm bg-teal-900/50 px-4 py-1 rounded-full">
-        Tersimpan
-      </p>
+      <p id="reward-subtitle" class="text-teal-100 font-bold mt-1.5 drop-shadow-md text-sm bg-teal-900/50 px-4 py-1 rounded-full">Tersimpan</p>
     </div>
   </div>
 
-  <!-- TOAST CONTAINER -->
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- TOP BAR (iOS Style, Sangat Clean) -->
+  <!-- TOP BAR -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-4 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-3.5">
       <div class="w-12 h-12 rounded-[1.1rem] bg-gradient-to-tr from-teal-600 to-emerald-400 overflow-hidden flex items-center justify-center shadow-lg border border-white/20 dark:border-white/10 flex-shrink-0">
@@ -343,76 +135,50 @@
 
   <!-- LOADING SKELETON -->
   <div id="loader" class="max-w-3xl mx-auto px-5 py-2 space-y-5">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="skeleton h-36"></div>
-      <div class="skeleton h-36"></div>
-    </div>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-      <div class="skeleton h-20"></div>
-      <div class="skeleton h-20"></div>
-      <div class="skeleton h-20"></div>
-      <div class="skeleton h-20"></div>
-    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="skeleton h-36"></div><div class="skeleton h-36"></div></div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3"><div class="skeleton h-20"></div><div class="skeleton h-20"></div><div class="skeleton h-20"></div><div class="skeleton h-20"></div></div>
     <div class="skeleton h-48"></div>
   </div>
 
-  <!-- MAIN CONTAINER -->
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
-
-    <!-- 1. HALAMAN DASHBOARD -->
+    <!-- DASHBOARD -->
     <section id="page-dashboard" class="space-y-6 page-animate">
-      
-      <!-- GRID KARTU DASHBOARD KONTRAST PREMIUM -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Black Card -->
         <div onclick="showKpiDetail('Net Worth')" class="bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-700 text-white p-6 rounded-[2rem] cursor-pointer card-hover relative overflow-hidden shadow-[0_15px_30px_-10px_rgba(15,23,42,0.4)] dark:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.6)] group">
           <div class="absolute -top-12 -right-12 w-48 h-48 bg-teal-500 rounded-full mix-blend-screen filter blur-[50px] opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
           <div class="flex justify-between items-center opacity-90 mb-3 relative z-10">
             <span class="text-xs font-bold tracking-wider uppercase text-slate-300">Net Worth</span>
-            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md">
-              <i data-lucide="trending-up" class="w-4 h-4 text-teal-400"></i>
-            </div>
+            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md"><i data-lucide="trending-up" class="w-4 h-4 text-teal-400"></i></div>
           </div>
           <div id="kpi-networth" class="text-3xl font-black tracking-tight relative z-10 mt-1">-</div>
         </div>
-        
-        <!-- Pearl Glass -->
         <div onclick="showKpiDetail('Disposable Income')" class="bg-gradient-to-br from-white to-slate-50 dark:from-[#1E293B] dark:to-slate-700 text-slate-900 dark:text-white p-6 rounded-[2rem] cursor-pointer card-hover relative overflow-hidden shadow-[0_15px_30px_-10px_rgba(0,0,0,0.04)] dark:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.4)] group border border-white/50 dark:border-white/5">
           <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-sky-400 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[50px] opacity-10 dark:opacity-20 group-hover:opacity-20 transition-opacity duration-500"></div>
           <div class="flex justify-between items-center mb-3 relative z-10">
             <span class="text-xs font-bold tracking-wider uppercase text-slate-500 dark:text-slate-300">Disposable</span>
-            <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-              <i data-lucide="wallet" class="w-4 h-4 text-slate-600 dark:text-slate-300"></i>
-            </div>
+            <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center"><i data-lucide="wallet" class="w-4 h-4 text-slate-600 dark:text-slate-300"></i></div>
           </div>
           <div id="kpi-disposable" class="text-3xl font-black tracking-tight relative z-10 mt-1">-</div>
         </div>
       </div>
 
-      <!-- Quick Stats (Floating Cards) -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div onclick="showKpiDetail('Total Kas')" class="soft-card p-4 cursor-pointer card-hover">
-          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Total Kas</span>
-          <span id="kpi-kas" class="text-sm font-extrabold text-main block">-</span>
+          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Total Kas</span><span id="kpi-kas" class="text-sm font-extrabold text-main block">-</span>
         </div>
         <div onclick="showKpiDetail('Total Piutang')" class="soft-card p-4 cursor-pointer card-hover">
-          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Total Piutang</span>
-          <span id="kpi-piutang" class="text-sm font-extrabold amount-in block">-</span>
+          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Total Piutang</span><span id="kpi-piutang" class="text-sm font-extrabold amount-in block">-</span>
         </div>
         <div onclick="showKpiDetail('Total Hutang')" class="soft-card p-4 cursor-pointer card-hover">
-          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Total Hutang</span>
-          <span id="kpi-hutang" class="text-sm font-extrabold amount-out block">-</span>
+          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Total Hutang</span><span id="kpi-hutang" class="text-sm font-extrabold amount-out block">-</span>
         </div>
         <div onclick="showKpiDetail('Net Savings Operasional')" class="soft-card p-4 cursor-pointer card-hover">
-          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Net Savings</span>
-          <span id="kpi-savings" class="text-sm font-extrabold text-teal-500 block">-</span>
+          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Net Savings</span><span id="kpi-savings" class="text-sm font-extrabold text-teal-500 block">-</span>
         </div>
       </div>
 
       <div class="soft-card p-6 mt-6">
-        <div class="flex justify-between items-center mb-5">
-          <h3 class="text-sm font-extrabold text-main">Analisa Bulan Ini</h3>
-        </div>
+        <div class="flex justify-between items-center mb-5"><h3 class="text-sm font-extrabold text-main">Analisa Bulan Ini</h3></div>
         <div id="dashboard-kategori-analysis" class="space-y-4"></div>
       </div>
 
@@ -421,28 +187,22 @@
           <h3 class="text-sm font-extrabold text-main">Transaksi Terbaru</h3>
           <button onclick="switchTab('riwayat')" class="text-[11px] font-bold text-teal-500 hover:text-teal-600 uppercase tracking-wider">Lihat Semua</button>
         </div>
-        <!-- TRANSAKSI TERBARU (DENSE FLOATING CARDS) -->
         <div id="dashboard-trx-list"></div>
       </div>
     </section>
 
-    <!-- 2. HALAMAN RIWAYAT TRANSAKSI -->
+    <!-- RIWAYAT -->
     <section id="page-riwayat" class="hidden space-y-5 page-animate">
       <div class="soft-card p-6 space-y-5">
         <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-softer pb-4 gap-3">
           <div class="flex items-center space-x-2 text-main">
-            <div class="w-10 h-10 rounded-2xl bg-teal-500/10 flex items-center justify-center text-teal-500">
-              <i data-lucide="file-text" class="w-5 h-5"></i>
-            </div>
+            <div class="w-10 h-10 rounded-2xl bg-teal-500/10 flex items-center justify-center text-teal-500"><i data-lucide="file-text" class="w-5 h-5"></i></div>
             <span class="text-sm font-extrabold uppercase tracking-wider">e-Statement</span>
           </div>
-          <button onclick="downloadEStatement()" class="tap-shrink bg-slate-800 dark:bg-slate-700 text-white px-5 py-2.5 rounded-full text-xs font-bold flex items-center justify-center shadow-md">
-            <i data-lucide="download" class="w-4 h-4 mr-2"></i> Unduh CSV
-          </button>
+          <button onclick="downloadEStatement()" class="tap-shrink bg-slate-800 dark:bg-slate-700 text-white px-5 py-2.5 rounded-full text-xs font-bold flex items-center justify-center shadow-md"><i data-lucide="download" class="w-4 h-4 mr-2"></i> Unduh CSV</button>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <!-- KEMBALIKAN LIST BULAN SECARA UTUH -->
           <select id="filter-bulan" onchange="renderRiwayat()" class="soft-input text-xs">
             <option value="ALL">Semua Bulan</option>
             <option value="01">01 - Januari</option>
@@ -458,26 +218,12 @@
             <option value="11">11 - November</option>
             <option value="12">12 - Desember</option>
           </select>
-
-          <select id="filter-tahun" onchange="renderRiwayat()" class="soft-input text-xs">
-            <option value="ALL">Semua Tahun</option>
-          </select>
-          
+          <select id="filter-tahun" onchange="renderRiwayat()" class="soft-input text-xs"><option value="ALL">Semua Tahun</option></select>
           <select id="filter-jenis" onchange="renderRiwayat()" class="soft-input text-xs">
-            <option value="ALL">Semua Transaksi</option>
-            <option value="Pemasukan">Pemasukan (+)</option>
-            <option value="Pengeluaran">Pengeluaran (-)</option>
-            <option value="Transfer Internal">Transfer Internal</option>
-            <option value="Beri Piutang (Menalangi)">Beri Piutang</option>
-            <option value="Terima Piutang">Terima Piutang</option>
-            <option value="Terima Hutang (Pinjam)">Terima Hutang</option>
-            <option value="Bayar Hutang/Cicilan">Bayar Hutang/Cicilan</option>
+            <option value="ALL">Semua Transaksi</option><option value="Pemasukan">Pemasukan (+)</option><option value="Pengeluaran">Pengeluaran (-)</option><option value="Transfer Internal">Transfer Internal</option><option value="Beri Piutang (Menalangi)">Beri Piutang</option><option value="Terima Piutang">Terima Piutang</option><option value="Terima Hutang (Pinjam)">Terima Hutang</option><option value="Bayar Hutang/Cicilan">Bayar Hutang/Cicilan</option>
           </select>
-          
           <select id="filter-user" onchange="renderRiwayat()" class="soft-input text-xs">
-            <option value="ALL">Semua User</option>
-            <option value="Yosa">Yosa</option>
-            <option value="Fani">Fani</option>
+            <option value="ALL">Semua User</option><option value="Yosa">Yosa</option><option value="Fani">Fani</option>
           </select>
         </div>
 
@@ -486,121 +232,76 @@
           <input type="text" id="filter-search" oninput="renderRiwayat()" placeholder="Cari deskripsi..." class="soft-input pl-12 text-sm">
         </div>
 
-        <div id="statement-summary" class="bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-4 flex justify-between items-center text-xs shadow-inner">
-          <div>
-            <span class="text-muted block text-[10px] uppercase font-bold mb-1">Masuk:</span>
-            <span id="sum-masuk" class="font-extrabold amount-in text-[13px]">Rp 0</span>
-          </div>
-          <div>
-            <span class="text-muted block text-[10px] uppercase font-bold mb-1">Keluar:</span>
-            <span id="sum-keluar" class="font-extrabold amount-out text-[13px]">Rp 0</span>
-          </div>
-          <div class="text-right">
-            <span class="text-muted block text-[10px] uppercase font-bold mb-1">Net:</span>
-            <span id="sum-net" class="font-black text-main text-sm">Rp 0</span>
-          </div>
+        <div id="statement-summary" class="bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-4 flex justify-between items-center text-xs shadow-inner border border-slate-100 dark:border-slate-800">
+          <div><span class="text-muted block text-[10px] uppercase font-bold mb-1">Masuk:</span><span id="sum-masuk" class="font-extrabold amount-in text-[13px]">Rp 0</span></div>
+          <div><span class="text-muted block text-[10px] uppercase font-bold mb-1">Keluar:</span><span id="sum-keluar" class="font-extrabold amount-out text-[13px]">Rp 0</span></div>
+          <div class="text-right"><span class="text-muted block text-[10px] uppercase font-bold mb-1">Net:</span><span id="sum-net" class="font-black text-main text-sm">Rp 0</span></div>
         </div>
       </div>
-
-      <!-- DENSE FLOATING CARDS LIST -->
       <div id="riwayat-trx-list" class="pb-10"></div>
     </section>
 
-    <!-- 3. HALAMAN SALDO AKUN -->
+    <!-- SALDO -->
     <section id="page-saldo" class="hidden space-y-6 page-animate pb-10">
       <div class="soft-card p-6">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted mb-4 flex items-center">
-          <i data-lucide="briefcase" class="w-4 h-4 mr-2"></i> Operasional
-        </h3>
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted mb-4 flex items-center"><i data-lucide="briefcase" class="w-4 h-4 mr-2"></i> Operasional</h3>
         <div id="list-akun-operasional" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
       <div class="soft-card p-6">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted mb-4 flex items-center">
-          <i data-lucide="piggy-bank" class="w-4 h-4 mr-2"></i> Darurat & Tabungan
-        </h3>
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted mb-4 flex items-center"><i data-lucide="piggy-bank" class="w-4 h-4 mr-2"></i> Darurat & Tabungan</h3>
         <div id="list-akun-tabungan" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
     </section>
 
-    <!-- 4. HALAMAN HUTANG & PIUTANG -->
+    <!-- HUTANG PIUTANG -->
     <section id="page-hutang" class="hidden space-y-6 page-animate pb-10">
       <div class="soft-card p-6">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider text-rose-500 mb-4 flex items-center">
-          <i data-lucide="alert-circle" class="w-4 h-4 mr-2"></i> Hutang Aktif
-        </h3>
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-rose-500 mb-4 flex items-center"><i data-lucide="alert-circle" class="w-4 h-4 mr-2"></i> Hutang Aktif</h3>
         <div id="list-hutang-aktif" class="space-y-3"></div>
       </div>
       <div class="soft-card p-6">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider text-sky-500 mb-4 flex items-center">
-          <i data-lucide="clock" class="w-4 h-4 mr-2"></i> Piutang
-        </h3>
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-sky-500 mb-4 flex items-center"><i data-lucide="clock" class="w-4 h-4 mr-2"></i> Piutang</h3>
         <div id="list-piutang-aktif" class="space-y-3"></div>
       </div>
     </section>
   </main>
 
-  <!-- === RAPI & LEGA BOTTOM NAVIGATION === -->
+  <!-- BOTTOM NAV -->
   <nav class="fixed bottom-0 left-0 right-0 nav-bar-bottom z-40 pb-safe rounded-t-3xl">
     <div class="flex justify-between items-center w-full max-w-md mx-auto px-6 py-3 relative">
-      <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-item bg-teal-500/10 text-teal-600 dark:text-teal-400 px-4 py-2.5 rounded-[1rem] flex items-center justify-center space-x-2 tap-shrink">
-        <i data-lucide="layout-dashboard" class="w-5 h-5 flex-shrink-0"></i>
-        <span class="nav-text text-[12px] font-extrabold tracking-wide whitespace-nowrap">Home</span>
-      </button>
-      
-      <button onclick="switchTab('riwayat')" id="tab-riwayat" class="nav-item text-slate-400 dark:text-slate-500 p-2.5 flex items-center justify-center space-x-2 tap-shrink">
-        <i data-lucide="list" class="w-5 h-5 flex-shrink-0"></i>
-        <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">Riwayat</span>
-      </button>
-      
-      <button onclick="switchTab('saldo')" id="tab-saldo" class="nav-item text-slate-400 dark:text-slate-500 p-2.5 flex items-center justify-center space-x-2 tap-shrink">
-        <i data-lucide="wallet" class="w-5 h-5 flex-shrink-0"></i>
-        <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">Akun</span>
-      </button>
-      
+      <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-item bg-teal-500/10 text-teal-600 dark:text-teal-400 px-4 py-2.5 rounded-[1rem] flex items-center justify-center space-x-2 tap-shrink"><i data-lucide="layout-dashboard" class="w-5 h-5 flex-shrink-0"></i><span class="nav-text text-[12px] font-extrabold tracking-wide whitespace-nowrap">Home</span></button>
+      <button onclick="switchTab('riwayat')" id="tab-riwayat" class="nav-item text-slate-400 dark:text-slate-500 p-2.5 flex items-center justify-center space-x-2 tap-shrink"><i data-lucide="list" class="w-5 h-5 flex-shrink-0"></i><span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">Riwayat</span></button>
+      <button onclick="switchTab('saldo')" id="tab-saldo" class="nav-item text-slate-400 dark:text-slate-500 p-2.5 flex items-center justify-center space-x-2 tap-shrink"><i data-lucide="wallet" class="w-5 h-5 flex-shrink-0"></i><span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">Akun</span></button>
       <button onclick="switchTab('hutang')" id="tab-hutang" class="nav-item text-slate-400 dark:text-slate-500 p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
-        <div class="relative flex-shrink-0">
-          <i data-lucide="credit-card" class="w-5 h-5"></i>
-          <span id="badge-hutang-nav" class="hidden absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-[var(--glass-bg)]"></span>
-        </div>
+        <div class="relative flex-shrink-0"><i data-lucide="credit-card" class="w-5 h-5"></i><span id="badge-hutang-nav" class="hidden absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-[var(--glass-bg)]"></span></div>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">AP/R</span>
       </button>
     </div>
   </nav>
 
-  <!-- === FLOATING ACTION BUTTON (PAW KUCING) DI KANAN BAWAH === -->
+  <!-- FLOATING FAB PAW KUCING -->
   <div class="fixed bottom-[6rem] left-0 right-0 z-50 pointer-events-none">
     <div class="max-w-3xl mx-auto px-5 relative h-full">
       <button onclick="openFormTransaksiBaru()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-teal-500 to-teal-400 rounded-full text-white shadow-lg flex items-center justify-center pointer-events-auto border-none group">
-        <svg class="w-8 h-8 text-white transform -translate-y-[1px]" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 21.5c-3 0-5.5-2-6-5-.5-2.5.5-4 2-5 1.5-1 3-1.5 4-1.5s2.5.5 4 1.5c1.5 1 2.5 2.5 2 5-.5 3-3 5-6 5z" />
-          <circle cx="7.5" cy="8.5" r="2.5"/>
-          <circle cx="11.5" cy="5.5" r="2.8"/>
-          <circle cx="16.5" cy="8.5" r="2.5"/>
-        </svg>
+        <svg class="w-8 h-8 text-white transform -translate-y-[1px]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.5c-3 0-5.5-2-6-5-.5-2.5.5-4 2-5 1.5-1 3-1.5 4-1.5s2.5.5 4 1.5c1.5 1 2.5 2.5 2 5-.5 3-3 5-6 5z" /><circle cx="7.5" cy="8.5" r="2.5"/><circle cx="11.5" cy="5.5" r="2.8"/><circle cx="16.5" cy="8.5" r="2.5"/></svg>
       </button>
     </div>
   </div>
 
-  <!-- MODAL 1: FORM INPUT TRANSAKSI (SOFT UI) -->
+  <!-- MODAL TRANSAKSI -->
   <div id="modalInputTrx" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-900/70 z-50 hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop">
     <div id="modalInputTrx-content" class="glass-modal-content w-full max-w-lg rounded-t-[2.5rem] md:rounded-[2.5rem] max-h-[90vh] overflow-y-auto p-6 md:p-8 modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center mb-6">
         <h3 id="modal-title-trx" class="font-black text-main text-xl tracking-tight">Tambah Transaksi</h3>
-        <button type="button" onclick="closeModal('modalInputTrx')" class="tap-shrink bg-slate-100 dark:bg-slate-800 p-2.5 rounded-full text-faint hover:text-main transition-colors">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+        <button type="button" onclick="closeModal('modalInputTrx')" class="tap-shrink bg-slate-100 dark:bg-slate-800 p-2.5 rounded-full text-faint hover:text-main transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
       <form id="formTransaksi" onsubmit="handleSaveTransaksi(event)" class="space-y-4 text-sm">
         <input type="hidden" id="form-idtrx">
-
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="font-extrabold text-main block mb-2 text-[11px] uppercase tracking-wider">Oleh</label>
-            <select id="form-user" class="soft-input">
-              <option value="Yosa">Yosa</option>
-              <option value="Fani">Fani</option>
-            </select>
+            <select id="form-user" class="soft-input"><option value="Yosa">Yosa</option><option value="Fani">Fani</option></select>
           </div>
           <div>
             <label class="font-extrabold text-main block mb-2 text-[11px] uppercase tracking-wider">Tanggal</label>
@@ -611,57 +312,33 @@
         <div>
           <label class="font-extrabold text-main block mb-2 text-[11px] uppercase tracking-wider">Jenis Transaksi</label>
           <select id="form-jenis" onchange="handleJenisChange()" class="soft-input" required>
-            <option value="Pengeluaran">Pengeluaran</option>
-            <option value="Pemasukan">Pemasukan</option>
-            <option value="Transfer Internal">Transfer Internal</option>
-            <option value="Beri Piutang (Menalangi)">Beri Piutang (Menalangi)</option>
-            <option value="Terima Piutang">Terima Piutang</option>
-            <option value="Terima Hutang (Pinjam)">Terima Hutang (Pinjam)</option>
-            <option value="Bayar Hutang/Cicilan">Bayar Hutang/Cicilan</option>
+            <option value="Pengeluaran">Pengeluaran</option><option value="Pemasukan">Pemasukan</option><option value="Transfer Internal">Transfer Internal</option><option value="Beri Piutang (Menalangi)">Beri Piutang (Menalangi)</option><option value="Terima Piutang">Terima Piutang</option><option value="Terima Hutang (Pinjam)">Terima Hutang (Pinjam)</option><option value="Bayar Hutang/Cicilan">Bayar Hutang/Cicilan</option>
           </select>
         </div>
 
         <div id="wrap-akunsumber" class="space-y-2">
-          <div class="flex justify-between items-center">
-            <label class="font-extrabold text-main text-[11px] uppercase tracking-wider">Akun Sumber</label>
-            <button type="button" onclick="openMasterModal('akun')" class="text-[10px] text-teal-600 font-extrabold uppercase hover:underline">+ Baru</button>
-          </div>
+          <div class="flex justify-between items-center"><label class="font-extrabold text-main text-[11px] uppercase tracking-wider">Akun Sumber</label><button type="button" onclick="openMasterModal('akun')" class="text-[10px] text-teal-600 font-extrabold uppercase hover:underline">+ Baru</button></div>
           <select id="form-akunsumber" class="soft-input"></select>
         </div>
 
         <div id="wrap-akuntujuan" class="space-y-2 hidden">
-          <div class="flex justify-between items-center">
-            <label class="font-extrabold text-main text-[11px] uppercase tracking-wider">Akun Tujuan</label>
-            <button type="button" onclick="openMasterModal('akun')" class="text-[10px] text-teal-600 font-extrabold uppercase hover:underline">+ Baru</button>
-          </div>
+          <div class="flex justify-between items-center"><label class="font-extrabold text-main text-[11px] uppercase tracking-wider">Akun Tujuan</label><button type="button" onclick="openMasterModal('akun')" class="text-[10px] text-teal-600 font-extrabold uppercase hover:underline">+ Baru</button></div>
           <select id="form-akuntujuan" class="soft-input"></select>
         </div>
 
         <div class="space-y-2">
-          <div class="flex justify-between items-center">
-            <label class="font-extrabold text-main text-[11px] uppercase tracking-wider">Kategori</label>
-            <button type="button" onclick="openMasterModal('kategori')" class="text-[10px] text-teal-600 font-extrabold uppercase hover:underline">+ Baru</button>
-          </div>
-          <div onclick="openKategoriPicker()" class="soft-input flex justify-between items-center cursor-pointer tap-shrink">
-            <span id="form-kategori-display" class="font-semibold text-faint">Pilih Kategori...</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-faint"></i>
-          </div>
+          <div class="flex justify-between items-center"><label class="font-extrabold text-main text-[11px] uppercase tracking-wider">Kategori</label><button type="button" onclick="openMasterModal('kategori')" class="text-[10px] text-teal-600 font-extrabold uppercase hover:underline">+ Baru</button></div>
+          <div onclick="openKategoriPicker()" class="soft-input flex justify-between items-center cursor-pointer tap-shrink"><span id="form-kategori-display" class="font-semibold text-faint">Pilih Kategori...</span><i data-lucide="chevron-down" class="w-4 h-4 text-faint"></i></div>
           <input type="hidden" id="form-kategori">
         </div>
 
         <div id="wrap-hutang" class="space-y-2 hidden">
-          <div class="flex justify-between items-center">
-            <label class="font-extrabold text-main text-[11px] uppercase tracking-wider">Terkait Hutang</label>
-            <button type="button" onclick="openMasterModal('hutang')" class="text-[10px] text-teal-600 font-extrabold uppercase hover:underline">+ Baru</button>
-          </div>
+          <div class="flex justify-between items-center"><label class="font-extrabold text-main text-[11px] uppercase tracking-wider">Terkait Hutang</label><button type="button" onclick="openMasterModal('hutang')" class="text-[10px] text-teal-600 font-extrabold uppercase hover:underline">+ Baru</button></div>
           <select id="form-hutang" class="soft-input"></select>
         </div>
 
         <div id="wrap-piutang" class="space-y-2 hidden">
-          <div class="flex justify-between items-center">
-            <label class="font-extrabold text-main text-[11px] uppercase tracking-wider">Terkait Piutang</label>
-            <button type="button" onclick="openMasterModal('piutang')" class="text-[10px] text-teal-600 font-extrabold uppercase hover:underline">+ Baru</button>
-          </div>
+          <div class="flex justify-between items-center"><label class="font-extrabold text-main text-[11px] uppercase tracking-wider">Terkait Piutang</label><button type="button" onclick="openMasterModal('piutang')" class="text-[10px] text-teal-600 font-extrabold uppercase hover:underline">+ Baru</button></div>
           <select id="form-piutang" class="soft-input"></select>
         </div>
 
@@ -669,14 +346,13 @@
           <label class="font-extrabold text-main block mb-2 text-[11px] uppercase tracking-wider">Jumlah (Rp)</label>
           <div class="relative">
             <span class="absolute left-5 top-1/2 -translate-y-1/2 font-black text-main text-sm">Rp</span>
-            <!-- BUG FIX HTML5: Hapus format pattern -->
             <input type="text" inputmode="numeric" id="form-jumlah-display" oninput="formatInputRupiah(this)" placeholder="0" class="soft-input pl-14 text-xl font-black bg-white dark:bg-[#0B1120] shadow-[inset_0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)]">
           </div>
           <input type="hidden" id="form-jumlah-val">
         </div>
 
         <div>
-          <label class="font-extrabold text-main block mb-2 text-[11px] uppercase tracking-wider">Deskripsi</label>
+          <label class="font-extrabold text-main block mb-2 text-[11px] uppercase tracking-wider">Deskripsi / Judul Transaksi</label>
           <input type="text" id="form-deskripsi" placeholder="Cth: Belanja Bulanan" class="soft-input">
         </div>
         
@@ -686,47 +362,38 @@
         </div>
 
         <div class="pt-5 pb-2">
-          <button type="submit" id="btn-submit-trx" class="tap-shrink w-full bg-teal-600 text-white font-black py-4 rounded-full shadow-[0_10px_20px_-10px_rgba(20,184,166,0.6)] text-base tracking-wide">
-            Simpan Transaksi
-          </button>
+          <button type="submit" id="btn-submit-trx" class="tap-shrink w-full bg-teal-600 text-white font-black py-4 rounded-full shadow-[0_10px_20px_-10px_rgba(20,184,166,0.6)] text-base tracking-wide">Simpan Transaksi</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL 2: DETAIL TRANSAKSI / RIWAYAT AKUN -->
+  <!-- MODAL DETAIL TRANSAKSI -->
   <div id="modalDetail" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-900/70 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
     <div id="modalDetail-content" class="glass-modal-content w-full max-w-sm rounded-[2.5rem] p-6 md:p-8 relative max-h-[85vh] overflow-y-auto modal-content-center">
-      <button onclick="closeModal('modalDetail')" class="tap-shrink absolute top-5 right-5 text-faint hover:text-main bg-slate-100 dark:bg-slate-800 p-2.5 rounded-full transition z-20">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
+      <button onclick="closeModal('modalDetail')" class="tap-shrink absolute top-5 right-5 text-faint hover:text-main bg-slate-100 dark:bg-slate-800 p-2.5 rounded-full transition z-20"><i data-lucide="x" class="w-5 h-5"></i></button>
       <div id="modal-detail-inner" class="relative mt-2"></div>
     </div>
   </div>
 
-  <!-- MODAL 2b: PILIH KATEGORI (SOFT UI) -->
+  <!-- MODAL KATEGORI -->
   <div id="modalKategoriPicker" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-900/70 z-50 hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop">
     <div id="modalKategoriPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2.5rem] md:rounded-[2.5rem] max-h-[85vh] overflow-y-auto p-6 md:p-8 modal-content-bottom md:modal-content-center">
-      <div class="flex justify-between items-center mb-6 sticky top-0 bg-inherit backdrop-blur-md z-10 pt-2 pb-4">
+      <div class="flex justify-between items-center mb-6 sticky top-0 bg-inherit backdrop-blur-md z-10 pt-2 pb-4 border-b border-slate-200 dark:border-slate-700/50">
         <h3 class="font-black text-main text-xl tracking-tight">Pilih Kategori</h3>
-        <button onclick="closeModal('modalKategoriPicker')" class="tap-shrink bg-slate-100 dark:bg-slate-800 p-2.5 rounded-full text-faint hover:text-main">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+        <button onclick="closeModal('modalKategoriPicker')" class="tap-shrink bg-slate-100 dark:bg-slate-800 p-2.5 rounded-full text-faint hover:text-main"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div id="kategori-picker-list" class="text-sm pb-4"></div>
     </div>
   </div>
 
-  <!-- MODAL 3: TAMBAH MASTER DATA -->
+  <!-- MODAL MASTER DATA -->
   <div id="modalMaster" class="fixed inset-0 bg-slate-900/60 dark:bg-slate-900/80 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2.5rem] p-6 md:p-8 modal-content-center">
-      <div class="flex justify-between items-center mb-6">
+      <div class="flex justify-between items-center mb-6 border-b border-slate-200 dark:border-slate-700/50 pb-4">
         <h4 id="master-title" class="font-black text-main text-xl tracking-tight">Tambah Data</h4>
-        <button type="button" onclick="closeModal('modalMaster')" class="tap-shrink bg-slate-100 dark:bg-slate-800 p-2.5 rounded-full text-faint hover:text-main">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+        <button type="button" onclick="closeModal('modalMaster')" class="tap-shrink bg-slate-100 dark:bg-slate-800 p-2.5 rounded-full text-faint hover:text-main"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-      
       <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-4 text-sm">
         <input type="hidden" id="master-type">
         
@@ -746,29 +413,19 @@
         </div>
         
         <div id="master-extra-field" class="space-y-4"></div>
-        
-        <div class="pt-5">
-          <button type="submit" class="tap-shrink w-full bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-900 font-black py-4 rounded-full shadow-lg text-base tracking-wide">
-            Simpan Master
-          </button>
-        </div>
+        <div class="pt-5"><button type="submit" class="tap-shrink w-full bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-900 font-black py-4 rounded-full shadow-lg text-base tracking-wide">Simpan Master</button></div>
       </form>
     </div>
   </div>
 
   <script>
-    // ==========================================
-    // CONFIGURATION URL GOOGLE APPS SCRIPT
-    // ==========================================
     const API_URL = "https://script.google.com/macros/s/AKfycbx8HzV4KHpr6QAM4bDebEbBTIwSNeg5idIaQZUeBUuPu6OJ3xWMFvby82aOrq1CPYCLHg/exec";
-
     let GLOBAL_DATA = {};
     let currentModalBackFn = null;
 
     function showToast(message, type = 'success') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
-      
       const isError = type === 'error';
       const isInfo = type === 'info';
       
@@ -778,7 +435,6 @@
 
       toast.className = `flex items-center px-4 py-3.5 rounded-2xl shadow-xl text-[13px] font-bold text-white transform transition-all duration-500 translate-y-[-20px] opacity-0 w-full max-w-sm ${bgClass}`;
       toast.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5 mr-3 ${iconSpin}"></i> <span class="flex-1">${message}</span>`;
-      
       container.appendChild(toast);
       lucide.createIcons();
       
@@ -804,9 +460,7 @@
         const content = document.getElementById('reward-content');
         const subtitleEl = document.getElementById('reward-subtitle');
         
-        if (subtitleEl) {
-          subtitleEl.innerText = subtitleText;
-        }
+        if (subtitleEl) subtitleEl.innerText = subtitleText;
         
         overlay.classList.remove('hidden');
         overlay.classList.add('flex');
@@ -814,7 +468,6 @@
         requestAnimationFrame(() => {
           bg.classList.remove('opacity-0');
           bg.classList.add('opacity-100');
-          
           content.classList.remove('scale-50', 'opacity-0');
           content.classList.add('scale-100', 'opacity-100');
         });
@@ -822,7 +475,6 @@
         setTimeout(() => {
           bg.classList.remove('opacity-100');
           bg.classList.add('opacity-0');
-          
           content.classList.remove('scale-100', 'opacity-100');
           content.classList.add('scale-50', 'opacity-0');
           
@@ -839,7 +491,6 @@
       const pref = localStorage.getItem('yf-theme');
       const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       const isDark = pref ? pref === 'dark' : systemDark;
-      
       document.documentElement.classList.toggle('dark', isDark);
       updateDarkModeIcon(isDark);
       document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#0B1120" : "#F8FAFC");
@@ -848,7 +499,6 @@
     function toggleDarkMode() {
       const isDark = document.documentElement.classList.toggle('dark');
       localStorage.setItem('yf-theme', isDark ? 'dark' : 'light');
-      
       updateDarkModeIcon(isDark);
       document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#0B1120" : "#F8FAFC");
     }
@@ -870,14 +520,10 @@
         document.getElementById('loader').classList.remove('hidden');
         document.getElementById('main-content').classList.add('hidden');
       }
-
       try {
         const res = await fetch(API_URL + "?action=getAppData", { redirect: 'follow' });
         const result = await res.json();
-        
-        if (result.status === 'error') {
-          throw new Error(result.message);
-        }
+        if (result.status === 'error') throw new Error(result.message);
 
         GLOBAL_DATA = result.data || result;
         
@@ -894,7 +540,6 @@
         renderSaldo();
         renderHutangPiutang();
         lucide.createIcons();
-        
       } catch (err) {
         showToast("Gagal memuat data: " + err.message, "error");
       }
@@ -904,7 +549,6 @@
       const yearSelect = document.getElementById('filter-tahun');
       const years = new Set();
       const currentYear = new Date().getFullYear().toString();
-      
       years.add(currentYear);
 
       (GLOBAL_DATA.transaksi || []).forEach(t => {
@@ -915,13 +559,10 @@
 
       const sortedYears = Array.from(years).sort().reverse();
       let html = `<option value="ALL">Semua Tahun</option>`;
-      
       sortedYears.forEach(y => { 
         html += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`; 
       });
-      
       yearSelect.innerHTML = html;
-
       const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
       document.getElementById('filter-bulan').value = currentMonth;
     }
@@ -930,63 +571,42 @@
       document.querySelectorAll('.nav-item').forEach(el => {
         el.classList.remove('bg-teal-500/10', 'text-teal-600', 'dark:text-teal-400', 'px-4', 'py-2.5', 'rounded-[1rem]');
         el.classList.add('text-slate-400', 'dark:text-slate-500', 'p-2.5');
-        
         const textSpan = el.querySelector('.nav-text');
-        if (textSpan) {
-          textSpan.classList.add('hidden');
-        }
+        if (textSpan) textSpan.classList.add('hidden');
       });
 
       const activeBtn = document.getElementById('tab-' + tabId);
       if (activeBtn) {
         activeBtn.classList.remove('text-slate-400', 'dark:text-slate-500', 'p-2.5');
         activeBtn.classList.add('bg-teal-500/10', 'text-teal-600', 'dark:text-teal-400', 'px-4', 'py-2.5', 'rounded-[1rem]');
-        
         const textSpan = activeBtn.querySelector('.nav-text');
-        if (textSpan) {
-          textSpan.classList.remove('hidden');
-        }
+        if (textSpan) textSpan.classList.remove('hidden');
       }
 
-      document.querySelectorAll('main > section').forEach(el => {
-        el.classList.add('hidden');
-      });
-      
+      document.querySelectorAll('main > section').forEach(el => { el.classList.add('hidden'); });
       const activeSection = document.getElementById('page-' + tabId);
       activeSection.classList.remove('hidden');
       activeSection.classList.remove('page-animate');
-      
       void activeSection.offsetWidth;
       activeSection.classList.add('page-animate');
-
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function formatRupiah(number) {
       if (number === undefined || number === null) return "Rp 0";
-      return new Intl.NumberFormat('id-ID', { 
-        style: 'currency', 
-        currency: 'IDR', 
-        minimumFractionDigits: 0, 
-        maximumFractionDigits: 0 
-      }).format(number);
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(number);
     }
 
     function formatInputRupiah(input) {
       let val = input.value.replace(/[^0-9]/g, '');
       let numberVal = Number(val) || 0;
-      
       document.getElementById('form-jumlah-val').value = numberVal > 0 ? numberVal : "";
       input.value = numberVal > 0 ? new Intl.NumberFormat('id-ID').format(numberVal) : "";
     }
 
     function getAmountMeta(jenis) {
-      if (['Pemasukan', 'Terima Piutang', 'Terima Hutang (Pinjam)'].includes(jenis)) {
-        return { cls: 'amount-in', prefix: '+' };
-      }
-      if (['Pengeluaran', 'Beri Piutang (Menalangi)', 'Bayar Hutang/Cicilan'].includes(jenis)) {
-        return { cls: 'amount-out', prefix: '-' };
-      }
+      if (['Pemasukan', 'Terima Piutang', 'Terima Hutang (Pinjam)'].includes(jenis)) return { cls: 'amount-in', prefix: '+' };
+      if (['Pengeluaran', 'Beri Piutang (Menalangi)', 'Bayar Hutang/Cicilan'].includes(jenis)) return { cls: 'amount-out', prefix: '-' };
       return { cls: 'amount-neutral', prefix: '' };
     }
 
@@ -1009,50 +629,30 @@
     }
 
     function animateNumber(el, targetValue, duration = 700) {
-      const start = 0; 
-      const startTime = performance.now();
-      
+      const start = 0; const startTime = performance.now();
       function tick(now) {
         const progress = Math.min((now - startTime) / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
         const current = Math.round(start + (targetValue - start) * eased);
-        
         el.innerText = formatRupiah(current);
-        
-        if (progress < 1) {
-          requestAnimationFrame(tick); 
-        } else {
-          el.innerText = formatRupiah(targetValue);
-        }
+        if (progress < 1) requestAnimationFrame(tick); else el.innerText = formatRupiah(targetValue);
       }
-      
       requestAnimationFrame(tick);
     }
 
     function openModal(id) {
       const modal = document.getElementById(id);
       const content = document.getElementById(id + '-content');
-      
       modal.classList.remove('hidden');
-      
-      requestAnimationFrame(() => { 
-        modal.classList.add('show'); 
-        content.classList.add('show'); 
-      });
-      
+      requestAnimationFrame(() => { modal.classList.add('show'); content.classList.add('show'); });
       lucide.createIcons();
     }
 
     function closeModal(id) {
       const modal = document.getElementById(id);
       const content = document.getElementById(id + '-content');
-      
-      modal.classList.remove('show'); 
-      content.classList.remove('show');
-      
-      setTimeout(() => {
-        modal.classList.add('hidden');
-      }, 400);
+      modal.classList.remove('show'); content.classList.remove('show');
+      setTimeout(() => { modal.classList.add('hidden'); }, 400);
     }
 
     function openFormTransaksiBaru() {
@@ -1123,39 +723,26 @@
 
       try {
         const res = await fetch(API_URL, {
-          method: 'POST', 
-          redirect: 'follow', 
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({ action: 'deleteTransaksi', payload: { idTransaksi: idTrx } })
         });
-        
         const result = await res.json();
+        if (result.status === 'error') throw new Error(result.message);
         
-        if (result.status === 'error') {
-          throw new Error(result.message);
-        }
-        
-        if (loadingToast && loadingToast.parentNode) {
-          loadingToast.remove();
-        }
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         
         await showRewardAnimation("Transaksi Dihapus");
         await loadAppData(true);
-        
       } catch (err) {
-        if (loadingToast && loadingToast.parentNode) {
-          loadingToast.remove();
-        }
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         showToast("Gagal menghapus: " + err.message, "error");
       }
     }
 
     function renderDashboard() {
       const kpi = GLOBAL_DATA.kpi || {};
-      
       animateNumber(document.getElementById('kpi-networth'), kpi['Net Worth'] || 0);
       animateNumber(document.getElementById('kpi-disposable'), kpi['Disposable Income'] || 0);
-      
       document.getElementById('kpi-kas').innerText = formatRupiah(kpi['Total Kas']);
       document.getElementById('kpi-piutang').innerText = formatRupiah(kpi['Total Piutang']);
       document.getElementById('kpi-hutang').innerText = formatRupiah(kpi['Total Hutang']);
@@ -1166,7 +753,6 @@
 
       const trxList = GLOBAL_DATA.transaksi || [];
       const dashListEl = document.getElementById('dashboard-trx-list');
-      
       dashListEl.innerHTML = "";
 
       if (trxList.length === 0) {
@@ -1177,7 +763,6 @@
       trxList.slice(0, 5).forEach((trx, i) => {
         const meta = getAmountMeta(trx.jenis);
         const div = document.createElement('div');
-        
         div.className = "trx-card cursor-pointer stagger-item group";
         div.style.animationDelay = `${i * 0.05}s`;
         div.onclick = () => { currentModalBackFn = null; showTrxDetail(trx.idTransaksi); };
@@ -1192,15 +777,12 @@
           </div>
           <span class="text-[14px] font-black ${meta.cls} flex-shrink-0 text-right">${meta.prefix}${formatRupiah(trx.jumlah)}</span>
         `;
-        
         dashListEl.appendChild(div);
       });
-      
       lucide.createIcons();
     }
 
     let kategoriAnalysisExpanded = {};
-    
     function toggleKategoriAnalysis(utama) { 
       kategoriAnalysisExpanded[utama] = !kategoriAnalysisExpanded[utama]; 
       renderKategoriAnalysis(); 
@@ -1212,7 +794,6 @@
 
       const now = new Date(); 
       const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
-      
       const trxBulanIni = (GLOBAL_DATA.transaksi || []).filter(t => t.jenis === 'Pengeluaran' && t.tanggal && t.tanggal.substring(0, 7) === ym);
 
       if (trxBulanIni.length === 0) { 
@@ -1226,20 +807,14 @@
       trxBulanIni.forEach(t => {
         const utama = t.kategoriUtama || t.kategori || 'Lainnya'; 
         const jumlah = Number(t.jumlah) || 0;
-        
         grandTotal += jumlah;
-        
-        if (!groups[utama]) {
-          groups[utama] = { total: 0, subs: {} };
-        }
-        
+        if (!groups[utama]) { groups[utama] = { total: 0, subs: {} }; }
         groups[utama].total += jumlah;
         const subKey = t.kategori || utama;
         groups[utama].subs[subKey] = (groups[utama].subs[subKey] || 0) + jumlah;
       });
 
       const sortedUtama = Object.keys(groups).sort((a, b) => groups[b].total - groups[a].total);
-      
       let html = "";
       
       sortedUtama.forEach((utama, index) => {
@@ -1277,11 +852,8 @@
       
       el.innerHTML = html; 
       lucide.createIcons();
-      
       setTimeout(() => { 
-        el.querySelectorAll('[data-target-width]').forEach(bar => { 
-          bar.style.width = bar.getAttribute('data-target-width'); 
-        }); 
+        el.querySelectorAll('[data-target-width]').forEach(bar => { bar.style.width = bar.getAttribute('data-target-width'); }); 
       }, 50);
     }
 
@@ -1616,7 +1188,29 @@
     }
 
     function handleJenisChange() {
-      async function handleSaveTransaksi(event) {
+      const jenis = document.getElementById('form-jenis').value;
+      
+      const show = (id, isShow) => {
+        const el = document.getElementById(id);
+        if (isShow) {
+          el.classList.remove('hidden'); 
+        } else {
+          el.classList.add('hidden');
+        }
+      };
+      
+      const hasSumber = ['Pengeluaran', 'Transfer Internal', 'Beri Piutang (Menalangi)', 'Bayar Hutang/Cicilan'].includes(jenis);
+      const hasTujuan = ['Pemasukan', 'Transfer Internal', 'Terima Piutang', 'Terima Hutang (Pinjam)'].includes(jenis);
+      const hasHutang = ['Terima Hutang (Pinjam)', 'Bayar Hutang/Cicilan'].includes(jenis);
+      const hasPiutang = ['Beri Piutang (Menalangi)', 'Terima Piutang'].includes(jenis);
+
+      show('wrap-akunsumber', hasSumber); 
+      show('wrap-akuntujuan', hasTujuan); 
+      show('wrap-hutang', hasHutang); 
+      show('wrap-piutang', hasPiutang);
+    }
+
+    async function handleSaveTransaksi(event) {
       event.preventDefault();
       
       const valJumlah = document.getElementById('form-jumlah-val').value;
@@ -1888,28 +1482,6 @@
         }
         showToast("Gagal: " + err.message, "error");
       }
-    }
-  </script>
-      const jenis = document.getElementById('form-jenis').value;
-      
-      const show = (id, isShow) => {
-        const el = document.getElementById(id);
-        if (isShow) {
-          el.classList.remove('hidden'); 
-        } else {
-          el.classList.add('hidden');
-        }
-      };
-      
-      const hasSumber = ['Pengeluaran', 'Transfer Internal', 'Beri Piutang (Menalangi)', 'Bayar Hutang/Cicilan'].includes(jenis);
-      const hasTujuan = ['Pemasukan', 'Transfer Internal', 'Terima Piutang', 'Terima Hutang (Pinjam)'].includes(jenis);
-      const hasHutang = ['Terima Hutang (Pinjam)', 'Bayar Hutang/Cicilan'].includes(jenis);
-      const hasPiutang = ['Beri Piutang (Menalangi)', 'Terima Piutang'].includes(jenis);
-
-      show('wrap-akunsumber', hasSumber); 
-      show('wrap-akuntujuan', hasTujuan); 
-      show('wrap-hutang', hasHutang); 
-      show('wrap-piutang', hasPiutang);
     }
   </script>
 </body>
