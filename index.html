@@ -1796,8 +1796,8 @@
         <!-- HEADER TRANSAKSI -->
         <div class="text-center flex flex-col items-center mb-5 pb-4 border-b border-slate-200/60 dark:border-forest-muted/50">
           
-          <!-- Badge ID Referensi -->
-          <span class="text-[10px] font-mono font-bold tracking-wider px-3 py-1 rounded-full bg-slate-100 dark:bg-forest-muted/40 text-slate-500 dark:text-slate-400 mb-4 border border-slate-200/50 dark:border-forest-muted">
+          <!-- Badge ID Referensi (Teks Hitam Pekat) -->
+          <span class="text-[10px] font-mono font-black tracking-wider px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-200 text-slate-900 mb-4 shadow-sm border border-slate-300">
             REF: ${trx.idTransaksi}
           </span>
 
@@ -1811,8 +1811,8 @@
           <!-- Nominal -->
           <p class="text-3xl font-black mt-1.5 tracking-tight ${meta.cls}">${meta.prefix}${formatRupiah(trx.jumlah)}</p>
           
-          <!-- Badge Jenis Transaksi -->
-          <span class="text-[10px] font-extrabold px-3 py-1 rounded-full bg-slate-100 dark:bg-forest-muted/60 text-slate-700 dark:text-slate-200 mt-2.5 uppercase tracking-wider border border-slate-200/40 dark:border-forest-muted">
+          <!-- Badge Jenis Transaksi (Teks Hitam Pekat) -->
+          <span class="text-[10px] font-black px-3.5 py-1 rounded-full bg-slate-200 dark:bg-slate-200 text-slate-900 mt-2.5 uppercase tracking-wider shadow-sm border border-slate-300">
             ${trx.jenis}
           </span>
         </div>
@@ -1866,7 +1866,7 @@
           <span class="font-medium leading-relaxed block">${trx.catatan}</span>
         </div>` : ''}
         
-        <!-- TOMBOL AKSI (EDIT & HAPUS HIGH CONTRAST) -->
+        <!-- TOMBOL AKSI -->
         <div class="flex space-x-3 pt-3">
           <button onclick="handleEditTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center">
             <i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit
