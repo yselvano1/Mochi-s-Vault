@@ -7,7 +7,7 @@
   
   <!-- PWA & Manifest Integration -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#FAF8F5">
+  <meta name="theme-color" content="#F4F7F9">
   <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192">
   <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192">
 
@@ -25,8 +25,8 @@
               dark: '#4C2411'     
             },
             forest: {
-              darkest: '#0A1413', /* Lebih gelap dari sebelumnya agar kartu bisa pop-out */
-              dark: '#182B27',    /* Warna kartu, kontras dengan background */
+              darkest: '#0A1413', 
+              dark: '#182B27',    
               muted: '#3C4F49'    
             }
           }
@@ -40,55 +40,53 @@
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
     :root {
-      /* Warm Off-White Light Mode */
-      --bg-app: #FAF8F5; 
+      /* Clean Soft Grey Light Mode (iOS Style) */
+      --bg-app: #F4F7F9; 
       --bg-card: #FFFFFF;
-      --bg-subtle: #F4F0EA;
-      --bg-subtle-2: #EAE3D9;
+      --bg-subtle: #F8FAFC;
+      --bg-subtle-2: #F1F5F9;
       
-      --text-primary: #2C2621;
-      --text-secondary: #5C544D;
-      --text-tertiary: #8C847B;
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-tertiary: #94A3B8;
       
-      /* Border ditegaskan sedikit untuk Light Mode agar kartu terpisah dari background */
-      --border-color: rgba(141, 64, 18, 0.15); 
+      --border-color: rgba(226, 232, 240, 0.6); 
 
       /* Premium iOS Variables */
       --glass-bg: rgba(255, 255, 255, 0.85);
-      --glass-border: rgba(141, 64, 18, 0.15);
+      --glass-border: rgba(255, 255, 255, 0.6);
       --glass-modal-bg: rgba(255, 255, 255, 0.95);
       
-      /* iOS Soft Shadows */
-      --shadow-card: 0 4px 24px -6px rgba(141, 64, 18, 0.08), 0 2px 8px -2px rgba(141, 64, 18, 0.04);
-      --shadow-item: 0 2px 12px -2px rgba(141, 64, 18, 0.04);
-      --shadow-premium: 0 10px 40px -10px rgba(141, 64, 18, 0.15);
-      --shadow-inset: inset 0 2px 4px rgba(141, 64, 18, 0.04);
+      /* iOS Soft Shadows - Clean */
+      --shadow-card: 0 4px 24px -6px rgba(0, 0, 0, 0.05), 0 2px 8px -2px rgba(0, 0, 0, 0.03);
+      --shadow-item: 0 2px 12px -2px rgba(0, 0, 0, 0.03);
+      --shadow-premium: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.02);
     }
 
     html.dark {
-      /* Deep Forest Dark Mode - Elevasi Diperbaiki */
-      --bg-app: #0A1413; /* Sangat gelap */
-      --bg-card: #182B27; /* Lebih terang dari app */
+      /* Deep Forest Dark Mode */
+      --bg-app: #0A1413; 
+      --bg-card: #182B27; 
       --bg-subtle: #12201D;
       --bg-subtle-2: #223833;
       
-      --text-primary: #F0F2F0;   
-      --text-secondary: #A3B1AA; /* Diterangkan agar mudah dibaca */
-      --text-tertiary: #7D877E;  
+      --text-primary: #F8FAFC;   
+      --text-secondary: #94A3B8; 
+      --text-tertiary: #64748B;  
       
-      /* Border putih super tipis menciptakan garis batas tegas namun elegan di Dark Mode */
-      --border-color: rgba(255, 255, 255, 0.08); 
+      --border-color: rgba(255, 255, 255, 0.06); 
 
       /* Premium Variables Dark Mode */
       --glass-bg: rgba(24, 43, 39, 0.85); 
-      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.05);
       --glass-modal-bg: rgba(24, 43, 39, 0.95);
       
-      /* Shadows Dark - Fokus pada border/cahaya ketimbang shadow murni */
-      --shadow-card: 0 4px 24px -6px rgba(0, 0, 0, 0.6);
-      --shadow-item: 0 2px 12px -2px rgba(0, 0, 0, 0.4);
-      --shadow-premium: 0 10px 40px -10px rgba(0, 0, 0, 0.8);
-      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+      /* Shadows Dark */
+      --shadow-card: 0 4px 24px -6px rgba(0, 0, 0, 0.5);
+      --shadow-item: 0 2px 12px -2px rgba(0, 0, 0, 0.3);
+      --shadow-premium: 0 10px 40px -10px rgba(0, 0, 0, 0.7);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     * { font-variant-numeric: tabular-nums; -webkit-tap-highlight-color: transparent; }
@@ -105,20 +103,20 @@
       background-color: var(--bg-card);
       box-shadow: var(--shadow-card);
       border-radius: 1.5rem;
-      border: 1px solid var(--border-color); /* Sangat penting untuk memisahkan dari background */
+      border: 1px solid var(--border-color); 
     }
     
     .floating-item {
       background-color: var(--bg-card);
       box-shadow: var(--shadow-item);
       border-radius: 1rem;
-      border: 1px solid var(--border-color); /* Menambahkan border super tipis pada item juga */
+      border: 1px solid var(--border-color); 
     }
 
     /* === COMPACT IOS INPUT FORMS === */
     .ios-input {
       background-color: var(--bg-subtle-2);
-      border: 1px solid transparent; /* Prepare for focus */
+      border: 1px solid transparent; 
       border-radius: 0.85rem;
       padding: 0.6rem 1rem;
       box-shadow: var(--shadow-inset);
@@ -128,7 +126,7 @@
     }
     .ios-input:focus {
       outline: none;
-      border: 1px solid rgba(141, 64, 18, 0.5);
+      border: 1px solid rgba(141, 64, 18, 0.4);
       box-shadow: 0 0 0 3px rgba(141, 64, 18, 0.15), var(--shadow-inset);
       background-color: var(--bg-card);
     }
@@ -138,13 +136,12 @@
     .text-muted { color: var(--text-secondary); }
     .text-faint { color: var(--text-tertiary); }
     
-    /* WARNA FUNGSIONAL DISESUAIKAN (Earth Tones) */
-    .amount-in { color: #2E8B57; } /* SeaGreen: hangat & natural */
-    .amount-out { color: #CD5C5C; } /* IndianRed: merah bata yang membumi */
+    /* WARNA FUNGSIONAL (Tajam, Terbaca & Bersih) */
+    .amount-in { color: #10B981; } /* Emerald */
+    .amount-out { color: #F43F5E; } /* Rose Red - Tegas membedakan dari coklat Mochi */
     
-    /* Dark mode penyesuaian fungsional (sedikit lebih terang) */
-    html.dark .amount-in { color: #4EBA7B; }
-    html.dark .amount-out { color: #E87A7A; }
+    html.dark .amount-in { color: #34D399; }
+    html.dark .amount-out { color: #FB7185; }
     
     .icon-chip {
       width: 34px; height: 34px; border-radius: 10px;
@@ -152,8 +149,8 @@
       flex-shrink: 0; box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
     }
     
-    .chip-pemasukan { background: linear-gradient(135deg, rgba(46,139,87,0.15), rgba(46,139,87,0.05)); color: #2E8B57; }
-    .chip-pengeluaran { background: linear-gradient(135deg, rgba(205,92,92,0.15), rgba(205,92,92,0.05)); color: #CD5C5C; }
+    .chip-pemasukan { background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05)); color: #10B981; }
+    .chip-pengeluaran { background: linear-gradient(135deg, rgba(244,63,94,0.15), rgba(244,63,94,0.05)); color: #F43F5E; }
     .chip-transfer { background: linear-gradient(135deg, rgba(141,64,18,0.15), rgba(141,64,18,0.05)); color: var(--mochi-brown); }
     .chip-hutang { background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05)); color: #F59E0B; }
     .chip-piutang { background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(56,189,248,0.05)); color: #38BDF8; }
@@ -210,7 +207,7 @@
 
     /* Spring Animations & Hover */
     .card-hover { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease; }
-    .card-hover:hover { transform: translateY(-2px); box-shadow: var(--shadow-premium); border-color: rgba(141, 64, 18, 0.4); }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: var(--shadow-premium); border-color: rgba(141, 64, 18, 0.3); }
     .card-hover:active { transform: scale(0.97); }
     .tap-shrink { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .tap-shrink:active { transform: scale(0.94); }
@@ -229,7 +226,7 @@
       100% { background-position: 400px 0; }
     }
     .skeleton {
-      background: linear-gradient(90deg, var(--bg-subtle-2) 25%, rgba(219, 159, 117, 0.2) 37%, var(--bg-subtle-2) 63%);
+      background: linear-gradient(90deg, var(--bg-subtle-2) 25%, var(--border-color) 37%, var(--bg-subtle-2) 63%);
       background-size: 400px 100%;
       animation: shimmer 1.5s ease-in-out infinite;
       border-radius: 12px;
@@ -292,7 +289,7 @@
     </div>
     
     <div class="flex items-center space-x-2.5">
-      <button onclick="toggleDarkMode()" class="tap-shrink w-10 h-10 rounded-full bg-white dark:bg-forest-dark border border-slate-200 dark:border-[rgba(255,255,255,0.08)] flex items-center justify-center text-main shadow-[0_2px_10px_rgba(141,64,18,0.05)]" aria-label="Toggle Mode">
+      <button onclick="toggleDarkMode()" class="tap-shrink w-10 h-10 rounded-full bg-white dark:bg-forest-dark border border-slate-200 dark:border-[rgba(255,255,255,0.08)] flex items-center justify-center text-main shadow-[0_2px_10px_rgba(0,0,0,0.05)]" aria-label="Toggle Mode">
         <i data-lucide="sun" id="icon-sun" class="w-4.5 h-4.5 hidden"></i>
         <i data-lucide="moon" id="icon-moon" class="w-4.5 h-4.5"></i>
       </button>
@@ -318,29 +315,29 @@
     <!-- 1. HALAMAN DASHBOARD -->
     <section id="page-dashboard" class="space-y-5 page-animate">
       
-      <!-- GRID KARTU DASHBOARD DIPERBAIKI (Kini keduanya setara, tidak ada yang terlihat seperti 'active tab') -->
+      <!-- GRID KARTU DASHBOARD -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         
-        <!-- KARTU NET WORTH (Sama dengan format Disposable) -->
-        <div onclick="showKpiDetail('Net Worth')" class="floating-card p-5 cursor-pointer card-hover relative overflow-hidden group">
-          <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-mochi-light rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[40px] opacity-10 dark:opacity-[0.15] group-hover:opacity-20 transition-opacity duration-500"></div>
+        <!-- KARTU NET WORTH (Setara dengan Disposable) -->
+        <div onclick="showKpiDetail('Net Worth')" class="floating-card p-5 cursor-pointer card-hover relative overflow-hidden group bg-gradient-to-br from-forest-darkest to-forest-dark text-white border-none dark:border-solid dark:border-[rgba(255,255,255,0.08)]">
+          <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-mochi-light rounded-full mix-blend-screen filter blur-[40px] opacity-10 dark:opacity-20 group-hover:opacity-30 transition-opacity duration-500"></div>
           <div class="flex justify-between items-center mb-2 relative z-10">
-            <span class="text-[11px] font-extrabold tracking-wider uppercase text-muted">Net Worth</span>
-            <div class="w-7 h-7 rounded-full bg-mochi-light/20 dark:bg-mochi-light/10 flex items-center justify-center">
-              <i data-lucide="trending-up" class="w-3.5 h-3.5 text-mochi dark:text-mochi-light"></i>
+            <span class="text-[11px] font-extrabold tracking-wider uppercase text-mochi-light">Net Worth</span>
+            <div class="w-7 h-7 rounded-full bg-white/10 dark:bg-mochi-light/10 flex items-center justify-center">
+              <i data-lucide="trending-up" class="w-3.5 h-3.5 text-white dark:text-mochi-light"></i>
             </div>
           </div>
-          <div id="kpi-networth" class="text-3xl font-black tracking-tight relative z-10 mt-1 text-main">-</div>
-          <p class="text-[10px] text-faint mt-2 relative z-10 font-semibold">Ketuk untuk rincian komponen</p>
+          <div id="kpi-networth" class="text-3xl font-black tracking-tight relative z-10 mt-1 text-white">-</div>
+          <p class="text-[10px] text-gray-400 mt-2 relative z-10 font-semibold">Ketuk untuk rincian komponen</p>
         </div>
         
         <!-- KARTU DISPOSABLE INCOME -->
         <div onclick="showKpiDetail('Disposable Income')" class="floating-card p-5 cursor-pointer card-hover relative overflow-hidden group">
-          <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-mochi-light rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[40px] opacity-10 dark:opacity-[0.15] group-hover:opacity-20 transition-opacity duration-500"></div>
+          <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-sky-400 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[40px] opacity-10 dark:opacity-[0.15] group-hover:opacity-20 transition-opacity duration-500"></div>
           <div class="flex justify-between items-center mb-2 relative z-10">
             <span class="text-[11px] font-extrabold tracking-wider uppercase text-muted">Disposable</span>
-            <div class="w-7 h-7 rounded-full bg-mochi-light/20 dark:bg-mochi-light/10 flex items-center justify-center">
-              <i data-lucide="wallet" class="w-3.5 h-3.5 text-mochi dark:text-mochi-light"></i>
+            <div class="w-7 h-7 rounded-full bg-slate-100 dark:bg-forest-darkest flex items-center justify-center">
+              <i data-lucide="wallet" class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400"></i>
             </div>
           </div>
           <div id="kpi-disposable" class="text-3xl font-black tracking-tight relative z-10 mt-1 text-main">-</div>
@@ -355,7 +352,6 @@
         </div>
         <div onclick="showKpiDetail('Total Piutang')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center">
           <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Total Piutang</span>
-          <!-- Warnanya sudah disesuaikan agar earthy dan masuk di dark mode -->
           <span id="kpi-piutang" class="text-sm font-extrabold amount-in block">-</span>
         </div>
         <div onclick="showKpiDetail('Total Hutang')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center">
@@ -364,7 +360,8 @@
         </div>
         <div onclick="showKpiDetail('Net Savings Operasional')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center">
           <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Net Savings</span>
-          <span id="kpi-savings" class="text-sm font-extrabold text-mochi dark:text-mochi-light block">-</span>
+          <!-- Dikembalikan ke Biru (Sky) -->
+          <span id="kpi-savings" class="text-sm font-extrabold text-sky-500 dark:text-sky-400 block">-</span>
         </div>
       </div>
 
@@ -387,7 +384,7 @@
     <!-- 2. HALAMAN RIWAYAT TRANSAKSI -->
     <section id="page-riwayat" class="hidden space-y-4 page-animate">
       <div class="floating-card p-5 space-y-4">
-        <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-mochi-light/20 dark:border-forest-muted/50 pb-4 gap-3">
+        <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 dark:border-forest-muted/50 pb-4 gap-3">
           <div class="flex items-center space-x-2 text-main">
             <div class="w-8 h-8 rounded-full bg-mochi-light/20 dark:bg-mochi-light/10 flex items-center justify-center text-mochi dark:text-mochi-light"><i data-lucide="file-text" class="w-4 h-4"></i></div>
             <span class="text-sm font-extrabold uppercase tracking-wider">e-Statement & Mutasi</span>
@@ -450,7 +447,7 @@
           <input type="text" id="filter-search" oninput="renderRiwayat()" placeholder="Cari deskripsi transaksi..." class="w-full text-sm ios-input pl-10 pr-4 py-2.5">
         </div>
 
-        <div id="statement-summary" class="floating-item p-3.5 flex justify-between items-center text-xs border border-mochi-light/10 dark:border-forest-muted">
+        <div id="statement-summary" class="floating-item p-3.5 flex justify-between items-center text-xs border border-slate-100 dark:border-forest-muted/50">
           <div><span class="text-muted block text-[9px] uppercase font-bold mb-0.5">Total Masuk</span><span id="sum-masuk" class="font-extrabold amount-in text-sm">Rp 0</span></div>
           <div><span class="text-muted block text-[9px] uppercase font-bold mb-0.5">Total Keluar</span><span id="sum-keluar" class="font-extrabold amount-out text-sm">Rp 0</span></div>
           <div class="text-right"><span class="text-muted block text-[9px] uppercase font-bold mb-0.5">Surplus/Defisit</span><span id="sum-net" class="font-extrabold text-main text-sm">Rp 0</span></div>
@@ -479,7 +476,7 @@
     <!-- 4. HALAMAN HUTANG & PIUTANG -->
     <section id="page-hutang" class="hidden space-y-6 page-animate pb-8">
       <div class="floating-card p-5">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider text-rose-500 dark:text-[#E87A7A] mb-4 flex items-center">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-rose-500 dark:text-[#FB7185] mb-4 flex items-center">
           <i data-lucide="alert-circle" class="w-4 h-4 mr-2"></i> Hutang Aktif
         </h3>
         <div id="list-hutang-aktif" class="space-y-3"></div>
@@ -494,7 +491,7 @@
   </main>
 
   <!-- === BOTTOM NAVIGATION (Kontras Ikon Diperbaiki) === -->
-  <nav class="fixed bottom-0 left-0 right-0 nav-bar-bottom z-40 pb-safe rounded-t-3xl border-t border-mochi-light/20 dark:border-forest-muted">
+  <nav class="fixed bottom-0 left-0 right-0 nav-bar-bottom z-40 pb-safe rounded-t-3xl border-t border-slate-200/50 dark:border-forest-muted/50">
     <div class="flex justify-between items-center w-full max-w-md mx-auto px-6 py-3 relative">
       
       <!-- Tab Aktif -->
@@ -542,9 +539,9 @@
   <!-- MODAL 1: FORM INPUT TRANSAKSI -->
   <div id="modalInputTrx" class="fixed inset-0 bg-forest-darkest/40 dark:bg-forest-darkest/80 z-50 hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm">
     <div id="modalInputTrx-content" class="glass-modal-content w-full max-w-lg rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl modal-content-bottom md:modal-content-center">
-      <div class="flex justify-between items-center border-b border-mochi-light/20 dark:border-forest-muted/50 pb-4 mb-4">
+      <div class="flex justify-between items-center border-b border-slate-200 dark:border-forest-muted/50 pb-4 mb-4">
         <h3 id="modal-title-trx" class="font-extrabold text-main text-base">Tambah Transaksi</h3>
-        <button type="button" onclick="closeModal('modalInputTrx')" class="tap-shrink text-faint hover:text-main bg-slate-100/50 dark:bg-forest-dark p-2 rounded-full transition-colors border border-mochi-light/10 dark:border-forest-muted">
+        <button type="button" onclick="closeModal('modalInputTrx')" class="tap-shrink text-faint hover:text-main bg-slate-100/50 dark:bg-forest-dark p-2 rounded-full transition-colors border border-slate-200/50 dark:border-forest-muted">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
@@ -653,7 +650,7 @@
   <!-- MODAL 2: DETAIL TRANSAKSI / RIWAYAT AKUN -->
   <div id="modalDetail" class="fixed inset-0 bg-forest-darkest/40 dark:bg-forest-darkest/80 z-50 hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm">
     <div id="modalDetail-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto modal-content-center">
-      <button onclick="closeModal('modalDetail')" class="tap-shrink absolute top-4 right-4 text-faint hover:text-main bg-slate-100/50 dark:bg-forest-dark p-2 rounded-full transition z-20 border border-mochi-light/10 dark:border-forest-muted">
+      <button onclick="closeModal('modalDetail')" class="tap-shrink absolute top-4 right-4 text-faint hover:text-main bg-slate-100/50 dark:bg-forest-dark p-2 rounded-full transition z-20 border border-slate-200/50 dark:border-forest-muted">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
       <div id="modal-detail-inner" class="relative mt-2"></div>
@@ -663,9 +660,9 @@
   <!-- MODAL 2b: PILIH KATEGORI -->
   <div id="modalKategoriPicker" class="fixed inset-0 bg-forest-darkest/40 dark:bg-forest-darkest/80 z-50 hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm">
     <div id="modalKategoriPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
-      <div class="flex justify-between items-center border-b border-mochi-light/20 dark:border-forest-muted/50 pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
+      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-forest-muted/50 pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
         <h3 class="font-extrabold text-main text-sm">Pilih Kategori</h3>
-        <button onclick="closeModal('modalKategoriPicker')" class="tap-shrink bg-slate-100/50 dark:bg-forest-dark p-2 rounded-full transition border border-mochi-light/10 dark:border-forest-muted">
+        <button onclick="closeModal('modalKategoriPicker')" class="tap-shrink bg-slate-100/50 dark:bg-forest-dark p-2 rounded-full transition border border-slate-200/50 dark:border-forest-muted">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
@@ -676,9 +673,9 @@
   <!-- MODAL 3: TAMBAH MASTER DATA -->
   <div id="modalMaster" class="fixed inset-0 bg-forest-darkest/40 dark:bg-forest-darkest/80 z-50 hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm">
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
-      <div class="flex justify-between items-center border-b border-mochi-light/20 dark:border-forest-muted/50 pb-3 mb-3">
+      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-forest-muted/50 pb-3 mb-3">
         <h4 id="master-title" class="font-extrabold text-main text-base">Tambah Data</h4>
-        <button type="button" onclick="closeModal('modalMaster')" class="tap-shrink bg-slate-100/50 dark:bg-forest-dark p-2 rounded-full transition border border-mochi-light/10 dark:border-forest-muted"><i data-lucide="x" class="w-4 h-4"></i></button>
+        <button type="button" onclick="closeModal('modalMaster')" class="tap-shrink bg-slate-100/50 dark:bg-forest-dark p-2 rounded-full transition border border-slate-200/50 dark:border-forest-muted"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
       <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-3 text-sm">
         <input type="hidden" id="master-type">
@@ -706,9 +703,7 @@
       </form>
     </div>
   </div>
-
-  <script>
-    // ==========================================
+  // ==========================================
     // CONFIGURATION URL GOOGLE APPS SCRIPT
     // ==========================================
     const API_URL = "https://script.google.com/macros/s/AKfycbx8HzV4KHpr6QAM4bDebEbBTIwSNeg5idIaQZUeBUuPu6OJ3xWMFvby82aOrq1CPYCLHg/exec";
@@ -723,8 +718,8 @@
       const isError = type === 'error';
       const isInfo = type === 'info';
       
-      // Menggunakan warna premium Forest & Mochi untuk toast
-      let bgClass = isError ? 'bg-rose-500' : (isInfo ? 'bg-mochi-light text-forest-darkest' : 'bg-forest-darkest dark:bg-white');
+      // Menggunakan Rose untuk error, Sky untuk info, Forest/White untuk sukses
+      let bgClass = isError ? 'bg-rose-500' : (isInfo ? 'bg-sky-500' : 'bg-forest-darkest dark:bg-white');
       let textClass = (isInfo || isError) ? 'text-white' : 'text-white dark:text-forest-darkest';
       let icon = isError ? 'alert-circle' : (isInfo ? 'loader' : 'check-circle');
       let iconSpin = isInfo ? 'animate-spin' : '';
@@ -790,15 +785,14 @@
       const isDark = pref ? pref === 'dark' : systemDark;
       document.documentElement.classList.toggle('dark', isDark);
       updateDarkModeIcon(isDark);
-      // Sinkronisasi status bar mobile
-      document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#0A1413" : "#FAF8F5");
+      document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#0A1413" : "#F4F7F9");
     }
     
     function toggleDarkMode() {
       const isDark = document.documentElement.classList.toggle('dark');
       localStorage.setItem('yf-theme', isDark ? 'dark' : 'light');
       updateDarkModeIcon(isDark);
-      document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#0A1413" : "#FAF8F5");
+      document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#0A1413" : "#F4F7F9");
     }
     
     function updateDarkModeIcon(isDark) {
@@ -1069,7 +1063,7 @@
       trxList.slice(0, 5).forEach((trx, i) => {
         const meta = getAmountMeta(trx.jenis);
         const div = document.createElement('div');
-        div.className = "py-2.5 flex justify-between items-center cursor-pointer hover:bg-slate-50 dark:hover:bg-forest-dark px-2 -mx-2 rounded-xl transition tap-shrink stagger-item";
+        div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-2 last:mb-0";
         div.style.animationDelay = `${i * 0.05}s`;
         div.onclick = () => { currentModalBackFn = null; showTrxDetail(trx.idTransaksi); };
         div.innerHTML = `
@@ -1223,7 +1217,7 @@
       filtered.forEach((trx, i) => {
         const meta = getAmountMeta(trx.jenis);
         const div = document.createElement('div');
-        div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item";
+        div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-2";
         div.style.animationDelay = `${(i%10)*0.05}s`;
         div.onclick = () => { currentModalBackFn = null; showTrxDetail(trx.idTransaksi); };
         div.innerHTML = `
@@ -1345,7 +1339,7 @@
         hutangAktif.forEach((h, i) => {
           const pct = h.totalHutangAwal > 0 ? Math.min(100, ((h.totalHutangAwal - h.sisaHutang) / h.totalHutangAwal) * 100) : 0;
           const div = document.createElement('div');
-          div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item";
+          div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
           div.style.animationDelay = `${i*0.05}s`;
           div.onclick = () => showHutangDetail(h);
           div.innerHTML = `
@@ -1356,7 +1350,7 @@
               </div>
               <span class="text-[15px] font-black amount-out">${formatRupiah(h.sisaHutang)}</span>
             </div>
-            <div class="w-full bg-mochi-light/20 dark:bg-forest-muted rounded-full h-1.5 overflow-hidden">
+            <div class="w-full bg-mochi-light/20 dark:bg-forest-muted/50 rounded-full h-1.5 overflow-hidden">
               <div class="bg-gradient-to-r from-rose-400 to-rose-500 h-1.5 rounded-full" style="width:${pct}%"></div>
             </div>
           `;
@@ -1369,7 +1363,7 @@
       else {
         piutangAktif.forEach((p, i) => {
           const div = document.createElement('div');
-          div.className = "floating-item p-4 flex justify-between items-center cursor-pointer card-hover transition stagger-item";
+          div.className = "floating-item p-4 flex justify-between items-center cursor-pointer card-hover transition stagger-item mb-3";
           div.style.animationDelay = `${i*0.05}s`;
           div.onclick = () => showPiutangDetail(p);
           div.innerHTML = `
@@ -1431,27 +1425,27 @@
       order.forEach(utama => {
         const group = groups[utama];
         const isExpanded = !!kategoriPickerExpanded[utama];
-        const badgeColor = group.jenis === 'Pemasukan' ? 'text-emerald-600 bg-emerald-500/10 dark:text-emerald-400' : 'text-forest-muted bg-mochi-light/20 dark:text-mochi-light dark:bg-forest-dark';
+        const badgeColor = group.jenis === 'Pemasukan' ? 'text-emerald-600 bg-emerald-500/10 dark:text-emerald-400' : 'text-rose-500 bg-rose-500/10 dark:text-rose-400';
         const onlyMainItem = group.items.length === 1 && (!group.items[0].subKategori || group.items[0].subKategori === group.items[0].namaKategori);
 
         if (onlyMainItem) {
           html += `
-            <div onclick="selectKategori('${escapeAttr(group.items[0].namaKategori)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-mochi-light/20 dark:border-forest-muted transition-colors">
+            <div onclick="selectKategori('${escapeAttr(group.items[0].namaKategori)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-forest-muted transition-colors">
               <span class="font-extrabold text-main text-[13px]">${utama}</span>
               <span class="text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badgeColor}">${group.jenis}</span>
             </div>`;
         } else {
           html += `
-            <div class="mb-2 floating-item border border-mochi-light/20 dark:border-forest-muted overflow-hidden">
-              <div onclick="toggleKategoriGroup('${escapeAttr(utama)}')" class="flex justify-between items-center px-4 py-3 bg-mochi-light/10 dark:bg-forest-dark cursor-pointer transition tap-shrink">
+            <div class="mb-2 floating-item border border-slate-100 dark:border-forest-muted overflow-hidden">
+              <div onclick="toggleKategoriGroup('${escapeAttr(utama)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-forest-dark cursor-pointer transition tap-shrink">
                 <span class="font-extrabold text-[13px]">${utama}</span>
                 <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-4 h-4 text-faint"></i>
               </div>
-              <div class="${isExpanded ? '' : 'hidden'} border-t border-mochi-light/20 dark:border-forest-muted bg-white dark:bg-forest-darkest">`;
+              <div class="${isExpanded ? '' : 'hidden'} border-t border-slate-100 dark:border-forest-muted bg-white dark:bg-forest-darkest">`;
           group.items.forEach((item, idx) => {
             const label = (item.subKategori && item.subKategori !== item.namaKategori) ? item.subKategori : item.namaKategori;
-            const borderCls = idx !== group.items.length -1 ? 'border-b border-mochi-light/20 dark:border-forest-muted' : '';
-            html += `<div onclick="selectKategori('${escapeAttr(item.namaKategori)}')" class="px-4 py-3 hover:bg-mochi-light/20 dark:hover:bg-forest-muted cursor-pointer text-main font-semibold tap-shrink transition text-[13px] ${borderCls}">${label}</div>`;
+            const borderCls = idx !== group.items.length -1 ? 'border-b border-slate-100 dark:border-forest-muted' : '';
+            html += `<div onclick="selectKategori('${escapeAttr(item.namaKategori)}')" class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-forest-muted cursor-pointer text-main font-semibold tap-shrink transition text-[13px] ${borderCls}">${label}</div>`;
           });
           html += `</div></div>`;
         }
@@ -1497,24 +1491,24 @@
       if (kpiName === 'Net Worth') {
         html += `
           <p class="font-bold text-main mb-2 text-[13px]">Komponen Kekayaan Bersih:</p>
-          <div class="flex justify-between border-b border-mochi-light/20 dark:border-forest-muted pb-1.5"><span>Total Kas & Tab:</span> <span class="font-bold text-main">${formatRupiah(GLOBAL_DATA.kpi['Total Kas'])}</span></div>
-          <div class="flex justify-between border-b border-mochi-light/20 dark:border-forest-muted pb-1.5"><span>Total Piutang:</span> <span class="font-bold text-main">${formatRupiah(GLOBAL_DATA.kpi['Total Piutang'])}</span></div>
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted pb-1.5"><span>Total Kas & Tab:</span> <span class="font-bold text-main">${formatRupiah(GLOBAL_DATA.kpi['Total Kas'])}</span></div>
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted pb-1.5"><span>Total Piutang:</span> <span class="font-bold text-main">${formatRupiah(GLOBAL_DATA.kpi['Total Piutang'])}</span></div>
           <div class="flex justify-between amount-out pb-1.5"><span>Total Hutang (-):</span> <span class="font-bold">${formatRupiah(GLOBAL_DATA.kpi['Total Hutang'])}</span></div>
-          <div class="flex justify-between font-black text-main pt-2 border-t border-mochi-light/20 dark:border-forest-muted text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(GLOBAL_DATA.kpi['Net Worth'])}</span></div>
+          <div class="flex justify-between font-black text-main pt-2 border-t border-slate-200/50 dark:border-forest-muted text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(GLOBAL_DATA.kpi['Net Worth'])}</span></div>
         `;
       } else if (kpiName === 'Disposable Income') {
         html += `<p class="font-bold text-main mb-2 text-[13px]">Keterangan:</p><p class="text-muted leading-relaxed font-medium">Dana sisa kas operasional harian yang bebas digunakan untuk konsumsi dan tabungan.</p>`;
       } else if (kpiName === 'Total Kas') {
         html += `<p class="font-bold text-main mb-2 text-[13px]">Rincian Saldo Akun:</p><div class="space-y-2 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.akun.forEach(a => { html += `<div class="flex justify-between border-b border-mochi-light/20 dark:border-forest-muted pb-1.5"><span>${a.namaAkun} (${a.pemilik}):</span> <span class="font-bold text-main">${formatRupiah(a.saldoBerjalan)}</span></div>`; });
+        GLOBAL_DATA.akun.forEach(a => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted pb-1.5"><span>${a.namaAkun} (${a.pemilik}):</span> <span class="font-bold text-main">${formatRupiah(a.saldoBerjalan)}</span></div>`; });
         html += `</div>`;
       } else if (kpiName === 'Total Piutang') {
         html += `<p class="font-bold text-main mb-2 text-[13px]">Rincian Piutang:</p><div class="space-y-2 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.piutang.forEach(p => { html += `<div class="flex justify-between border-b border-mochi-light/20 dark:border-forest-muted pb-1.5"><span>${p.namaPiutang}:</span> <span class="font-bold text-sky-500">${formatRupiah(p.sisaPiutang)}</span></div>`; });
+        GLOBAL_DATA.piutang.forEach(p => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted pb-1.5"><span>${p.namaPiutang}:</span> <span class="font-bold text-sky-500">${formatRupiah(p.sisaPiutang)}</span></div>`; });
         html += `</div>`;
       } else if (kpiName === 'Total Hutang') {
         html += `<p class="font-bold text-main mb-2 text-[13px]">Rincian Hutang:</p><div class="space-y-2 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.hutang.forEach(h => { html += `<div class="flex justify-between border-b border-mochi-light/20 dark:border-forest-muted pb-1.5"><span>${h.namaHutang}:</span> <span class="font-bold amount-out">${formatRupiah(h.sisaHutang)}</span></div>`; });
+        GLOBAL_DATA.hutang.forEach(h => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted pb-1.5"><span>${h.namaHutang}:</span> <span class="font-bold amount-out">${formatRupiah(h.sisaHutang)}</span></div>`; });
         html += `</div>`;
       } else if (kpiName === 'Net Savings Operasional') {
         html += `<p class="font-bold text-main mb-2 text-[13px]">Keterangan:</p><p class="text-muted leading-relaxed font-medium">Selisih total pemasukan & total pengeluaran operasional.</p>`;
@@ -1538,26 +1532,26 @@
       }
       
       html += `
-        <div class="text-center flex flex-col items-center mb-4 border-b border-mochi-light/20 dark:border-forest-muted pb-5">
+        <div class="text-center flex flex-col items-center mb-4 border-b border-slate-100 dark:border-forest-muted/50 pb-5">
           <div class="icon-chip ${m.chip} w-16 h-16 rounded-[1rem] mb-3 shadow-sm"><i data-lucide="${m.icon}" class="w-7 h-7"></i></div>
           <h3 class="text-lg font-extrabold text-main leading-tight">${trx.deskripsi || trx.kategori}</h3>
           <p class="text-3xl font-black mt-1 ${meta.cls}">${meta.prefix}${formatRupiah(trx.jumlah)}</p>
-          <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-mochi-light/20 dark:bg-forest-dark text-muted mt-2 uppercase tracking-wider">${trx.jenis}</span>
+          <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-forest-muted/50 text-muted mt-2 uppercase tracking-wider">${trx.jenis}</span>
         </div>
         
         <div class="ios-input space-y-2 text-xs font-semibold text-muted">
-          <div class="flex justify-between border-b border-mochi-light/20 dark:border-forest-muted pb-2"><span>Tanggal:</span> <span class="font-extrabold text-main">${trx.tanggal}</span></div>
-          <div class="flex justify-between border-b border-mochi-light/20 dark:border-forest-muted pb-2"><span>Kategori:</span> <span class="font-extrabold text-main">${trx.kategori}</span></div>
-          ${trx.akunSumber ? `<div class="flex justify-between border-b border-mochi-light/20 dark:border-forest-muted pb-2"><span>Akun Sumber:</span> <span class="font-extrabold text-main">${trx.akunSumber}</span></div>` : ''}
-          ${trx.akunTujuan ? `<div class="flex justify-between border-b border-mochi-light/20 dark:border-forest-muted pb-2"><span>Akun Tujuan:</span> <span class="font-extrabold text-main">${trx.akunTujuan}</span></div>` : ''}
-          ${trx.terkaitHutang ? `<div class="flex justify-between border-b border-mochi-light/20 dark:border-forest-muted pb-2"><span>Terkait Hutang:</span> <span class="font-extrabold text-main">${trx.terkaitHutang}</span></div>` : ''}
-          ${trx.terkaitPiutang ? `<div class="flex justify-between border-b border-mochi-light/20 dark:border-forest-muted pb-2"><span>Terkait Piutang:</span> <span class="font-extrabold text-main">${trx.terkaitPiutang}</span></div>` : ''}
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted/50 pb-2"><span>Tanggal:</span> <span class="font-extrabold text-main">${trx.tanggal}</span></div>
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted/50 pb-2"><span>Kategori:</span> <span class="font-extrabold text-main">${trx.kategori}</span></div>
+          ${trx.akunSumber ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted/50 pb-2"><span>Akun Sumber:</span> <span class="font-extrabold text-main">${trx.akunSumber}</span></div>` : ''}
+          ${trx.akunTujuan ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted/50 pb-2"><span>Akun Tujuan:</span> <span class="font-extrabold text-main">${trx.akunTujuan}</span></div>` : ''}
+          ${trx.terkaitHutang ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted/50 pb-2"><span>Terkait Hutang:</span> <span class="font-extrabold text-main">${trx.terkaitHutang}</span></div>` : ''}
+          ${trx.terkaitPiutang ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted/50 pb-2"><span>Terkait Piutang:</span> <span class="font-extrabold text-main">${trx.terkaitPiutang}</span></div>` : ''}
           <div class="flex justify-between"><span>Input Oleh:</span> <span class="font-extrabold text-main">${trx.inputOleh}</span></div>
         </div>
         ${trx.catatan ? `<div class="text-xs bg-amber-500/10 p-3 rounded-xl text-amber-700 dark:text-amber-500 border border-amber-500/20"><b>Catatan:</b> <span class="font-medium">${trx.catatan}</span></div>` : ''}
         
-        <div class="flex space-x-3 mt-4 pt-4 border-t border-mochi-light/20 dark:border-forest-muted">
-          <button onclick="handleEditTrx('${trx.idTransaksi}')" class="flex-1 py-3 bg-mochi-light/20 dark:bg-forest-dark text-mochi dark:text-mochi-light font-extrabold rounded-xl tap-shrink text-xs shadow-sm border border-mochi-light/10 dark:border-forest-muted">Edit</button>
+        <div class="flex space-x-3 mt-4 pt-4 border-t border-slate-100 dark:border-forest-muted/50">
+          <button onclick="handleEditTrx('${trx.idTransaksi}')" class="flex-1 py-3 bg-slate-100 dark:bg-forest-muted/50 text-main font-extrabold rounded-xl tap-shrink text-xs shadow-sm border border-slate-200/50 dark:border-transparent">Edit</button>
           <button onclick="handleDeleteTrx('${trx.idTransaksi}')" class="flex-1 py-3 bg-rose-500/10 text-rose-600 dark:text-rose-400 font-extrabold rounded-xl tap-shrink text-xs shadow-sm">Hapus</button>
         </div>
       </div>`;
@@ -1572,8 +1566,8 @@
       const history = fullHistory.slice(0, 50);
 
       let html = `
-        <div class="border-b border-mochi-light/20 dark:border-forest-muted pb-3 mb-3 pr-6">
-          <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-mochi-light/20 text-mochi dark:text-mochi-light uppercase tracking-wider mb-2 inline-block">Riwayat Akun</span>
+        <div class="border-b border-slate-100 dark:border-forest-muted/50 pb-3 mb-3 pr-6">
+          <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-forest-muted/50 text-muted uppercase tracking-wider mb-2 inline-block">Riwayat Akun</span>
           <h3 class="text-lg font-extrabold text-main leading-tight">${namaAkun}</h3>
         </div>
         <div class="space-y-1.5 max-h-[60vh] overflow-y-auto pr-1">
@@ -1607,13 +1601,13 @@
       const relatedTrx = GLOBAL_DATA.transaksi.filter(t => t.terkaitHutang === h.namaHutang);
       let html = `
         <div class="space-y-4 pt-1">
-          <div class="border-b border-mochi-light/20 dark:border-forest-muted pb-3 pr-6">
+          <div class="border-b border-slate-100 dark:border-forest-muted/50 pb-3 pr-6">
             <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-rose-500/10 text-rose-500 uppercase tracking-wider mb-2 inline-block">Hutang Aktif</span>
             <h3 class="text-lg font-extrabold text-main leading-tight">${h.namaHutang}</h3>
           </div>
           <div class="ios-input space-y-2 text-xs font-semibold text-muted">
-            <div class="flex justify-between border-b border-mochi-light/20 dark:border-forest-muted pb-1.5"><span>Jenis Hutang:</span> <span class="font-extrabold text-main">${h.jenisHutang || '-'}</span></div>
-            <div class="flex justify-between border-b border-mochi-light/20 dark:border-forest-muted pb-1.5 items-center"><span>Sisa Hutang:</span> <span class="font-black amount-out text-[15px]">${formatRupiah(h.sisaHutang)}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted/50 pb-1.5"><span>Jenis Hutang:</span> <span class="font-extrabold text-main">${h.jenisHutang || '-'}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted/50 pb-1.5 items-center"><span>Sisa Hutang:</span> <span class="font-black amount-out text-[15px]">${formatRupiah(h.sisaHutang)}</span></div>
             <div class="flex justify-between"><span>Status:</span> <span class="font-extrabold text-main">${h.status}</span></div>
           </div>
           <div>
@@ -1646,13 +1640,13 @@
       const relatedTrx = GLOBAL_DATA.transaksi.filter(t => t.terkaitPiutang === p.namaPiutang);
       let html = `
         <div class="space-y-4 pt-1">
-          <div class="border-b border-mochi-light/20 dark:border-forest-muted pb-3 pr-6">
+          <div class="border-b border-slate-100 dark:border-forest-muted/50 pb-3 pr-6">
             <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 uppercase tracking-wider mb-2 inline-block">Piutang Belum Lunas</span>
             <h3 class="text-lg font-extrabold text-main leading-tight">${p.namaPiutang}</h3>
           </div>
           <div class="ios-input space-y-2 text-xs font-semibold text-muted">
-            <div class="flex justify-between border-b border-mochi-light/20 dark:border-forest-muted pb-1.5"><span>Jenis Piutang:</span> <span class="font-extrabold text-main">${p.jenisPiutang || '-'}</span></div>
-            <div class="flex justify-between border-b border-mochi-light/20 dark:border-forest-muted pb-1.5 items-center"><span>Sisa Piutang:</span> <span class="font-black text-sky-500 text-[15px]">${formatRupiah(p.sisaPiutang)}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted/50 pb-1.5"><span>Jenis Piutang:</span> <span class="font-extrabold text-main">${p.jenisPiutang || '-'}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted/50 pb-1.5 items-center"><span>Sisa Piutang:</span> <span class="font-black text-sky-500 text-[15px]">${formatRupiah(p.sisaPiutang)}</span></div>
             <div class="flex justify-between"><span>Status:</span> <span class="font-extrabold text-main">${p.status}</span></div>
           </div>
           <div>
@@ -1916,3 +1910,5 @@
   </script>
 </body>
 </html>
+
+  <script>
