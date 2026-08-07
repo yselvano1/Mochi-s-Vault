@@ -112,6 +112,29 @@
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
+    /* === PAW FAB ANIMATIONS === */
+    @keyframes pawPulse {
+      0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(20, 184, 166, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); }
+    }
+    .paw-fab {
+      animation: pawPulse 2.5s infinite;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .paw-fab:active {
+      transform: scale(0.9);
+    }
+    @keyframes highFive {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-15deg) scale(1.1); }
+      50% { transform: rotate(10deg) scale(1.1); }
+      75% { transform: rotate(-10deg) scale(1.1); }
+    }
+    .paw-fab:active svg {
+      animation: highFive 0.4s ease;
+    }
+
     /* Glassmorphism Modals */
     .glass-modal-content {
       background-color: var(--glass-modal-bg) !important;
@@ -169,12 +192,12 @@
     }
   </script>
 </head>
-<body class="min-h-screen pb-24"> <!-- Padding bawah disesuaikan -->
+<body class="min-h-screen pb-28">
 
   <!-- TOAST CONTAINER -->
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- TOP BAR CLEAN -->
+  <!-- TOP BAR CLEAN (Tanpa Paw Kucing) -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-6 pb-4 flex items-center justify-between max-w-3xl mx-auto">
     <!-- Kiri: Avatar & Teks -->
     <div class="flex items-center space-x-3.5">
@@ -187,22 +210,11 @@
       </div>
     </div>
     
-    <!-- Kanan: Tombol Tema & Paw Tambah Transaksi -->
+    <!-- Kanan: Tombol Tema -->
     <div class="flex items-center space-x-2.5">
       <button onclick="toggleDarkMode()" class="tap-shrink w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-soft flex items-center justify-center text-main shadow-sm" aria-label="Toggle Mode">
         <i data-lucide="sun" id="icon-sun" class="w-4.5 h-4.5 hidden"></i>
         <i data-lucide="moon" id="icon-moon" class="w-4.5 h-4.5"></i>
-      </button>
-      
-      <!-- PAW BUTTON PINDAH KESINI -->
-      <button onclick="openModal('modalInputTrx')" class="tap-shrink w-10 h-10 bg-gradient-to-tr from-teal-500 to-teal-400 rounded-full text-white shadow-md shadow-teal-500/30 flex items-center justify-center z-50">
-        <!-- Cute Solid Paw Print SVG -->
-        <svg class="w-5 h-5 text-white transform -translate-y-[1px]" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 21.5c-3 0-5.5-2-6-5-.5-2.5.5-4 2-5 1.5-1 3-1.5 4-1.5s2.5.5 4 1.5c1.5 1 2.5 2.5 2 5-.5 3-3 5-6 5z" />
-          <circle cx="7.5" cy="8.5" r="2.5"/>
-          <circle cx="11.5" cy="5.5" r="2.8"/>
-          <circle cx="16.5" cy="8.5" r="2.5"/>
-        </svg>
       </button>
     </div>
   </header>
@@ -226,10 +238,9 @@
     <!-- 1. HALAMAN DASHBOARD -->
     <section id="page-dashboard" class="space-y-5 page-animate">
       
-      <!-- GRID KARTU DASHBOARD KONTRAST DARK MODE -->
+      <!-- GRID KARTU DASHBOARD -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        
-        <!-- 1. KARTU NET WORTH (Black Card) -->
+        <!-- 1. KARTU NET WORTH -->
         <div onclick="showKpiDetail('Net Worth')" class="bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-700 text-white p-5 rounded-[1.5rem] cursor-pointer card-hover relative overflow-hidden shadow-[0_15px_30px_-10px_rgba(15,23,42,0.4)] dark:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.6)] border border-slate-700/50 group">
           <div class="absolute -top-12 -right-12 w-40 h-40 bg-teal-500 rounded-full mix-blend-screen filter blur-[40px] opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
           <div class="flex justify-between items-center opacity-90 mb-2 relative z-10">
@@ -242,7 +253,7 @@
           <p class="text-[11px] text-slate-400 mt-3 relative z-10 font-medium">Ketuk untuk rincian komponen</p>
         </div>
         
-        <!-- 2. KARTU DISPOSABLE INCOME (Pearl Glass) -->
+        <!-- 2. KARTU DISPOSABLE INCOME -->
         <div onclick="showKpiDetail('Disposable Income')" class="bg-gradient-to-br from-white to-slate-50 dark:from-[#1E293B] dark:to-slate-700 text-slate-900 dark:text-white p-5 rounded-[1.5rem] cursor-pointer card-hover relative overflow-hidden shadow-[0_15px_30px_-10px_rgba(0,0,0,0.05)] dark:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.4)] border border-white dark:border-slate-600/50 group">
           <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-sky-400 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[40px] opacity-10 dark:opacity-20 group-hover:opacity-20 transition-opacity duration-500"></div>
           <div class="flex justify-between items-center mb-2 relative z-10">
@@ -300,7 +311,6 @@
             <div class="w-8 h-8 rounded-full bg-teal-500/10 flex items-center justify-center text-teal-500"><i data-lucide="file-text" class="w-4 h-4"></i></div>
             <span class="text-sm font-extrabold uppercase tracking-wider">e-Statement & Mutasi</span>
           </div>
-          <!-- Fungsi DOWNLOAD CSV TETAP UTUH -->
           <button onclick="downloadEStatement()" class="tap-shrink bg-slate-800 dark:bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center shadow-md justify-center transition-colors">
             <i data-lucide="download" class="w-3.5 h-3.5 mr-1.5"></i> Download CSV
           </button>
@@ -402,7 +412,7 @@
     </section>
   </main>
 
-  <!-- === RAPI & LEGA BOTTOM NAVIGATION === -->
+  <!-- === NEW: RAPI & LEGA BOTTOM NAVIGATION === -->
   <nav class="fixed bottom-0 left-0 right-0 nav-bar-bottom z-40 pb-safe rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
     <div class="flex justify-between items-center w-full max-w-md mx-auto px-6 py-3 relative">
       
@@ -432,6 +442,18 @@
     </div>
   </nav>
 
+  <!-- === KEMBALI KE ASAL: FLOATING ACTION BUTTON (PAW KUCING) DI KANAN BAWAH === -->
+  <!-- Ikon besar (w-8 h-8) tanpa memperbesar lingkaran luar (w-14 h-14) -->
+  <button onclick="openModal('modalInputTrx')" class="paw-fab tap-shrink fixed bottom-[5.5rem] right-5 md:right-auto md:ml-[calc(768px-5rem)] w-14 h-14 bg-gradient-to-tr from-teal-500 to-teal-400 rounded-full text-white shadow-lg flex items-center justify-center z-50">
+    <!-- Cute Solid Paw Print SVG -->
+    <svg class="w-8 h-8 text-white transform -translate-y-[1px]" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 21.5c-3 0-5.5-2-6-5-.5-2.5.5-4 2-5 1.5-1 3-1.5 4-1.5s2.5.5 4 1.5c1.5 1 2.5 2.5 2 5-.5 3-3 5-6 5z" />
+      <circle cx="7.5" cy="8.5" r="2.5"/>
+      <circle cx="11.5" cy="5.5" r="2.8"/>
+      <circle cx="16.5" cy="8.5" r="2.5"/>
+    </svg>
+  </button>
+
   <!-- MODAL 1: FORM INPUT TRANSAKSI -->
   <div id="modalInputTrx" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-900/70 z-50 hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop">
     <div id="modalInputTrx-content" class="glass-modal-content w-full max-w-lg rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-6 shadow-2xl modal-content-bottom md:modal-content-center border border-white/20">
@@ -442,7 +464,7 @@
         </button>
       </div>
 
-      <!-- FORM TRANSAKSI UTUH -->
+      <!-- FORM TRANSAKSI -->
       <form id="formTransaksi" onsubmit="handleSaveTransaksi(event)" class="space-y-4 text-sm">
         <div class="grid grid-cols-2 gap-4">
           <div>
@@ -492,10 +514,11 @@
             <label class="font-bold text-main text-xs">Kategori</label>
             <button type="button" onclick="openMasterModal('kategori')" class="text-[10px] text-teal-600 font-extrabold uppercase hover:underline">+ Kategori Baru</button>
           </div>
-          <button type="button" onclick="openKategoriPicker()" class="w-full surface-subtle border border-soft rounded-xl px-4 py-3 text-left flex justify-between items-center shadow-sm">
+          <!-- PERBAIKAN TAMPILAN TRIGGGER PILIH KATEGORI -->
+          <div onclick="openKategoriPicker()" class="w-full surface-subtle border border-soft rounded-xl px-4 py-3 flex justify-between items-center cursor-pointer transition focus-within:ring-2 focus-within:ring-teal-500">
             <span id="form-kategori-display" class="font-semibold text-faint">Pilih Kategori...</span>
-            <i data-lucide="chevron-right" class="w-4 h-4 text-faint"></i>
-          </button>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-faint"></i>
+          </div>
           <input type="hidden" id="form-kategori">
         </div>
 
@@ -519,9 +542,10 @@
           <label class="font-bold text-main block mb-1.5 text-xs">Jumlah (Rp)</label>
           <div class="relative">
             <span class="absolute left-4 top-1/2 -translate-y-1/2 font-extrabold text-main text-sm">Rp</span>
+            <!-- BUG FIX: Hapus atribut 'required' dari hidden field agar tidak menggagalkan submit form secara diam-diam -->
             <input type="text" inputmode="numeric" pattern="[0-9]*" id="form-jumlah-display" oninput="formatInputRupiah(this)" placeholder="0" class="w-full surface-subtle border border-soft rounded-xl pl-12 pr-4 py-3.5 text-lg font-extrabold text-main bg-white dark:bg-[#0B1120] shadow-inner outline-none focus:ring-2 focus:ring-teal-500" required>
           </div>
-          <input type="hidden" id="form-jumlah-val" required>
+          <input type="hidden" id="form-jumlah-val">
         </div>
 
         <div>
@@ -552,10 +576,10 @@
     </div>
   </div>
 
-  <!-- MODAL 2b: PILIH KATEGORI (GROUPED) -->
+  <!-- MODAL 2b: PILIH KATEGORI (PERBAIKAN UI RAPI & TERSTRUKTUR) -->
   <div id="modalKategoriPicker" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-900/70 z-50 hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop">
     <div id="modalKategoriPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-3xl max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center border border-white/20">
-      <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700/50 pb-4 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
+      <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700/50 pb-4 mb-4 sticky top-0 bg-inherit backdrop-blur-md z-10">
         <h3 class="font-extrabold text-main text-sm">Pilih Kategori</h3>
         <button onclick="closeModal('modalKategoriPicker')" class="tap-shrink bg-slate-100 dark:bg-slate-800 p-2 rounded-full transition">
           <i data-lucide="x" class="w-4 h-4"></i>
@@ -723,7 +747,6 @@
 
     // === REVISED LOGIC UNTUK BOTTOM NAV TEXT AKTIF ===
     function switchTab(tabId) {
-      // 1. Reset class pada semua tombol nav
       document.querySelectorAll('.nav-item').forEach(el => {
         el.classList.remove('bg-teal-500/10', 'text-teal-600', 'dark:text-teal-400', 'px-4', 'py-2.5', 'rounded-[1rem]');
         el.classList.add('text-slate-400', 'dark:text-slate-500', 'p-2.5');
@@ -731,7 +754,6 @@
         if(textSpan) textSpan.classList.add('hidden');
       });
 
-      // 2. Tambah class active (Teks + Background) untuk tombol yang di-klik
       const activeBtn = document.getElementById('tab-' + tabId);
       if(activeBtn) {
         activeBtn.classList.remove('text-slate-400', 'dark:text-slate-500', 'p-2.5');
@@ -740,7 +762,6 @@
         if(textSpan) textSpan.classList.remove('hidden');
       }
 
-      // 3. Tampilkan section konten yang sesuai
       document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
       const activeSection = document.getElementById('page-' + tabId);
       activeSection.classList.remove('hidden');
@@ -1207,6 +1228,7 @@
       openModal('modalKategoriPicker');
     }
 
+    /* === PERBAIKAN UI MODAL KATEGORI === */
     function renderKategoriPickerList() {
       const { groups, order } = groupKategoriData();
       const listEl = document.getElementById('kategori-picker-list');
@@ -1215,26 +1237,26 @@
       order.forEach(utama => {
         const group = groups[utama];
         const isExpanded = !!kategoriPickerExpanded[utama];
-        const badgeColor = group.jenis === 'Pemasukan' ? 'text-teal-600 bg-teal-500/10' : 'text-muted bg-slate-200 dark:bg-slate-700';
+        const badgeColor = group.jenis === 'Pemasukan' ? 'text-teal-600 bg-teal-500/10 dark:text-teal-400 dark:bg-teal-500/20' : 'text-slate-600 bg-slate-200 dark:text-slate-400 dark:bg-slate-700';
         const onlyMainItem = group.items.length === 1 && (!group.items[0].subKategori || group.items[0].subKategori === group.items[0].namaKategori);
 
         if (onlyMainItem) {
           html += `
-            <div onclick="selectKategori('${escapeAttr(group.items[0].namaKategori)}')" class="flex justify-between items-center px-4 py-3.5 cursor-pointer surface-subtle rounded-2xl mb-2 transition tap-shrink border border-soft">
+            <div onclick="selectKategori('${escapeAttr(group.items[0].namaKategori)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl mb-3 cursor-pointer tap-shrink border border-slate-200/50 dark:border-slate-700">
               <span class="font-extrabold text-main text-[13px]">${utama}</span>
               <span class="text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wider ${badgeColor}">${group.jenis}</span>
             </div>`;
         } else {
           html += `
-            <div class="mb-2 surface-subtle rounded-2xl overflow-hidden border border-soft">
-              <div onclick="toggleKategoriGroup('${escapeAttr(utama)}')" class="flex justify-between items-center px-4 py-3.5 cursor-pointer transition bg-transparent hover:bg-slate-200/50 dark:hover:bg-slate-700/50">
-                <span class="font-extrabold text-main text-[13px]">${utama}</span>
-                <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-4 h-4 text-faint"></i>
+            <div class="mb-3">
+              <div onclick="toggleKategoriGroup('${escapeAttr(utama)}')" class="flex justify-between items-center px-4 py-3 bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-400 rounded-xl cursor-pointer transition tap-shrink">
+                <span class="font-extrabold text-[13px]">${utama}</span>
+                <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-4 h-4"></i>
               </div>
-              <div class="${isExpanded ? '' : 'hidden'} px-2 pb-2 space-y-1 bg-transparent">`;
+              <div class="${isExpanded ? '' : 'hidden'} mt-1.5 ml-2 pl-3 border-l-2 border-teal-100 dark:border-teal-900/50 space-y-1">`;
           group.items.forEach(item => {
             const label = (item.subKategori && item.subKategori !== item.namaKategori) ? item.subKategori : item.namaKategori;
-            html += `<div onclick="selectKategori('${escapeAttr(item.namaKategori)}')" class="px-4 py-2.5 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer text-main font-semibold tap-shrink transition text-[13px]">${label}</div>`;
+            html += `<div onclick="selectKategori('${escapeAttr(item.namaKategori)}')" class="px-3 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer text-main font-semibold tap-shrink transition text-[13px]">${label}</div>`;
           });
           html += `</div></div>`;
         }
@@ -1460,6 +1482,14 @@
 
     async function handleSaveTransaksi(event) {
       event.preventDefault();
+      
+      // BUG FIX: Validasi manual jika hidden form-jumlah-val kosong atau 0
+      const valJumlah = document.getElementById('form-jumlah-val').value;
+      if (!valJumlah || Number(valJumlah) <= 0) {
+        showToast("Jumlah transaksi tidak boleh kosong atau 0.", "error");
+        return;
+      }
+
       if (!document.getElementById('form-kategori').value) {
         showToast("Silakan pilih kategori transaksi terlebih dahulu.", "error");
         return;
@@ -1474,20 +1504,24 @@
         kategori: document.getElementById('form-kategori').value,
         terkaitHutang: document.getElementById('form-hutang').value,
         terkaitPiutang: document.getElementById('form-piutang').value,
-        jumlah: document.getElementById('form-jumlah-val').value,
+        jumlah: valJumlah,
         deskripsi: document.getElementById('form-deskripsi').value,
         catatan: document.getElementById('form-catatan').value
       };
 
       closeModal('modalInputTrx');
       let loadingToast = showToast("Menyimpan transaksi...", "info");
+      
+      // Reset form setup
       document.getElementById('formTransaksi').reset();
       document.getElementById('form-tgl').valueAsDate = new Date();
+      document.getElementById('form-jumlah-val').value = ""; // Clear hidden input
       resetKategoriPicker();
 
       try {
         const res = await fetch(API_URL, {
           method: 'POST', redirect: 'follow',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Mencegah error CORS di Apps Script
           body: JSON.stringify({ action: 'saveTransaksi', payload: payload })
         });
         const result = await res.json();
@@ -1655,6 +1689,7 @@
       try {
         const res = await fetch(API_URL, {
           method: 'POST', redirect: 'follow',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({ action: 'addMasterData', type: type, payload: payload })
         });
         const result = await res.json();
