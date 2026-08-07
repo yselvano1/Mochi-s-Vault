@@ -169,7 +169,7 @@
     }
   </script>
 </head>
-<body class="min-h-screen pb-24"> <!-- Padding bawah disesuaikan -->
+<body class="min-h-screen pb-28"> <!-- Padding bawah agar tidak tertutup nav & FAB -->
 
   <!-- TOAST CONTAINER -->
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
@@ -187,22 +187,11 @@
       </div>
     </div>
     
-    <!-- Kanan: Tombol Tema & Paw Tambah Transaksi -->
+    <!-- Kanan: Tombol Tema Saja -->
     <div class="flex items-center space-x-2.5">
       <button onclick="toggleDarkMode()" class="tap-shrink w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-soft flex items-center justify-center text-main shadow-sm" aria-label="Toggle Mode">
         <i data-lucide="sun" id="icon-sun" class="w-4.5 h-4.5 hidden"></i>
         <i data-lucide="moon" id="icon-moon" class="w-4.5 h-4.5"></i>
-      </button>
-      
-      <!-- PAW BUTTON PINDAH KESINI -->
-      <button onclick="openModal('modalInputTrx')" class="tap-shrink w-10 h-10 bg-gradient-to-tr from-teal-500 to-teal-400 rounded-full text-white shadow-md shadow-teal-500/30 flex items-center justify-center z-50">
-        <!-- Cute Solid Paw Print SVG -->
-        <svg class="w-5 h-5 text-white transform -translate-y-[1px]" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 21.5c-3 0-5.5-2-6-5-.5-2.5.5-4 2-5 1.5-1 3-1.5 4-1.5s2.5.5 4 1.5c1.5 1 2.5 2.5 2 5-.5 3-3 5-6 5z" />
-          <circle cx="7.5" cy="8.5" r="2.5"/>
-          <circle cx="11.5" cy="5.5" r="2.8"/>
-          <circle cx="16.5" cy="8.5" r="2.5"/>
-        </svg>
       </button>
     </div>
   </header>
@@ -300,7 +289,6 @@
             <div class="w-8 h-8 rounded-full bg-teal-500/10 flex items-center justify-center text-teal-500"><i data-lucide="file-text" class="w-4 h-4"></i></div>
             <span class="text-sm font-extrabold uppercase tracking-wider">e-Statement & Mutasi</span>
           </div>
-          <!-- Fungsi DOWNLOAD CSV TETAP UTUH -->
           <button onclick="downloadEStatement()" class="tap-shrink bg-slate-800 dark:bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center shadow-md justify-center transition-colors">
             <i data-lucide="download" class="w-3.5 h-3.5 mr-1.5"></i> Download CSV
           </button>
@@ -402,7 +390,7 @@
     </section>
   </main>
 
-  <!-- === NEW: RAPI & LEGA BOTTOM NAVIGATION === -->
+  <!-- === RAPI & LEGA BOTTOM NAVIGATION === -->
   <nav class="fixed bottom-0 left-0 right-0 nav-bar-bottom z-40 pb-safe rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
     <div class="flex justify-between items-center w-full max-w-md mx-auto px-6 py-3 relative">
       
@@ -431,6 +419,17 @@
 
     </div>
   </nav>
+
+  <!-- === FLOATING ACTION BUTTON (PAW KUCING) - POJOK KANAN BAWAH === -->
+  <button onclick="openModal('modalInputTrx')" class="tap-shrink fixed bottom-24 right-5 md:right-auto md:ml-[calc(768px-4.5rem)] w-[3.5rem] h-[3.5rem] bg-gradient-to-tr from-teal-500 to-teal-400 rounded-full text-white shadow-lg shadow-teal-500/40 flex items-center justify-center z-40 border-[4px] border-[var(--bg-app)] group">
+    <!-- Cute Solid Paw Print SVG -->
+    <svg class="w-6 h-6 text-white transform -translate-y-[1px]" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 21.5c-3 0-5.5-2-6-5-.5-2.5.5-4 2-5 1.5-1 3-1.5 4-1.5s2.5.5 4 1.5c1.5 1 2.5 2.5 2 5-.5 3-3 5-6 5z" />
+      <circle cx="7.5" cy="8.5" r="2.5"/>
+      <circle cx="11.5" cy="5.5" r="2.8"/>
+      <circle cx="16.5" cy="8.5" r="2.5"/>
+    </svg>
+  </button>
 
   <!-- MODAL 1: FORM INPUT TRANSAKSI -->
   <div id="modalInputTrx" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-900/70 z-50 hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop">
