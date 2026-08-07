@@ -1550,20 +1550,21 @@
       GLOBAL_DATA.akun.forEach((akun, i) => {
         const initial = (akun.pemilik || '?').trim().charAt(0).toUpperCase();
         const div = document.createElement('div');
-        div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item";
+        div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item flex flex-col";
         div.style.animationDelay = `${i*0.05}s`;
         div.onclick = () => { vibrate(10); showAkunHistory(akun.namaAkun); };
         div.innerHTML = `
-          <div class="flex justify-between items-start mb-3">
-            <div class="flex items-center space-x-3">
-              <div class="w-9 h-9 rounded-full bg-mochi dark:bg-mochi-light text-white dark:text-forest-darkest flex items-center justify-center text-xs font-bold flex-shrink-0 shadow-sm">${initial}</div>
-              <div>
-                <h4 class="text-sm font-extrabold text-main leading-none">${akun.namaAkun}</h4>
-                <p class="text-[10px] text-faint font-semibold mt-1">${akun.pemilik} • ${akun.jenisAkun}</p>
-              </div>
+          <div class="flex items-center space-x-3 mb-3 pb-3 border-b border-slate-100 dark:border-forest-muted/50">
+            <div class="w-10 h-10 rounded-full bg-mochi dark:bg-mochi-light text-white dark:text-forest-darkest flex items-center justify-center text-sm font-black flex-shrink-0 shadow-sm">${initial}</div>
+            <div class="flex-1 truncate">
+              <h4 class="text-[13px] font-extrabold text-main leading-tight truncate">${akun.namaAkun}</h4>
+              <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${akun.pemilik} • ${akun.jenisAkun}</p>
             </div>
           </div>
-          <span class="text-[17px] font-black text-main block mt-2">${formatRupiah(akun.saldoBerjalan)}</span>
+          <div>
+            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Saldo Berjalan</span>
+            <span class="text-[18px] font-black text-main block leading-none tracking-tight">${formatRupiah(akun.saldoBerjalan)}</span>
+          </div>
         `;
         if (akun.kategoriFungsi && akun.kategoriFungsi.toLowerCase().includes('operasional')) {
           operasionalEl.appendChild(div);
@@ -1589,12 +1590,13 @@
           div.style.animationDelay = `${i*0.05}s`;
           div.onclick = () => { vibrate(10); showHutangDetail(h); };
           div.innerHTML = `
-            <div class="flex justify-between items-center mb-3">
-              <div>
-                <h4 class="text-sm font-extrabold text-main leading-tight">${h.namaHutang}</h4>
-                <span class="text-[9px] text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-1.5 inline-block">${h.jenisHutang || 'Cicilan'}</span>
-              </div>
-              <span class="text-[15px] font-black amount-out">${formatRupiah(h.sisaHutang)}</span>
+            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-forest-muted/50">
+              <h4 class="text-[13px] font-extrabold text-main leading-tight">${h.namaHutang}</h4>
+              <span class="text-[9px] text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${h.jenisHutang || 'Cicilan'}</span>
+            </div>
+            <div class="flex flex-col mb-3">
+              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Sisa Hutang</span>
+              <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(h.sisaHutang)}</span>
             </div>
             <div class="w-full bg-slate-200/50 dark:bg-forest-muted/50 rounded-full h-1.5 overflow-hidden">
               <div class="bg-gradient-to-r from-rose-400 to-rose-500 h-1.5 rounded-full" style="width:${pct}%"></div>
@@ -1609,15 +1611,18 @@
       else {
         piutangAktif.forEach((p, i) => {
           const div = document.createElement('div');
-          div.className = "floating-item p-4 flex justify-between items-center cursor-pointer card-hover transition stagger-item mb-3";
+          div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
           div.style.animationDelay = `${i*0.05}s`;
           div.onclick = () => { vibrate(10); showPiutangDetail(p); };
           div.innerHTML = `
-            <div>
-              <h4 class="text-sm font-extrabold text-main leading-tight">${p.namaPiutang}</h4>
-              <span class="text-[9px] text-sky-500 bg-sky-500/10 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-1.5 inline-block">${p.jenisPiutang || 'Piutang'}</span>
+            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-forest-muted/50">
+              <h4 class="text-[13px] font-extrabold text-main leading-tight">${p.namaPiutang}</h4>
+              <span class="text-[9px] text-sky-500 bg-sky-500/10 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${p.jenisPiutang || 'Piutang'}</span>
             </div>
-            <span class="text-[15px] font-black text-sky-500">${formatRupiah(p.sisaPiutang)}</span>
+            <div>
+              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Sisa Piutang</span>
+              <span class="text-[18px] font-black text-sky-500 block leading-none tracking-tight">${formatRupiah(p.sisaPiutang)}</span>
+            </div>
           `;
           piutangEl.appendChild(div);
         });
