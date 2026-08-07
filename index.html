@@ -20,14 +20,15 @@
         extend: {
           colors: {
             mochi: {
-              light: '#DB9F75',   
-              DEFAULT: '#8D4012', 
-              dark: '#4C2411'     
+              light: '#E29B71',   
+              DEFAULT: '#C87A4B', /* Caramel Brown (Aksen Universal) */
+              dark: '#A65F36'     
             },
             forest: {
-              darkest: '#0A1413', 
-              dark: '#182B27',    
-              muted: '#3C4F49'    
+              darkest: '#0E1715', /* Deep Dark Teal (Latar Dark Mode) */
+              dark: '#14201D',    /* Dark Slate (Kartu Sekunder Dark Mode) */
+              emerald: '#1A2E2A', /* Dark Emerald (Kartu Utama) */
+              sage: '#E2ECE9'     /* Soft Sage */
             }
           }
         }
@@ -40,53 +41,53 @@
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
     :root {
-      /* Clean Soft Grey Light Mode (iOS Style) */
-      --bg-app: #F4F7F9; 
+      /* Warm Cream Light Mode (Menyatukan Hijau & Cokelat) */
+      --bg-app: #F8F6F0; 
       --bg-card: #FFFFFF;
-      --bg-subtle: #F8FAFC;
-      --bg-subtle-2: #F1F5F9;
+      --bg-subtle: #EBE7DD;
+      --bg-subtle-2: #E3DECED;
       
-      --text-primary: #0F172A;
-      --text-secondary: #334155; 
-      --text-tertiary: #64748B;  
+      --text-primary: #1A2E2A; /* Teks menggunakan Dark Emerald agar senada */
+      --text-secondary: #4A5D58; 
+      --text-tertiary: #7D8F8A;  
       
-      --border-color: rgba(226, 232, 240, 0.8); 
+      --border-color: rgba(26, 46, 42, 0.08); 
 
       /* Premium iOS Variables */
       --glass-bg: rgba(255, 255, 255, 0.85);
       --glass-border: rgba(255, 255, 255, 0.6);
-      --glass-modal-bg: rgba(255, 255, 255, 0.95);
+      --glass-modal-bg: rgba(248, 246, 240, 0.95); /* Menggunakan Warm Cream */
       
-      /* iOS Soft Shadows - Clean */
-      --shadow-card: 0 4px 24px -6px rgba(0, 0, 0, 0.05), 0 2px 8px -2px rgba(0, 0, 0, 0.03);
-      --shadow-item: 0 2px 12px -2px rgba(0, 0, 0, 0.03);
-      --shadow-premium: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
-      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+      /* iOS Soft Shadows */
+      --shadow-card: 0 4px 24px -6px rgba(26, 46, 42, 0.05), 0 2px 8px -2px rgba(26, 46, 42, 0.03);
+      --shadow-item: 0 2px 12px -2px rgba(26, 46, 42, 0.03);
+      --shadow-premium: 0 10px 40px -10px rgba(26, 46, 42, 0.1);
+      --shadow-inset: inset 0 2px 4px rgba(26, 46, 42, 0.03);
     }
 
     html.dark {
-      /* Deep Forest Dark Mode */
-      --bg-app: #0A1413; 
-      --bg-card: #182B27; 
-      --bg-subtle: #12201D;
-      --bg-subtle-2: #223833;
+      /* Deep Dark Teal Dark Mode */
+      --bg-app: #0E1715; 
+      --bg-card: #14201D; 
+      --bg-subtle: #1A2E2A;
+      --bg-subtle-2: #223732;
       
-      --text-primary: #F8FAFC;   
-      --text-secondary: #CBD5E1; 
-      --text-tertiary: #94A3B8;  
+      --text-primary: #F8F6F0; /* Teks menggunakan Warm Cream untuk kontras nyaman */
+      --text-secondary: #A0B2AC; 
+      --text-tertiary: #768782;  
       
-      --border-color: rgba(255, 255, 255, 0.08); 
+      --border-color: rgba(248, 246, 240, 0.05); 
 
       /* Premium Variables Dark Mode */
-      --glass-bg: rgba(24, 43, 39, 0.85); 
-      --glass-border: rgba(255, 255, 255, 0.05);
-      --glass-modal-bg: rgba(24, 43, 39, 0.95);
+      --glass-bg: rgba(20, 32, 29, 0.85); 
+      --glass-border: rgba(248, 246, 240, 0.05);
+      --glass-modal-bg: rgba(14, 23, 21, 0.95);
       
       /* Shadows Dark */
       --shadow-card: 0 4px 24px -6px rgba(0, 0, 0, 0.5);
       --shadow-item: 0 2px 12px -2px rgba(0, 0, 0, 0.3);
       --shadow-premium: 0 10px 40px -10px rgba(0, 0, 0, 0.7);
-      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     * { font-variant-numeric: tabular-nums; -webkit-tap-highlight-color: transparent; }
@@ -338,34 +339,34 @@
   <!-- GRID KARTU DASHBOARD -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         
-        <!-- KARTU NET WORTH (Deep Emerald) -->
-        <div onclick="vibrate(10); showKpiDetail('Net Worth')" class="floating-card p-5 cursor-pointer card-hover relative overflow-hidden group bg-gradient-to-br from-forest-dark to-forest-darkest dark:from-[#0F4C3A] dark:to-[#082B21] text-white border-none shadow-[0_8px_30px_-6px_rgba(10,20,19,0.4)] dark:shadow-[0_8px_30px_-6px_rgba(8,43,33,0.8)]">
+        <!-- KARTU NET WORTH (Dark Emerald) -->
+        <div onclick="vibrate(10); showKpiDetail('Net Worth')" class="floating-card p-5 cursor-pointer card-hover relative overflow-hidden group bg-gradient-to-br from-forest-emerald to-forest-darkest text-[#F8F6F0] border-none shadow-[0_8px_30px_-6px_rgba(26,46,42,0.3)] dark:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.8)]">
           <!-- Efek Pendaran Cahaya -->
-          <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/20 dark:bg-emerald-400/20 rounded-full mix-blend-overlay filter blur-[30px] group-hover:opacity-60 transition-opacity duration-500"></div>
+          <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full mix-blend-overlay filter blur-[30px] group-hover:opacity-30 transition-opacity duration-500"></div>
           
           <div class="flex justify-between items-center mb-2 relative z-10">
             <span class="text-[11px] font-extrabold tracking-wider uppercase text-white/80">Net Worth</span>
-            <div class="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center text-emerald-300">
+            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white">
               <i data-lucide="trending-up" class="w-4 h-4"></i>
             </div>
           </div>
           <div id="kpi-networth" class="text-3xl font-black tracking-tight relative z-10 mt-1 text-white">-</div>
-          <p class="text-[11px] text-white/70 mt-2 relative z-10 font-medium">Ketuk untuk rincian komponen</p>
+          <p class="text-[11px] text-white/60 mt-2 relative z-10 font-bold">Ketuk untuk rincian komponen</p>
         </div>
         
-        <!-- KARTU DISPOSABLE INCOME (Deep Emerald Inverted) -->
-        <div onclick="vibrate(10); showKpiDetail('Disposable Income')" class="floating-card p-5 cursor-pointer card-hover relative overflow-hidden group bg-gradient-to-br from-forest-darkest to-forest-dark dark:from-[#082B21] dark:to-[#0F4C3A] text-white border-none shadow-[0_8px_30px_-6px_rgba(10,20,19,0.4)] dark:shadow-[0_8px_30px_-6px_rgba(8,43,33,0.8)]">
+        <!-- KARTU DISPOSABLE INCOME (Dark Emerald Inverted) -->
+        <div onclick="vibrate(10); showKpiDetail('Disposable Income')" class="floating-card p-5 cursor-pointer card-hover relative overflow-hidden group bg-gradient-to-br from-forest-darkest to-forest-emerald text-[#F8F6F0] border-none shadow-[0_8px_30px_-6px_rgba(26,46,42,0.3)] dark:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.8)]">
           <!-- Efek Pendaran Cahaya -->
-          <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-white/20 dark:bg-emerald-400/20 rounded-full mix-blend-overlay filter blur-[30px] group-hover:opacity-60 transition-opacity duration-500"></div>
+          <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-white/10 rounded-full mix-blend-overlay filter blur-[30px] group-hover:opacity-30 transition-opacity duration-500"></div>
           
           <div class="flex justify-between items-center mb-2 relative z-10">
             <span class="text-[11px] font-extrabold tracking-wider uppercase text-white/80">Disposable</span>
-            <div class="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center text-sky-300">
+            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white">
               <i data-lucide="wallet" class="w-4 h-4"></i>
             </div>
           </div>
           <div id="kpi-disposable" class="text-3xl font-black tracking-tight relative z-10 mt-1 text-white">-</div>
-          <p class="text-[11px] text-white/70 mt-2 relative z-10 font-medium">Dana bebas konsumsi & tabungan</p>
+          <p class="text-[11px] text-white/60 mt-2 relative z-10 font-bold">Dana bebas konsumsi & tabungan</p>
         </div>
         
       </div>
@@ -562,7 +563,7 @@
   <!-- === FLOATING ACTION BUTTON (PAW KUCING) === -->
   <div class="fixed bottom-[5.5rem] left-0 right-0 z-50 pointer-events-none">
     <div class="max-w-3xl mx-auto px-5 relative h-full">
-      <button onclick="vibrate(15); openFormTransaksiBaru()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi to-mochi-light dark:from-[#0F4C3A] dark:to-[#176B53] rounded-full text-white shadow-[0_8px_20px_-6px_rgba(141,64,18,0.5)] dark:shadow-[0_8px_20px_-6px_rgba(15,76,58,0.6)] flex items-center justify-center pointer-events-auto border border-white/20 dark:border-white/10 group">
+      <button onclick="vibrate(15); openFormTransaksiBaru()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full text-white shadow-[0_8px_20px_-6px_rgba(200,122,75,0.5)] flex items-center justify-center pointer-events-auto border border-white/20 group">
         <svg class="w-7 h-7 text-white transform -translate-y-[1px]" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 21.5c-3 0-5.5-2-6-5-.5-2.5.5-4 2-5 1.5-1 3-1.5 4-1.5s2.5.5 4 1.5c1.5 1 2.5 2.5 2 5-.5 3-3 5-6 5z" />
           <circle cx="7.5" cy="8.5" r="2.5"/>
