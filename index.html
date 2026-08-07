@@ -1044,14 +1044,16 @@
       const isDark = pref ? pref === 'dark' : systemDark;
       document.documentElement.classList.toggle('dark', isDark);
       updateDarkModeIcon(isDark);
-      document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#0A1413" : "#F4F7F9");
+      // UPDATE: Sesuaikan dengan hex palette baru
+      document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#0E1715" : "#F8F6F0");
     }
     
     function toggleDarkMode() {
       const isDark = document.documentElement.classList.toggle('dark');
       localStorage.setItem('yf-theme', isDark ? 'dark' : 'light');
       updateDarkModeIcon(isDark);
-      document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#0A1413" : "#F4F7F9");
+      // UPDATE: Sesuaikan dengan hex palette baru
+      document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#0E1715" : "#F8F6F0");
     }
     
     function updateDarkModeIcon(isDark) {
