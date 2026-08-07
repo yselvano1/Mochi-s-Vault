@@ -738,7 +738,7 @@
       </div>
     </div>
   </div>
-  <!-- SCRIPT JAVASCRIPT DIMULAI DI SINI -->
+ <!-- SCRIPT JAVASCRIPT DIMULAI DI SINI -->
   <script>
     // ==========================================
     // CONFIGURATION URL GOOGLE APPS SCRIPT
@@ -750,26 +750,42 @@
     let trxToDelete = null; 
 
     // ==========================================
-    // 1. SYSTEM & UX HELPERS
+    // 1. SYSTEM, UX HELPERS & HISTORY API
     // ==========================================
 
-    // Haptic Feedback Helper
+    // Inisialisasi History API untuk Native Back Button
+    let activeModals = []; 
+    history.replaceState({ modal: null }, '');
+
+    window.addEventListener('popstate', (e) => {
+      // OS Back Button atau Edge Swipe (Native) Ditekan
+      if (activeModals.length > 0) {
+        const topModal = activeModals[activeModals.length - 1];
+        
+        // Logika Khusus Nested Modal (Dari Riwayat Akun -> Detail Trx)
+        if (topModal === 'modalDetail' && currentModalBackFn) {
+          let fn = currentModalBackFn;
+          currentModalBackFn = null;
+          // Karena OS memundurkan history, kita maju 1 langkah lagi agar modalDetail tidak tertutup
+          history.pushState({ modal: 'modalDetail' }, '');
+          fn(); // Render ulang tampilan sebelumnya (Kembali ke Riwayat Akun)
+        } else {
+          // Tutup modal secara visual
+          performVisualClose(topModal);
+        }
+      }
+    });
+
     function vibrate(ms) {
-      if (navigator.vibrate) {
-        navigator.vibrate(ms);
-      }
+      if (navigator.vibrate) navigator.vibrate(ms);
     }
 
-    // Tutup Modal lewat Backdrop
     function handleBackdropClick(event, modalId) {
-      if (event.target.id === modalId) {
-        closeModal(modalId);
-      }
+      if (event.target.id === modalId) closeModal(modalId);
     }
 
-    // Form Error Visual (Shake)
     function triggerInputError(elementId, message) {
-      vibrate([50, 50]); // Getaran ganda untuk error
+      vibrate([50, 50]); 
       showToast(message, "error");
       const el = document.getElementById(elementId);
       if (el) {
@@ -778,7 +794,6 @@
       }
     }
 
-    // Toast Notification System
     function showToast(message, type = 'success') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -811,7 +826,6 @@
       return toast; 
     }
 
-    // Animasi Reward 
     function showRewardAnimation(subtitleText = "Tersimpan") {
       return new Promise(resolve => {
         const overlay = document.getElementById('reward-overlay');
@@ -829,7 +843,7 @@
           bg.classList.add('opacity-100');
           content.classList.remove('scale-50', 'opacity-0');
           content.classList.add('scale-100', 'opacity-100');
-          vibrate([30, 50, 30]); // Happy purr vibration
+          vibrate([30, 50, 30]);
         });
         
         setTimeout(() => {
@@ -848,47 +862,114 @@
     }
 
     // ==========================================
-    // 2. GESTURE SENSORS (SWIPE RIGHT & HOLD)
+    // 2. MODAL & NAVIGATION MANAGERS
     // ==========================================
-    
-    // Global Swipe Right untuk Back/Close Modal
-    let touchStartX = 0;
-    let touchStartY = 0;
 
-    document.addEventListener('touchstart', e => {
-      touchStartX = e.changedTouches[0].screenX;
-      touchStartY = e.changedTouches[0].screenY;
-    }, {passive: true});
-
-    document.addEventListener('touchend', e => {
-      let touchEndX = e.changedTouches[0].screenX;
-      let touchEndY = e.changedTouches[0].screenY;
-      handleSwipeRight(touchStartX, touchStartY, touchEndX, touchEndY);
-    }, {passive: true});
-
-    function handleSwipeRight(startX, startY, endX, endY) {
-      let dx = endX - startX;
-      let dy = endY - startY;
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      const content = document.getElementById(id + '-content');
       
-      // Jika geser ke kanan > 70px dan tidak terlalu miring vertikal (< 40px)
-      if (dx > 70 && Math.abs(dy) < 40) { 
-        const openModals = Array.from(document.querySelectorAll('.modal-backdrop.show'));
-        if (openModals.length > 0) {
-          vibrate(15);
-          // Ambil modal yang paling atas (terakhir di DOM)
-          const topModal = openModals[openModals.length - 1];
-          
-          // Khusus Modal Detail, eksekusi fungsi Back jika ada (misal kembali ke Riwayat Akun)
-          if (topModal.id === 'modalDetail' && currentModalBackFn) {
-            currentModalBackFn();
-          } else {
-            closeModal(topModal.id);
-          }
-        }
+      if (!activeModals.includes(id)) {
+        activeModals.push(id);
+        history.pushState({ modal: id }, '');
+      }
+
+      modal.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        modal.classList.add('show');
+        if(content) content.classList.add('show');
+      });
+      lucide.createIcons();
+    }
+
+    function closeModal(id) {
+      if (activeModals.includes(id)) {
+        // Memicu native popstate agar sinkron dengan history browser OS
+        history.back();
+      } else {
+        performVisualClose(id);
       }
     }
 
-    // Long Press (Hold) Sensor untuk Transaksi
+    function performVisualClose(id) {
+      const modal = document.getElementById(id);
+      const content = document.getElementById(id + '-content');
+      if (modal) {
+        modal.classList.remove('show');
+        if(content) content.classList.remove('show');
+        setTimeout(() => modal.classList.add('hidden'), 400);
+      }
+      activeModals = activeModals.filter(m => m !== id);
+    }
+
+    let currentTab = 'dashboard';
+    const tabs = ['dashboard', 'riwayat', 'saldo', 'hutang'];
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+      document.querySelectorAll('.nav-item').forEach(el => {
+        el.classList.remove('bg-mochi-light/20', 'text-mochi', 'dark:text-mochi-light', 'px-4', 'py-2.5', 'rounded-2xl');
+        el.classList.add('text-slate-400', 'dark:text-[#A3B1AA]', 'p-2.5');
+        const textSpan = el.querySelector('.nav-text');
+        if(textSpan) textSpan.classList.add('hidden');
+      });
+
+      const activeBtn = document.getElementById('tab-' + tabId);
+      if(activeBtn) {
+        activeBtn.classList.remove('text-slate-400', 'dark:text-[#A3B1AA]', 'p-2.5');
+        activeBtn.classList.add('bg-mochi-light/20', 'text-mochi', 'dark:text-mochi-light', 'px-4', 'py-2.5', 'rounded-2xl');
+        const textSpan = activeBtn.querySelector('.nav-text');
+        if(textSpan) textSpan.classList.remove('hidden');
+      }
+
+      document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
+      const activeSection = document.getElementById('page-' + tabId);
+      activeSection.classList.remove('hidden');
+      activeSection.classList.remove('page-animate');
+      void activeSection.offsetWidth;
+      activeSection.classList.add('page-animate');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==========================================
+    // 3. GESTURE SENSORS (TAB SWIPE & HOLD)
+    // ==========================================
+    
+    let tStartX = 0;
+    let tStartY = 0;
+
+    document.addEventListener('touchstart', e => {
+      tStartX = e.changedTouches[0].screenX;
+      tStartY = e.changedTouches[0].screenY;
+    }, {passive: true});
+
+    document.addEventListener('touchend', e => {
+      let tEndX = e.changedTouches[0].screenX;
+      let tEndY = e.changedTouches[0].screenY;
+      let dx = tEndX - tStartX;
+      let dy = tEndY - tStartY;
+
+      // Cek apakah gesture horizontal dominan (menghindari salah deteksi saat scroll vertikal)
+      if (Math.abs(dx) > 60 && Math.abs(dy) < 40) {
+        // Deteksi zona ujung layar (Edge Zone) - diserahkan ke Native OS (Back Button)
+        let isEdgeSwipe = (tStartX < 40) || (tStartX > window.innerWidth - 40);
+        
+        // Pindah Tab hanya aktif jika menggeser di area tengah layar (Non-Edge) & tidak ada modal terbuka
+        if (!isEdgeSwipe && activeModals.length === 0) {
+          let currentIndex = tabs.indexOf(currentTab);
+          if (dx < -60 && currentIndex < tabs.length - 1) { // Swipe Kiri -> Tab Selanjutnya
+             vibrate(10);
+             switchTab(tabs[currentIndex + 1]);
+          } else if (dx > 60 && currentIndex > 0) { // Swipe Kanan -> Tab Sebelumnya
+             vibrate(10);
+             switchTab(tabs[currentIndex - 1]);
+          }
+        }
+      }
+    }, {passive: true});
+
+    // Long Press (Hold) Sensor
     let holdTimer;
     let holdActive = false;
     let holdStartX = 0;
@@ -904,11 +985,11 @@
       holdTimer = setTimeout(() => {
         if(holdActive) {
           holdActive = false;
-          vibrate([20, 20]); // Getar ganda tanda ter-*hold*
+          vibrate([20, 20]); 
           currentModalBackFn = null;
           showTrxDetail(idTrx);
         }
-      }, 450); // Tahan 0.45 detik
+      }, 450); 
     };
 
     window.cancelHold = function(e) {
@@ -916,7 +997,7 @@
       if(e && e.touches) {
         let dx = Math.abs(e.touches[0].clientX - holdStartX);
         let dy = Math.abs(e.touches[0].clientY - holdStartY);
-        if(dx > 10 || dy > 10) { // Batalkan jika jari bergeser (sedang scroll)
+        if(dx > 10 || dy > 10) { 
           holdActive = false;
           clearTimeout(holdTimer);
         }
@@ -932,7 +1013,7 @@
     };
 
     // ==========================================
-    // 3. CORE LOGIC & INITIALIZATION
+    // 4. CORE LOGIC & INITIALIZATION
     // ==========================================
 
     function applyDarkModePref() {
@@ -972,13 +1053,10 @@
         GLOBAL_DATA = result.data || result;
         
         if(!isSilentReload) {
-          // Menghilangkan Splash Screen secara elegan
           const splash = document.getElementById('splash-screen');
           if(splash) {
             splash.classList.add('opacity-0');
-            setTimeout(() => {
-              splash.classList.add('hidden');
-            }, 700);
+            setTimeout(() => splash.classList.add('hidden'), 700);
           }
           document.getElementById('main-content').classList.remove('hidden');
         }
@@ -997,53 +1075,8 @@
     }
 
     // ==========================================
-    // 4. RENDERING & UI UPDATES
+    // 5. RENDERING & UI UPDATES
     // ==========================================
-
-    function populateYearFilter() {
-      const yearSelect = document.getElementById('filter-tahun');
-      const years = new Set();
-      const currentYear = new Date().getFullYear().toString();
-      years.add(currentYear);
-
-      (GLOBAL_DATA.transaksi || []).forEach(t => {
-        if (t.tanggal && t.tanggal.length >= 4) years.add(t.tanggal.substring(0, 4));
-      });
-
-      const sortedYears = Array.from(years).sort().reverse();
-      let html = `<option value="ALL">Semua Tahun</option>`;
-      sortedYears.forEach(y => { html += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`; });
-      yearSelect.innerHTML = html;
-
-      const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
-      document.getElementById('filter-bulan').value = currentMonth;
-    }
-
-    function switchTab(tabId) {
-      document.querySelectorAll('.nav-item').forEach(el => {
-        el.classList.remove('bg-mochi-light/20', 'text-mochi', 'dark:text-mochi-light', 'px-4', 'py-2.5', 'rounded-2xl');
-        el.classList.add('text-slate-400', 'dark:text-[#A3B1AA]', 'p-2.5');
-        const textSpan = el.querySelector('.nav-text');
-        if(textSpan) textSpan.classList.add('hidden');
-      });
-
-      const activeBtn = document.getElementById('tab-' + tabId);
-      if(activeBtn) {
-        activeBtn.classList.remove('text-slate-400', 'dark:text-[#A3B1AA]', 'p-2.5');
-        activeBtn.classList.add('bg-mochi-light/20', 'text-mochi', 'dark:text-mochi-light', 'px-4', 'py-2.5', 'rounded-2xl');
-        const textSpan = activeBtn.querySelector('.nav-text');
-        if(textSpan) textSpan.classList.remove('hidden');
-      }
-
-      document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
-      const activeSection = document.getElementById('page-' + tabId);
-      activeSection.classList.remove('hidden');
-      activeSection.classList.remove('page-animate');
-      void activeSection.offsetWidth;
-      activeSection.classList.add('page-animate');
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
 
     function formatRupiah(number) {
       if (number === undefined || number === null) return "Rp 0";
@@ -1095,25 +1128,6 @@
         else el.innerText = formatRupiah(targetValue);
       }
       requestAnimationFrame(tick);
-    }
-
-    function openModal(id) {
-      const modal = document.getElementById(id);
-      const content = document.getElementById(id + '-content');
-      modal.classList.remove('hidden');
-      requestAnimationFrame(() => {
-        modal.classList.add('show');
-        content.classList.add('show');
-      });
-      lucide.createIcons();
-    }
-
-    function closeModal(id) {
-      const modal = document.getElementById(id);
-      const content = document.getElementById(id + '-content');
-      modal.classList.remove('show');
-      content.classList.remove('show');
-      setTimeout(() => modal.classList.add('hidden'), 400);
     }
 
     function openFormTransaksiBaru() {
@@ -1176,7 +1190,6 @@
       }, 400);
     }
 
-    // Modal Konfirmasi Delete Custom
     function promptDeleteTrx(idTrx) {
       vibrate(15);
       trxToDelete = idTrx;
@@ -1186,7 +1199,7 @@
 
     document.getElementById('btn-confirm-delete').onclick = async () => {
       if(!trxToDelete) return;
-      vibrate([20, 30]); // Warning vibration
+      vibrate([20, 30]); 
       await handleDeleteTrx(trxToDelete);
     };
 
@@ -1240,7 +1253,6 @@
         div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-2 last:mb-0 select-none";
         div.style.animationDelay = `${i * 0.05}s`;
         
-        // Memasang Gesture Hold & Fallback Click
         div.setAttribute("ontouchstart", `startHold(event, '${trx.idTransaksi}')`);
         div.setAttribute("ontouchend", "endHold()");
         div.setAttribute("ontouchmove", "cancelHold(event)");
@@ -1405,7 +1417,6 @@
         div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-3 select-none";
         div.style.animationDelay = `${(i%10)*0.05}s`;
         
-        // Memasang Gesture Hold & Fallback Click
         div.setAttribute("ontouchstart", `startHold(event, '${trx.idTransaksi}')`);
         div.setAttribute("ontouchend", "endHold()");
         div.setAttribute("ontouchmove", "cancelHold(event)");
@@ -1433,6 +1444,25 @@
         listEl.appendChild(div);
       });
       lucide.createIcons();
+    }
+
+    function populateYearFilter() {
+      const yearSelect = document.getElementById('filter-tahun');
+      const years = new Set();
+      const currentYear = new Date().getFullYear().toString();
+      years.add(currentYear);
+
+      (GLOBAL_DATA.transaksi || []).forEach(t => {
+        if (t.tanggal && t.tanggal.length >= 4) years.add(t.tanggal.substring(0, 4));
+      });
+
+      const sortedYears = Array.from(years).sort().reverse();
+      let html = `<option value="ALL">Semua Tahun</option>`;
+      sortedYears.forEach(y => { html += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`; });
+      yearSelect.innerHTML = html;
+
+      const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
+      document.getElementById('filter-bulan').value = currentMonth;
     }
 
     function downloadEStatement() {
