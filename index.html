@@ -460,7 +460,7 @@
 
         <div>
           <label class="font-semibold text-main block mb-1">Jumlah (Rp)</label>
-          <input type="text" id="form-jumlah-display" oninput="formatInputRupiah(this)" placeholder="Rp 0" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2 text-sm font-bold text-main" required>
+          <input type="text" inputmode="numeric" pattern="[0-9]*" id="form-jumlah-display" oninput="formatInputRupiah(this)" placeholder="Rp 0" class="w-full surface-subtle border border-soft rounded-lg px-3 py-2 text-sm font-bold text-main" required>
           <input type="hidden" id="form-jumlah-val" required>
         </div>
 
