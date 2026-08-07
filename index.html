@@ -318,7 +318,7 @@
       <!-- GRID KARTU DASHBOARD -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         
-        <!-- KARTU NET WORTH (Setara dengan Disposable) -->
+        <!-- KARTU NET WORTH -->
         <div onclick="showKpiDetail('Net Worth')" class="floating-card p-5 cursor-pointer card-hover relative overflow-hidden group bg-gradient-to-br from-forest-darkest to-forest-dark text-white border-none dark:border-solid dark:border-[rgba(255,255,255,0.08)]">
           <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-mochi-light rounded-full mix-blend-screen filter blur-[40px] opacity-10 dark:opacity-20 group-hover:opacity-30 transition-opacity duration-500"></div>
           <div class="flex justify-between items-center mb-2 relative z-10">
@@ -360,7 +360,6 @@
         </div>
         <div onclick="showKpiDetail('Net Savings Operasional')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center">
           <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Net Savings</span>
-          <!-- Dikembalikan ke Biru (Sky) -->
           <span id="kpi-savings" class="text-sm font-extrabold text-sky-500 dark:text-sky-400 block">-</span>
         </div>
       </div>
@@ -670,7 +669,7 @@
     </div>
   </div>
 
-<!-- MODAL 3: TAMBAH MASTER DATA -->
+  <!-- MODAL 3: TAMBAH MASTER DATA -->
   <div id="modalMaster" class="fixed inset-0 bg-forest-darkest/40 dark:bg-forest-darkest/80 z-50 hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm">
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-forest-muted/50 pb-3 mb-3">
@@ -703,7 +702,6 @@
       </form>
     </div>
   </div>
-
   <!-- SCRIPT JAVASCRIPT DIMULAI DI SINI -->
   <script>
     // ==========================================
