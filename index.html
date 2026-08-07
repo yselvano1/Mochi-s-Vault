@@ -339,29 +339,33 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         
         <!-- KARTU NET WORTH -->
-        <div onclick="vibrate(10); showKpiDetail('Net Worth')" class="floating-card p-5 cursor-pointer card-hover relative overflow-hidden group bg-gradient-to-br from-forest-darkest to-forest-dark text-white border-none dark:border-solid dark:border-[rgba(255,255,255,0.08)]">
-          <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-mochi-light rounded-full mix-blend-screen filter blur-[40px] opacity-10 dark:opacity-20 group-hover:opacity-30 transition-opacity duration-500"></div>
+        <div onclick="vibrate(10); showKpiDetail('Net Worth')" class="floating-card p-5 cursor-pointer card-hover relative overflow-hidden group">
+          <!-- Pendaran Emerald (Hijau) -->
+          <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-emerald-400 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[40px] opacity-[0.15] dark:opacity-20 group-hover:opacity-30 transition-opacity duration-500"></div>
+          
           <div class="flex justify-between items-center mb-2 relative z-10">
-            <span class="text-[11px] font-extrabold tracking-wider uppercase text-mochi-light">Net Worth</span>
-            <div class="w-7 h-7 rounded-full bg-white/10 dark:bg-mochi-light/10 flex items-center justify-center">
-              <i data-lucide="trending-up" class="w-3.5 h-3.5 text-white dark:text-mochi-light"></i>
+            <span class="text-[11px] font-extrabold tracking-wider uppercase text-muted">Net Worth</span>
+            <div class="w-8 h-8 rounded-full bg-emerald-500/10 dark:bg-emerald-400/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+              <i data-lucide="trending-up" class="w-4 h-4"></i>
             </div>
           </div>
-          <div id="kpi-networth" class="text-3xl font-black tracking-tight relative z-10 mt-1 text-white">-</div>
-          <p class="text-[10px] text-gray-400 mt-2 relative z-10 font-semibold">Ketuk untuk rincian komponen</p>
+          <div id="kpi-networth" class="text-3xl font-black tracking-tight relative z-10 mt-1 text-main">-</div>
+          <p class="text-[11px] text-faint mt-2 relative z-10 font-medium">Ketuk untuk rincian komponen</p>
         </div>
         
         <!-- KARTU DISPOSABLE INCOME -->
         <div onclick="vibrate(10); showKpiDetail('Disposable Income')" class="floating-card p-5 cursor-pointer card-hover relative overflow-hidden group">
-          <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-sky-400 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[40px] opacity-10 dark:opacity-[0.15] group-hover:opacity-20 transition-opacity duration-500"></div>
+          <!-- Pendaran Sky (Biru) -->
+          <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-sky-400 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[40px] opacity-[0.15] dark:opacity-20 group-hover:opacity-30 transition-opacity duration-500"></div>
+          
           <div class="flex justify-between items-center mb-2 relative z-10">
             <span class="text-[11px] font-extrabold tracking-wider uppercase text-muted">Disposable</span>
-            <div class="w-7 h-7 rounded-full bg-slate-100 dark:bg-forest-darkest flex items-center justify-center">
-              <i data-lucide="wallet" class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400"></i>
+            <div class="w-8 h-8 rounded-full bg-sky-500/10 dark:bg-sky-400/10 flex items-center justify-center text-sky-600 dark:text-sky-400">
+              <i data-lucide="wallet" class="w-4 h-4"></i>
             </div>
           </div>
           <div id="kpi-disposable" class="text-3xl font-black tracking-tight relative z-10 mt-1 text-main">-</div>
-          <p class="text-[10px] text-faint mt-2 relative z-10 font-semibold">Dana bebas konsumsi & tabungan</p>
+          <p class="text-[11px] text-faint mt-2 relative z-10 font-medium">Dana bebas konsumsi & tabungan</p>
         </div>
       </div>
 
