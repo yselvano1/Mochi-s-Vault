@@ -671,27 +671,41 @@
   </div>
 
 <!-- MODAL 3: TAMBAH MASTER DATA -->
-  ... (kode modal master data) ...
+  <div id="modalMaster" class="fixed inset-0 bg-forest-darkest/40 dark:bg-forest-darkest/80 z-50 hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm">
+    <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
+      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-forest-muted/50 pb-3 mb-3">
+        <h4 id="master-title" class="font-extrabold text-main text-base">Tambah Data</h4>
+        <button type="button" onclick="closeModal('modalMaster')" class="tap-shrink bg-slate-100/50 dark:bg-forest-dark p-2 rounded-full transition border border-slate-200/50 dark:border-forest-muted"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-3 text-sm">
+        <input type="hidden" id="master-type">
+        
+        <div id="master-kategoriutama-wrap" class="hidden">
+          <label class="font-bold text-main block mb-1 text-xs">Kategori Utama</label>
+          <select id="master-kategoriutama-select" onchange="handleKategoriUtamaSelectChange()" class="w-full ios-input cursor-pointer"></select>
+        </div>
+        
+        <div id="master-kategoriutama-baru-wrap" class="hidden">
+          <label class="font-bold text-main block mb-1 text-xs">Nama Kategori Utama Baru</label>
+          <input type="text" id="master-kategoriutama-baru" placeholder="Contoh: Investasi" class="w-full ios-input">
+        </div>
+        
+        <div>
+          <label class="font-bold text-main block mb-1 text-xs" id="master-nama-label">Nama</label>
+          <input type="text" id="master-nama" class="w-full ios-input" required>
+        </div>
+        
+        <div id="master-extra-field" class="space-y-3"></div>
+        
+        <div class="pt-3">
+          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(141,64,18,0.2)] transition-colors">Simpan Master Data</button>
+        </div>
+      </form>
+    </div>
   </div>
 
-  <!-- PASTIKAN TAG INI ADA SEBELUM KODE JS -->
+  <!-- SCRIPT JAVASCRIPT DIMULAI DI SINI -->
   <script>
-    // ==========================================
-    // CONFIGURATION URL GOOGLE APPS SCRIPT
-    // ==========================================
-    const API_URL = "https://script.google.com/macros/s/AKfycbx8HzV4KHpr6QAM4bDebEbBTIwSNeg5idIaQZUeBUuPu6OJ3xWMFvby82aOrq1CPYCLHg/exec";
-
-    let GLOBAL_DATA = {};
-    let currentModalBackFn = null;
-
-    // ... (SELURUH KODE JAVASCRIPT LAINNYA) ...
-
-    async function handleSaveMaster(event) {
-      // ...
-    }
-  </script> <!-- PASTIKAN TAG PENUTUP INI JUGA ADA DI PALING BAWAH -->
-</body>
-</html>
     // ==========================================
     // CONFIGURATION URL GOOGLE APPS SCRIPT
     // ==========================================
@@ -707,7 +721,6 @@
       const isError = type === 'error';
       const isInfo = type === 'info';
       
-      // Menggunakan Rose untuk error, Sky untuk info, Forest/White untuk sukses
       let bgClass = isError ? 'bg-rose-500' : (isInfo ? 'bg-sky-500' : 'bg-forest-darkest dark:bg-white');
       let textClass = (isInfo || isError) ? 'text-white' : 'text-white dark:text-forest-darkest';
       let icon = isError ? 'alert-circle' : (isInfo ? 'loader' : 'check-circle');
