@@ -433,6 +433,11 @@
     </button>
   </nav>
 
+  <!-- FLOATING ACTION BUTTON (+) FOR MOBILE (Sedikit dinaikkan agar tidak tertutup nav) -->
+  <button onclick="openModal('modalInputTrx')" class="tap-shrink md:hidden fixed bottom-24 right-5 w-14 h-14 bg-teal-600 text-white rounded-full shadow-lg shadow-teal-500/40 flex items-center justify-center z-30" aria-label="Tambah Transaksi">
+    <i data-lucide="plus" class="w-7 h-7"></i>
+  </button>
+
   <!-- MODAL 1: FORM INPUT TRANSAKSI -->
   <div id="modalInputTrx" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-900/70 z-50 hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop">
     <div id="modalInputTrx-content" class="glass-modal-content w-full max-w-lg rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-6 shadow-2xl modal-content-bottom md:modal-content-center border border-white/20">
