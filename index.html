@@ -1790,6 +1790,12 @@
       
       html += `
         <div class="text-center flex flex-col items-center mb-4 border-b border-slate-100 dark:border-forest-muted/50 pb-5">
+          
+          <!-- KAPSUL REF ID ALA BANKING -->
+          <div class="mb-3 pt-1">
+             <span class="font-mono text-[9px] bg-slate-100 dark:bg-forest-muted/30 text-muted px-3 py-1 rounded-full uppercase tracking-widest select-all border border-slate-200/50 dark:border-forest-muted/50 border-dashed">REF: ${trx.idTransaksi}</span>
+          </div>
+
           <div class="icon-chip ${m.chip} w-16 h-16 rounded-[1rem] mb-3 shadow-sm"><i data-lucide="${m.icon}" class="w-7 h-7"></i></div>
           <h3 class="text-lg font-extrabold text-main leading-tight">${trx.deskripsi || trx.kategori}</h3>
           <p class="text-3xl font-black mt-1 ${meta.cls}">${meta.prefix}${formatRupiah(trx.jumlah)}</p>
@@ -1816,7 +1822,7 @@
       document.getElementById('modal-detail-inner').innerHTML = html;
       openModal('modalDetail');
     }
-
+    
     function showAkunHistory(namaAkun) {
       currentModalBackFn = () => showAkunHistory(namaAkun);
       window.isNestedModalView = false;
