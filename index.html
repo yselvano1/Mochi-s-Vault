@@ -1017,17 +1017,17 @@ function getAmountMeta(jenis) {
   if (!jenis) return { cls: 'amount-out', prefix: '-' };
   const j = jenis.toLowerCase().trim();
 
-  // 🔵 BLUE: Assets in Transit / Transfers / Give Receivables / Reimburse
-  if (j.includes('transfer') || j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi') || j.includes('reimburse')) {
+  // 🔵 BLUE: Transfers / Give Receivables / Reimburse
+  if (j.includes('transfer') || j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi')) {
     return { cls: 'amount-info', prefix: '' };
   }
 
-  // 🟢 GREEN: Money In (Income, Receive Receivable, Receive Debt)
+  // 🟢 GREEN: Money In (Income / Receive Receivable / Receive Debt)
   if (j.includes('masuk') || j.includes('income') || j.includes('terima') || j.includes('receive')) {
     return { cls: 'amount-in', prefix: '+' };
   }
 
-  // 🔴 RED: Money Out (Expense, Pay Debt)
+  // 🔴 RED: Money Out (Expense / Pay Debt)
   return { cls: 'amount-out', prefix: '-' };
 }
 
@@ -1035,56 +1035,63 @@ function getAmountMeta(jenis) {
   const k = (namaKategori || '').toLowerCase().trim();
   const j = (jenis || '').toLowerCase().trim();
 
-  // 🟢 1. INCOME
+  // Prioritas 1: Ikon Spesifik Berdasarkan Jenis Transaksi AP/AR
+  if (j.includes('terima piutang') || j.includes('receive receivable')) {
+    return { icon: 'hand-coins', chip: 'chip-pemasukan' }; // 🟢 GREEN
+  }
+  if (j.includes('terima hutang') || j.includes('receive debt') || j.includes('pinjam')) {
+    return { icon: 'piggy-bank', chip: 'chip-pemasukan' }; // 🟢 GREEN
+  }
+  if (j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi')) {
+    return { icon: 'send', chip: 'chip-info' }; // 🔵 BLUE
+  }
+  if (j.includes('bayar hutang') || j.includes('pay debt') || j.includes('cicilan')) {
+    return { icon: 'credit-card', chip: 'chip-pengeluaran' }; // 🔴 RED
+  }
+
+  // Prioritas 2: Kategori Pendapatan
   if (k.includes('salary') || k.includes('gaji')) return { icon: 'banknote', chip: 'chip-pemasukan' };
   if (k.includes('bonus') || k.includes('tunjangan')) return { icon: 'gift', chip: 'chip-pemasukan' };
   if (k.includes('freelance') || k.includes('proyek')) return { icon: 'briefcase', chip: 'chip-pemasukan' };
   if (k.includes('investment') || k.includes('investasi')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
 
-  // 🔵 2. TRANSIT / AP-AR
-  if (k.includes('transfer')) return { icon: 'arrow-right-left', chip: 'chip-info' };
-  if (k.includes('receivable') || k.includes('piutang')) return { icon: 'send', chip: 'chip-info' };
+  // Transfer External vs Internal
+  if (k.includes('external transfer') || k.includes('transfer keluar')) {
+    return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
+  }
+  if (k.includes('internal transfer') || k.includes('pindah buku') || k.includes('transfer')) {
+    return { icon: 'arrow-right-left', chip: 'chip-info' };
+  }
 
-  // 🔴 3. EXPENSE SUB-CATEGORIES (SPESIFIK)
-  // Healthcare
+  // Subkategori Pengeluaran Harian
   if (k.includes('checkup') || k.includes('dokter')) return { icon: 'stethoscope', chip: 'chip-pengeluaran' };
   if (k.includes('medicine') || k.includes('vitamin') || k.includes('obat')) return { icon: 'pill', chip: 'chip-pengeluaran' };
   if (k.includes('sport') || k.includes('fitness') || k.includes('gym')) return { icon: 'dumbbell', chip: 'chip-pengeluaran' };
-
-  // Transportation
   if (k.includes('fuel') || k.includes('bensin')) return { icon: 'fuel', chip: 'chip-pengeluaran' };
   if (k.includes('flight') || k.includes('tiket pesawat')) return { icon: 'plane', chip: 'chip-pengeluaran' };
   if (k.includes('train') || k.includes('kereta')) return { icon: 'train-front', chip: 'chip-pengeluaran' };
   if (k.includes('grab') || k.includes('gocar') || k.includes('ojek')) return { icon: 'car-front', chip: 'chip-pengeluaran' };
-
-  // Bills & Utilities
   if (k.includes('electricity') || k.includes('listrik')) return { icon: 'zap', chip: 'chip-pengeluaran' };
   if (k.includes('water') || k.includes('air') || k.includes('pdam')) return { icon: 'droplet', chip: 'chip-pengeluaran' };
   if (k.includes('internet') || k.includes('wifi')) return { icon: 'wifi', chip: 'chip-pengeluaran' };
   if (k.includes('phone') || k.includes('pulsa')) return { icon: 'smartphone', chip: 'chip-pengeluaran' };
   if (k.includes('gas')) return { icon: 'flame', chip: 'chip-pengeluaran' };
   if (k.includes('tax') || k.includes('pajak')) return { icon: 'receipt', chip: 'chip-pengeluaran' };
-
-  // Household
   if (k.includes('houseware') || k.includes('perabot')) return { icon: 'armchair', chip: 'chip-pengeluaran' };
   if (k.includes('home maintenance') || k.includes('servis rumah')) return { icon: 'hammer', chip: 'chip-pengeluaran' };
   if (k.includes('home services') || k.includes('art')) return { icon: 'brush', chip: 'chip-pengeluaran' };
   if (k.includes('pet') || k.includes('anabul') || k.includes('kucing')) return { icon: 'paw-print', chip: 'chip-pengeluaran' };
-
-  // Personal Care
   if (k.includes('skincare') || k.includes('makeup')) return { icon: 'sparkles', chip: 'chip-pengeluaran' };
   if (k.includes('treatment') || k.includes('salon')) return { icon: 'scissors', chip: 'chip-pengeluaran' };
-
-  // Food & Groceries
   if (k.includes('snack') || k.includes('drink') || k.includes('minuman')) return { icon: 'cookie', chip: 'chip-pengeluaran' };
   if (k.includes('groceries') || k.includes('belanja dapur')) return { icon: 'shopping-basket', chip: 'chip-pengeluaran' };
   if (k.includes('dining') || k.includes('food') || k.includes('makan')) return { icon: 'utensils', chip: 'chip-pengeluaran' };
 
-  // 🔄 FALLBACK OTOMATIS
-  if (j.includes('masuk') || j.includes('income')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
+  // Fallback
+  if (j.includes('masuk') || j.includes('income') || j.includes('receive') || j.includes('terima')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
   if (j.includes('transfer') || j.includes('piutang')) return { icon: 'send', chip: 'chip-info' };
-  
-  return { icon: 'shopping-bag', chip: 'chip-pengeluaran' };
+
+  return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
 }
 
     function getIconMeta(jenis, kategori = '') {
@@ -1680,20 +1687,34 @@ function getAmountMeta(jenis) {
     }
 
     function isCategoryMatchingType(katObj, jenisTrx) {
-      if (!katObj || !jenisTrx) return true;
-      const kJenis = (katObj.jenis || '').toLowerCase().trim();
-      const tJenis = jenisTrx.toLowerCase().trim();
+  if (!katObj || !jenisTrx) return true;
+  const kJenis = (katObj.jenis || '').toLowerCase().trim();
+  const tJenis = jenisTrx.toLowerCase().trim();
 
-      if (!kJenis) return true;
+  if (!kJenis) return true;
 
-      if (tJenis.includes('pemasukan') || tJenis.includes('income') || tJenis.includes('terima')) {
-        return kJenis.includes('pemasukan') || kJenis.includes('income') || kJenis.includes('terima');
-      }
-      if (tJenis.includes('pengeluaran') || tJenis.includes('expense') || tJenis.includes('bayar')) {
-        return kJenis.includes('pengeluaran') || kJenis.includes('expense') || kJenis.includes('bayar');
-      }
-      return true;
-    }
+  // Pelunasan Piutang / Pinjaman Hutang
+  if (tJenis.includes('terima piutang') || tJenis.includes('receive receivable') || tJenis.includes('terima hutang') || tJenis.includes('receive debt')) {
+    return kJenis.includes('income') || kJenis.includes('pemasukan') || kJenis.includes('receivable') || kJenis.includes('payable') || kJenis.includes('piutang') || kJenis.includes('hutang');
+  }
+
+  // Pembayaran Hutang / Penyerahan Piutang
+  if (tJenis.includes('bayar hutang') || tJenis.includes('pay debt') || tJenis.includes('beri piutang') || tJenis.includes('give receivable')) {
+    return kJenis.includes('expense') || kJenis.includes('pengeluaran') || kJenis.includes('receivable') || kJenis.includes('payable') || kJenis.includes('piutang') || kJenis.includes('hutang');
+  }
+
+  // Pemasukan Umum
+  if (tJenis.includes('pemasukan') || tJenis.includes('income')) {
+    return kJenis.includes('pemasukan') || kJenis.includes('income') || kJenis.includes('terima');
+  }
+
+  // Pengeluaran Umum
+  if (tJenis.includes('pengeluaran') || tJenis.includes('expense')) {
+    return kJenis.includes('pengeluaran') || kJenis.includes('expense') || kJenis.includes('bayar');
+  }
+
+  return true;
+}
 
     function groupKategoriData() {
       const activeJenisTrx = document.getElementById('form-jenis').value || 'Pengeluaran';
