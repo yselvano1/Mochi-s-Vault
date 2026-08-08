@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Mochi's Vault — Keuangan Yosa & Fani</title>
   
-  <!-- PWA & Manifest Integration -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#FAF8F5">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -13,7 +12,6 @@
   <link rel="apple-touch-icon" href="mochi-happy.png">
   <link rel="icon" type="image/png" href="mochi-happy.png">
 
-  <!-- Tailwind CSS & Lucide Icons via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = { 
@@ -22,16 +20,16 @@
         extend: {
           colors: {
             mochi: {
-              light: '#E8A87C',   /* Soft Warm Caramel */
-              DEFAULT: '#C87A4B', /* Mochi Warm Brown */
-              dark: '#A45D33'     /* Dark Cinnamon */
+              light: '#E8A87C',
+              DEFAULT: '#C87A4B',
+              dark: '#A45D33'
             },
             coffee: {
-              darkest: '#181412', /* Latar Dark Mode Neutral */
-              dark: '#221C19',    /* Kartu Dark Mode */
+              darkest: '#181412',
+              dark: '#221C19',
               subtle: '#2D2520'  
             },
-            obsidian: '#231A15'   /* Hero Card Light Mode */
+            obsidian: '#231A15'
           }
         }
       }
@@ -43,7 +41,6 @@
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
     :root {
-      /* === MOCHI WARM MONOCHROME (LIGHT MODE) === */
       --bg-app: #FAF8F5; 
       --bg-card: #FFFFFF;
       --bg-subtle: #F3ECE4;
@@ -56,23 +53,20 @@
       --border-color: rgba(45, 36, 30, 0.07); 
 
       /* STRICT 3-COLOR SYSTEM (LIGHT MODE) */
-      --amount-in: #2E6F40;      /* 🟢 Forest Sage Green (Money In / Growth) */
+      --amount-in: #2E6F40;      /* 🟢 Forest Sage Green (Money In / Cash / Savings) */
       --amount-out: #B93838;     /* 🔴 Terracotta Red (Money Out / Payables) */
       --amount-info: #1D63B8;    /* 🔵 Denim Blue (Assets in Transit / Receivables) */
-      --amount-warn: #B93838;    /* 🔴 Terracotta Red (Kewajiban/Payables) */
+      --amount-warn: #B93838;    
 
-      /* Icon Chip Backgrounds (12% Opacity) */
       --chip-in-bg: rgba(46, 111, 64, 0.12);
       --chip-out-bg: rgba(185, 56, 56, 0.12);
       --chip-info-bg: rgba(29, 99, 184, 0.12);
       --chip-warn-bg: rgba(185, 56, 56, 0.12);
 
-      /* iOS Glassmorphism */
       --glass-bg: rgba(255, 255, 255, 0.85);
       --glass-border: rgba(255, 255, 255, 0.7);
       --glass-modal-bg: rgba(250, 248, 245, 0.92);
       
-      /* Soft Earthy Shadows */
       --shadow-card: 0 10px 30px -6px rgba(45, 36, 30, 0.05), 0 2px 8px -2px rgba(45, 36, 30, 0.03);
       --shadow-item: 0 2px 10px -2px rgba(45, 36, 30, 0.03);
       --shadow-premium: 0 12px 35px -8px rgba(200, 122, 75, 0.15);
@@ -80,7 +74,6 @@
     }
 
     html.dark {
-      /* === MOCHI WARM MONOCHROME (DARK MODE) === */
       --bg-app: #181412; 
       --bg-card: #221C19; 
       --bg-subtle: #2D2520;
@@ -96,15 +89,13 @@
       --amount-in: #52B788;      /* 🟢 Soft Mint Green */
       --amount-out: #E57373;     /* 🔴 Soft Coral Red */
       --amount-info: #64B5F6;    /* 🔵 Soft Sky Blue */
-      --amount-warn: #E57373;    /* 🔴 Soft Coral Red */
+      --amount-warn: #E57373;    
 
-      /* Icon Chip Backgrounds (15% Opacity) */
       --chip-in-bg: rgba(82, 183, 136, 0.15);
       --chip-out-bg: rgba(229, 115, 115, 0.15);
       --chip-info-bg: rgba(100, 181, 246, 0.15);
       --chip-warn-bg: rgba(229, 115, 115, 0.15);
 
-      /* Smoked Glass */
       --glass-bg: rgba(34, 28, 25, 0.85); 
       --glass-border: rgba(250, 248, 245, 0.08);
       --glass-modal-bg: rgba(24, 20, 18, 0.94);
@@ -125,7 +116,6 @@
       padding-bottom: max(6rem, env(safe-area-inset-bottom)); 
     }
 
-    /* === FLOATING CARDS & ITEMS === */
     .floating-card {
       background-color: var(--bg-card);
       box-shadow: var(--shadow-card);
@@ -140,7 +130,6 @@
       border: 1px solid var(--border-color); 
     }
 
-    /* === COMPACT IOS INPUT FORMS === */
     .ios-input {
       background-color: var(--bg-subtle-2);
       border: 1px solid transparent; 
@@ -158,7 +147,6 @@
       background-color: var(--bg-card);
     }
 
-    /* Animasi Validasi Error */
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       20%, 60% { transform: translateX(-5px); }
@@ -171,12 +159,10 @@
       background-color: var(--bg-card) !important;
     }
 
-    /* Core Utilities */
     .text-main { color: var(--text-primary); }
     .text-muted { color: var(--text-secondary); }
     .text-faint { color: var(--text-tertiary); }
     
-    /* Strict Functional Color Classes */
     .amount-in { color: var(--amount-in) !important; }
     .amount-out { color: var(--amount-out) !important; }
     .amount-info { color: var(--amount-info) !important; }
@@ -193,7 +179,6 @@
     .chip-info { background-color: var(--chip-info-bg); color: var(--amount-info); }
     .chip-warn { background-color: var(--chip-warn-bg); color: var(--amount-warn); }
 
-    /* === CLEAN TOP BAR === */
     .clean-topbar {
       background: linear-gradient(180deg, var(--bg-app) 60%, transparent 100%);
       backdrop-filter: blur(8px);
@@ -201,7 +186,6 @@
       padding-top: max(1.5rem, env(safe-area-inset-top));
     }
 
-    /* === BOTTOM NAV === */
     .nav-bar-bottom {
       background-color: var(--glass-bg) !important;
       backdrop-filter: blur(20px);
@@ -209,11 +193,8 @@
       border-top: 1px solid var(--glass-border);
       padding-bottom: env(safe-area-inset-bottom);
     }
-    .nav-item {
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
+    .nav-item { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-    /* === PAW FAB ANIMATIONS === */
     @keyframes pawPulse {
       0% { box-shadow: 0 0 0 0 rgba(200, 122, 75, 0.4); }
       70% { box-shadow: 0 0 0 15px rgba(200, 122, 75, 0); }
@@ -223,11 +204,8 @@
       animation: pawPulse 2.5s infinite;
       transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .paw-fab:active {
-      transform: scale(0.9);
-    }
+    .paw-fab:active { transform: scale(0.9); }
 
-    /* Glassmorphism Modals */
     .glass-modal-content {
       background-color: var(--glass-modal-bg) !important;
       backdrop-filter: blur(25px);
@@ -236,14 +214,12 @@
       border: 1px solid var(--glass-border);
     }
 
-    /* Interaksi hover & active */
     .card-hover { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease; }
     .card-hover:hover { transform: translateY(-2px); box-shadow: var(--shadow-premium); border-color: rgba(200, 122, 75, 0.2); }
     .card-hover:active { transform: scale(0.97); }
     .tap-shrink { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .tap-shrink:active { transform: scale(0.92); }
 
-    /* Staggered Fade In */
     @keyframes slideUpFade {
       from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
@@ -251,14 +227,12 @@
     .stagger-item { animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
     .page-animate { animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
-    /* Splash Screen Animations */
     @keyframes floatCat {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-10px); }
     }
     .animate-float { animation: floatCat 3s ease-in-out infinite; }
 
-    /* Modal Animation */
     .modal-backdrop { transition: opacity 0.3s ease; opacity: 0; backdrop-filter: blur(0px); }
     .modal-backdrop.show { opacity: 1; backdrop-filter: blur(3px); }
     .modal-content-bottom { transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); }
@@ -269,29 +243,16 @@
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
   </style>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW reg error:', err));
-      });
-    }
-  </script>
 </head>
 <body class="min-h-screen">
 
-  <!-- ============================================== -->
-  <!-- 0. SPLASH SCREEN -->
-  <!-- ============================================== -->
+  <!-- SPLASH SCREEN -->
   <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-700">
     <div class="animate-float flex flex-col items-center">
-      
-      <!-- Logo Foto Asli Mochi -->
       <div class="w-28 h-28 flex items-center justify-center rounded-full shadow-[0_8px_30px_rgba(200,122,75,0.15)] relative overflow-hidden bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)]">
         <img src="mochi-happy.png" alt="Mochi" class="w-full h-full object-cover">
       </div>
-      
       <h2 class="mt-6 text-2xl font-black text-main tracking-tight">Mochi's Vault</h2>
-      
       <div class="mt-3 bg-[var(--bg-subtle-2)] px-4 py-1.5 rounded-full flex items-center space-x-2">
         <i data-lucide="loader-2" class="w-3.5 h-3.5 text-mochi animate-spin"></i>
         <span id="splash-text" class="text-xs font-bold text-mochi dark:text-mochi-light">Waking up Mochi...</span>
@@ -299,19 +260,20 @@
     </div>
   </div>
 
-  <!-- REWARDING ANIMATION OVERLAY -->
+  <!-- REWARD OVERLAY (CAT PAW BARU) -->
   <div id="reward-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center pointer-events-none">
     <div class="absolute inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/80 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="reward-bg"></div>
     <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="reward-content">
       <div class="relative">
         <div class="absolute inset-0 bg-mochi-light rounded-full animate-ping opacity-75"></div>
         <div class="w-24 h-24 bg-gradient-to-tr from-mochi to-mochi-light rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(200,122,75,0.6)] relative z-10 border-4 border-white dark:border-coffee-darkest">
-          <!-- PAW 4 JARI PRESISI -->
+          <!-- SVG CAT PAW FOOTPRINT BARU (Icons8 Style) -->
           <svg class="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 21.5c-3 0-5.5-2-6-5-.5-2.5.5-4 2-5 1.5-1 3-1.5 4-1.5s2.5.5 4 1.5c1.5 1 2.5 2.5 2 5-.5 3-3 5-6 5z" />
-            <circle cx="7.5" cy="8.5" r="2.5"/>
-            <circle cx="11.5" cy="5.5" r="2.8"/>
-            <circle cx="16.5" cy="8.5" r="2.5"/>
+            <path d="M12 11.5c-2.8 0-5 2.1-5 4.8 0 2.2 1.8 3.7 5 3.7s5-1.5 5-3.7c0-2.7-2.2-4.8-5-4.8z"/>
+            <ellipse cx="6.5" cy="9.5" rx="1.8" ry="2.5"/>
+            <ellipse cx="10.2" cy="6.8" rx="1.8" ry="2.5"/>
+            <ellipse cx="13.8" cy="6.8" rx="1.8" ry="2.5"/>
+            <ellipse cx="17.5" cy="9.5" rx="1.8" ry="2.5"/>
           </svg>
         </div>
       </div>
@@ -320,10 +282,9 @@
     </div>
   </div>
 
-  <!-- TOAST CONTAINER -->
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- TOP BAR CLEAN -->
+  <!-- TOP BAR -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pb-4 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-3.5">
       <div class="w-11 h-11 rounded-full bg-[var(--bg-subtle-2)] overflow-hidden flex items-center justify-center shadow-sm border border-[var(--border-color)] flex-shrink-0">
@@ -576,16 +537,17 @@
     </div>
   </nav>
 
-  <!-- === FLOATING ACTION BUTTON (PAW KUCING 4 JARI PRESISI) === -->
+ <!-- FAB TAMBAH TRANSAKSI (CAT PAW BARU) -->
   <div class="fixed bottom-[5.5rem] left-0 right-0 z-50 pointer-events-none">
     <div class="max-w-3xl mx-auto px-5 relative h-full">
       <button ontouchstart="vibrate(35)" onclick="openFormTransaksiBaru()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full text-white shadow-[0_8px_20px_-6px_rgba(200,122,75,0.5)] flex items-center justify-center pointer-events-auto border border-white/20 group">
-        <!-- SVG PAW 4 JARI PERSISI REWARD OVERLAY -->
+        <!-- SVG CAT PAW FOOTPRINT BARU -->
         <svg class="w-7 h-7 text-white transform -translate-y-[1px]" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 21.5c-3 0-5.5-2-6-5-.5-2.5.5-4 2-5 1.5-1 3-1.5 4-1.5s2.5.5 4 1.5c1.5 1 2.5 2.5 2 5-.5 3-3 5-6 5z" />
-          <circle cx="7.5" cy="8.5" r="2.5"/>
-          <circle cx="11.5" cy="5.5" r="2.8"/>
-          <circle cx="16.5" cy="8.5" r="2.5"/>
+          <path d="M12 11.5c-2.8 0-5 2.1-5 4.8 0 2.2 1.8 3.7 5 3.7s5-1.5 5-3.7c0-2.7-2.2-4.8-5-4.8z"/>
+          <ellipse cx="6.5" cy="9.5" rx="1.8" ry="2.5"/>
+          <ellipse cx="10.2" cy="6.8" rx="1.8" ry="2.5"/>
+          <ellipse cx="13.8" cy="6.8" rx="1.8" ry="2.5"/>
+          <ellipse cx="17.5" cy="9.5" rx="1.8" ry="2.5"/>
         </svg>
       </button>
     </div>
@@ -1103,53 +1065,79 @@
     }
 
     // STRICT 3-COLOR SYSTEM PARSING LOGIC
-    function getAmountMeta(jenis) {
-      if (!jenis) return { cls: 'amount-out', prefix: '-' };
-      const j = jenis.toLowerCase().trim();
+   function getAmountMeta(jenis) {
+  if (!jenis) return { cls: 'amount-out', prefix: '-' };
+  const j = jenis.toLowerCase().trim();
 
-      // 🔵 BLUE: Assets in Transit (Internal Transfer, Give Receivable / Menalangi / Reimburse)
-      if (j.includes('transfer') || j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi') || j.includes('reimburse')) {
-        return { cls: 'amount-info', prefix: '' };
-      }
+  // 🔵 BLUE: Assets in Transit / Transfers / Give Receivables / Reimburse
+  if (j.includes('transfer') || j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi') || j.includes('reimburse')) {
+    return { cls: 'amount-info', prefix: '' };
+  }
 
-      // 🟢 GREEN: Money In / Growth (Income, Pemasukan, Receive Receivable, Receive Debt/Loan)
-      if (j.includes('masuk') || j.includes('income') || j.includes('terima')) {
-        return { cls: 'amount-in', prefix: '+' };
-      }
+  // 🟢 GREEN: Money In / Growth (Income, Receive Receivable, Receive Debt/Loan)
+  if (j.includes('masuk') || j.includes('income') || j.includes('terima')) {
+    return { cls: 'amount-in', prefix: '+' };
+  }
 
-      // 🔴 RED: Money Out / Payables (Expense, Pengeluaran, Pay Debt/Installment, Cicilan)
-      return { cls: 'amount-out', prefix: '-' };
-    }
+  // 🔴 RED: Money Out & Payables (Expense, Pay Debt/Installment, Cicilan)
+  return { cls: 'amount-out', prefix: '-' };
+}
 
-    function getIconMeta(jenis, kategori = '') {
-      const j = (jenis || '').toLowerCase().trim();
-      const k = (kategori || '').toLowerCase().trim();
+// MAPPING IKON SPESIFIK KATEGORI & FALLBACK OTOMATIS
+function getCategoryIconMeta(namaKategori, jenis) {
+  const k = (namaKategori || '').toLowerCase().trim();
+  const j = (jenis || '').toLowerCase().trim();
 
-      // 🔵 BLUE ICONS (Assets in Transit / Transfer / Give Receivables / Reimburse)
-      if (j.includes('transfer')) return { icon: 'arrow-right-left', chip: 'chip-info' };
-      if (j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi') || j.includes('reimburse')) {
-        return { icon: 'send', chip: 'chip-info' };
-      }
+  // 🟢 INCOME CATEGORY ICONS (GREEN)
+  if (k.includes('salary') || k.includes('gaji')) return { icon: 'banknote', chip: 'chip-pemasukan' };
+  if (k.includes('bonus') || k.includes('allowance')) return { icon: 'gift', chip: 'chip-pemasukan' };
+  if (k.includes('freelance') || k.includes('side')) return { icon: 'briefcase', chip: 'chip-pemasukan' };
+  if (k.includes('investment') || k.includes('investasi')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
 
-      // 🟢 GREEN ICONS (Money In / Receive Receivable / Receive Debt)
-      if (j.includes('terima piutang') || j.includes('receive receivable')) return { icon: 'hand-coins', chip: 'chip-pemasukan' };
-      if (j.includes('terima hutang') || j.includes('receive debt') || j.includes('pinjam')) return { icon: 'piggy-bank', chip: 'chip-pemasukan' };
-      if (j.includes('masuk') || j.includes('income')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
+  // 🔴 EXPENSE CATEGORY ICONS (RED)
+  if (k.includes('food') || k.includes('groceries') || k.includes('makan')) return { icon: 'utensils', chip: 'chip-pengeluaran' };
+  if (k.includes('transportation') || k.includes('transport')) return { icon: 'car', chip: 'chip-pengeluaran' };
+  if (k.includes('bills') || k.includes('utilities') || k.includes('tagihan') || k.includes('listrik')) return { icon: 'zap', chip: 'chip-pengeluaran' };
+  if (k.includes('healthcare') || k.includes('health') || k.includes('kesehatan')) return { icon: 'heart-pulse', chip: 'chip-pengeluaran' };
+  if (k.includes('education') || k.includes('pendidikan')) return { icon: 'graduation-cap', chip: 'chip-pengeluaran' };
+  if (k.includes('personal care') || k.includes('care')) return { icon: 'smile', chip: 'chip-pengeluaran' };
+  if (k.includes('shopping') || k.includes('belanja')) return { icon: 'shopping-bag', chip: 'chip-pengeluaran' };
 
-      // 🔴 RED ICONS (Money Out & Payables / Expenses / Pay Debt)
-      if (j.includes('hutang') || j.includes('debt') || j.includes('bayar') || j.includes('cicilan')) return { icon: 'credit-card', chip: 'chip-pengeluaran' };
-      if (k.includes('makan') || k.includes('food') || k.includes('kuliner')) return { icon: 'utensils', chip: 'chip-pengeluaran' };
-      if (k.includes('belanja') || k.includes('shopping')) return { icon: 'shopping-bag', chip: 'chip-pengeluaran' };
-      if (k.includes('listrik') || k.includes('air') || k.includes('bill') || k.includes('tagihan')) return { icon: 'zap', chip: 'chip-pengeluaran' };
+  // 🔵 TRANSFER & AP/R CATEGORY ICONS (BLUE)
+  if (k.includes('internal transfer')) return { icon: 'arrow-right-left', chip: 'chip-info' };
+  if (k.includes('deposit') || k.includes('withdraw') || k.includes('savings')) return { icon: 'piggy-bank', chip: 'chip-info' };
+  if (k.includes('receivables') || k.includes('piutang')) return { icon: 'hand-coins', chip: 'chip-info' };
+  if (k.includes('payables') || k.includes('hutang')) return { icon: 'credit-card', chip: 'chip-out-bg' };
 
-      // Default Red Expense
-      return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
-    }
+  // FALLBACK OTOMATIS BILA KATEGORI BARU/BELUM ADA IKON NYA
+  return getIconMeta(jenis, namaKategori);
+}
+
+function getIconMeta(jenis, kategori = '') {
+  const j = (jenis || '').toLowerCase().trim();
+  const k = (kategori || '').toLowerCase().trim();
+
+  // 🔵 BLUE ICONS
+  if (j.includes('transfer')) return { icon: 'arrow-right-left', chip: 'chip-info' };
+  if (j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi') || j.includes('reimburse')) {
+    return { icon: 'send', chip: 'chip-info' };
+  }
+
+  // 🟢 GREEN ICONS
+  if (j.includes('terima piutang') || j.includes('receive receivable')) return { icon: 'hand-coins', chip: 'chip-pemasukan' };
+  if (j.includes('terima hutang') || j.includes('receive debt') || j.includes('pinjam')) return { icon: 'piggy-bank', chip: 'chip-pemasukan' };
+  if (j.includes('masuk') || j.includes('income')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
+
+  // 🔴 RED ICONS
+  if (j.includes('hutang') || j.includes('debt') || j.includes('bayar') || j.includes('cicilan')) return { icon: 'credit-card', chip: 'chip-pengeluaran' };
+
+  return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
+}
 
     function iconChipHtml(jenis, kategori = '') {
-      const m = getIconMeta(jenis, kategori);
-      return `<div class="icon-chip ${m.chip}"><i data-lucide="${m.icon}" class="w-4 h-4"></i></div>`;
-    }
+  const m = getCategoryIconMeta(kategori, jenis);
+  return `<div class="icon-chip ${m.chip}"><i data-lucide="${m.icon}" class="w-4 h-4"></i></div>`;
+}
 
     function animateNumber(el, targetValue, duration = 700) {
       const start = 0;
@@ -1686,42 +1674,59 @@
     }
 
     function renderKategoriPickerList() {
-      const { groups, order } = groupKategoriData();
-      const listEl = document.getElementById('kategori-picker-list');
-      let html = "";
+  const { groups, order } = groupKategoriData();
+  const listEl = document.getElementById('kategori-picker-list');
+  let html = "";
 
-      order.forEach(utama => {
-        const group = groups[utama];
-        const isExpanded = !!kategoriPickerExpanded[utama];
-        const isIncome = (group.jenis || '').toLowerCase().includes('masuk') || (group.jenis || '').toLowerCase().includes('income');
-        const badgeColor = isIncome ? 'amount-in bg-[var(--chip-in-bg)]' : 'amount-out bg-[var(--chip-out-bg)]';
-        const onlyMainItem = group.items.length === 1 && (!group.items[0].subKategori || group.items[0].subKategori === group.items[0].namaKategori);
+  order.forEach(utama => {
+    const group = groups[utama];
+    const isExpanded = !!kategoriPickerExpanded[utama];
+    const isIncome = (group.jenis || '').toLowerCase().includes('masuk') || (group.jenis || '').toLowerCase().includes('income');
+    const badgeColor = isIncome ? 'amount-in bg-[var(--chip-in-bg)]' : 'amount-out bg-[var(--chip-out-bg)]';
+    const onlyMainItem = group.items.length === 1 && (!group.items[0].subKategori || group.items[0].subKategori === group.items[0].namaKategori);
 
-        if (onlyMainItem) {
-          html += `
-            <div onclick="vibrate(30); selectKategori('${escapeAttr(group.items[0].namaKategori)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-[var(--border-color)] transition-colors">
-              <span class="font-extrabold text-main text-[13px]">${utama}</span>
-              <span class="text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badgeColor}">${group.jenis}</span>
-            </div>`;
-        } else {
-          html += `
-            <div class="mb-2 floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden">
-              <div onclick="vibrate(30); toggleKategoriGroup('${escapeAttr(utama)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
-                <span class="font-extrabold text-[13px]">${utama}</span>
-                <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-4 h-4 text-faint"></i>
-              </div>
-              <div class="${isExpanded ? '' : 'hidden'} border-t border-slate-100 dark:border-[var(--border-color)] bg-white dark:bg-card">`;
-          group.items.forEach((item, idx) => {
-            const label = (item.subKategori && item.subKategori !== item.namaKategori) ? item.subKategori : item.namaKategori;
-            const borderCls = idx !== group.items.length -1 ? 'border-b border-slate-100 dark:border-[var(--border-color)]' : '';
-            html += `<div onclick="vibrate(30); selectKategori('${escapeAttr(item.namaKategori)}')" class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] ${borderCls}">${label}</div>`;
-          });
-          html += `</div></div>`;
-        }
+    const mMain = getCategoryIconMeta(utama, group.jenis);
+
+    if (onlyMainItem) {
+      html += `
+        <div onclick="vibrate(30); selectKategori('${escapeAttr(group.items[0].namaKategori)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-[var(--border-color)] transition-colors">
+          <div class="flex items-center space-x-3">
+            <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
+            <span class="font-extrabold text-main text-[13px]">${utama}</span>
+          </div>
+          <span class="text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badgeColor}">${group.jenis}</span>
+        </div>`;
+    } else {
+      html += `
+        <div class="mb-2 floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden">
+          <div onclick="vibrate(30); toggleKategoriGroup('${escapeAttr(utama)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
+            <div class="flex items-center space-x-3">
+              <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
+              <span class="font-extrabold text-[13px]">${utama}</span>
+            </div>
+            <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-4 h-4 text-faint"></i>
+          </div>
+          <div class="${isExpanded ? '' : 'hidden'} border-t border-slate-100 dark:border-[var(--border-color)] bg-white dark:bg-card">`;
+      
+      group.items.forEach((item, idx) => {
+        const label = (item.subKategori && item.subKategori !== item.namaKategori) ? item.subKategori : item.namaKategori;
+        const borderCls = idx !== group.items.length -1 ? 'border-b border-slate-100 dark:border-[var(--border-color)]' : '';
+        const mSub = getCategoryIconMeta(label, group.jenis);
+        
+        html += `
+          <div onclick="vibrate(30); selectKategori('${escapeAttr(item.namaKategori)}')" class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between ${borderCls}">
+            <div class="flex items-center space-x-3">
+              <div class="icon-chip ${mSub.chip} w-7 h-7"><i data-lucide="${mSub.icon}" class="w-3.5 h-3.5"></i></div>
+              <span>${label}</span>
+            </div>
+          </div>`;
       });
-      listEl.innerHTML = html;
-      lucide.createIcons();
+      html += `</div></div>`;
     }
+  });
+  listEl.innerHTML = html;
+  lucide.createIcons();
+}
 
     function toggleKategoriGroup(utama) { kategoriPickerExpanded[utama] = !kategoriPickerExpanded[utama]; renderKategoriPickerList(); }
 
@@ -1748,44 +1753,69 @@
       show('wrap-akunsumber', hasSumber); show('wrap-akuntujuan', hasTujuan); show('wrap-hutang', hasHutang); show('wrap-piutang', hasPiutang);
     }
 
-    function showKpiDetail(kpiName) {
-      currentModalBackFn = null;
-      let html = `<div class="space-y-4 pt-1">
-          <div class="text-center pb-2">
-            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">KPI Details</span>
-            <h3 class="text-lg font-extrabold text-main leading-tight">${kpiName}</h3>
-            <p class="text-3xl font-black text-mochi dark:text-mochi-light mt-2">${formatRupiah(GLOBAL_DATA.kpi[kpiName])}</p>
-          </div>
-          <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
-      `;
-      if (kpiName === 'Net Worth') {
-        html += `
-          <p class="font-extrabold text-main mb-3 text-[13px]">Net Worth Components:</p>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Total Cash & Savings:</span> <span class="font-extrabold amount-in">${formatRupiah(GLOBAL_DATA.kpi['Total Kas'])}</span></div>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Total Receivables:</span> <span class="font-extrabold amount-info">${formatRupiah(GLOBAL_DATA.kpi['Total Piutang'])}</span></div>
-          <div class="flex justify-between amount-out pb-2 mt-2"><span>Total Payables (-):</span> <span class="font-extrabold">${formatRupiah(GLOBAL_DATA.kpi['Total Hutang'])}</span></div>
-          <div class="flex justify-between font-black text-main pt-3 mt-1 border-t border-slate-200/50 dark:border-[var(--border-color)] text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(GLOBAL_DATA.kpi['Net Worth'])}</span></div>
-        `;
-      } else if (kpiName === 'Disposable Income') {
-        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">Remaining daily operational cash that is free to use for consumption and savings after deducting monthly commitments.</p>`;
-      } else if (kpiName === 'Total Kas') {
-        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Account Balance Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.akun.forEach(a => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${a.namaAkun} (${a.pemilik}):</span> <span class="font-extrabold amount-in">${formatRupiah(a.saldoBerjalan)}</span></div>`; });
-        html += `</div>`;
-      } else if (kpiName === 'Total Piutang') {
-        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Receivables Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.piutang.forEach(p => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${p.namaPiutang}:</span> <span class="font-extrabold amount-info">${formatRupiah(p.sisaPiutang)}</span></div>`; });
-        html += `</div>`;
-      } else if (kpiName === 'Total Hutang') {
-        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Payables Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.hutang.forEach(h => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${h.namaHutang}:</span> <span class="font-extrabold amount-out">${formatRupiah(h.sisaHutang)}</span></div>`; });
-        html += `</div>`;
-      } else if (kpiName === 'Net Savings Operasional') {
-        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">Net difference between operational income and operational expenses.</p>`;
-      }
-      html += `</div></div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html; openModal('modalDetail');
-    }
+    // ==========================================
+// 2. MODAL DETAIL KPI (FULL ENGLISH + 3 COLOR RULES)
+// ==========================================
+
+function showKpiDetail(kpiName) {
+  currentModalBackFn = null;
+  
+  // NAMA KPI ENGLISH MAPPER
+  let displayTitle = kpiName;
+  if (kpiName === 'Total Kas') displayTitle = 'Total Cash';
+  else if (kpiName === 'Net Savings Operasional') displayTitle = 'Net Savings';
+  else if (kpiName === 'Total Piutang') displayTitle = 'Total Receivables';
+  else if (kpiName === 'Total Hutang') displayTitle = 'Total Payables';
+
+  // WARNA NOMINAL HEADER UTAMA SESUAI 3 COLOR RULES
+  let kpiColor = 'text-main';
+  if (displayTitle === 'Total Cash' || displayTitle === 'Net Savings' || displayTitle === 'Disposable Income') {
+    kpiColor = 'amount-in'; // 🟢 GREEN
+  } else if (displayTitle === 'Total Receivables') {
+    kpiColor = 'amount-info'; // 🔵 BLUE
+  } else if (displayTitle === 'Total Payables') {
+    kpiColor = 'amount-out'; // 🔴 RED
+  }
+
+  let html = `<div class="space-y-4 pt-1">
+      <div class="text-center pb-2">
+        <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">KPI Details</span>
+        <h3 class="text-lg font-extrabold text-main leading-tight">${displayTitle}</h3>
+        <p class="text-3xl font-black mt-2 ${kpiColor}">${formatRupiah(GLOBAL_DATA.kpi[kpiName])}</p>
+      </div>
+      <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
+  `;
+
+  if (displayTitle === 'Net Worth') {
+    html += `
+      <p class="font-extrabold text-main mb-3 text-[13px]">Net Worth Components:</p>
+      <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Total Cash & Savings:</span> <span class="font-extrabold amount-in">${formatRupiah(GLOBAL_DATA.kpi['Total Kas'])}</span></div>
+      <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Total Receivables:</span> <span class="font-extrabold amount-info">${formatRupiah(GLOBAL_DATA.kpi['Total Piutang'])}</span></div>
+      <div class="flex justify-between amount-out pb-2 mt-2"><span>Total Payables (-):</span> <span class="font-extrabold">${formatRupiah(GLOBAL_DATA.kpi['Total Hutang'])}</span></div>
+      <div class="flex justify-between font-black text-main pt-3 mt-1 border-t border-slate-200/50 dark:border-[var(--border-color)] text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(GLOBAL_DATA.kpi['Net Worth'])}</span></div>
+    `;
+  } else if (displayTitle === 'Disposable Income') {
+    html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">Remaining daily operational cash that is free to use for consumption and savings after deducting monthly commitments.</p>`;
+  } else if (displayTitle === 'Total Cash') {
+    html += `<p class="font-extrabold text-main mb-3 text-[13px]">Account Balance Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
+    GLOBAL_DATA.akun.forEach(a => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${a.namaAkun} (${a.pemilik}):</span> <span class="font-extrabold amount-in">${formatRupiah(a.saldoBerjalan)}</span></div>`; });
+    html += `</div>`;
+  } else if (displayTitle === 'Total Receivables') {
+    html += `<p class="font-extrabold text-main mb-3 text-[13px]">Receivables Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
+    GLOBAL_DATA.piutang.forEach(p => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${p.namaPiutang}:</span> <span class="font-extrabold amount-info">${formatRupiah(p.sisaPiutang)}</span></div>`; });
+    html += `</div>`;
+  } else if (displayTitle === 'Total Payables') {
+    html += `<p class="font-extrabold text-main mb-3 text-[13px]">Payables Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
+    GLOBAL_DATA.hutang.forEach(h => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${h.namaHutang}:</span> <span class="font-extrabold amount-out">${formatRupiah(h.sisaHutang)}</span></div>`; });
+    html += `</div>`;
+  } else if (displayTitle === 'Net Savings') {
+    html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">Net difference between operational income and operational expenses.</p>`;
+  }
+  
+  html += `</div></div>`;
+  document.getElementById('modal-detail-inner').innerHTML = html; 
+  openModal('modalDetail');
+}
 
     function showTrxDetail(idTrx) {
       const trx = GLOBAL_DATA.transaksi.find(t => t.idTransaksi === idTrx); 
