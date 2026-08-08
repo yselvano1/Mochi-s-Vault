@@ -1098,24 +1098,43 @@
     }
 
     function getAmountMeta(jenis) {
-      if (['Pemasukan', 'Terima Piutang', 'Terima Hutang (Pinjam)'].includes(jenis)) return { cls: 'amount-in', prefix: '+' };
-      if (['Pengeluaran', 'Beri Piutang (Menalangi)', 'Bayar Hutang/Cicilan'].includes(jenis)) return { cls: 'amount-out', prefix: '-' };
-      return { cls: 'text-main', prefix: '' };
-    }
+  if (!jenis) return { cls: 'amount-out', prefix: '-' };
+  const j = jenis.toLowerCase().trim();
 
-    function getIconMeta(jenis) {
-      switch (jenis) {
-        case 'Pemasukan': return { icon: 'arrow-down-left', chip: 'chip-pemasukan' };
-        case 'Pengeluaran': return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
-        case 'Transfer Internal': return { icon: 'arrow-right-left', chip: 'chip-transfer' };
-        case 'Beri Piutang (Menalangi)': return { icon: 'hand-coins', chip: 'chip-piutang' };
-        case 'Terima Piutang': return { icon: 'hand-coins', chip: 'chip-pemasukan' };
-        case 'Terima Hutang (Pinjam)': return { icon: 'credit-card', chip: 'chip-pemasukan' };
-        case 'Bayar Hutang/Cicilan': return { icon: 'credit-card', chip: 'chip-hutang' };
-        default: return { icon: 'circle', chip: 'chip-transfer' };
-      }
-    }
+  // Pemasukan / Income / Terima
+  if (j.includes('masuk') || j.includes('income') || j.includes('terima')) {
+    return { cls: 'amount-in', prefix: '+' };
+  }
+  
+  // Transfer Internal
+  if (j.includes('transfer')) {
+    return { cls: 'text-main', prefix: '' };
+  }
 
+  // Pengeluaran / Expense / Beri / Bayar / Hutang / Piutang (Default Keluar)
+  return { cls: 'amount-out', prefix: '-' };
+}
+
+function getIconMeta(jenis) {
+  if (!jenis) return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
+  const j = jenis.toLowerCase().trim();
+
+  if (j.includes('masuk') || j.includes('income')) {
+    return { icon: 'arrow-down-left', chip: 'chip-pemasukan' };
+  }
+  if (j.includes('transfer')) {
+    return { icon: 'arrow-right-left', chip: 'chip-transfer' };
+  }
+  if (j.includes('piutang')) {
+    return { icon: 'hand-coins', chip: 'chip-piutang' };
+  }
+  if (j.includes('hutang') || j.includes('debt') || j.includes('payable') || j.includes('cicilan')) {
+    return { icon: 'credit-card', chip: 'chip-hutang' };
+  }
+  
+  // Default Pengeluaran / Expense (Gantikan ikon circle polos)
+  return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
+}
     function iconChipHtml(jenis) {
       const m = getIconMeta(jenis);
       return `<div class="icon-chip ${m.chip}"><i data-lucide="${m.icon}" class="w-4 h-4"></i></div>`;
