@@ -53,9 +53,9 @@
       --border-color: rgba(45, 36, 30, 0.07); 
 
       /* STRICT 3-COLOR SYSTEM (LIGHT MODE) */
-      --amount-in: #2E6F40;      /* 🟢 Forest Sage Green (Money In / Cash / Savings) */
-      --amount-out: #B93838;     /* 🔴 Terracotta Red (Money Out / Payables) */
-      --amount-info: #1D63B8;    /* 🔵 Denim Blue (Assets in Transit / Receivables) */
+      --amount-in: #2E6F40;      /* 🟢 Forest Sage Green */
+      --amount-out: #B93838;     /* 🔴 Terracotta Red */
+      --amount-info: #1D63B8;    /* 🔵 Denim Blue */
       --amount-warn: #B93838;    
 
       --chip-in-bg: rgba(46, 111, 64, 0.12);
@@ -183,7 +183,7 @@
       background: linear-gradient(180deg, var(--bg-app) 60%, transparent 100%);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      padding-top: max(1.5rem, env(safe-area-inset-top));
+      padding-top: max(1.75rem, env(safe-area-inset-top));
     }
 
     .nav-bar-bottom {
@@ -283,15 +283,15 @@
 
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- TOP BAR -->
-  <header class="clean-topbar sticky top-0 z-40 px-5 pb-4 flex items-center justify-between max-w-3xl mx-auto">
-    <div class="flex items-center space-x-3.5">
-      <div class="w-11 h-11 rounded-full bg-[var(--bg-subtle-2)] overflow-hidden flex items-center justify-center shadow-sm border border-[var(--border-color)] flex-shrink-0">
+  <!-- TOP BAR (FOTO 5: ENLARGED AVATAR & SPACING) -->
+  <header class="clean-topbar sticky top-0 z-40 px-5 pt-7 pb-5 flex items-center justify-between max-w-3xl mx-auto">
+    <div class="flex items-center space-x-4">
+      <div class="w-14 h-14 rounded-full bg-[var(--bg-subtle-2)] overflow-hidden flex items-center justify-center shadow-md border-2 border-[var(--border-color)] flex-shrink-0">
         <img src="mochi-logo-new.png" alt="Mochi" class="w-full h-full object-cover">
       </div>
       <div class="flex flex-col justify-center">
-        <h1 class="text-xl md:text-2xl font-extrabold text-main leading-none tracking-tight">Hello, Meow</h1>
-        <p class="text-[11px] md:text-[12px] font-semibold text-muted mt-1">Guarding your wealth, me-ow 🐾</p>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-main leading-none tracking-tight">Hello, Meow</h1>
+        <p class="text-xs md:text-sm font-semibold text-muted mt-1.5">Guarding your wealth, me-ow 🐾</p>
       </div>
     </div>
     
@@ -302,13 +302,14 @@
       </button>
     </div>
   </header>
+
   <!-- MAIN CONTAINER -->
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
 
     <!-- 1. DASHBOARD PAGE -->
     <section id="page-dashboard" class="space-y-4 page-animate">
       
-      <!-- NET WORTH HERO -->
+      <!-- NET WORTH HERO (FOTO 6: BALANCED DIMENSIONS) -->
       <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden group bg-obsidian dark:bg-gradient-to-br dark:from-mochi dark:to-mochi-dark text-white border-none shadow-[0_12px_35px_-8px_rgba(35,26,21,0.3)] dark:shadow-[0_12px_35px_-8px_rgba(217,136,88,0.3)]">
         <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-white/10 dark:bg-white/20 rounded-full mix-blend-overlay filter blur-[20px] group-hover:opacity-70 transition-opacity duration-500"></div>
         <div class="absolute -top-6 -left-6 w-24 h-24 bg-white/5 dark:bg-white/10 rounded-full mix-blend-overlay filter blur-[10px]"></div>
@@ -319,41 +320,37 @@
             <i data-lucide="trending-up" class="w-4 h-4"></i>
           </div>
         </div>
-        <div id="kpi-networth" class="text-4xl md:text-5xl font-black tracking-tighter relative z-10 text-white drop-shadow-sm transition-all duration-300 origin-left">-</div>
+        <div id="kpi-networth" class="text-3xl md:text-4xl font-black tracking-tight relative z-10 text-white drop-shadow-sm transition-all duration-300 origin-left">-</div>
       </div>
       
-      <!-- DISPOSABLE INCOME -->
-      <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Disposable Income')" class="floating-item p-5 md:p-6 cursor-pointer card-hover flex flex-col justify-center relative overflow-hidden group bg-card">
-        <div class="flex justify-between items-center mb-2">
-          <span class="text-[10px] text-muted font-black uppercase tracking-wider">DISPOSABLE INCOME</span>
-          <div class="w-7 h-7 rounded-full bg-[var(--chip-in-bg)] flex items-center justify-center amount-in">
-            <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
+      <!-- DISPOSABLE INCOME (FOTO 6: BALANCED DIMENSIONS) -->
+      <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Disposable Income')" class="floating-item p-6 cursor-pointer card-hover flex flex-col justify-center relative overflow-hidden group bg-card">
+        <div class="flex justify-between items-center mb-3">
+          <span class="text-[11px] font-black tracking-widest uppercase text-muted">DISPOSABLE INCOME</span>
+          <div class="w-8 h-8 rounded-full bg-[var(--chip-in-bg)] flex items-center justify-center amount-in">
+            <i data-lucide="wallet" class="w-4 h-4"></i>
           </div>
         </div>
-        <span id="kpi-disposable" class="text-3xl md:text-4xl font-black amount-in block tracking-tight transition-all duration-300 origin-left">-</span>
+        <div id="kpi-disposable" class="text-3xl md:text-4xl font-black amount-in block tracking-tight transition-all duration-300 origin-left">-</div>
       </div>
 
       <!-- SECONDARY GRID -->
       <div class="grid grid-cols-2 gap-3">
-        <!-- TOTAL CASH (GREEN) -->
         <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Kas')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-3 h-3 mr-1.5 amount-in"></i> TOTAL CASH</span>
           <span id="kpi-kas" class="text-sm md:text-base font-extrabold amount-in block truncate w-full">-</span>
         </div>
 
-        <!-- NET SAVINGS (GREEN) -->
         <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Savings Operasional')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="piggy-bank" class="w-3 h-3 mr-1.5 amount-in"></i> NET SAVINGS</span>
           <span id="kpi-savings" class="text-sm md:text-base font-extrabold amount-in block truncate w-full">-</span>
         </div>
 
-        <!-- RECEIVABLES (BLUE) -->
         <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Piutang')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="hand-coins" class="w-3 h-3 mr-1.5 amount-info"></i> RECEIVABLES</span>
           <span id="kpi-piutang" class="text-sm md:text-base font-extrabold amount-info block truncate w-full">-</span>
         </div>
 
-        <!-- PAYABLES (RED) -->
         <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Hutang')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="credit-card" class="w-3 h-3 mr-1.5 amount-out"></i> PAYABLES</span>
           <span id="kpi-hutang" class="text-sm md:text-base font-extrabold amount-out block truncate w-full">-</span>
@@ -672,16 +669,16 @@
     </div>
   </div>
 
-  <!-- MODAL PICKER KATEGORI -->
+  <!-- MODAL PICKER KATEGORI (FOTO 3: CLEAN BORDERLESS HEADER) -->
   <div id="modalKategoriPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalKategoriPicker')">
     <div id="modalKategoriPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
-      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
-        <h3 class="font-extrabold text-main text-sm">Select Category</h3>
-        <button ontouchstart="vibrate(30)" onclick="closeModal('modalKategoriPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
+      <div class="flex justify-between items-center pb-3 mb-3 border-b border-slate-200/50 dark:border-[var(--border-color)]">
+        <h3 class="font-extrabold text-main text-base">Select Category</h3>
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalKategoriPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
-      <div id="kategori-picker-list" class="text-xs space-y-1.5"></div>
+      <div id="kategori-picker-list" class="text-xs space-y-2"></div>
     </div>
   </div>
 
@@ -931,20 +928,23 @@
       }
     }, {passive: true});
 
+    /* FOTO 1: ADAPTIF THEME COLOR META */
     function applyDarkModePref() {
       const pref = localStorage.getItem('yf-theme');
       const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       const isDark = pref ? pref === 'dark' : systemDark;
       document.documentElement.classList.toggle('dark', isDark);
       updateDarkModeIcon(isDark);
-      document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#181412" : "#FAF8F5");
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+      if (metaTheme) metaTheme.setAttribute("content", isDark ? "#181412" : "#FAF8F5");
     }
     
     function toggleDarkMode() {
       const isDark = document.documentElement.classList.toggle('dark');
       localStorage.setItem('yf-theme', isDark ? 'dark' : 'light');
       updateDarkModeIcon(isDark);
-      document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#181412" : "#FAF8F5");
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+      if (metaTheme) metaTheme.setAttribute("content", isDark ? "#181412" : "#FAF8F5");
     }
     
     function updateDarkModeIcon(isDark) {
@@ -1005,8 +1005,8 @@
       if(!el) return;
       const text = formatRupiah(value);
       el.innerText = text;
-      if (text.length > 17) { el.style.fontSize = el.id === 'kpi-networth' ? '1.75rem' : '1.25rem'; el.style.lineHeight = '1.2'; }
-      else if (text.length > 14) { el.style.fontSize = el.id === 'kpi-networth' ? '2.25rem' : '1.5rem'; el.style.lineHeight = '1.2'; }
+      if (text.length > 17) { el.style.fontSize = '1.25rem'; el.style.lineHeight = '1.2'; }
+      else if (text.length > 14) { el.style.fontSize = '1.5rem'; el.style.lineHeight = '1.2'; }
       else { el.style.fontSize = ''; el.style.lineHeight = ''; }
     }
 
@@ -1018,10 +1018,22 @@
       return { cls: 'amount-out', prefix: '-' };
     }
 
+    /* FOTO 4: SPECIFIC SUB-CATEGORY ICONS PRESI */
     function getCategoryIconMeta(namaKategori, jenis) {
       const k = (namaKategori || '').toLowerCase().trim();
       const j = (jenis || '').toLowerCase().trim();
 
+      // SubKategori Utilities Spesifik
+      if (k.includes('electricity') || k.includes('listrik')) return { icon: 'zap', chip: 'chip-pengeluaran' };
+      if (k.includes('water') || k.includes('air') || k.includes('pdam')) return { icon: 'droplet', chip: 'chip-pengeluaran' };
+      if (k.includes('internet') || k.includes('wifi') || k.includes('indihome') || k.includes('biznet')) return { icon: 'wifi', chip: 'chip-pengeluaran' };
+      if (k.includes('phone') || k.includes('pulsa') || k.includes('seluler')) return { icon: 'smartphone', chip: 'chip-pengeluaran' };
+      if (k.includes('gas') || k.includes('lpg')) return { icon: 'flame', chip: 'chip-pengeluaran' };
+      if (k.includes('tax') || k.includes('pajak') || k.includes('pbb')) return { icon: 'receipt', chip: 'chip-pengeluaran' };
+
+      if (k.includes('bill') || k.includes('utility') || k.includes('utilities') || k.includes('tagihan')) return { icon: 'receipt', chip: 'chip-pengeluaran' };
+
+      // Income
       if (k.includes('salary') || k.includes('gaji') || k.includes('payroll')) return { icon: 'banknote', chip: 'chip-pemasukan' };
       if (k.includes('bonus') || k.includes('allowance') || k.includes('tunjangan')) return { icon: 'gift', chip: 'chip-pemasukan' };
       if (k.includes('freelance') || k.includes('side') || k.includes('proyek')) return { icon: 'briefcase', chip: 'chip-pemasukan' };
@@ -1029,14 +1041,15 @@
       if (k.includes('business') || k.includes('usaha') || k.includes('profit') || k.includes('toko')) return { icon: 'store', chip: 'chip-pemasukan' };
       if (k.includes('refund') || k.includes('cashback')) return { icon: 'rotate-ccw', chip: 'chip-pemasukan' };
 
+      // Transit
       if (k.includes('internal transfer') || k.includes('pindah buku')) return { icon: 'arrow-right-left', chip: 'chip-info' };
       if (k.includes('deposit') || k.includes('savings') || k.includes('tabungan') || k.includes('withdraw')) return { icon: 'piggy-bank', chip: 'chip-info' };
       if (k.includes('receivable') || k.includes('piutang') || k.includes('reimburse') || k.includes('talangan')) return { icon: 'send', chip: 'chip-info' };
 
+      // Expenses
       if (k.includes('food') || k.includes('groceries') || k.includes('makan') || k.includes('dapur') || k.includes('supermarket')) return { icon: 'utensils', chip: 'chip-pengeluaran' };
       if (k.includes('coffee') || k.includes('kopi') || k.includes('cafe') || k.includes('restaurant') || k.includes('restoran')) return { icon: 'coffee', chip: 'chip-pengeluaran' };
       if (k.includes('transport') || k.includes('bensin') || k.includes('fuel') || k.includes('parkir') || k.includes('tol') || k.includes('ojek') || k.includes('grab') || k.includes('gojek')) return { icon: 'car', chip: 'chip-pengeluaran' };
-      if (k.includes('bill') || k.includes('utility') || k.includes('utilities') || k.includes('listrik') || k.includes('air') || k.includes('wifi') || k.includes('internet') || k.includes('pulsa') || k.includes('tagihan')) return { icon: 'zap', chip: 'chip-pengeluaran' };
       if (k.includes('rent') || k.includes('housing') || k.includes('kontrakan') || k.includes('kos') || k.includes('kpr') || k.includes('rumah')) return { icon: 'home', chip: 'chip-pengeluaran' };
       if (k.includes('health') || k.includes('doctor') || k.includes('dokter') || k.includes('obat') || k.includes('apotek') || k.includes('asuransi')) return { icon: 'heart-pulse', chip: 'chip-pengeluaran' };
       if (k.includes('education') || k.includes('pendidikan') || k.includes('sekolah') || k.includes('kursus') || k.includes('buku')) return { icon: 'graduation-cap', chip: 'chip-pengeluaran' };
@@ -1635,10 +1648,6 @@
       }
     }
 
-    // ==========================================
-    // FIX: CATEGORY PICKER & DYNAMIC MATCHING
-    // ==========================================
-
     function isCategoryMatchingType(katObj, jenisTrx) {
       if (!katObj || !jenisTrx) return true;
       const kJenis = (katObj.jenis || '').toLowerCase().trim();
@@ -1658,7 +1667,7 @@
     function groupKategoriData() {
       const activeJenisTrx = document.getElementById('form-jenis').value || 'Pengeluaran';
       const groups = {}; 
-      const order = []; // PERBAIKAN: Ditambahkan kata kunci 'const'
+      const order = [];
       
       const allKategori = GLOBAL_DATA.kategori || [];
       let filtered = allKategori.filter(k => isCategoryMatchingType(k, activeJenisTrx));
@@ -1682,6 +1691,7 @@
       }
     }
 
+    /* FOTO 2: SUB-CATEGORY ADAPTIVE COLOR FIX */
     function renderKategoriPickerList() {
       const { groups, order } = groupKategoriData();
       const listEl = document.getElementById('kategori-picker-list');
@@ -1713,11 +1723,11 @@
               <div onclick="vibrate(30); toggleKategoriGroup('${escapeAttr(utama)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
                 <div class="flex items-center space-x-3">
                   <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
-                  <span class="font-extrabold text-[13px]">${utama}</span>
+                  <span class="font-extrabold text-main text-[13px]">${utama}</span>
                 </div>
                 <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-4 h-4 text-faint"></i>
               </div>
-              <div class="${isExpanded ? '' : 'hidden'} border-t border-slate-100 dark:border-[var(--border-color)] bg-white dark:bg-card">`;
+              <div class="${isExpanded ? '' : 'hidden'} border-t border-slate-100 dark:border-[var(--border-color)] bg-[var(--bg-card)]">`;
           
           group.items.forEach((item, idx) => {
             const label = (item.subKategori && item.subKategori !== item.namaKategori) ? item.subKategori : item.namaKategori;
@@ -1725,10 +1735,10 @@
             const mSub = getCategoryIconMeta(label, group.jenis);
             
             html += `
-              <div onclick="vibrate(30); selectKategori('${escapeAttr(item.namaKategori)}')" class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between ${borderCls}">
+              <div onclick="vibrate(30); selectKategori('${escapeAttr(item.namaKategori)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between ${borderCls}">
                 <div class="flex items-center space-x-3">
                   <div class="icon-chip ${mSub.chip} w-7 h-7"><i data-lucide="${mSub.icon}" class="w-3.5 h-3.5"></i></div>
-                  <span>${label}</span>
+                  <span class="text-main">${label}</span>
                 </div>
               </div>`;
           });
