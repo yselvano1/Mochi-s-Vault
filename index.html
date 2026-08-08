@@ -362,23 +362,26 @@
         </div>
 
         <!-- Donut Chart Container -->
-        <div class="relative flex items-center justify-center my-3 min-h-[260px]">
+        <div class="relative flex items-center justify-center my-2">
           <div id="chart-donut-kategori" class="w-full"></div>
           
-          <!-- Central Overlay -->
-          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
-            <div id="mochi-avatar-container" class="w-12 h-12 rounded-full overflow-hidden shadow-sm border-2 border-white dark:border-forest-dark bg-slate-100 dark:bg-forest-dark flex items-center justify-center mb-1">
-              <span class="text-lg">🐾</span>
+          <!-- Central Overlay (Presisi & Rapi) -->
+          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none p-2 text-center">
+            <!-- Frame Avatar Mochi -->
+            <div class="w-10 h-10 rounded-full overflow-hidden shadow-sm border border-slate-200 dark:border-forest-muted bg-slate-100 dark:bg-forest-dark flex items-center justify-center mb-1 flex-shrink-0">
+              <img id="mochi-avatar-chart" src="" alt="" class="w-full h-full object-cover hidden" onload="this.classList.remove('hidden'); document.getElementById('mochi-fallback-icon').classList.add('hidden')" onerror="this.classList.add('hidden'); document.getElementById('mochi-fallback-icon').classList.remove('hidden')">
+              <span id="mochi-fallback-icon" class="text-base">🐾</span>
             </div>
-            <span class="text-[9px] font-bold uppercase tracking-wider text-muted">Total Keluar</span>
-            <span id="mochi-total-pengeluaran" class="text-sm font-black text-main tracking-tight mt-0.5">Rp 0</span>
+            
+            <span class="text-[8px] font-extrabold uppercase tracking-widest text-muted leading-none">Total Keluar</span>
+            <span id="mochi-total-pengeluaran" class="text-xs font-black text-main tracking-tight leading-tight mt-1">Rp 0</span>
           </div>
         </div>
 
         <!-- Breakdown Kategori Teks -->
         <div id="dashboard-kategori-analysis" class="space-y-2 mt-4 pt-3 border-t border-slate-100 dark:border-forest-muted/50"></div>
       </div>
-
+      
       <!-- SPLINE AREA CHART (TREN & MILESTONE TABUNGAN) -->
       <div class="floating-card p-5 mt-4 relative overflow-hidden">
         <div class="flex justify-between items-center mb-1">
@@ -757,10 +760,10 @@
 
     // TAMBAHKAN URL GAMBAR MOCHI GITHUB DI SINI
     const MOCHI_ASSETS = {
-      happy: 'https://raw.githubusercontent.com/usernamekamu/mochivault/main/assets/mochi-happy.png',
-      sweat: 'https://raw.githubusercontent.com/usernamekamu/mochivault/main/assets/mochi-sweat.png',
-      angry: 'https://raw.githubusercontent.com/usernamekamu/mochivault/main/assets/mochi-angry.png'
-    };
+  happy: 'https://raw.githubusercontent.com/usernamekamu/repo/main/mochi-happy.png',
+  sweat: 'https://raw.githubusercontent.com/usernamekamu/repo/main/mochi-sweat.png',
+  angry: 'https://raw.githubusercontent.com/usernamekamu/repo/main/mochi-angry.png'
+};
 
     let GLOBAL_DATA = {};
     let currentModalBackFn = null;
@@ -1108,14 +1111,14 @@
       const totalEl = document.getElementById('mochi-total-pengeluaran');
       if (totalEl) totalEl.innerText = formatRupiah(totalPengeluaran);
 
-      // Status Indicator & Dynamic Avatar Injection
+      // Status Indicator & Avatar Swap
       const budgetLimit = 10000000; 
       const ratio = totalPengeluaran / budgetLimit;
-      const avatarContainer = document.getElementById('mochi-avatar-container');
+      const avatarEl = document.getElementById('mochi-avatar-chart');
       const badgeEl = document.getElementById('mochi-status-badge');
 
-      let avatarSrc = "";
       if (badgeEl) {
+        let avatarSrc = "";
         if (ratio > 1.0) {
           if (typeof MOCHI_ASSETS !== 'undefined') avatarSrc = MOCHI_ASSETS.angry;
           badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20";
@@ -1129,14 +1132,7 @@
           badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20";
           badgeEl.innerText = "Aman 🐾";
         }
-      }
-
-      if (avatarContainer) {
-        if (avatarSrc) {
-          avatarContainer.innerHTML = `<img src="${avatarSrc}" alt="Mochi" class="w-full h-full object-cover">`;
-        } else {
-          avatarContainer.innerHTML = `<span class="text-lg">🐾</span>`;
-        }
+        if (avatarEl && avatarSrc) avatarEl.src = avatarSrc;
       }
 
       const chartEl = document.querySelector("#chart-donut-kategori");
@@ -1152,7 +1148,7 @@
       const options = {
         series: series,
         labels: labels,
-        chart: { type: 'donut', height: 260, fontFamily: 'Plus Jakarta Sans, sans-serif' },
+        chart: { type: 'donut', height: 270, fontFamily: 'Plus Jakarta Sans, sans-serif' },
         colors: ['#C87A4B', '#10B981', '#38BDF8', '#F59E0B', '#EC4899', '#8B5CF6', '#14B8A6'],
         stroke: { 
           show: true, 
@@ -1170,15 +1166,11 @@
         },
         plotOptions: {
           pie: {
-            expandOnClick: false,
             donut: {
-              size: '78%',
+              size: '84%', // Lubang tengah diperluas agar muat sempurna
               background: 'transparent',
               labels: {
-                show: false,
-                name: { show: false },
-                value: { show: false },
-                total: { show: false }
+                show: false
               }
             }
           }
