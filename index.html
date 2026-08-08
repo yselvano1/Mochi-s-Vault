@@ -1126,23 +1126,39 @@
       input.value = numberVal > 0 ? new Intl.NumberFormat('id-ID').format(numberVal) : "";
     }
 
+    // DUAL-LANGUAGE AMOUNT META FORMATTER
     function getAmountMeta(jenis) {
-      if (['Pemasukan', 'Terima Piutang', 'Terima Hutang (Pinjam)'].includes(jenis)) return { cls: 'amount-in', prefix: '+' };
-      if (['Pengeluaran', 'Beri Piutang (Menalangi)', 'Bayar Hutang/Cicilan'].includes(jenis)) return { cls: 'amount-out', prefix: '-' };
+      const j = (jenis || '').trim();
+      if (['Pemasukan', 'Income', 'Terima Piutang', 'Receive Receivable', 'Terima Hutang (Pinjam)', 'Receive Payable'].includes(j)) {
+        return { cls: 'amount-in', prefix: '+' };
+      }
+      if (['Pengeluaran', 'Expense', 'Beri Piutang (Menalangi)', 'Give Receivable', 'Bayar Hutang/Cicilan', 'Pay Installment'].includes(j)) {
+        return { cls: 'amount-out', prefix: '-' };
+      }
       return { cls: 'text-main', prefix: '' };
     }
 
+    // DUAL-LANGUAGE & KEYWORD-BASED ICON CHIP META
     function getIconMeta(jenis) {
-      switch (jenis) {
-        case 'Pemasukan': return { icon: 'arrow-down-left', chip: 'chip-pemasukan' };
-        case 'Pengeluaran': return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
-        case 'Transfer Internal': return { icon: 'arrow-right-left', chip: 'chip-transfer' };
-        case 'Beri Piutang (Menalangi)': return { icon: 'hand-coins', chip: 'chip-piutang' };
-        case 'Terima Piutang': return { icon: 'hand-coins', chip: 'chip-pemasukan' };
-        case 'Terima Hutang (Pinjam)': return { icon: 'credit-card', chip: 'chip-pemasukan' };
-        case 'Bayar Hutang/Cicilan': return { icon: 'credit-card', chip: 'chip-hutang' };
-        default: return { icon: 'circle', chip: 'chip-transfer' };
-      }
+      const j = (jenis || '').trim();
+      
+      if (['Pemasukan', 'Income'].includes(j)) return { icon: 'arrow-down-left', chip: 'chip-pemasukan' };
+      if (['Pengeluaran', 'Expense'].includes(j)) return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
+      if (['Transfer Internal', 'Internal Transfer', 'Transfer/Top-up Internal', 'Transfer', 'Setor Tabungan/Dana Darurat', 'Tarik Tabungan/Dana Darurat', 'Transfer External'].includes(j)) return { icon: 'arrow-right-left', chip: 'chip-transfer' };
+      if (['Beri Piutang (Menalangi)', 'Give Receivable', 'Piutang/Talangan/Reimburse'].includes(j)) return { icon: 'hand-coins', chip: 'chip-piutang' };
+      if (['Terima Piutang', 'Receive Receivable'].includes(j)) return { icon: 'hand-coins', chip: 'chip-pemasukan' };
+      if (['Terima Hutang (Pinjam)', 'Receive Payable'].includes(j)) return { icon: 'credit-card', chip: 'chip-pemasukan' };
+      if (['Bayar Hutang/Cicilan', 'Pay Installment', 'Cicilan/Hutang'].includes(j)) return { icon: 'credit-card', chip: 'chip-hutang' };
+      
+      // Smart Fallback berdasarkan kata kunci jika exact match gagal
+      const lower = j.toLowerCase();
+      if (lower.includes('in') || lower.includes('masuk') || lower.includes('terima')) return { icon: 'arrow-down-left', chip: 'chip-pemasukan' };
+      if (lower.includes('out') || lower.includes('keluar') || lower.includes('expense') || lower.includes('bayar')) return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
+      if (lower.includes('transfer')) return { icon: 'arrow-right-left', chip: 'chip-transfer' };
+      if (lower.includes('piutang') || lower.includes('receivable') || lower.includes('reimburse')) return { icon: 'hand-coins', chip: 'chip-piutang' };
+      if (lower.includes('hutang') || lower.includes('payable') || lower.includes('cicilan')) return { icon: 'credit-card', chip: 'chip-hutang' };
+      
+      return { icon: 'receipt', chip: 'chip-transfer' };
     }
 
     function iconChipHtml(jenis) {
@@ -1150,91 +1166,28 @@
       return `<div class="icon-chip ${m.chip}"><i data-lucide="${m.icon}" class="w-4 h-4"></i></div>`;
     }
 
-    // 1. Font Scaler KHUSUS Kotak Metrik Kecil (2x2 Grid)
-function fitCompactGridFontSize(el, formattedText) {
-  el.innerText = formattedText;
-  const len = formattedText.length;
-  if (len > 18) {
-    el.style.fontSize = "10px";
-  } else if (len > 14) {
-    el.style.fontSize = "12px";
-  } else if (len > 11) {
-    el.style.fontSize = "13px";
-  } else {
-    el.style.fontSize = "";
-  }
-}
+    function fitCompactGridFontSize(el, formattedText) {
+      el.innerText = formattedText;
+      const len = formattedText.length;
+      if (len > 18) el.style.fontSize = "10px";
+      else if (len > 14) el.style.fontSize = "12px";
+      else if (len > 11) el.style.fontSize = "13px";
+      else el.style.fontSize = "";
+    }
 
-// 2. Animate Number Murni Untuk Hero Cards (Tanpa Pengecilan Font)
-function animateNumber(el, targetValue, duration = 700) {
-  const start = 0;
-  const startTime = performance.now();
-  function tick(now) {
-    const progress = Math.min((now - startTime) / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
-    const current = Math.round(start + (targetValue - start) * eased);
-    el.innerText = formatRupiah(current);
-    if (progress < 1) requestAnimationFrame(tick);
-    else el.innerText = formatRupiah(targetValue);
-  }
-  requestAnimationFrame(tick);
-}
-
-// 3. Render Dashboard Terpisah
-function renderDashboard() {
-  const kpi = GLOBAL_DATA.kpi || {};
-  
-  // Hero Cards: Tetap Mewah & Besar (Ukuran Murni CSS)
-  animateNumber(document.getElementById('kpi-networth'), kpi['Net Worth'] || 0);
-  animateNumber(document.getElementById('kpi-disposable'), kpi['Disposable Income'] || 0);
-  
-  // Compact Grid: Auto-Shrink Khusus 4 Kotak Kecil
-  fitCompactGridFontSize(document.getElementById('kpi-kas'), formatRupiah(kpi['Total Kas']));
-  fitCompactGridFontSize(document.getElementById('kpi-piutang'), formatRupiah(kpi['Total Piutang']));
-  fitCompactGridFontSize(document.getElementById('kpi-hutang'), formatRupiah(kpi['Total Hutang']));
-  fitCompactGridFontSize(document.getElementById('kpi-savings'), formatRupiah(kpi['Net Savings Operasional']));
-
-  const hasHutangAktif = (GLOBAL_DATA.hutang || []).some(h => h.status === 'Aktif' || h.status === 'Active');
-  document.getElementById('badge-hutang-nav').classList.toggle('hidden', !hasHutangAktif);
-
-  const trxList = GLOBAL_DATA.transaksi || [];
-  const dashListEl = document.getElementById('dashboard-trx-list');
-  dashListEl.innerHTML = "";
-
-  if (trxList.length === 0) {
-    dashListEl.innerHTML = `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
-    return;
-  }
-
-  trxList.slice(0, 5).forEach((trx, i) => {
-    const meta = getAmountMeta(trx.jenis);
-    const div = document.createElement('div');
-    div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-2 last:mb-0 select-none";
-    div.style.animationDelay = `${i * 0.05}s`;
-    
-    div.setAttribute("ontouchstart", `startHold(event, '${trx.idTransaksi}', true)`);
-    div.setAttribute("ontouchend", "endHold()");
-    div.setAttribute("ontouchmove", "cancelHold(event)");
-    div.setAttribute("onmousedown", `startHold(event, '${trx.idTransaksi}', true)`);
-    div.setAttribute("onmouseup", "endHold()");
-    div.setAttribute("onmouseleave", "cancelHold(event)");
-    div.setAttribute("oncontextmenu", "event.preventDefault();");
-    div.onclick = () => { vibrate(10); currentModalBackFn = null; showTrxDetail(trx.idTransaksi); };
-
-    div.innerHTML = `
-      <div class="flex items-center space-x-3 pointer-events-none">
-        ${iconChipHtml(trx.jenis)}
-        <div>
-          <p class="text-[13px] font-bold text-main leading-tight">${trx.deskripsi || trx.kategori}</p>
-          <p class="text-[10px] text-faint font-medium mt-0.5">${trx.tanggal} • ${trx.inputOleh}</p>
-        </div>
-      </div>
-      <span class="text-[13px] font-extrabold ${meta.cls} pointer-events-none">${meta.prefix}${formatRupiah(trx.jumlah)}</span>
-    `;
-    dashListEl.appendChild(div);
-  });
-  lucide.createIcons();
-}
+    function animateNumber(el, targetValue, duration = 700) {
+      const start = 0;
+      const startTime = performance.now();
+      function tick(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(start + (targetValue - start) * eased);
+        el.innerText = formatRupiah(current);
+        if (progress < 1) requestAnimationFrame(tick);
+        else el.innerText = formatRupiah(targetValue);
+      }
+      requestAnimationFrame(tick);
+    }
 
     function openFormTransaksiBaru() {
       document.getElementById('formTransaksi').reset();
@@ -1336,12 +1289,13 @@ function renderDashboard() {
       const kpi = GLOBAL_DATA.kpi || {};
       animateNumber(document.getElementById('kpi-networth'), kpi['Net Worth'] || 0);
       animateNumber(document.getElementById('kpi-disposable'), kpi['Disposable Income'] || 0);
-      document.getElementById('kpi-kas').innerText = formatRupiah(kpi['Total Kas']);
-      document.getElementById('kpi-piutang').innerText = formatRupiah(kpi['Total Piutang']);
-      document.getElementById('kpi-hutang').innerText = formatRupiah(kpi['Total Hutang']);
-      document.getElementById('kpi-savings').innerText = formatRupiah(kpi['Net Savings Operasional']);
+      
+      fitCompactGridFontSize(document.getElementById('kpi-kas'), formatRupiah(kpi['Total Kas']));
+      fitCompactGridFontSize(document.getElementById('kpi-savings'), formatRupiah(kpi['Net Savings Operasional']));
+      fitCompactGridFontSize(document.getElementById('kpi-piutang'), formatRupiah(kpi['Total Piutang']));
+      fitCompactGridFontSize(document.getElementById('kpi-hutang'), formatRupiah(kpi['Total Hutang']));
 
-      const hasHutangAktif = (GLOBAL_DATA.hutang || []).some(h => h.status === 'Aktif');
+      const hasHutangAktif = (GLOBAL_DATA.hutang || []).some(h => h.status === 'Aktif' || h.status === 'Active');
       document.getElementById('badge-hutang-nav').classList.toggle('hidden', !hasHutangAktif);
 
       const trxList = GLOBAL_DATA.transaksi || [];
@@ -1468,59 +1422,6 @@ function renderDashboard() {
       }, 50);
     }
 
-    function showKpiDetail(kpiKey) {
-      currentModalBackFn = null;
-      
-      const titleMap = {
-        'Net Worth': { name: 'Net Worth', colorClass: 'text-main' },
-        'Disposable Income': { name: 'Disposable Income', colorClass: 'text-main' },
-        'Total Kas': { name: 'Total Cash', colorClass: 'amount-in' },
-        'Net Savings Operasional': { name: 'Net Savings', colorClass: 'amount-in' },
-        'Total Piutang': { name: 'Receivables', colorClass: 'amount-info' },
-        'Total Hutang': { name: 'Payables', colorClass: 'amount-out' }
-      };
-
-      const config = titleMap[kpiKey] || { name: kpiKey, colorClass: 'text-main' };
-      const val = GLOBAL_DATA.kpi[kpiKey] || 0;
-
-      let html = `<div class="space-y-4 pt-1">
-          <div class="text-center pb-2">
-            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">KPI Detail</span>
-            <h3 class="text-lg font-extrabold text-main leading-tight">${config.name}</h3>
-            <p class="text-3xl font-black ${config.colorClass} mt-2">${formatRupiah(val)}</p>
-          </div>
-          <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
-      `;
-
-      if (kpiKey === 'Net Worth') {
-        html += `
-          <p class="font-extrabold text-main mb-3 text-[13px]">Net Worth Components:</p>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Total Cash & Savings:</span> <span class="font-extrabold amount-in">${formatRupiah(GLOBAL_DATA.kpi['Total Kas'])}</span></div>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Receivables:</span> <span class="font-extrabold amount-info">${formatRupiah(GLOBAL_DATA.kpi['Total Piutang'])}</span></div>
-          <div class="flex justify-between amount-out pb-2 mt-2"><span>Payables (-):</span> <span class="font-extrabold">${formatRupiah(GLOBAL_DATA.kpi['Total Hutang'])}</span></div>
-          <div class="flex justify-between font-black text-main pt-3 mt-1 border-t border-slate-200/50 dark:border-[var(--border-color)] text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(GLOBAL_DATA.kpi['Net Worth'])}</span></div>
-        `;
-      } else if (kpiKey === 'Disposable Income') {
-        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">Remaining operational cash free to use for consumption and savings after deducting monthly commitments.</p>`;
-      } else if (kpiKey === 'Total Kas') {
-        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Account Balance Details:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.akun.forEach(a => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${a.namaAkun} (${a.pemilik}):</span> <span class="font-extrabold amount-in">${formatRupiah(a.saldoBerjalan)}</span></div>`; });
-        html += `</div>`;
-      } else if (kpiKey === 'Total Piutang') {
-        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Receivable Details:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.piutang.forEach(p => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${p.namaPiutang}:</span> <span class="font-extrabold amount-info">${formatRupiah(p.sisaPiutang)}</span></div>`; });
-        html += `</div>`;
-      } else if (kpiKey === 'Total Hutang') {
-        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Payable Details:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.hutang.forEach(h => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${h.namaHutang}:</span> <span class="font-extrabold amount-out">${formatRupiah(h.sisaHutang)}</span></div>`; });
-        html += `</div>`;
-      } else if (kpiKey === 'Net Savings Operasional') {
-        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">The difference between total operational income and total operational expenses for this month.</p>`;
-      }
-      html += `</div></div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html; openModal('modalDetail');
-    }
-
     function renderRiwayat() {
       const filterBulan = document.getElementById('filter-bulan').value;
       const filterTahun = document.getElementById('filter-tahun').value;
@@ -1551,9 +1452,10 @@ function renderDashboard() {
 
       filtered.forEach(trx => {
         const val = Number(trx.jumlah) || 0;
-        if (trx.jenis === 'Pemasukan' || trx.jenis === 'Terima Piutang' || trx.jenis === 'Terima Hutang (Pinjam)') {
+        const j = (trx.jenis || '').trim();
+        if (['Pemasukan', 'Income', 'Terima Piutang', 'Receive Receivable', 'Terima Hutang (Pinjam)', 'Receive Payable'].includes(j)) {
           totalMasuk += val;
-        } else if (trx.jenis === 'Pengeluaran' || trx.jenis === 'Beri Piutang (Menalangi)' || trx.jenis === 'Bayar Hutang/Cicilan') {
+        } else if (['Pengeluaran', 'Expense', 'Beri Piutang (Menalangi)', 'Give Receivable', 'Bayar Hutang/Cicilan', 'Pay Installment'].includes(j)) {
           totalKeluar += val;
         }
       });
@@ -1718,7 +1620,7 @@ function renderDashboard() {
       const piutangEl = document.getElementById('list-piutang-aktif');
       hutangEl.innerHTML = ""; piutangEl.innerHTML = "";
 
-      const hutangAktif = (GLOBAL_DATA.hutang || []).filter(h => h.status === 'Aktif').sort((a, b) => b.sisaHutang - a.sisaHutang);
+      const hutangAktif = (GLOBAL_DATA.hutang || []).filter(h => h.status === 'Aktif' || h.status === 'Active').sort((a, b) => b.sisaHutang - a.sisaHutang);
       if (hutangAktif.length === 0) hutangEl.innerHTML = `<p class="text-xs text-muted font-semibold">All payables are settled.</p>`;
       else {
         hutangAktif.forEach((h, i) => {
@@ -1744,7 +1646,7 @@ function renderDashboard() {
         });
       }
 
-      const piutangAktif = (GLOBAL_DATA.piutang || []).filter(p => p.status === 'Belum Lunas' || p.status === 'Aktif');
+      const piutangAktif = (GLOBAL_DATA.piutang || []).filter(p => p.status === 'Belum Lunas' || p.status === 'Aktif' || p.status === 'Unsettled' || p.status === 'Active');
       if (piutangAktif.length === 0) piutangEl.innerHTML = `<p class="text-xs text-muted font-semibold">All receivables are settled.</p>`;
       else {
         piutangAktif.forEach((p, i) => {
@@ -1814,8 +1716,9 @@ function renderDashboard() {
       order.forEach(utama => {
         const group = groups[utama];
         const isExpanded = !!kategoriPickerExpanded[utama];
-        const badgeColor = group.jenis === 'Pemasukan' ? 'amount-in bg-[var(--chip-in-bg)]' : 'amount-out bg-[var(--chip-out-bg)]';
-        const typeLabel = group.jenis === 'Pemasukan' ? 'INCOME' : 'EXPENSE';
+        const isIncome = ['Pemasukan', 'Income'].includes(group.jenis);
+        const badgeColor = isIncome ? 'amount-in bg-[var(--chip-in-bg)]' : 'amount-out bg-[var(--chip-out-bg)]';
+        const typeLabel = isIncome ? 'INCOME' : 'EXPENSE';
         const onlyMainItem = group.items.length === 1 && (!group.items[0].subKategori || group.items[0].subKategori === group.items[0].namaKategori);
 
         if (onlyMainItem) {
@@ -1860,47 +1763,62 @@ function renderDashboard() {
         const el = document.getElementById(id);
         if (isShow) el.classList.remove('hidden'); else el.classList.add('hidden');
       };
-      const hasSumber = ['Pengeluaran', 'Transfer Internal', 'Beri Piutang (Menalangi)', 'Bayar Hutang/Cicilan'].includes(jenis);
-      const hasTujuan = ['Pemasukan', 'Transfer Internal', 'Terima Piutang', 'Terima Hutang (Pinjam)'].includes(jenis);
-      const hasHutang = ['Terima Hutang (Pinjam)', 'Bayar Hutang/Cicilan'].includes(jenis);
-      const hasPiutang = ['Beri Piutang (Menalangi)', 'Terima Piutang'].includes(jenis);
+      const hasSumber = ['Pengeluaran', 'Expense', 'Transfer Internal', 'Internal Transfer', 'Beri Piutang (Menalangi)', 'Give Receivable', 'Bayar Hutang/Cicilan', 'Pay Installment'].includes(jenis);
+      const hasTujuan = ['Pemasukan', 'Income', 'Transfer Internal', 'Internal Transfer', 'Terima Piutang', 'Receive Receivable', 'Terima Hutang (Pinjam)', 'Receive Payable'].includes(jenis);
+      const hasHutang = ['Terima Hutang (Pinjam)', 'Receive Payable', 'Bayar Hutang/Cicilan', 'Pay Installment'].includes(jenis);
+      const hasPiutang = ['Beri Piutang (Menalangi)', 'Give Receivable', 'Terima Piutang', 'Receive Receivable'].includes(jenis);
 
       show('wrap-akunsumber', hasSumber); show('wrap-akuntujuan', hasTujuan); show('wrap-hutang', hasHutang); show('wrap-piutang', hasPiutang);
     }
 
-    function showKpiDetail(kpiName) {
+    // SHOW KPI DETAIL MODAL (FIX TITLE & WARNA CONSISTENCY)
+    function showKpiDetail(kpiKey) {
       currentModalBackFn = null;
+      
+      const titleMap = {
+        'Net Worth': { name: 'Net Worth', colorClass: 'amount-in' },
+        'Disposable Income': { name: 'Disposable Income', colorClass: 'amount-in' },
+        'Total Kas': { name: 'Total Cash', colorClass: 'amount-in' },
+        'Net Savings Operasional': { name: 'Net Savings', colorClass: 'amount-in' },
+        'Total Piutang': { name: 'Receivables', colorClass: 'amount-info' },
+        'Total Hutang': { name: 'Payables', colorClass: 'amount-out' }
+      };
+
+      const config = titleMap[kpiKey] || { name: kpiKey, colorClass: 'text-main' };
+      const val = GLOBAL_DATA.kpi[kpiKey] || 0;
+
       let html = `<div class="space-y-4 pt-1">
           <div class="text-center pb-2">
             <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">KPI Detail</span>
-            <h3 class="text-lg font-extrabold text-main leading-tight">${kpiName}</h3>
-            <p class="text-3xl font-black text-mochi dark:text-mochi-light mt-2">${formatRupiah(GLOBAL_DATA.kpi[kpiName])}</p>
+            <h3 class="text-lg font-extrabold text-main leading-tight">${config.name}</h3>
+            <p class="text-3xl font-black ${config.colorClass} mt-2">${formatRupiah(val)}</p>
           </div>
           <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
       `;
-      if (kpiName === 'Net Worth') {
+
+      if (kpiKey === 'Net Worth') {
         html += `
           <p class="font-extrabold text-main mb-3 text-[13px]">Net Worth Components:</p>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Total Cash & Savings:</span> <span class="font-extrabold text-main">${formatRupiah(GLOBAL_DATA.kpi['Total Kas'])}</span></div>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Total Receivables:</span> <span class="font-extrabold amount-info">${formatRupiah(GLOBAL_DATA.kpi['Total Piutang'])}</span></div>
-          <div class="flex justify-between amount-out pb-2 mt-2"><span>Total Payables (-):</span> <span class="font-extrabold">${formatRupiah(GLOBAL_DATA.kpi['Total Hutang'])}</span></div>
-          <div class="flex justify-between font-black text-main pt-3 mt-1 border-t border-slate-200/50 dark:border-[var(--border-color)] text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(GLOBAL_DATA.kpi['Net Worth'])}</span></div>
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Total Cash & Savings:</span> <span class="font-extrabold amount-in">${formatRupiah(GLOBAL_DATA.kpi['Total Kas'])}</span></div>
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Receivables:</span> <span class="font-extrabold amount-info">${formatRupiah(GLOBAL_DATA.kpi['Total Piutang'])}</span></div>
+          <div class="flex justify-between amount-out pb-2 mt-2"><span>Payables (-):</span> <span class="font-extrabold">${formatRupiah(GLOBAL_DATA.kpi['Total Hutang'])}</span></div>
+          <div class="flex justify-between font-black amount-in pt-3 mt-1 border-t border-slate-200/50 dark:border-[var(--border-color)] text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(GLOBAL_DATA.kpi['Net Worth'])}</span></div>
         `;
-      } else if (kpiName === 'Disposable Income') {
+      } else if (kpiKey === 'Disposable Income') {
         html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">Remaining operational cash free to use for consumption and savings after deducting monthly commitments.</p>`;
-      } else if (kpiName === 'Total Kas') {
+      } else if (kpiKey === 'Total Kas') {
         html += `<p class="font-extrabold text-main mb-3 text-[13px]">Account Balance Details:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.akun.forEach(a => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${a.namaAkun} (${a.pemilik}):</span> <span class="font-extrabold text-main">${formatRupiah(a.saldoBerjalan)}</span></div>`; });
+        GLOBAL_DATA.akun.forEach(a => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${a.namaAkun} (${a.pemilik}):</span> <span class="font-extrabold amount-in">${formatRupiah(a.saldoBerjalan)}</span></div>`; });
         html += `</div>`;
-      } else if (kpiName === 'Total Piutang') {
+      } else if (kpiKey === 'Total Piutang') {
         html += `<p class="font-extrabold text-main mb-3 text-[13px]">Receivable Details:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
         GLOBAL_DATA.piutang.forEach(p => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${p.namaPiutang}:</span> <span class="font-extrabold amount-info">${formatRupiah(p.sisaPiutang)}</span></div>`; });
         html += `</div>`;
-      } else if (kpiName === 'Total Hutang') {
+      } else if (kpiKey === 'Total Hutang') {
         html += `<p class="font-extrabold text-main mb-3 text-[13px]">Payable Details:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
         GLOBAL_DATA.hutang.forEach(h => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${h.namaHutang}:</span> <span class="font-extrabold amount-out">${formatRupiah(h.sisaHutang)}</span></div>`; });
         html += `</div>`;
-      } else if (kpiName === 'Net Savings Operasional') {
+      } else if (kpiKey === 'Net Savings Operasional') {
         html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">The difference between total operational income and total operational expenses for this month.</p>`;
       }
       html += `</div></div>`;
@@ -1927,7 +1845,16 @@ function renderDashboard() {
         window.isNestedModalView = false;
       }
       
-      const typeEn = trx.jenis === 'Pemasukan' ? 'INCOME' : (trx.jenis === 'Pengeluaran' ? 'EXPENSE' : 'TRANSFER');
+      const typeEnMap = {
+        'Pemasukan': 'INCOME', 'Income': 'INCOME',
+        'Pengeluaran': 'EXPENSE', 'Expense': 'EXPENSE',
+        'Transfer Internal': 'TRANSFER', 'Internal Transfer': 'TRANSFER', 'Transfer/Top-up Internal': 'TRANSFER', 'Transfer': 'TRANSFER',
+        'Beri Piutang (Menalangi)': 'GIVE RECEIVABLE', 'Give Receivable': 'GIVE RECEIVABLE',
+        'Terima Piutang': 'RECEIVE RECEIVABLE', 'Receive Receivable': 'RECEIVE RECEIVABLE',
+        'Terima Hutang (Pinjam)': 'BORROW PAYABLE', 'Receive Payable': 'BORROW PAYABLE',
+        'Bayar Hutang/Cicilan': 'PAY INSTALLMENT', 'Pay Installment': 'PAY INSTALLMENT'
+      };
+      const typeEn = typeEnMap[trx.jenis] || String(trx.jenis).toUpperCase();
 
       html += `
         <!-- HEADER TRANSAKSI -->
@@ -2250,7 +2177,7 @@ function renderDashboard() {
           <div>
             <label for="master-jenisakun" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Type</label>
             <select id="master-jenisakun" class="w-full ios-input cursor-pointer py-2.5">
-              <option value="Bank">Bank</option>
+              <option value="Bank">Bank Account</option>
               <option value="E-Wallet">E-Wallet</option>
               <option value="Cash">Cash</option>
             </select>
