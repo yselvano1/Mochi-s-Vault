@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -7,12 +7,11 @@
   
   <!-- PWA & Manifest Integration -->
   <link rel="manifest" href="manifest.json">
-  <!-- Default Light Mode Theme Color (Bisa sinkron dengan poni layar) -->
   <meta name="theme-color" content="#FAF8F5">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   
-  <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192">
-  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192">
+  <link rel="apple-touch-icon" href="mochi-happy.png">
+  <link rel="icon" type="image/png" href="mochi-happy.png">
 
   <!-- Tailwind CSS & Lucide Icons via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -32,7 +31,7 @@
               dark: '#221C19',    /* Kartu Dark Mode */
               subtle: '#2D2520'  
             },
-            obsidian: '#231A15'   /* Hero Card Light Mode (Black Card) */
+            obsidian: '#231A15'   /* Hero Card Light Mode */
           }
         }
       }
@@ -56,24 +55,24 @@
       
       --border-color: rgba(45, 36, 30, 0.07); 
 
-      /* Functional Colors (Muted & Earthy) */
+      /* Functional Colors */
       --amount-in: #5A8D63;      /* Soft Sage Green */
       --amount-out: #C85A54;     /* Terracotta Red */
       --amount-info: #5C82A6;    /* Muted Denim Blue */
       --amount-warn: #C28B38;    /* Warm Ochre */
 
-      /* Icon Chip Backgrounds (12% Opacity) */
+      /* Icon Chip Backgrounds */
       --chip-in-bg: rgba(90, 141, 99, 0.12);
       --chip-out-bg: rgba(200, 90, 84, 0.12);
       --chip-info-bg: rgba(92, 130, 166, 0.12);
       --chip-warn-bg: rgba(194, 139, 56, 0.12);
 
-      /* iOS Frosted Milk Glass */
+      /* iOS Glassmorphism */
       --glass-bg: rgba(255, 255, 255, 0.85);
       --glass-border: rgba(255, 255, 255, 0.7);
       --glass-modal-bg: rgba(250, 248, 245, 0.92);
       
-      /* Soft Earthy Shadows */
+      /* Shadows */
       --shadow-card: 0 10px 30px -6px rgba(45, 36, 30, 0.05), 0 2px 8px -2px rgba(45, 36, 30, 0.03);
       --shadow-item: 0 2px 10px -2px rgba(45, 36, 30, 0.03);
       --shadow-premium: 0 12px 35px -8px rgba(200, 122, 75, 0.15);
@@ -93,24 +92,23 @@
       
       --border-color: rgba(250, 248, 245, 0.06); 
 
-      /* Functional Colors (Sedikit lebih terang agar terbaca di gelap) */
+      /* Functional Colors */
       --amount-in: #72A87B;
       --amount-out: #DC736C;
       --amount-info: #789EC2;
       --amount-warn: #D8A250;
 
-      /* Icon Chip Backgrounds (15% Opacity) */
+      /* Icon Chip Backgrounds */
       --chip-in-bg: rgba(114, 168, 123, 0.15);
       --chip-out-bg: rgba(220, 115, 108, 0.15);
       --chip-info-bg: rgba(120, 158, 194, 0.15);
       --chip-warn-bg: rgba(216, 162, 80, 0.15);
 
-      /* Smoked Espresso Glass */
+      /* Dark Glass */
       --glass-bg: rgba(34, 28, 25, 0.85); 
       --glass-border: rgba(250, 248, 245, 0.08);
       --glass-modal-bg: rgba(24, 20, 18, 0.94);
       
-      /* Dark Shadows */
       --shadow-card: 0 10px 30px -6px rgba(0, 0, 0, 0.4);
       --shadow-item: 0 2px 10px -2px rgba(0, 0, 0, 0.25);
       --shadow-premium: 0 12px 35px -8px rgba(0, 0, 0, 0.6);
@@ -124,7 +122,6 @@
       color: var(--text-primary);
       overflow-x: hidden;
       transition: background-color 0.3s ease, color 0.3s ease;
-      /* Padding bottom aman untuk navigasi */
       padding-bottom: max(6rem, env(safe-area-inset-bottom)); 
     }
 
@@ -197,12 +194,11 @@
     .chip-hutang { background-color: var(--chip-warn-bg); color: var(--amount-warn); }
     .chip-piutang { background-color: var(--chip-info-bg); color: var(--amount-info); }
 
-    /* === CLEAN TOP BAR (Aman dari Poni Layar iOS) === */
+    /* === CLEAN TOP BAR === */
     .clean-topbar {
       background: linear-gradient(180deg, var(--bg-app) 60%, transparent 100%);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      /* Padding khusus agar area poni layar tidak tertabrak konten */
       padding-top: max(1.5rem, env(safe-area-inset-top));
     }
 
@@ -285,19 +281,18 @@
 <body class="min-h-screen">
 
   <!-- ============================================== -->
-  <!-- 0. SPLASH SCREEN (Menyatu sempurna dgn Latar) -->
+  <!-- 0. SPLASH SCREEN -->
   <!-- ============================================== -->
   <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-700">
     <div class="animate-float flex flex-col items-center">
       
-      <!-- Wrapper Logo Tanpa Bingkai Hijau -->
+      <!-- Logo Mochi Lokal -->
       <div class="w-28 h-28 flex items-center justify-center rounded-full shadow-[0_8px_30px_rgba(200,122,75,0.15)] relative overflow-hidden bg-transparent">
-        <img src="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192" alt="Mochi" class="w-full h-full object-cover">
+        <img src="mochi-happy.png" alt="Mochi" class="w-full h-full object-cover">
       </div>
       
       <h2 class="mt-6 text-2xl font-black text-main tracking-tight">Mochi's Vault</h2>
       
-      <!-- Animated loading text -->
       <div class="mt-3 bg-[var(--bg-subtle-2)] px-4 py-1.5 rounded-full flex items-center space-x-2">
         <i data-lucide="loader-2" class="w-3.5 h-3.5 text-mochi animate-spin"></i>
         <span id="splash-text" class="text-xs font-bold text-mochi dark:text-mochi-light">Membangunkan Mochi...</span>
@@ -312,6 +307,7 @@
       <div class="relative">
         <div class="absolute inset-0 bg-mochi-light rounded-full animate-ping opacity-75"></div>
         <div class="w-24 h-24 bg-gradient-to-tr from-mochi to-mochi-light rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(200,122,75,0.6)] relative z-10 border-4 border-white dark:border-coffee-darkest">
+          <!-- PAW 4 JARI PERSISI -->
           <svg class="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 21.5c-3 0-5.5-2-6-5-.5-2.5.5-4 2-5 1.5-1 3-1.5 4-1.5s2.5.5 4 1.5c1.5 1 2.5 2.5 2 5-.5 3-3 5-6 5z" />
             <circle cx="7.5" cy="8.5" r="2.5"/>
@@ -332,16 +328,16 @@
   <header class="clean-topbar sticky top-0 z-40 px-5 pb-4 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-3.5">
       <div class="w-11 h-11 rounded-full bg-[var(--bg-subtle-2)] overflow-hidden flex items-center justify-center shadow-sm border border-[var(--border-color)] flex-shrink-0">
-        <img src="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192" alt="Avatar" class="w-full h-full object-cover" onerror="this.style.display='none';">
+        <img src="mochi-happy.png" alt="Avatar" class="w-full h-full object-cover">
       </div>
       <div class="flex flex-col justify-center">
         <h1 class="text-xl md:text-2xl font-extrabold text-main leading-none tracking-tight">Hello, Meow</h1>
-        <p class="text-[11px] md:text-[12px] font-semibold text-muted mt-1">Menabung pangkal kaya, mi-aw 🐾</p>
+        <p class="text-[11px] md:text-[12px] font-semibold text-muted mt-1">Guarding your wealth, me-ow 🐾</p>
       </div>
     </div>
     
     <div class="flex items-center space-x-2.5">
-      <button onclick="toggleDarkMode(); vibrate(10);" class="tap-shrink w-10 h-10 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-[0_2px_10px_rgba(45,36,30,0.05)]" aria-label="Toggle Mode">
+      <button onclick="toggleDarkMode(); vibrate(30);" class="tap-shrink w-10 h-10 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-[0_2px_10px_rgba(45,36,30,0.05)]" aria-label="Toggle Mode">
         <i data-lucide="sun" id="icon-sun" class="w-4.5 h-4.5 hidden"></i>
         <i data-lucide="moon" id="icon-moon" class="w-4.5 h-4.5"></i>
       </button>
@@ -356,64 +352,66 @@
     <!-- 1. HALAMAN DASHBOARD -->
     <section id="page-dashboard" class="space-y-4 page-animate">
       
-      <!-- BARIS 1: ALPHA HERO (NET WORTH) — DUAL-IDENTITY INVERSION -->
-      <div onclick="vibrate(10); showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden group bg-obsidian dark:bg-gradient-to-br dark:from-mochi dark:to-mochi-dark text-white border-none shadow-[0_12px_35px_-8px_rgba(35,26,21,0.3)] dark:shadow-[0_12px_35px_-8px_rgba(217,136,88,0.3)]">
-        <!-- Efek Pendaran Cahaya Halus -->
+      <!-- BARIS 1: ALPHA HERO (NET WORTH) -->
+      <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden group bg-obsidian dark:bg-gradient-to-br dark:from-mochi dark:to-mochi-dark text-white border-none shadow-[0_12px_35px_-8px_rgba(35,26,21,0.3)] dark:shadow-[0_12px_35px_-8px_rgba(217,136,88,0.3)]">
         <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-white/10 dark:bg-white/20 rounded-full mix-blend-overlay filter blur-[20px] group-hover:opacity-70 transition-opacity duration-500"></div>
         <div class="absolute -top-6 -left-6 w-24 h-24 bg-white/5 dark:bg-white/10 rounded-full mix-blend-overlay filter blur-[10px]"></div>
         
         <div class="flex justify-between items-center mb-3 relative z-10">
-          <span class="text-[11px] font-black tracking-widest uppercase text-white/70 dark:text-white/80">Kekayaan Bersih (Net Worth)</span>
+          <span class="text-[11px] font-black tracking-widest uppercase text-white/70 dark:text-white/80">NET WORTH</span>
           <div class="w-8 h-8 rounded-full bg-white/10 dark:bg-white/20 flex items-center justify-center text-white backdrop-blur-sm border border-white/10 dark:border-white/20">
             <i data-lucide="trending-up" class="w-4 h-4"></i>
           </div>
         </div>
-        <div id="kpi-networth" class="text-4xl md:text-5xl font-black tracking-tighter relative z-10 text-white drop-shadow-sm">-</div>
+        <!-- Wadah angka dengan auto-scaling transition -->
+        <div id="kpi-networth" class="text-4xl md:text-5xl font-black tracking-tighter relative z-10 text-white drop-shadow-sm transition-all duration-300 origin-left">-</div>
       </div>
       
       <!-- BARIS 2: BETA FOCUS (DISPOSABLE INCOME FULL-WIDTH) -->
-      <div onclick="vibrate(10); showKpiDetail('Disposable Income')" class="floating-item p-4 md:p-5 cursor-pointer card-hover flex flex-col justify-center relative overflow-hidden group bg-card">
-        <div class="flex items-center mb-1.5">
-          <i data-lucide="wallet" class="w-4 h-4 mr-2 text-mochi"></i>
-          <span class="text-[10px] text-muted font-black uppercase tracking-wider">Disposable Income</span>
+      <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Disposable Income')" class="floating-item p-5 md:p-6 cursor-pointer card-hover flex flex-col justify-center relative overflow-hidden group bg-card">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-[10px] text-muted font-black uppercase tracking-wider">DISPOSABLE INCOME</span>
+          <div class="w-7 h-7 rounded-full bg-mochi-light/20 flex items-center justify-center text-mochi">
+            <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
+          </div>
         </div>
-        <span id="kpi-disposable" class="text-2xl md:text-3xl font-extrabold text-main block tracking-tight">-</span>
+        <span id="kpi-disposable" class="text-3xl md:text-4xl font-black text-main block tracking-tight transition-all duration-300 origin-left">-</span>
       </div>
 
-      <!-- BARIS 3: GRID SEKUNDER (4 KOTAK METRIK) -->
+      <!-- BARIS 3: GRID SEKUNDER (4 KOTAK METRIK SEIMBANG) -->
       <div class="grid grid-cols-2 gap-3">
-        <div onclick="vibrate(10); showKpiDetail('Net Savings Operasional')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1">Net Savings</span>
-          <span id="kpi-savings" class="text-sm md:text-base font-extrabold amount-info block truncate w-full">-</span>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Kas')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="link" class="w-3 h-3 mr-1.5 text-mochi"></i> TOTAL CASH</span>
+          <span id="kpi-kas" class="text-sm md:text-base font-extrabold amount-in block truncate w-full">-</span>
         </div>
-        <div onclick="vibrate(10); showKpiDetail('Total Kas')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1">Kas Total</span>
-          <span id="kpi-kas" class="text-sm md:text-base font-extrabold text-main block truncate w-full">-</span>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Savings Operasional')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="piggy-bank" class="w-3 h-3 mr-1.5 text-mochi"></i> NET SAVINGS</span>
+          <span id="kpi-savings" class="text-sm md:text-base font-extrabold amount-in block truncate w-full">-</span>
         </div>
-        <div onclick="vibrate(10); showKpiDetail('Total Piutang')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1">Piutang</span>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Piutang')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="arrow-down-left" class="w-3 h-3 mr-1.5 text-mochi"></i> RECEIVABLES</span>
           <span id="kpi-piutang" class="text-sm md:text-base font-extrabold amount-info block truncate w-full">-</span>
         </div>
-        <div onclick="vibrate(10); showKpiDetail('Total Hutang')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1">Hutang</span>
-          <span id="kpi-hutang" class="text-sm md:text-base font-extrabold amount-warn block truncate w-full">-</span>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Hutang')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="alert-circle" class="w-3 h-3 mr-1.5 text-mochi"></i> PAYABLES</span>
+          <span id="kpi-hutang" class="text-sm md:text-base font-extrabold amount-out block truncate w-full">-</span>
         </div>
       </div>
 
       <!-- ANALISA PENGELUARAN -->
       <div class="floating-card p-5 mt-5 relative overflow-hidden">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
-          <h3 class="text-sm font-extrabold text-main">Analisa Pengeluaran</h3>
-          <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">Bulan Ini</span>
+          <h3 class="text-sm font-extrabold text-main">Expense Analysis</h3>
+          <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">THIS MONTH</span>
         </div>
         <div id="dashboard-kategori-analysis" class="space-y-3 relative z-10"></div>
       </div>
 
       <!-- TRANSAKSI TERBARU -->
-      <div class="floating-card p-5 mt-5 mb-8">
+      <div class="floating-card p-5 mt-5 mb-12">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
-          <h3 class="text-sm font-extrabold text-main">Transaksi Terbaru</h3>
-          <button onclick="vibrate(10); switchTab('riwayat')" class="text-xs font-bold text-mochi hover:text-mochi-dark dark:text-mochi-light dark:hover:text-white bg-mochi-light/10 dark:bg-coffee-subtle/50 px-3 py-1.5 rounded-full transition-colors border border-transparent hover:border-mochi-light/30">Semua</button>
+          <h3 class="text-sm font-extrabold text-main">Recent Transactions</h3>
+          <button ontouchstart="vibrate(30)" onclick="switchTab('riwayat')" class="text-xs font-bold text-mochi hover:text-mochi-dark dark:text-mochi-light dark:hover:text-white bg-mochi-light/10 dark:bg-[var(--bg-subtle)] px-3 py-1.5 rounded-full transition-colors border border-transparent hover:border-mochi-light/30">See All</button>
         </div>
         <div id="dashboard-trx-list" class="space-y-2"></div>
       </div>
@@ -425,55 +423,55 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 dark:border-[var(--border-color)] pb-4 gap-3">
           <div class="flex items-center space-x-2 text-main">
             <div class="w-8 h-8 rounded-full bg-mochi-light/20 dark:bg-mochi-light/10 flex items-center justify-center text-mochi dark:text-mochi-light"><i data-lucide="file-text" class="w-4 h-4"></i></div>
-            <span class="text-sm font-extrabold uppercase tracking-wider">e-Statement & Mutasi</span>
+            <span class="text-sm font-extrabold uppercase tracking-wider">e-Statement & Mutation</span>
           </div>
-          <button onclick="vibrate(10); downloadEStatement()" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-4 py-2 rounded-full text-xs font-bold flex items-center shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] justify-center transition-colors">
+          <button ontouchstart="vibrate(30)" onclick="downloadEStatement()" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-4 py-2 rounded-full text-xs font-bold flex items-center shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] justify-center transition-colors">
             <i data-lucide="download" class="w-3.5 h-3.5 mr-1.5"></i> Download CSV
           </button>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div>
-            <label for="filter-bulan" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Bulan</label>
+            <label for="filter-bulan" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Month</label>
             <select id="filter-bulan" onchange="renderRiwayat()" class="w-full text-xs ios-input cursor-pointer">
-              <option value="ALL">Semua Bulan</option>
-              <option value="01">01 - Januari</option>
-              <option value="02">02 - Februari</option>
-              <option value="03">03 - Maret</option>
+              <option value="ALL">All Months</option>
+              <option value="01">01 - January</option>
+              <option value="02">02 - February</option>
+              <option value="03">03 - March</option>
               <option value="04">04 - April</option>
-              <option value="05">05 - Mei</option>
-              <option value="06">06 - Juni</option>
-              <option value="07">07 - Juli</option>
-              <option value="08">08 - Agustus</option>
+              <option value="05">05 - May</option>
+              <option value="06">06 - June</option>
+              <option value="07">07 - July</option>
+              <option value="08">08 - August</option>
               <option value="09">09 - September</option>
-              <option value="10">10 - Oktober</option>
+              <option value="10">10 - October</option>
               <option value="11">11 - November</option>
-              <option value="12">12 - Desember</option>
+              <option value="12">12 - December</option>
             </select>
           </div>
           <div>
-            <label for="filter-tahun" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Tahun</label>
+            <label for="filter-tahun" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Year</label>
             <select id="filter-tahun" onchange="renderRiwayat()" class="w-full text-xs ios-input cursor-pointer">
-              <option value="ALL">Semua Tahun</option>
+              <option value="ALL">All Years</option>
             </select>
           </div>
           <div>
-            <label for="filter-jenis" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Jenis Mutasi</label>
+            <label for="filter-jenis" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Type</label>
             <select id="filter-jenis" onchange="renderRiwayat()" class="w-full text-xs ios-input cursor-pointer">
-              <option value="ALL">Semua Transaksi</option>
-              <option value="Pemasukan">Pemasukan (+)</option>
-              <option value="Pengeluaran">Pengeluaran (-)</option>
-              <option value="Transfer Internal">Transfer Internal</option>
-              <option value="Beri Piutang (Menalangi)">Beri Piutang</option>
-              <option value="Terima Piutang">Terima Piutang</option>
-              <option value="Terima Hutang (Pinjam)">Terima Hutang</option>
-              <option value="Bayar Hutang/Cicilan">Bayar Hutang/Cicilan</option>
+              <option value="ALL">All Types</option>
+              <option value="Pemasukan">Income (+)</option>
+              <option value="Pengeluaran">Expense (-)</option>
+              <option value="Transfer Internal">Internal Transfer</option>
+              <option value="Beri Piutang (Menalangi)">Give Receivables</option>
+              <option value="Terima Piutang">Receive Receivables</option>
+              <option value="Terima Hutang (Pinjam)">Receive Debt</option>
+              <option value="Bayar Hutang/Cicilan">Pay Debt/Installment</option>
             </select>
           </div>
           <div>
             <label for="filter-user" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">User</label>
             <select id="filter-user" onchange="renderRiwayat()" class="w-full text-xs ios-input cursor-pointer">
-              <option value="ALL">Semua User</option>
+              <option value="ALL">All Users</option>
               <option value="Yosa">Yosa</option>
               <option value="Fani">Fani</option>
             </select>
@@ -481,23 +479,23 @@
         </div>
 
         <div class="relative">
-          <label for="filter-search" class="sr-only">Cari Transaksi</label>
+          <label for="filter-search" class="sr-only">Search Transaction</label>
           <i data-lucide="search" class="w-4 h-4 text-faint absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-          <input type="text" id="filter-search" oninput="renderRiwayat()" placeholder="Cari deskripsi transaksi..." class="w-full text-sm ios-input pl-10 pr-4 py-2.5">
+          <input type="text" id="filter-search" oninput="renderRiwayat()" placeholder="Search description..." class="w-full text-sm ios-input pl-10 pr-4 py-2.5">
         </div>
 
         <!-- SUMMARY VERTIKAL -->
         <div id="statement-summary" class="floating-item p-4 mt-3 flex flex-col space-y-3 border border-slate-100 dark:border-[var(--border-color)]">
           <div class="flex justify-between items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
-            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Total Masuk</span>
+            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Total Income</span>
             <span id="sum-masuk" class="font-extrabold amount-in text-[15px]">Rp 0</span>
           </div>
           <div class="flex justify-between items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
-            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Total Keluar</span>
+            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Total Expense</span>
             <span id="sum-keluar" class="font-extrabold amount-out text-[15px]">Rp 0</span>
           </div>
           <div class="flex justify-between items-center">
-            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Surplus / Defisit</span>
+            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Surplus / Deficit</span>
             <span id="sum-net" class="font-black text-main text-[16px]">Rp 0</span>
           </div>
         </div>
@@ -510,13 +508,13 @@
     <section id="page-saldo" class="hidden space-y-6 page-animate pb-8">
       <div class="floating-card p-5">
         <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted mb-4 flex items-center">
-          <i data-lucide="briefcase" class="w-4 h-4 mr-2"></i> Operasional Harian
+          <i data-lucide="briefcase" class="w-4 h-4 mr-2"></i> Daily Operational
         </h3>
         <div id="list-akun-operasional" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
       </div>
       <div class="floating-card p-5">
         <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted mb-4 flex items-center">
-          <i data-lucide="piggy-bank" class="w-4 h-4 mr-2"></i> Dana Darurat & Tabungan
+          <i data-lucide="piggy-bank" class="w-4 h-4 mr-2"></i> Emergency Fund & Savings
         </h3>
         <div id="list-akun-tabungan" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
       </div>
@@ -526,13 +524,13 @@
     <section id="page-hutang" class="hidden space-y-6 page-animate pb-8">
       <div class="floating-card p-5">
         <h3 class="text-xs font-extrabold uppercase tracking-wider amount-warn mb-4 flex items-center">
-          <i data-lucide="alert-circle" class="w-4 h-4 mr-2"></i> Hutang Aktif
+          <i data-lucide="alert-circle" class="w-4 h-4 mr-2"></i> Active Payables
         </h3>
         <div id="list-hutang-aktif" class="space-y-3"></div>
       </div>
       <div class="floating-card p-5">
         <h3 class="text-xs font-extrabold uppercase tracking-wider amount-info mb-4 flex items-center">
-          <i data-lucide="clock" class="w-4 h-4 mr-2"></i> Piutang Belum Lunas
+          <i data-lucide="clock" class="w-4 h-4 mr-2"></i> Unpaid Receivables
         </h3>
         <div id="list-piutang-aktif" class="space-y-3"></div>
       </div>
@@ -544,25 +542,25 @@
     <div class="flex justify-between items-center w-full max-w-md mx-auto px-6 py-3 relative">
       
       <!-- Tab Home -->
-      <button onclick="vibrate(10); switchTab('dashboard')" id="tab-dashboard" class="nav-item bg-mochi-light/20 text-mochi dark:text-mochi-light px-4 py-2.5 rounded-2xl flex items-center justify-center space-x-2 tap-shrink">
+      <button ontouchstart="vibrate(30)" onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-item bg-mochi-light/20 text-mochi dark:text-mochi-light px-4 py-2.5 rounded-2xl flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="layout-dashboard" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text text-[12px] font-extrabold tracking-wide whitespace-nowrap">Home</span>
       </button>
 
       <!-- Tab History -->
-      <button onclick="vibrate(10); switchTab('riwayat')" id="tab-riwayat" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
+      <button ontouchstart="vibrate(30)" onclick="switchTab('riwayat')" id="tab-riwayat" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="list" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">History</span>
       </button>
 
       <!-- Tab Wallets -->
-      <button onclick="vibrate(10); switchTab('saldo')" id="tab-saldo" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
+      <button ontouchstart="vibrate(30)" onclick="switchTab('saldo')" id="tab-saldo" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="wallet" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">Wallets</span>
       </button>
 
       <!-- Tab AP/R -->
-      <button onclick="vibrate(10); switchTab('hutang')" id="tab-hutang" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
+      <button ontouchstart="vibrate(30)" onclick="switchTab('hutang')" id="tab-hutang" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
         <div class="relative flex-shrink-0">
           <i data-lucide="credit-card" class="w-5 h-5"></i>
           <span id="badge-hutang-nav" class="hidden absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-[var(--glass-bg)]"></span>
@@ -573,10 +571,11 @@
     </div>
   </nav>
 
-  <!-- === FLOATING ACTION BUTTON (PAW KUCING) === -->
+  <!-- === FLOATING ACTION BUTTON (PAW KUCING 4 JARI PERSISI) === -->
   <div class="fixed bottom-[5.5rem] left-0 right-0 z-50 pointer-events-none">
     <div class="max-w-3xl mx-auto px-5 relative h-full">
-      <button onclick="vibrate(15); openFormTransaksiBaru()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full text-white shadow-[0_8px_20px_-6px_rgba(200,122,75,0.5)] flex items-center justify-center pointer-events-auto border border-white/20 group">
+      <button ontouchstart="vibrate(35)" onclick="openFormTransaksiBaru()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full text-white shadow-[0_8px_20px_-6px_rgba(200,122,75,0.5)] flex items-center justify-center pointer-events-auto border border-white/20 group">
+        <!-- SVG PAW DIUPDATE SAMA PRESISI SEPERTI REWARD OVERLAY -->
         <svg class="w-7 h-7 text-white transform -translate-y-[1px]" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 21.5c-3 0-5.5-2-6-5-.5-2.5.5-4 2-5 1.5-1 3-1.5 4-1.5s2.5.5 4 1.5c1.5 1 2.5 2.5 2 5-.5 3-3 5-6 5z" />
           <circle cx="7.5" cy="8.5" r="2.5"/>
@@ -592,7 +591,7 @@
     <div id="modalInputTrx-content" class="glass-modal-content w-full max-w-lg rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200 dark:border-[var(--border-color)] pb-4 mb-4">
         <h3 id="modal-title-trx" class="font-extrabold text-main text-base">Tambah Transaksi</h3>
-        <button type="button" onclick="vibrate(10); closeModal('modalInputTrx')" class="tap-shrink text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition-colors border border-[var(--border-color)]">
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalInputTrx')" class="tap-shrink text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition-colors border border-[var(--border-color)]">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
@@ -630,7 +629,7 @@
         <div id="wrap-akunsumber" class="space-y-1">
           <div class="flex justify-between items-center">
             <label for="form-akunsumber" class="font-bold text-main text-xs cursor-pointer">Akun Sumber</label>
-            <button type="button" onclick="vibrate(10); openMasterModal('akun')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Akun Baru</button>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('akun')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Akun Baru</button>
           </div>
           <select id="form-akunsumber" class="w-full ios-input cursor-pointer"></select>
         </div>
@@ -638,7 +637,7 @@
         <div id="wrap-akuntujuan" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
             <label for="form-akuntujuan" class="font-bold text-main text-xs cursor-pointer">Akun Tujuan</label>
-            <button type="button" onclick="vibrate(10); openMasterModal('akun')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Akun Baru</button>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('akun')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Akun Baru</button>
           </div>
           <select id="form-akuntujuan" class="w-full ios-input cursor-pointer"></select>
         </div>
@@ -646,9 +645,9 @@
         <div class="space-y-1">
           <div class="flex justify-between items-center">
             <label class="font-bold text-main text-xs">Kategori</label>
-            <button type="button" onclick="vibrate(10); openMasterModal('kategori')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Kategori Baru</button>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('kategori')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Kategori Baru</button>
           </div>
-          <div onclick="vibrate(10); openKategoriPicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+          <div ontouchstart="vibrate(30)" onclick="openKategoriPicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
             <span id="form-kategori-display" class="font-semibold text-faint truncate">Pilih Kategori...</span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
           </div>
@@ -658,7 +657,7 @@
         <div id="wrap-hutang" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
             <label for="form-hutang" class="font-bold text-main text-xs cursor-pointer">Terkait Hutang</label>
-            <button type="button" onclick="vibrate(10); openMasterModal('hutang')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Hutang Baru</button>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('hutang')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Hutang Baru</button>
           </div>
           <select id="form-hutang" class="w-full ios-input cursor-pointer"></select>
         </div>
@@ -666,7 +665,7 @@
         <div id="wrap-piutang" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
             <label for="form-piutang" class="font-bold text-main text-xs cursor-pointer">Terkait Piutang</label>
-            <button type="button" onclick="vibrate(10); openMasterModal('piutang')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Piutang Baru</button>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('piutang')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Piutang Baru</button>
           </div>
           <select id="form-piutang" class="w-full ios-input cursor-pointer"></select>
         </div>
@@ -701,7 +700,7 @@
   <!-- MODAL 2: DETAIL TRANSAKSI / RIWAYAT AKUN -->
   <div id="modalDetail" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDetail')">
     <div id="modalDetail-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto modal-content-center">
-      <button onclick="vibrate(10); closeModal('modalDetail')" class="tap-shrink absolute top-4 right-4 text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition z-20 border border-[var(--border-color)]">
+      <button ontouchstart="vibrate(30)" onclick="closeModal('modalDetail')" class="tap-shrink absolute top-4 right-4 text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition z-20 border border-[var(--border-color)]">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
       <div id="modal-detail-inner" class="relative mt-2"></div>
@@ -713,7 +712,7 @@
     <div id="modalKategoriPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
         <h3 class="font-extrabold text-main text-sm">Pilih Kategori</h3>
-        <button onclick="vibrate(10); closeModal('modalKategoriPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
+        <button ontouchstart="vibrate(30)" onclick="closeModal('modalKategoriPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
@@ -726,7 +725,7 @@
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3">
         <h4 id="master-title" class="font-extrabold text-main text-base">Tambah Data</h4>
-        <button type="button" onclick="vibrate(10); closeModal('modalMaster')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]"><i data-lucide="x" class="w-4 h-4"></i></button>
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalMaster')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
       <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-3 text-sm">
         <input type="hidden" id="master-type">
@@ -765,7 +764,7 @@
       <p class="text-sm font-medium text-muted mb-6 px-2">Tindakan ini tidak dapat dibatalkan. Data akan dihapus permanen dari Vault.</p>
       
       <div class="flex space-x-3">
-        <button onclick="vibrate(10); closeModal('modalDelete')" class="flex-1 py-3 bg-[var(--bg-subtle-2)] text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-[var(--border-color)]">Batal</button>
+        <button ontouchstart="vibrate(30)" onclick="closeModal('modalDelete')" class="flex-1 py-3 bg-[var(--bg-subtle-2)] text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-[var(--border-color)]">Batal</button>
         <button id="btn-confirm-delete" class="flex-1 py-3 bg-rose-500 hover:bg-rose-600 text-white font-extrabold rounded-xl tap-shrink shadow-sm">Ya, Hapus</button>
       </div>
     </div>
@@ -805,8 +804,11 @@
       }
     });
 
+    // Pemicu Getar Instan & Terukur
     function vibrate(ms) {
-      if (navigator.vibrate) navigator.vibrate(ms);
+      if (navigator.vibrate) {
+        navigator.vibrate(Math.max(ms, 25));
+      }
     }
 
     function handleBackdropClick(event, modalId) {
@@ -814,7 +816,7 @@
     }
 
     function triggerInputError(elementId, message) {
-      vibrate([50, 50]); 
+      vibrate(40); 
       showToast(message, "error");
       const el = document.getElementById(elementId);
       if (el) {
@@ -872,7 +874,7 @@
           bg.classList.add('opacity-100');
           content.classList.remove('scale-50', 'opacity-0');
           content.classList.add('scale-100', 'opacity-100');
-          vibrate([30, 50, 30]);
+          vibrate(50);
         });
         
         setTimeout(() => {
@@ -964,7 +966,7 @@
     }
 
     // ==========================================
-    // 3. GESTURE SENSORS (TAB SWIPE & HOLD)
+    // 3. GESTURE SENSORS (TAB SWIPE ONLY)
     // ==========================================
     
     let tStartX = 0;
@@ -987,57 +989,15 @@
         if (!isEdgeSwipe && activeModals.length === 0) {
           let currentIndex = tabs.indexOf(currentTab);
           if (dx < -60 && currentIndex < tabs.length - 1) { 
-             vibrate(10);
+             vibrate(30);
              switchTab(tabs[currentIndex + 1]);
           } else if (dx > 60 && currentIndex > 0) { 
-             vibrate(10);
+             vibrate(30);
              switchTab(tabs[currentIndex - 1]);
           }
         }
       }
     }, {passive: true});
-
-    let holdTimer;
-    let holdActive = false;
-    let holdStartX = 0;
-    let holdStartY = 0;
-
-    window.startHold = function(e, idTrx, clearBackFn = true) {
-      holdActive = true;
-      let clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      let clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      holdStartX = clientX;
-      holdStartY = clientY;
-
-      holdTimer = setTimeout(() => {
-        if(holdActive) {
-          holdActive = false;
-          vibrate([20, 20]); 
-          if(clearBackFn) currentModalBackFn = null;
-          showTrxDetail(idTrx);
-        }
-      }, 450); 
-    };
-
-    window.cancelHold = function(e) {
-      if(!holdActive) return;
-      if(e && e.touches) {
-        let dx = Math.abs(e.touches[0].clientX - holdStartX);
-        let dy = Math.abs(e.touches[0].clientY - holdStartY);
-        if(dx > 10 || dy > 10) { 
-          holdActive = false;
-          clearTimeout(holdTimer);
-        }
-      } else {
-        holdActive = false;
-        clearTimeout(holdTimer);
-      }
-    };
-
-    window.endHold = function() {
-      holdActive = false;
-      clearTimeout(holdTimer);
-    };
 
     // ==========================================
     // 4. CORE LOGIC & INITIALIZATION
@@ -1119,6 +1079,24 @@
       input.value = numberVal > 0 ? new Intl.NumberFormat('id-ID').format(numberVal) : "";
     }
 
+    // Auto-Scaling Font Helper khusus 2 Hero Cards
+    function updateScalingText(el, value) {
+      if(!el) return;
+      const text = formatRupiah(value);
+      el.innerText = text;
+      
+      if (text.length > 17) {
+        el.style.fontSize = el.id === 'kpi-networth' ? '1.75rem' : '1.25rem'; 
+        el.style.lineHeight = '1.2';
+      } else if (text.length > 14) {
+        el.style.fontSize = el.id === 'kpi-networth' ? '2.25rem' : '1.5rem'; 
+        el.style.lineHeight = '1.2';
+      } else {
+        el.style.fontSize = ''; 
+        el.style.lineHeight = '';
+      }
+    }
+
     function getAmountMeta(jenis) {
       if (['Pemasukan', 'Terima Piutang', 'Terima Hutang (Pinjam)'].includes(jenis)) return { cls: 'amount-in', prefix: '+' };
       if (['Pengeluaran', 'Beri Piutang (Menalangi)', 'Bayar Hutang/Cicilan'].includes(jenis)) return { cls: 'amount-out', prefix: '-' };
@@ -1150,9 +1128,21 @@
         const progress = Math.min((now - startTime) / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
         const current = Math.round(start + (targetValue - start) * eased);
-        el.innerText = formatRupiah(current);
+        
+        if(el.id === 'kpi-networth' || el.id === 'kpi-disposable') {
+          updateScalingText(el, current);
+        } else {
+          el.innerText = formatRupiah(current);
+        }
+
         if (progress < 1) requestAnimationFrame(tick);
-        else el.innerText = formatRupiah(targetValue);
+        else {
+          if(el.id === 'kpi-networth' || el.id === 'kpi-disposable') {
+             updateScalingText(el, targetValue);
+          } else {
+             el.innerText = formatRupiah(targetValue);
+          }
+        }
       }
       requestAnimationFrame(tick);
     }
@@ -1175,7 +1165,7 @@
     }
 
     function handleEditTrx(idTrx) {
-      vibrate(10);
+      vibrate(30);
       const trx = GLOBAL_DATA.transaksi.find(t => t.idTransaksi === idTrx);
       if(!trx) return;
 
@@ -1218,7 +1208,7 @@
     }
 
     function promptDeleteTrx(idTrx) {
-      vibrate(15);
+      vibrate(40);
       trxToDelete = idTrx;
       closeModal('modalDetail');
       setTimeout(() => openModal('modalDelete'), 400);
@@ -1226,7 +1216,7 @@
 
     document.getElementById('btn-confirm-delete').onclick = async () => {
       if(!trxToDelete) return;
-      vibrate([20, 30]); 
+      vibrate(30); 
       await handleDeleteTrx(trxToDelete);
     };
 
@@ -1280,24 +1270,18 @@
         div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-2 last:mb-0 select-none";
         div.style.animationDelay = `${i * 0.05}s`;
         
-        div.setAttribute("ontouchstart", `startHold(event, '${trx.idTransaksi}', true)`);
-        div.setAttribute("ontouchend", "endHold()");
-        div.setAttribute("ontouchmove", "cancelHold(event)");
-        div.setAttribute("onmousedown", `startHold(event, '${trx.idTransaksi}', true)`);
-        div.setAttribute("onmouseup", "endHold()");
-        div.setAttribute("onmouseleave", "cancelHold(event)");
-        div.setAttribute("oncontextmenu", "event.preventDefault();");
-        div.onclick = () => { vibrate(10); currentModalBackFn = null; showTrxDetail(trx.idTransaksi); };
+        // Single tap langsung dengan getar instan
+        div.onclick = () => { vibrate(30); currentModalBackFn = null; showTrxDetail(trx.idTransaksi); };
 
         div.innerHTML = `
-          <div class="flex items-center space-x-3 pointer-events-none">
+          <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
             ${iconChipHtml(trx.jenis)}
-            <div>
-              <p class="text-[13px] font-bold text-main leading-tight">${trx.deskripsi || trx.kategori}</p>
-              <p class="text-[10px] text-faint font-medium mt-0.5">${trx.tanggal} • ${trx.inputOleh}</p>
+            <div class="truncate">
+              <p class="text-[13px] font-bold text-main truncate">${trx.deskripsi || trx.kategori}</p>
+              <p class="text-[10px] text-faint font-medium mt-0.5 truncate">${trx.tanggal} • ${trx.inputOleh}</p>
             </div>
           </div>
-          <span class="text-[13px] font-extrabold ${meta.cls} pointer-events-none">${meta.prefix}${formatRupiah(trx.jumlah)}</span>
+          <span class="text-[13px] font-extrabold ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.jumlah)}</span>
         `;
         dashListEl.appendChild(div);
       });
@@ -1306,7 +1290,7 @@
 
     let kategoriAnalysisExpanded = {};
     function toggleKategoriAnalysis(utama) {
-      vibrate(10);
+      vibrate(30);
       kategoriAnalysisExpanded[utama] = !kategoriAnalysisExpanded[utama];
       renderKategoriAnalysis();
     }
@@ -1444,17 +1428,11 @@
         div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-3 select-none";
         div.style.animationDelay = `${(i%10)*0.05}s`;
         
-        div.setAttribute("ontouchstart", `startHold(event, '${trx.idTransaksi}', true)`);
-        div.setAttribute("ontouchend", "endHold()");
-        div.setAttribute("ontouchmove", "cancelHold(event)");
-        div.setAttribute("onmousedown", `startHold(event, '${trx.idTransaksi}', true)`);
-        div.setAttribute("onmouseup", "endHold()");
-        div.setAttribute("onmouseleave", "cancelHold(event)");
-        div.setAttribute("oncontextmenu", "event.preventDefault();");
-        div.onclick = () => { vibrate(10); currentModalBackFn = null; showTrxDetail(trx.idTransaksi); };
+        // Single tap dengan getar
+        div.onclick = () => { vibrate(30); currentModalBackFn = null; showTrxDetail(trx.idTransaksi); };
         
         div.innerHTML = `
-          <div class="flex items-center space-x-3 overflow-hidden pointer-events-none">
+          <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
             ${iconChipHtml(trx.jenis)}
             <div class="truncate">
               <p class="text-[13px] font-bold text-main truncate">${trx.deskripsi || trx.kategori}</p>
@@ -1463,10 +1441,10 @@
                 ${trx.akunSumber && trx.akunTujuan ? ' ➝ ' : ''}
                 ${trx.akunTujuan ? trx.akunTujuan : ''}
               </p>
-              <p class="text-[9px] text-faint mt-1">${trx.tanggal} • ${trx.inputOleh}</p>
+              <p class="text-[9px] text-faint mt-1 truncate">${trx.tanggal} • ${trx.inputOleh}</p>
             </div>
           </div>
-          <span class="text-[13px] font-extrabold ${meta.cls} flex-shrink-0 ml-2 pointer-events-none">${meta.prefix}${formatRupiah(trx.jumlah)}</span>
+          <span class="text-[13px] font-extrabold ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.jumlah)}</span>
         `;
         listEl.appendChild(div);
       });
@@ -1484,7 +1462,7 @@
       });
 
       const sortedYears = Array.from(years).sort().reverse();
-      let html = `<option value="ALL">Semua Tahun</option>`;
+      let html = `<option value="ALL">All Years</option>`;
       sortedYears.forEach(y => { html += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`; });
       yearSelect.innerHTML = html;
 
@@ -1558,7 +1536,7 @@
         const div = document.createElement('div');
         div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item flex flex-col";
         div.style.animationDelay = `${i*0.05}s`;
-        div.onclick = () => { vibrate(10); showAkunHistory(akun.namaAkun); };
+        div.onclick = () => { vibrate(30); showAkunHistory(akun.namaAkun); };
         div.innerHTML = `
           <div class="flex items-center space-x-3 mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
             <div class="w-10 h-10 rounded-full bg-mochi dark:bg-mochi-light text-white dark:text-coffee-darkest flex items-center justify-center text-sm font-black flex-shrink-0 shadow-sm">${initial}</div>
@@ -1594,7 +1572,7 @@
           const div = document.createElement('div');
           div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
           div.style.animationDelay = `${i*0.05}s`;
-          div.onclick = () => { vibrate(10); showHutangDetail(h); };
+          div.onclick = () => { vibrate(30); showHutangDetail(h); };
           div.innerHTML = `
             <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
               <h4 class="text-[13px] font-extrabold text-main leading-tight">${h.namaHutang}</h4>
@@ -1619,7 +1597,7 @@
           const div = document.createElement('div');
           div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
           div.style.animationDelay = `${i*0.05}s`;
-          div.onclick = () => { vibrate(10); showPiutangDetail(p); };
+          div.onclick = () => { vibrate(30); showPiutangDetail(p); };
           div.innerHTML = `
             <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
               <h4 class="text-[13px] font-extrabold text-main leading-tight">${p.namaPiutang}</h4>
@@ -1687,14 +1665,14 @@
 
         if (onlyMainItem) {
           html += `
-            <div onclick="vibrate(10); selectKategori('${escapeAttr(group.items[0].namaKategori)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-[var(--border-color)] transition-colors">
+            <div onclick="vibrate(30); selectKategori('${escapeAttr(group.items[0].namaKategori)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-[var(--border-color)] transition-colors">
               <span class="font-extrabold text-main text-[13px]">${utama}</span>
               <span class="text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badgeColor}">${group.jenis}</span>
             </div>`;
         } else {
           html += `
             <div class="mb-2 floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden">
-              <div onclick="vibrate(10); toggleKategoriGroup('${escapeAttr(utama)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
+              <div onclick="vibrate(30); toggleKategoriGroup('${escapeAttr(utama)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
                 <span class="font-extrabold text-[13px]">${utama}</span>
                 <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-4 h-4 text-faint"></i>
               </div>
@@ -1702,7 +1680,7 @@
           group.items.forEach((item, idx) => {
             const label = (item.subKategori && item.subKategori !== item.namaKategori) ? item.subKategori : item.namaKategori;
             const borderCls = idx !== group.items.length -1 ? 'border-b border-slate-100 dark:border-[var(--border-color)]' : '';
-            html += `<div onclick="vibrate(10); selectKategori('${escapeAttr(item.namaKategori)}')" class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] ${borderCls}">${label}</div>`;
+            html += `<div onclick="vibrate(30); selectKategori('${escapeAttr(item.namaKategori)}')" class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] ${borderCls}">${label}</div>`;
           });
           html += `</div></div>`;
         }
@@ -1786,7 +1764,7 @@
       if (currentModalBackFn) {
         window.isNestedModalView = true;
         html += `
-          <button onclick="vibrate(10); window.isNestedModalView = false; currentModalBackFn()" class="tap-shrink text-xs font-extrabold text-main flex items-center mb-2 transition-colors">
+          <button onclick="vibrate(30); window.isNestedModalView = false; currentModalBackFn()" class="tap-shrink text-xs font-extrabold text-main flex items-center mb-2 transition-colors">
             <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Kembali
           </button>
         `;
@@ -1900,13 +1878,16 @@
           const isKeluar = (t.akunSumber === namaAkun);
           html += `
             <div 
-              ontouchstart="startHold(event, '${t.idTransaksi}', false)" ontouchend="endHold()" ontouchmove="cancelHold(event)" onmousedown="startHold(event, '${t.idTransaksi}', false)" onmouseup="endHold()" onmouseleave="cancelHold(event)" oncontextmenu="event.preventDefault();" onclick="vibrate(10); showTrxDetail('${t.idTransaksi}')"
+              onclick="vibrate(30); showTrxDetail('${t.idTransaksi}')"
               class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-              <div class="truncate pr-3 pointer-events-none">
-                <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
-                <p class="text-[10px] text-faint font-semibold mt-0.5">${t.tanggal}</p>
+              
+              <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
+                <div class="truncate">
+                  <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
+                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${t.tanggal}</p>
+                </div>
               </div>
-              <span class="font-black flex-shrink-0 text-[13px] ${isKeluar ? 'amount-out' : 'amount-in'} pointer-events-none">
+              <span class="font-black flex-shrink-0 whitespace-nowrap text-[13px] ${isKeluar ? 'amount-out' : 'amount-in'} pointer-events-none">
                 ${isKeluar ? '-' : '+'}${formatRupiah(t.jumlah)}
               </span>
             </div>
@@ -1945,13 +1926,16 @@
         relatedTrx.forEach(t => {
           html += `
             <div 
-              ontouchstart="startHold(event, '${t.idTransaksi}', false)" ontouchend="endHold()" ontouchmove="cancelHold(event)" onmousedown="startHold(event, '${t.idTransaksi}', false)" onmouseup="endHold()" onmouseleave="cancelHold(event)" oncontextmenu="event.preventDefault();" onclick="vibrate(10); showTrxDetail('${t.idTransaksi}')"
+              onclick="vibrate(30); showTrxDetail('${t.idTransaksi}')"
               class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-              <div class="truncate pr-3 pointer-events-none">
-                <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
-                <p class="text-[10px] text-faint font-semibold mt-0.5">${t.tanggal}</p>
+              
+              <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
+                <div class="truncate">
+                  <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
+                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${t.tanggal}</p>
+                </div>
               </div>
-              <span class="font-black amount-out flex-shrink-0 text-[13px] pointer-events-none">${formatRupiah(t.jumlah)}</span>
+              <span class="font-black amount-out flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${formatRupiah(t.jumlah)}</span>
             </div>
           `;
         });
@@ -1988,13 +1972,16 @@
         relatedTrx.forEach(t => {
           html += `
             <div 
-              ontouchstart="startHold(event, '${t.idTransaksi}', false)" ontouchend="endHold()" ontouchmove="cancelHold(event)" onmousedown="startHold(event, '${t.idTransaksi}', false)" onmouseup="endHold()" onmouseleave="cancelHold(event)" oncontextmenu="event.preventDefault();" onclick="vibrate(10); showTrxDetail('${t.idTransaksi}')"
+              onclick="vibrate(30); showTrxDetail('${t.idTransaksi}')"
               class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-              <div class="truncate pr-3 pointer-events-none">
-                <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
-                <p class="text-[10px] text-faint font-semibold mt-0.5">${t.tanggal}</p>
+              
+              <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
+                <div class="truncate">
+                  <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
+                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${t.tanggal}</p>
+                </div>
               </div>
-              <span class="font-black amount-info flex-shrink-0 text-[13px] pointer-events-none">${formatRupiah(t.jumlah)}</span>
+              <span class="font-black amount-info flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${formatRupiah(t.jumlah)}</span>
             </div>
           `;
         });
