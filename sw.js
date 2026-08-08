@@ -1,4 +1,4 @@
-const CACHE_NAME = "mochis-vault-v5";
+const CACHE_NAME = "mochis-vault-v6";
 const ASSETS = [
   "./",
   "./index.html",
