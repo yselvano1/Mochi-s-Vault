@@ -362,14 +362,13 @@
         </div>
 
         <!-- Donut Chart Container -->
-        <div class="relative flex items-center justify-center my-3">
+        <div class="relative flex items-center justify-center my-3 min-h-[260px]">
           <div id="chart-donut-kategori" class="w-full"></div>
           
           <!-- Central Overlay -->
-          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <div class="w-11 h-11 rounded-full overflow-hidden shadow-sm border-2 border-white dark:border-forest-dark bg-slate-100 flex items-center justify-center mb-1">
-              <img id="mochi-avatar-chart" src="" alt="Mochi" class="w-full h-full object-cover hidden" onload="this.classList.remove('hidden')" onerror="this.classList.add('hidden')">
-              <span id="mochi-fallback-icon" class="text-base">🐾</span>
+          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
+            <div id="mochi-avatar-container" class="w-12 h-12 rounded-full overflow-hidden shadow-sm border-2 border-white dark:border-forest-dark bg-slate-100 dark:bg-forest-dark flex items-center justify-center mb-1">
+              <span class="text-lg">🐾</span>
             </div>
             <span class="text-[9px] font-bold uppercase tracking-wider text-muted">Total Keluar</span>
             <span id="mochi-total-pengeluaran" class="text-sm font-black text-main tracking-tight mt-0.5">Rp 0</span>
@@ -756,6 +755,13 @@
     // CONFIGURATION & GLOBAL STATES
     const API_URL = "https://script.google.com/macros/s/AKfycbx8HzV4KHpr6QAM4bDebEbBTIwSNeg5idIaQZUeBUuPu6OJ3xWMFvby82aOrq1CPYCLHg/exec";
 
+    // TAMBAHKAN URL GAMBAR MOCHI GITHUB DI SINI
+    const MOCHI_ASSETS = {
+      happy: 'https://raw.githubusercontent.com/usernamekamu/mochivault/main/assets/mochi-happy.png',
+      sweat: 'https://raw.githubusercontent.com/usernamekamu/mochivault/main/assets/mochi-sweat.png',
+      angry: 'https://raw.githubusercontent.com/usernamekamu/mochivault/main/assets/mochi-angry.png'
+    };
+
     let GLOBAL_DATA = {};
     let currentModalBackFn = null;
     let trxToDelete = null; 
@@ -1078,14 +1084,6 @@
       renderAreaChart();
     }
 
-    // 1. MASUKKAN LINK GAMBAR MOCHI DI SINI
-    const MOCHI_ASSETS = {
-  happy: 'https://raw.githubusercontent.com/usernamekamu/mochivault/main/assets/mochi-happy.png',
-  sweat: 'https://raw.githubusercontent.com/usernamekamu/mochivault/main/assets/mochi-sweat.png',
-  angry: 'https://raw.githubusercontent.com/usernamekamu/mochivault/main/assets/mochi-angry.png'
-};
-    
-    // 2. FUNGSI DONUT CHART DENGAN AVATAR MOCHI
     function renderDonutChart() {
       const now = new Date();
       const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
@@ -1110,14 +1108,14 @@
       const totalEl = document.getElementById('mochi-total-pengeluaran');
       if (totalEl) totalEl.innerText = formatRupiah(totalPengeluaran);
 
-      // Status Indicator & Avatar Swap
+      // Status Indicator & Dynamic Avatar Injection
       const budgetLimit = 10000000; 
       const ratio = totalPengeluaran / budgetLimit;
-      const avatarEl = document.getElementById('mochi-avatar-chart');
+      const avatarContainer = document.getElementById('mochi-avatar-container');
       const badgeEl = document.getElementById('mochi-status-badge');
 
+      let avatarSrc = "";
       if (badgeEl) {
-        let avatarSrc = "";
         if (ratio > 1.0) {
           if (typeof MOCHI_ASSETS !== 'undefined') avatarSrc = MOCHI_ASSETS.angry;
           badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20";
@@ -1131,7 +1129,14 @@
           badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20";
           badgeEl.innerText = "Aman 🐾";
         }
-        if (avatarEl && avatarSrc) avatarEl.src = avatarSrc;
+      }
+
+      if (avatarContainer) {
+        if (avatarSrc) {
+          avatarContainer.innerHTML = `<img src="${avatarSrc}" alt="Mochi" class="w-full h-full object-cover">`;
+        } else {
+          avatarContainer.innerHTML = `<span class="text-lg">🐾</span>`;
+        }
       }
 
       const chartEl = document.querySelector("#chart-donut-kategori");
@@ -1147,7 +1152,7 @@
       const options = {
         series: series,
         labels: labels,
-        chart: { type: 'donut', height: 280, fontFamily: 'Plus Jakarta Sans, sans-serif' },
+        chart: { type: 'donut', height: 260, fontFamily: 'Plus Jakarta Sans, sans-serif' },
         colors: ['#C87A4B', '#10B981', '#38BDF8', '#F59E0B', '#EC4899', '#8B5CF6', '#14B8A6'],
         stroke: { 
           show: true, 
@@ -1165,11 +1170,15 @@
         },
         plotOptions: {
           pie: {
+            expandOnClick: false,
             donut: {
-              size: '80%',
+              size: '78%',
               background: 'transparent',
               labels: {
-                show: false // MEMATIKAN TEKS INNER BAWAAN APEXCHARTS
+                show: false,
+                name: { show: false },
+                value: { show: false },
+                total: { show: false }
               }
             }
           }
@@ -1184,7 +1193,7 @@
       donutChartInstance = new ApexCharts(chartEl, options);
       donutChartInstance.render();
     }
-    
+
     function renderAreaChart() {
       const chartEl = document.querySelector("#chart-savings-trend");
       if (!chartEl) return;
@@ -1943,7 +1952,7 @@
         <!-- HEADER TRANSAKSI -->
         <div class="text-center flex flex-col items-center mb-5 pb-4 border-b border-slate-200/60 dark:border-forest-muted/50">
           
-          <!-- Badge ID Referensi (Teks Hitam Pekat) -->
+          <!-- Badge ID Referensi -->
           <span class="text-[10px] font-mono font-black tracking-wider px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-200 text-slate-900 mb-4 shadow-sm border border-slate-300">
             REF: ${trx.idTransaksi}
           </span>
@@ -1958,13 +1967,13 @@
           <!-- Nominal -->
           <p class="text-3xl font-black mt-1.5 tracking-tight ${meta.cls}">${meta.prefix}${formatRupiah(trx.jumlah)}</p>
           
-          <!-- Badge Jenis Transaksi (Teks Hitam Pekat) -->
+          <!-- Badge Jenis Transaksi -->
           <span class="text-[10px] font-black px-3.5 py-1 rounded-full bg-slate-200 dark:bg-slate-200 text-slate-900 mt-2.5 uppercase tracking-wider shadow-sm border border-slate-300">
             ${trx.jenis}
           </span>
         </div>
         
-        <!-- CONTAINER RINCIAN (CLEAN CARD) -->
+        <!-- CONTAINER RINCIAN -->
         <div class="bg-slate-50 dark:bg-forest-dark/60 rounded-2xl p-4 border border-slate-200/60 dark:border-forest-muted/50 space-y-2.5 text-xs font-semibold">
           <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-forest-muted/30">
             <span class="text-slate-500 dark:text-slate-400">Tanggal</span>
