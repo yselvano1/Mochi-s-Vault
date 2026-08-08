@@ -9,8 +9,8 @@
   <meta name="theme-color" content="#FAF8F5">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   
-  <link rel="apple-touch-icon" href="mochi-happy.png">
-  <link rel="icon" type="image/png" href="mochi-happy.png">
+  <link rel="apple-touch-icon" href="mochi-logo-new.png">
+  <link rel="icon" type="image/png" href="mochi-logo-new.png">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -250,7 +250,7 @@
   <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-700">
     <div class="animate-float flex flex-col items-center">
       <div class="w-28 h-28 flex items-center justify-center rounded-full shadow-[0_8px_30px_rgba(200,122,75,0.15)] relative overflow-hidden bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)]">
-        <img src="mochi-happy.png" alt="Mochi" class="w-full h-full object-cover">
+        <img src="mochi-logo-new.png" alt="Mochi" class="w-full h-full object-cover">
       </div>
       <h2 class="mt-6 text-2xl font-black text-main tracking-tight">Mochi's Vault</h2>
       <div class="mt-3 bg-[var(--bg-subtle-2)] px-4 py-1.5 rounded-full flex items-center space-x-2">
@@ -260,14 +260,13 @@
     </div>
   </div>
 
-  <!-- REWARD OVERLAY (CAT PAW BARU) -->
+  <!-- REWARD OVERLAY -->
   <div id="reward-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center pointer-events-none">
     <div class="absolute inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/80 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="reward-bg"></div>
     <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="reward-content">
       <div class="relative">
         <div class="absolute inset-0 bg-mochi-light rounded-full animate-ping opacity-75"></div>
         <div class="w-24 h-24 bg-gradient-to-tr from-mochi to-mochi-light rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(200,122,75,0.6)] relative z-10 border-4 border-white dark:border-coffee-darkest">
-          <!-- SVG CAT PAW FOOTPRINT BARU (Icons8 Style) -->
           <svg class="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 11.5c-2.8 0-5 2.1-5 4.8 0 2.2 1.8 3.7 5 3.7s5-1.5 5-3.7c0-2.7-2.2-4.8-5-4.8z"/>
             <ellipse cx="6.5" cy="9.5" rx="1.8" ry="2.5"/>
@@ -288,7 +287,7 @@
   <header class="clean-topbar sticky top-0 z-40 px-5 pb-4 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-3.5">
       <div class="w-11 h-11 rounded-full bg-[var(--bg-subtle-2)] overflow-hidden flex items-center justify-center shadow-sm border border-[var(--border-color)] flex-shrink-0">
-        <img src="mochi-happy.png" alt="Avatar" class="w-full h-full object-cover">
+        <img src="mochi-logo-new.png" alt="Mochi" class="w-full h-full object-cover">
       </div>
       <div class="flex flex-col justify-center">
         <h1 class="text-xl md:text-2xl font-extrabold text-main leading-none tracking-tight">Hello, Meow</h1>
@@ -303,16 +302,13 @@
       </button>
     </div>
   </header>
-
-  <!-- LOADING SKELETON -->
-  <div id="loader" class="max-w-3xl mx-auto px-4 py-2 space-y-4 hidden"></div>
   <!-- MAIN CONTAINER -->
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
 
     <!-- 1. DASHBOARD PAGE -->
     <section id="page-dashboard" class="space-y-4 page-animate">
       
-      <!-- ROW 1: ALPHA HERO (NET WORTH) -->
+      <!-- NET WORTH HERO -->
       <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden group bg-obsidian dark:bg-gradient-to-br dark:from-mochi dark:to-mochi-dark text-white border-none shadow-[0_12px_35px_-8px_rgba(35,26,21,0.3)] dark:shadow-[0_12px_35px_-8px_rgba(217,136,88,0.3)]">
         <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-white/10 dark:bg-white/20 rounded-full mix-blend-overlay filter blur-[20px] group-hover:opacity-70 transition-opacity duration-500"></div>
         <div class="absolute -top-6 -left-6 w-24 h-24 bg-white/5 dark:bg-white/10 rounded-full mix-blend-overlay filter blur-[10px]"></div>
@@ -326,7 +322,7 @@
         <div id="kpi-networth" class="text-4xl md:text-5xl font-black tracking-tighter relative z-10 text-white drop-shadow-sm transition-all duration-300 origin-left">-</div>
       </div>
       
-      <!-- ROW 2: BETA FOCUS (DISPOSABLE INCOME FULL-WIDTH) -->
+      <!-- DISPOSABLE INCOME -->
       <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Disposable Income')" class="floating-item p-5 md:p-6 cursor-pointer card-hover flex flex-col justify-center relative overflow-hidden group bg-card">
         <div class="flex justify-between items-center mb-2">
           <span class="text-[10px] text-muted font-black uppercase tracking-wider">DISPOSABLE INCOME</span>
@@ -337,7 +333,7 @@
         <span id="kpi-disposable" class="text-3xl md:text-4xl font-black amount-in block tracking-tight transition-all duration-300 origin-left">-</span>
       </div>
 
-      <!-- ROW 3: SECONDARY GRID (4 BALANCED METRICS) -->
+      <!-- SECONDARY GRID -->
       <div class="grid grid-cols-2 gap-3">
         <!-- TOTAL CASH (GREEN) -->
         <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Kas')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
@@ -506,26 +502,21 @@
   <!-- === BOTTOM NAVIGATION === -->
   <nav class="fixed bottom-0 left-0 right-0 nav-bar-bottom z-40 rounded-t-3xl border-t border-slate-200/50 dark:border-[var(--border-color)]">
     <div class="flex justify-between items-center w-full max-w-md mx-auto px-6 py-3 relative">
-      
-      <!-- Tab Home -->
       <button ontouchstart="vibrate(30)" onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-item bg-mochi-light/20 text-mochi dark:text-mochi-light px-4 py-2.5 rounded-2xl flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="layout-dashboard" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text text-[12px] font-extrabold tracking-wide whitespace-nowrap">Home</span>
       </button>
 
-      <!-- Tab History -->
       <button ontouchstart="vibrate(30)" onclick="switchTab('riwayat')" id="tab-riwayat" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="list" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">History</span>
       </button>
 
-      <!-- Tab Wallets -->
       <button ontouchstart="vibrate(30)" onclick="switchTab('saldo')" id="tab-saldo" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="wallet" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">Wallets</span>
       </button>
 
-      <!-- Tab AP/R -->
       <button ontouchstart="vibrate(30)" onclick="switchTab('hutang')" id="tab-hutang" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
         <div class="relative flex-shrink-0">
           <i data-lucide="credit-card" class="w-5 h-5"></i>
@@ -533,15 +524,13 @@
         </div>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">AP/R</span>
       </button>
-
     </div>
   </nav>
 
- <!-- FAB TAMBAH TRANSAKSI (CAT PAW BARU) -->
+  <!-- FAB TAMBAH TRANSAKSI -->
   <div class="fixed bottom-[5.5rem] left-0 right-0 z-50 pointer-events-none">
     <div class="max-w-3xl mx-auto px-5 relative h-full">
       <button ontouchstart="vibrate(35)" onclick="openFormTransaksiBaru()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full text-white shadow-[0_8px_20px_-6px_rgba(200,122,75,0.5)] flex items-center justify-center pointer-events-auto border border-white/20 group">
-        <!-- SVG CAT PAW FOOTPRINT BARU -->
         <svg class="w-7 h-7 text-white transform -translate-y-[1px]" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 11.5c-2.8 0-5 2.1-5 4.8 0 2.2 1.8 3.7 5 3.7s5-1.5 5-3.7c0-2.7-2.2-4.8-5-4.8z"/>
           <ellipse cx="6.5" cy="9.5" rx="1.8" ry="2.5"/>
@@ -580,17 +569,14 @@
           </div>
         </div>
 
-        <!-- CUSTOM TRIGGER JENIS TRANSAKSI -->
-<div>
-  <label class="font-bold text-main block mb-1 text-xs">Transaction Type</label>
-  <div ontouchstart="vibrate(30)" onclick="openJenisPicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
-    <div id="form-jenis-display" class="flex items-center space-x-2.5">
-      <!-- Diisi otomatis oleh JavaScript -->
-    </div>
-    <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
-  </div>
-  <input type="hidden" id="form-jenis" value="Pengeluaran">
-</div>
+        <div>
+          <label class="font-bold text-main block mb-1 text-xs">Transaction Type</label>
+          <div ontouchstart="vibrate(30)" onclick="openJenisPicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+            <div id="form-jenis-display" class="flex items-center space-x-2.5"></div>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
+          </div>
+          <input type="hidden" id="form-jenis" value="Pengeluaran">
+        </div>
 
         <div id="wrap-akunsumber" class="space-y-1">
           <div class="flex justify-between items-center">
@@ -663,7 +649,7 @@
     </div>
   </div>
 
-  <!-- MODAL 2: TRANSACTION DETAIL / ACCOUNT HISTORY -->
+  <!-- MODAL DETAIL -->
   <div id="modalDetail" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDetail')">
     <div id="modalDetail-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto modal-content-center">
       <button ontouchstart="vibrate(30)" onclick="closeModal('modalDetail')" class="tap-shrink absolute top-4 right-4 text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition z-20 border border-[var(--border-color)]">
@@ -673,20 +659,33 @@
     </div>
   </div>
 
-  <!-- MODAL PICKER JENIS TRANSAKSI BER-IKON -->
-<div id="modalJenisPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[75] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalJenisPicker')">
-  <div id="modalJenisPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
-    <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
-      <h3 class="font-extrabold text-main text-sm">Select Transaction Type</h3>
-      <button ontouchstart="vibrate(30)" onclick="closeModal('modalJenisPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
-        <i data-lucide="x" class="w-4 h-4"></i>
-      </button>
+  <!-- MODAL PICKER JENIS TRANSAKSI -->
+  <div id="modalJenisPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[75] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalJenisPicker')">
+    <div id="modalJenisPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
+      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
+        <h3 class="font-extrabold text-main text-sm">Select Transaction Type</h3>
+        <button ontouchstart="vibrate(30)" onclick="closeModal('modalJenisPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div id="jenis-picker-list" class="text-xs space-y-2"></div>
     </div>
-    <div id="jenis-picker-list" class="text-xs space-y-2"></div>
   </div>
-</div>
 
-  <!-- MODAL 3: ADD MASTER DATA -->
+  <!-- MODAL PICKER KATEGORI -->
+  <div id="modalKategoriPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalKategoriPicker')">
+    <div id="modalKategoriPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
+      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
+        <h3 class="font-extrabold text-main text-sm">Select Category</h3>
+        <button ontouchstart="vibrate(30)" onclick="closeModal('modalKategoriPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div id="kategori-picker-list" class="text-xs space-y-1.5"></div>
+    </div>
+  </div>
+
+  <!-- MODAL MASTER DATA -->
   <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3">
@@ -720,7 +719,7 @@
     </div>
   </div>
 
-  <!-- MODAL 4: DELETE CONFIRMATION -->
+  <!-- MODAL DELETE CONFIRMATION -->
   <div id="modalDelete" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDelete')">
     <div id="modalDelete-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center text-center">
       <div class="w-16 h-16 bg-rose-500/10 amount-out rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-500/20">
@@ -735,20 +734,14 @@
       </div>
     </div>
   </div>
-  <!-- SCRIPT JAVASCRIPT DIMULAI DI SINI -->
+
+  <!-- SCRIPT JAVASCRIPT -->
   <script>
-    // ==========================================
-    // CONFIGURATION URL GOOGLE APPS SCRIPT
-    // ==========================================
     const API_URL = "https://script.google.com/macros/s/AKfycbx8HzV4KHpr6QAM4bDebEbBTIwSNeg5idIaQZUeBUuPu6OJ3xWMFvby82aOrq1CPYCLHg/exec";
 
     let GLOBAL_DATA = {};
     let currentModalBackFn = null;
     let trxToDelete = null; 
-
-    // ==========================================
-    // 1. SYSTEM, UX HELPERS & HISTORY API
-    // ==========================================
 
     let activeModals = []; 
     history.replaceState({ modal: null }, '');
@@ -770,11 +763,8 @@
       }
     });
 
-    // Pemicu Getar Instan & Terukur (Minimum 25ms agar terdeteksi motor HP)
     function vibrate(ms) {
-      if (navigator.vibrate) {
-        navigator.vibrate(Math.max(ms, 25));
-      }
+      if (navigator.vibrate) navigator.vibrate(Math.max(ms, 25));
     }
 
     function handleBackdropClick(event, modalId) {
@@ -858,19 +848,13 @@
       });
     }
 
-    // ==========================================
-    // 2. MODAL & NAVIGATION MANAGERS
-    // ==========================================
-
     function openModal(id) {
       const modal = document.getElementById(id);
       const content = document.getElementById(id + '-content');
-      
       if (!activeModals.includes(id)) {
         activeModals.push(id);
         history.pushState({ modal: id }, '');
       }
-
       modal.classList.remove('hidden');
       requestAnimationFrame(() => {
         modal.classList.add('show');
@@ -881,9 +865,7 @@
 
     function closeModal(id) {
       if (activeModals.includes(id)) {
-        if (id === 'modalDetail') {
-          window.isNestedModalView = false;
-        }
+        if (id === 'modalDetail') window.isNestedModalView = false;
         history.back();
       } else {
         performVisualClose(id);
@@ -927,47 +909,27 @@
       activeSection.classList.remove('page-animate');
       void activeSection.offsetWidth;
       activeSection.classList.add('page-animate');
-
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // ==========================================
-    // 3. GESTURE SENSORS (TAB SWIPE ONLY)
-    // ==========================================
-    
-    let tStartX = 0;
-    let tStartY = 0;
-
+    let tStartX = 0, tStartY = 0;
     document.addEventListener('touchstart', e => {
       tStartX = e.changedTouches[0].screenX;
       tStartY = e.changedTouches[0].screenY;
     }, {passive: true});
 
     document.addEventListener('touchend', e => {
-      let tEndX = e.changedTouches[0].screenX;
-      let tEndY = e.changedTouches[0].screenY;
-      let dx = tEndX - tStartX;
-      let dy = tEndY - tStartY;
-
+      let dx = e.changedTouches[0].screenX - tStartX;
+      let dy = e.changedTouches[0].screenY - tStartY;
       if (Math.abs(dx) > 60 && Math.abs(dy) < 40) {
         let isEdgeSwipe = (tStartX < 40) || (tStartX > window.innerWidth - 40);
-        
         if (!isEdgeSwipe && activeModals.length === 0) {
           let currentIndex = tabs.indexOf(currentTab);
-          if (dx < -60 && currentIndex < tabs.length - 1) { 
-             vibrate(30);
-             switchTab(tabs[currentIndex + 1]);
-          } else if (dx > 60 && currentIndex > 0) { 
-             vibrate(30);
-             switchTab(tabs[currentIndex - 1]);
-          }
+          if (dx < -60 && currentIndex < tabs.length - 1) { vibrate(30); switchTab(tabs[currentIndex + 1]); }
+          else if (dx > 60 && currentIndex > 0) { vibrate(30); switchTab(tabs[currentIndex - 1]); }
         }
       }
     }, {passive: true});
-
-    // ==========================================
-    // 4. CORE LOGIC & INITIALIZATION
-    // ==========================================
 
     function applyDarkModePref() {
       const pref = localStorage.getItem('yf-theme');
@@ -1027,15 +989,9 @@
       }
     }
 
-    // ==========================================
-    // 5. RENDERING & UI UPDATES
-    // ==========================================
-
     function formatRupiah(number) {
       if (number === undefined || number === null) return "Rp 0";
-      return new Intl.NumberFormat('id-ID', {
-        style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0
-      }).format(number);
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(number);
     }
 
     function formatInputRupiah(input) {
@@ -1045,151 +1001,133 @@
       input.value = numberVal > 0 ? new Intl.NumberFormat('id-ID').format(numberVal) : "";
     }
 
-    // Auto-Scaling Font Helper khusus 2 Hero Cards
     function updateScalingText(el, value) {
       if(!el) return;
       const text = formatRupiah(value);
       el.innerText = text;
-      
-      if (text.length > 17) {
-        el.style.fontSize = el.id === 'kpi-networth' ? '1.75rem' : '1.25rem'; 
-        el.style.lineHeight = '1.2';
-      } else if (text.length > 14) {
-        el.style.fontSize = el.id === 'kpi-networth' ? '2.25rem' : '1.5rem'; 
-        el.style.lineHeight = '1.2';
-      } else {
-        el.style.fontSize = ''; 
-        el.style.lineHeight = '';
-      }
+      if (text.length > 17) { el.style.fontSize = el.id === 'kpi-networth' ? '1.75rem' : '1.25rem'; el.style.lineHeight = '1.2'; }
+      else if (text.length > 14) { el.style.fontSize = el.id === 'kpi-networth' ? '2.25rem' : '1.5rem'; el.style.lineHeight = '1.2'; }
+      else { el.style.fontSize = ''; el.style.lineHeight = ''; }
     }
 
-    // STRICT 3-COLOR SYSTEM PARSING LOGIC
-   function getAmountMeta(jenis) {
-  if (!jenis) return { cls: 'amount-out', prefix: '-' };
-  const j = jenis.toLowerCase().trim();
+    function getAmountMeta(jenis) {
+      if (!jenis) return { cls: 'amount-out', prefix: '-' };
+      const j = jenis.toLowerCase().trim();
+      if (j.includes('transfer') || j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi') || j.includes('reimburse')) return { cls: 'amount-info', prefix: '' };
+      if (j.includes('masuk') || j.includes('income') || j.includes('terima')) return { cls: 'amount-in', prefix: '+' };
+      return { cls: 'amount-out', prefix: '-' };
+    }
 
-  // 🔵 BLUE: Assets in Transit / Transfers / Give Receivables / Reimburse
-  if (j.includes('transfer') || j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi') || j.includes('reimburse')) {
-    return { cls: 'amount-info', prefix: '' };
-  }
+    function getCategoryIconMeta(namaKategori, jenis) {
+      const k = (namaKategori || '').toLowerCase().trim();
+      const j = (jenis || '').toLowerCase().trim();
 
-  // 🟢 GREEN: Money In / Growth (Income, Receive Receivable, Receive Debt/Loan)
-  if (j.includes('masuk') || j.includes('income') || j.includes('terima')) {
-    return { cls: 'amount-in', prefix: '+' };
-  }
+      if (k.includes('salary') || k.includes('gaji') || k.includes('payroll')) return { icon: 'banknote', chip: 'chip-pemasukan' };
+      if (k.includes('bonus') || k.includes('allowance') || k.includes('tunjangan')) return { icon: 'gift', chip: 'chip-pemasukan' };
+      if (k.includes('freelance') || k.includes('side') || k.includes('proyek')) return { icon: 'briefcase', chip: 'chip-pemasukan' };
+      if (k.includes('investment') || k.includes('investasi') || k.includes('dividen') || k.includes('return')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
+      if (k.includes('business') || k.includes('usaha') || k.includes('profit') || k.includes('toko')) return { icon: 'store', chip: 'chip-pemasukan' };
+      if (k.includes('refund') || k.includes('cashback')) return { icon: 'rotate-ccw', chip: 'chip-pemasukan' };
 
-  // 🔴 RED: Money Out & Payables (Expense, Pay Debt/Installment, Cicilan)
-  return { cls: 'amount-out', prefix: '-' };
-}
+      if (k.includes('internal transfer') || k.includes('pindah buku')) return { icon: 'arrow-right-left', chip: 'chip-info' };
+      if (k.includes('deposit') || k.includes('savings') || k.includes('tabungan') || k.includes('withdraw')) return { icon: 'piggy-bank', chip: 'chip-info' };
+      if (k.includes('receivable') || k.includes('piutang') || k.includes('reimburse') || k.includes('talangan')) return { icon: 'send', chip: 'chip-info' };
 
-// ==========================================
-// FULL CATEGORY ICON MAPPING WITH 3 COLOR RULES
-// ==========================================
+      if (k.includes('food') || k.includes('groceries') || k.includes('makan') || k.includes('dapur') || k.includes('supermarket')) return { icon: 'utensils', chip: 'chip-pengeluaran' };
+      if (k.includes('coffee') || k.includes('kopi') || k.includes('cafe') || k.includes('restaurant') || k.includes('restoran')) return { icon: 'coffee', chip: 'chip-pengeluaran' };
+      if (k.includes('transport') || k.includes('bensin') || k.includes('fuel') || k.includes('parkir') || k.includes('tol') || k.includes('ojek') || k.includes('grab') || k.includes('gojek')) return { icon: 'car', chip: 'chip-pengeluaran' };
+      if (k.includes('bill') || k.includes('utility') || k.includes('utilities') || k.includes('listrik') || k.includes('air') || k.includes('wifi') || k.includes('internet') || k.includes('pulsa') || k.includes('tagihan')) return { icon: 'zap', chip: 'chip-pengeluaran' };
+      if (k.includes('rent') || k.includes('housing') || k.includes('kontrakan') || k.includes('kos') || k.includes('kpr') || k.includes('rumah')) return { icon: 'home', chip: 'chip-pengeluaran' };
+      if (k.includes('health') || k.includes('doctor') || k.includes('dokter') || k.includes('obat') || k.includes('apotek') || k.includes('asuransi')) return { icon: 'heart-pulse', chip: 'chip-pengeluaran' };
+      if (k.includes('education') || k.includes('pendidikan') || k.includes('sekolah') || k.includes('kursus') || k.includes('buku')) return { icon: 'graduation-cap', chip: 'chip-pengeluaran' };
+      if (k.includes('personal care') || k.includes('care') || k.includes('skin') || k.includes('salon') || k.includes('skincare')) return { icon: 'sparkles', chip: 'chip-pengeluaran' };
+      if (k.includes('shopping') || k.includes('belanja') || k.includes('fashion') || k.includes('baju') || k.includes('pakaian') || k.includes('elektronik')) return { icon: 'shopping-bag', chip: 'chip-pengeluaran' };
+      if (k.includes('entertainment') || k.includes('hobi') || k.includes('game') || k.includes('movie') || k.includes('nonton') || k.includes('netflix') || k.includes('streaming')) return { icon: 'gamepad-2', chip: 'chip-pengeluaran' };
+      if (k.includes('travel') || k.includes('vacation') || k.includes('liburan') || k.includes('tiket') || k.includes('hotel')) return { icon: 'plane', chip: 'chip-pengeluaran' };
+      if (k.includes('gift') || k.includes('donation') || k.includes('zakat') || k.includes('infaq') || k.includes('sedekah') || k.includes('kondangan')) return { icon: 'heart', chip: 'chip-pengeluaran' };
+      if (k.includes('family') || k.includes('kids') || k.includes('anak') || k.includes('baby') || k.includes('susu') || k.includes('popok')) return { icon: 'baby', chip: 'chip-pengeluaran' };
+      if (k.includes('pet') || k.includes('cat') || k.includes('dog') || k.includes('kucing') || k.includes('vet') || k.includes('anabul')) return { icon: 'paw-print', chip: 'chip-pengeluaran' };
+      if (k.includes('maintenance') || k.includes('servis') || k.includes('repair') || k.includes('perbaikan')) return { icon: 'wrench', chip: 'chip-pengeluaran' };
+      if (k.includes('payable') || k.includes('hutang') || k.includes('cicilan') || k.includes('debt')) return { icon: 'credit-card', chip: 'chip-pengeluaran' };
 
-function getCategoryIconMeta(namaKategori, jenis) {
-  const k = (namaKategori || '').toLowerCase().trim();
-  const j = (jenis || '').toLowerCase().trim();
+      if (j.includes('masuk') || j.includes('income') || j.includes('terima')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
+      if (j.includes('transfer') || j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi') || j.includes('reimburse')) return { icon: 'send', chip: 'chip-info' };
 
-  // --------------------------------------------------
-  // 🟢 1. INCOME & PEMASUKAN CATEGORIES (GREEN CHIP)
-  // --------------------------------------------------
-  if (k.includes('salary') || k.includes('gaji') || k.includes('payroll')) 
-    return { icon: 'banknote', chip: 'chip-pemasukan' };
-  if (k.includes('bonus') || k.includes('allowance') || k.includes('tunjangan')) 
-    return { icon: 'gift', chip: 'chip-pemasukan' };
-  if (k.includes('freelance') || k.includes('side') || k.includes('proyek')) 
-    return { icon: 'briefcase', chip: 'chip-pemasukan' };
-  if (k.includes('investment') || k.includes('investasi') || k.includes('dividen') || k.includes('return')) 
-    return { icon: 'trending-up', chip: 'chip-pemasukan' };
-  if (k.includes('business') || k.includes('usaha') || k.includes('profit') || k.includes('toko')) 
-    return { icon: 'store', chip: 'chip-pemasukan' };
-  if (k.includes('refund') || k.includes('cashback')) 
-    return { icon: 'rotate-ccw', chip: 'chip-pemasukan' };
+      return { icon: 'shopping-cart', chip: 'chip-pengeluaran' };
+    }
 
-  // --------------------------------------------------
-  // 🔵 2. TRANSIT, TRANSFERS & AP/R CATEGORIES (BLUE CHIP)
-  // --------------------------------------------------
-  if (k.includes('internal transfer') || k.includes('pindah buku')) 
-    return { icon: 'arrow-right-left', chip: 'chip-info' };
-  if (k.includes('deposit') || k.includes('savings') || k.includes('tabungan') || k.includes('withdraw')) 
-    return { icon: 'piggy-bank', chip: 'chip-info' };
-  if (k.includes('receivable') || k.includes('piutang') || k.includes('reimburse') || k.includes('talangan')) 
-    return { icon: 'send', chip: 'chip-info' };
-
-  // --------------------------------------------------
-  // 🔴 3. EXPENSE & PENGELUARAN CATEGORIES (RED CHIP)
-  // --------------------------------------------------
-  if (k.includes('food') || k.includes('groceries') || k.includes('makan') || k.includes('dapur') || k.includes('supermarket')) 
-    return { icon: 'utensils', chip: 'chip-pengeluaran' };
-  if (k.includes('coffee') || k.includes('kopi') || k.includes('cafe') || k.includes('restaurant') || k.includes('restoran')) 
-    return { icon: 'coffee', chip: 'chip-pengeluaran' };
-  if (k.includes('transport') || k.includes('bensin') || k.includes('fuel') || k.includes('parkir') || k.includes('tol') || k.includes('ojek') || k.includes('grab') || k.includes('gojek')) 
-    return { icon: 'car', chip: 'chip-pengeluaran' };
-  if (k.includes('bill') || k.includes('utility') || k.includes('utilities') || k.includes('listrik') || k.includes('air') || k.includes('wifi') || k.includes('internet') || k.includes('pulsa') || k.includes('tagihan')) 
-    return { icon: 'zap', chip: 'chip-pengeluaran' };
-  if (k.includes('rent') || k.includes('housing') || k.includes('kontrakan') || k.includes('kos') || k.includes('kpr') || k.includes('rumah')) 
-    return { icon: 'home', chip: 'chip-pengeluaran' };
-  if (k.includes('health') || k.includes('doctor') || k.includes('dokter') || k.includes('obat') || k.includes('apotek') || k.includes('asuransi')) 
-    return { icon: 'heart-pulse', chip: 'chip-pengeluaran' };
-  if (k.includes('education') || k.includes('pendidikan') || k.includes('sekolah') || k.includes('kursus') || k.includes('buku')) 
-    return { icon: 'graduation-cap', chip: 'chip-pengeluaran' };
-  if (k.includes('personal care') || k.includes('care') || k.includes('skin') || k.includes('salon') || k.includes('skincare')) 
-    return { icon: 'sparkles', chip: 'chip-pengeluaran' };
-  if (k.includes('shopping') || k.includes('belanja') || k.includes('fashion') || k.includes('baju') || k.includes('pakaian') || k.includes('elektronik')) 
-    return { icon: 'shopping-bag', chip: 'chip-pengeluaran' };
-  if (k.includes('entertainment') || k.includes('hobi') || k.includes('game') || k.includes('movie') || k.includes('nonton') || k.includes('netflix') || k.includes('streaming')) 
-    return { icon: 'gamepad-2', chip: 'chip-pengeluaran' };
-  if (k.includes('travel') || k.includes('vacation') || k.includes('liburan') || k.includes('tiket') || k.includes('hotel')) 
-    return { icon: 'plane', chip: 'chip-pengeluaran' };
-  if (k.includes('gift') || k.includes('donation') || k.includes('zakat') || k.includes('infaq') || k.includes('sedekah') || k.includes('kondangan')) 
-    return { icon: 'heart', chip: 'chip-pengeluaran' };
-  if (k.includes('family') || k.includes('kids') || k.includes('anak') || k.includes('baby') || k.includes('susu') || k.includes('popok')) 
-    return { icon: 'baby', chip: 'chip-pengeluaran' };
-  if (k.includes('pet') || k.includes('cat') || k.includes('dog') || k.includes('kucing') || k.includes('vet') || k.includes('anabul')) 
-    return { icon: 'paw-print', chip: 'chip-pengeluaran' };
-  if (k.includes('maintenance') || k.includes('servis') || k.includes('repair') || k.includes('perbaikan')) 
-    return { icon: 'wrench', chip: 'chip-pengeluaran' };
-  if (k.includes('payable') || k.includes('hutang') || k.includes('cicilan') || k.includes('debt')) 
-    return { icon: 'credit-card', chip: 'chip-pengeluaran' };
-
-  // --------------------------------------------------
-  // 🔄 4. FALLBACK OTOMATIS BILA KATEGORI KUSTOM/BARU
-  // --------------------------------------------------
-  if (j.includes('masuk') || j.includes('income') || j.includes('terima')) {
-    return { icon: 'trending-up', chip: 'chip-pemasukan' }; // 🟢 GREEN
-  }
-  if (j.includes('transfer') || j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi') || j.includes('reimburse')) {
-    return { icon: 'send', chip: 'chip-info' }; // 🔵 BLUE
-  }
-
-  return { icon: 'shopping-cart', chip: 'chip-pengeluaran' }; // 🔴 RED DEFAULT
-}
-    
-function getIconMeta(jenis, kategori = '') {
-  const j = (jenis || '').toLowerCase().trim();
-  const k = (kategori || '').toLowerCase().trim();
-
-  // 🔵 BLUE ICONS
-  if (j.includes('transfer')) return { icon: 'arrow-right-left', chip: 'chip-info' };
-  if (j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi') || j.includes('reimburse')) {
-    return { icon: 'send', chip: 'chip-info' };
-  }
-
-  // 🟢 GREEN ICONS
-  if (j.includes('terima piutang') || j.includes('receive receivable')) return { icon: 'hand-coins', chip: 'chip-pemasukan' };
-  if (j.includes('terima hutang') || j.includes('receive debt') || j.includes('pinjam')) return { icon: 'piggy-bank', chip: 'chip-pemasukan' };
-  if (j.includes('masuk') || j.includes('income')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
-
-  // 🔴 RED ICONS
-  if (j.includes('hutang') || j.includes('debt') || j.includes('bayar') || j.includes('cicilan')) return { icon: 'credit-card', chip: 'chip-pengeluaran' };
-
-  return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
-}
+    function getIconMeta(jenis, kategori = '') {
+      const j = (jenis || '').toLowerCase().trim();
+      if (j.includes('transfer')) return { icon: 'arrow-right-left', chip: 'chip-info' };
+      if (j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi') || j.includes('reimburse')) return { icon: 'send', chip: 'chip-info' };
+      if (j.includes('terima piutang') || j.includes('receive receivable')) return { icon: 'hand-coins', chip: 'chip-pemasukan' };
+      if (j.includes('terima hutang') || j.includes('receive debt') || j.includes('pinjam')) return { icon: 'piggy-bank', chip: 'chip-pemasukan' };
+      if (j.includes('masuk') || j.includes('income')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
+      if (j.includes('hutang') || j.includes('debt') || j.includes('bayar') || j.includes('cicilan')) return { icon: 'credit-card', chip: 'chip-pengeluaran' };
+      return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
+    }
 
     function iconChipHtml(jenis, kategori = '') {
-  const m = getCategoryIconMeta(kategori, jenis);
-  return `<div class="icon-chip ${m.chip}"><i data-lucide="${m.icon}" class="w-4 h-4"></i></div>`;
-}
+      const m = getCategoryIconMeta(kategori, jenis);
+      return `<div class="icon-chip ${m.chip}"><i data-lucide="${m.icon}" class="w-4 h-4"></i></div>`;
+    }
+
+    const JENIS_OPTIONS = [
+      { value: 'Pengeluaran', label: 'Expense (-)', icon: 'arrow-up-right', chip: 'chip-pengeluaran', badge: '🔴' },
+      { value: 'Pemasukan', label: 'Income (+)', icon: 'trending-up', chip: 'chip-pemasukan', badge: '🟢' },
+      { value: 'Transfer Internal', label: 'Internal Transfer', icon: 'arrow-right-left', chip: 'chip-info', badge: '🔵' },
+      { value: 'Beri Piutang (Menalangi)', label: 'Give Receivables / Reimburse', icon: 'send', chip: 'chip-info', badge: '🔵' },
+      { value: 'Terima Piutang', label: 'Receive Receivables (+)', icon: 'hand-coins', chip: 'chip-pemasukan', badge: '🟢' },
+      { value: 'Terima Hutang (Pinjam)', label: 'Receive Debt (+)', icon: 'piggy-bank', chip: 'chip-pemasukan', badge: '🟢' },
+      { value: 'Bayar Hutang/Cicilan', label: 'Pay Debt / Installment (-)', icon: 'credit-card', chip: 'chip-pengeluaran', badge: '🔴' }
+    ];
+
+    function openJenisPicker() {
+      renderJenisPickerList();
+      openModal('modalJenisPicker');
+    }
+
+    function renderJenisPickerList() {
+      const container = document.getElementById('jenis-picker-list');
+      let html = "";
+      const currentVal = document.getElementById('form-jenis').value || 'Pengeluaran';
+
+      JENIS_OPTIONS.forEach(opt => {
+        const isSelected = opt.value === currentVal;
+        const borderCls = isSelected ? 'border-mochi ring-2 ring-mochi/20' : 'border-slate-100 dark:border-[var(--border-color)]';
+        
+        html += `
+          <div onclick="vibrate(30); selectJenis('${opt.value}')" class="floating-item flex justify-between items-center px-4 py-3 cursor-pointer tap-shrink border ${borderCls} transition-all">
+            <div class="flex items-center space-x-3">
+              <div class="icon-chip ${opt.chip}"><i data-lucide="${opt.icon}" class="w-4 h-4"></i></div>
+              <span class="font-extrabold text-main text-[13px]">${opt.label}</span>
+            </div>
+            <span class="text-xs">${opt.badge}</span>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function selectJenis(value) {
+      document.getElementById('form-jenis').value = value;
+      updateJenisDisplay(value);
+      handleJenisChange();
+      closeModal('modalJenisPicker');
+    }
+
+    function updateJenisDisplay(value) {
+      const opt = JENIS_OPTIONS.find(o => o.value === value) || JENIS_OPTIONS[0];
+      const displayEl = document.getElementById('form-jenis-display');
+      if (displayEl) {
+        displayEl.innerHTML = `
+          <div class="icon-chip ${opt.chip} w-6 h-6 rounded-md"><i data-lucide="${opt.icon}" class="w-3.5 h-3.5"></i></div>
+          <span class="font-extrabold text-main text-xs">${opt.label}</span>
+        `;
+        lucide.createIcons();
+      }
+    }
 
     function animateNumber(el, targetValue, duration = 700) {
       const start = 0;
@@ -1199,161 +1137,83 @@ function getIconMeta(jenis, kategori = '') {
         const eased = 1 - Math.pow(1 - progress, 3);
         const current = Math.round(start + (targetValue - start) * eased);
         
-        if(el.id === 'kpi-networth' || el.id === 'kpi-disposable') {
-          updateScalingText(el, current);
-        } else {
-          el.innerText = formatRupiah(current);
-        }
+        if(el.id === 'kpi-networth' || el.id === 'kpi-disposable') updateScalingText(el, current);
+        else el.innerText = formatRupiah(current);
 
         if (progress < 1) requestAnimationFrame(tick);
         else {
-          if(el.id === 'kpi-networth' || el.id === 'kpi-disposable') {
-             updateScalingText(el, targetValue);
-          } else {
-             el.innerText = formatRupiah(targetValue);
-          }
+          if(el.id === 'kpi-networth' || el.id === 'kpi-disposable') updateScalingText(el, targetValue);
+          else el.innerText = formatRupiah(targetValue);
         }
       }
       requestAnimationFrame(tick);
     }
 
-    // ==========================================
-// CUSTOM PICKER JENIS TRANSAKSI & 3 COLOR RULES
-// ==========================================
-
-const JENIS_OPTIONS = [
-  { value: 'Pengeluaran', label: 'Expense (-)', icon: 'arrow-up-right', chip: 'chip-pengeluaran', badge: '🔴' },
-  { value: 'Pemasukan', label: 'Income (+)', icon: 'trending-up', chip: 'chip-pemasukan', badge: '🟢' },
-  { value: 'Transfer Internal', label: 'Internal Transfer', icon: 'arrow-right-left', chip: 'chip-info', badge: '🔵' },
-  { value: 'Beri Piutang (Menalangi)', label: 'Give Receivables / Reimburse', icon: 'send', chip: 'chip-info', badge: '🔵' },
-  { value: 'Terima Piutang', label: 'Receive Receivables (+)', icon: 'hand-coins', chip: 'chip-pemasukan', badge: '🟢' },
-  { value: 'Terima Hutang (Pinjam)', label: 'Receive Debt (+)', icon: 'piggy-bank', chip: 'chip-pemasukan', badge: '🟢' },
-  { value: 'Bayar Hutang/Cicilan', label: 'Pay Debt / Installment (-)', icon: 'credit-card', chip: 'chip-pengeluaran', badge: '🔴' }
-];
-
-function openJenisPicker() {
-  renderJenisPickerList();
-  openModal('modalJenisPicker');
-}
-
-function renderJenisPickerList() {
-  const container = document.getElementById('jenis-picker-list');
-  let html = "";
-  const currentVal = document.getElementById('form-jenis').value || 'Pengeluaran';
-
-  JENIS_OPTIONS.forEach(opt => {
-    const isSelected = opt.value === currentVal;
-    const borderCls = isSelected ? 'border-mochi ring-2 ring-mochi/20' : 'border-slate-100 dark:border-[var(--border-color)]';
-    
-    html += `
-      <div onclick="vibrate(30); selectJenis('${opt.value}')" class="floating-item flex justify-between items-center px-4 py-3 cursor-pointer tap-shrink border ${borderCls} transition-all">
-        <div class="flex items-center space-x-3">
-          <div class="icon-chip ${opt.chip}"><i data-lucide="${opt.icon}" class="w-4 h-4"></i></div>
-          <span class="font-extrabold text-main text-[13px]">${opt.label}</span>
-        </div>
-        <span class="text-xs">${opt.badge}</span>
-      </div>
-    `;
-  });
-  container.innerHTML = html;
-  lucide.createIcons();
-}
-
-function selectJenis(value) {
-  document.getElementById('form-jenis').value = value;
-  updateJenisDisplay(value);
-  handleJenisChange();
-  closeModal('modalJenisPicker');
-}
-
-function updateJenisDisplay(value) {
-  const opt = JENIS_OPTIONS.find(o => o.value === value) || JENIS_OPTIONS[0];
-  const displayEl = document.getElementById('form-jenis-display');
-  if (displayEl) {
-    displayEl.innerHTML = `
-      <div class="icon-chip ${opt.chip} w-6 h-6 rounded-md"><i data-lucide="${opt.icon}" class="w-3.5 h-3.5"></i></div>
-      <span class="font-extrabold text-main text-xs">${opt.label}</span>
-    `;
-    lucide.createIcons();
-  }
-}
-    
     function openFormTransaksiBaru() {
-  // 1. Reset seluruh isi inputan form
-  document.getElementById('formTransaksi').reset();
-  document.getElementById('form-idtrx').value = "";
-  document.getElementById('form-tgl').valueAsDate = new Date();
-  document.getElementById('form-jumlah-val').value = "";
-  
-  // 2. Reset tampilan pilihan Kategori
-  const katDisplay = document.getElementById('form-kategori-display');
-  katDisplay.innerText = "Select Category...";
-  katDisplay.classList.add('text-faint');
-  
-  // 3. Reset judul modal & tombol ke mode Tambah
-  document.getElementById('modal-title-trx').innerText = "Add Transaction";
-  document.getElementById('btn-submit-trx').innerText = "Save Transaction";
-  
-  // 4. SETEL TAMPILAN KOTAK JENIS TRANSAKSI KE DEFAULT (Expense)
-  document.getElementById('form-jenis').value = "Pengeluaran";
-  updateJenisDisplay("Pengeluaran"); // <--- Ini baris yang dimaksud
-  
-  // 5. Sembunyikan/tampilkan input terkait (akun sumber/tujuan)
-  handleJenisChange();
-  
-  // 6. Buka modal form
-  openModal('modalInputTrx');
-}
-    
-    // PERBAIKAN PADA MODE EDIT TRANSAKSI
-function handleEditTrx(idTrx) {
-  vibrate(30);
-  const trx = GLOBAL_DATA.transaksi.find(t => t.idTransaksi === idTrx);
-  if(!trx) return;
-
-  closeModal('modalDetail'); 
-
-  setTimeout(() => {
-    document.getElementById('form-idtrx').value = trx.idTransaksi;
-    document.getElementById('form-user').value = trx.inputOleh;
-    document.getElementById('form-tgl').value = trx.tanggal;
-    
-    // Setel nilai & perbarui tampilan picker jenis transaksi
-    const jenisVal = trx.jenis || "Pengeluaran";
-    document.getElementById('form-jenis').value = jenisVal;
-    if (typeof updateJenisDisplay === 'function') {
-      updateJenisDisplay(jenisVal);
-    }
-    
-    handleJenisChange(); 
-    
-    document.getElementById('form-akunsumber').value = trx.akunSumber || "";
-    document.getElementById('form-akuntujuan').value = trx.akunTujuan || "";
-    document.getElementById('form-hutang').value = trx.terkaitHutang || "";
-    document.getElementById('form-piutang').value = trx.terkaitPiutang || "";
-    
-    document.getElementById('form-kategori').value = trx.kategori || "";
-    const katDisplay = document.getElementById('form-kategori-display');
-    if (trx.kategori) {
-      katDisplay.innerText = trx.kategori;
-      katDisplay.classList.remove('text-faint');
-    } else {
+      document.getElementById('formTransaksi').reset();
+      document.getElementById('form-idtrx').value = "";
+      document.getElementById('form-tgl').valueAsDate = new Date();
+      document.getElementById('form-jumlah-val').value = "";
+      
+      const katDisplay = document.getElementById('form-kategori-display');
       katDisplay.innerText = "Select Category...";
       katDisplay.classList.add('text-faint');
+      
+      document.getElementById('modal-title-trx').innerText = "Add Transaction";
+      document.getElementById('btn-submit-trx').innerText = "Save Transaction";
+      
+      document.getElementById('form-jenis').value = "Pengeluaran";
+      updateJenisDisplay("Pengeluaran");
+      
+      handleJenisChange();
+      openModal('modalInputTrx');
     }
-    
-    document.getElementById('form-jumlah-val').value = trx.jumlah;
-    document.getElementById('form-jumlah-display').value = new Intl.NumberFormat('id-ID').format(trx.jumlah);
-    
-    document.getElementById('form-deskripsi').value = trx.deskripsi || "";
-    document.getElementById('form-catatan').value = trx.catatan || "";
 
-    document.getElementById('modal-title-trx').innerText = "Edit Transaction";
-    document.getElementById('btn-submit-trx').innerText = "Update Transaction";
+    function handleEditTrx(idTrx) {
+      vibrate(30);
+      const trx = GLOBAL_DATA.transaksi.find(t => t.idTransaksi === idTrx);
+      if(!trx) return;
 
-    openModal('modalInputTrx');
-  }, 400);
-}
+      closeModal('modalDetail'); 
+
+      setTimeout(() => {
+        document.getElementById('form-idtrx').value = trx.idTransaksi;
+        document.getElementById('form-user').value = trx.inputOleh;
+        document.getElementById('form-tgl').value = trx.tanggal;
+        
+        const jenisVal = trx.jenis || "Pengeluaran";
+        document.getElementById('form-jenis').value = jenisVal;
+        updateJenisDisplay(jenisVal);
+        
+        handleJenisChange(); 
+        
+        document.getElementById('form-akunsumber').value = trx.akunSumber || "";
+        document.getElementById('form-akuntujuan').value = trx.akunTujuan || "";
+        document.getElementById('form-hutang').value = trx.terkaitHutang || "";
+        document.getElementById('form-piutang').value = trx.terkaitPiutang || "";
+        
+        document.getElementById('form-kategori').value = trx.kategori || "";
+        const katDisplay = document.getElementById('form-kategori-display');
+        if (trx.kategori) {
+          katDisplay.innerText = trx.kategori;
+          katDisplay.classList.remove('text-faint');
+        } else {
+          katDisplay.innerText = "Select Category...";
+          katDisplay.classList.add('text-faint');
+        }
+        
+        document.getElementById('form-jumlah-val').value = trx.jumlah;
+        document.getElementById('form-jumlah-display').value = new Intl.NumberFormat('id-ID').format(trx.jumlah);
+        
+        document.getElementById('form-deskripsi').value = trx.deskripsi || "";
+        document.getElementById('form-catatan').value = trx.catatan || "";
+
+        document.getElementById('modal-title-trx').innerText = "Edit Transaction";
+        document.getElementById('btn-submit-trx').innerText = "Update Transaction";
+
+        openModal('modalInputTrx');
+      }, 400);
+    }
 
     function promptDeleteTrx(idTrx) {
       vibrate(40);
@@ -1529,8 +1389,7 @@ function handleEditTrx(idTrx) {
       const listEl = document.getElementById('riwayat-trx-list');
       listEl.innerHTML = "";
 
-      let totalMasuk = 0;
-      let totalKeluar = 0;
+      let totalMasuk = 0, totalKeluar = 0;
 
       const filtered = (GLOBAL_DATA.transaksi || []).filter(trx => {
         const tgl = trx.tanggal || "";
@@ -1551,11 +1410,8 @@ function handleEditTrx(idTrx) {
       filtered.forEach(trx => {
         const val = Number(trx.jumlah) || 0;
         const j = (trx.jenis || '').toLowerCase();
-        if (j.includes('masuk') || j.includes('income') || j.includes('terima')) {
-          totalMasuk += val;
-        } else if (j.includes('keluar') || j.includes('expense') || j.includes('bayar')) {
-          totalKeluar += val;
-        }
+        if (j.includes('masuk') || j.includes('income') || j.includes('terima')) totalMasuk += val;
+        else if (j.includes('keluar') || j.includes('expense') || j.includes('bayar')) totalKeluar += val;
       });
 
       document.getElementById('sum-masuk').innerText = "+" + formatRupiah(totalMasuk);
@@ -1627,11 +1483,10 @@ function handleEditTrx(idTrx) {
         const tgl = trx.tanggal || "";
         const tTahun = tgl.length >= 4 ? tgl.substring(0, 4) : "";
         const tBulan = tgl.length >= 7 ? tgl.substring(5, 7) : "";
-        const matchBulan = (filterBulan === 'ALL' || tBulan === filterBulan);
-        const matchTahun = (filterTahun === 'ALL' || tTahun === filterTahun);
-        const matchJenis = (filterJenis === 'ALL' || trx.jenis === filterJenis);
-        const matchUser = (filterUser === 'ALL' || trx.inputOleh === filterUser);
-        return matchBulan && matchTahun && matchJenis && matchUser;
+        return (filterBulan === 'ALL' || tBulan === filterBulan) &&
+               (filterTahun === 'ALL' || tTahun === filterTahun) &&
+               (filterJenis === 'ALL' || trx.jenis === filterJenis) &&
+               (filterUser === 'ALL' || trx.inputOleh === filterUser);
       });
 
       if (filtered.length === 0) {
@@ -1641,9 +1496,7 @@ function handleEditTrx(idTrx) {
       
       showToast("Preparing CSV file...", "info");
 
-      let csvContent = "\uFEFF";
-      csvContent += "sep=;\r\n";
-      csvContent += "e-STATEMENT MUTATION FINANCIAL REPORT — MOCHI'S VAULT\r\n";
+      let csvContent = "\uFEFFsep=;\r\ne-STATEMENT MUTATION FINANCIAL REPORT — MOCHI'S VAULT\r\n";
       csvContent += `Period Month: ${filterBulan} | Year: ${filterTahun}\r\n`;
       csvContent += `Downloaded On: ${new Date().toLocaleDateString('en-US')}\r\n\r\n`;
       csvContent += "Transaction ID;Date;User;Type;Category;Source Account;Target Account;Description;Amount (Rp);Notes\r\n";
@@ -1661,14 +1514,12 @@ function handleEditTrx(idTrx) {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.setAttribute("href", url);
-      const namaFile = `eStatement_MochiVault_${filterTahun}-${filterBulan}.csv`;
-      link.setAttribute("download", namaFile);
+      link.setAttribute("download", `eStatement_MochiVault_${filterTahun}-${filterBulan}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     }
 
-    // TAB WALLETS: SALDO DARI SEMUA AKUN DIUNCI HIJAU (amount-in)
     function renderSaldo() {
       const operasionalEl = document.getElementById('list-akun-operasional');
       const tabunganEl = document.getElementById('list-akun-tabungan');
@@ -1695,15 +1546,11 @@ function handleEditTrx(idTrx) {
           </div>
           <div>
             <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Running Balance</span>
-            <!-- STRICT GREEN FOR RUNNING BALANCES -->
             <span class="text-[18px] font-black amount-in block leading-none tracking-tight">${formatRupiah(akun.saldoBerjalan)}</span>
           </div>
         `;
-        if (akun.kategoriFungsi && akun.kategoriFungsi.toLowerCase().includes('operasional')) {
-          operasionalEl.appendChild(div);
-        } else {
-          tabunganEl.appendChild(div);
-        }
+        if (akun.kategoriFungsi && akun.kategoriFungsi.toLowerCase().includes('operasional')) operasionalEl.appendChild(div);
+        else tabunganEl.appendChild(div);
       });
       lucide.createIcons();
     }
@@ -1729,7 +1576,6 @@ function handleEditTrx(idTrx) {
             </div>
             <div class="flex flex-col mb-3">
               <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Remaining Payable</span>
-              <!-- STRICT RED FOR PAYABLES -->
               <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(h.sisaHutang)}</span>
             </div>
             <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
@@ -1755,7 +1601,6 @@ function handleEditTrx(idTrx) {
             </div>
             <div>
               <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Remaining Receivable</span>
-              <!-- STRICT BLUE FOR RECEIVABLES -->
               <span class="text-[18px] font-black amount-info block leading-none tracking-tight">${formatRupiah(p.sisaPiutang)}</span>
             </div>
           `;
@@ -1788,12 +1633,8 @@ function handleEditTrx(idTrx) {
       displayEl.classList.add('text-faint');
     }
 
-    // ==========================================
-// STRICT CATEGORY & TRANSACTION TYPE MATCHING
-// ==========================================
-
-// ==========================================
-// FIX: FLEXIBLE CATEGORY MATCHING & FALLBACK
+/ ==========================================
+// FIX: CATEGORY PICKER & DYNAMIC MATCHING
 // ==========================================
 
 function isCategoryMatchingType(katObj, jenisTrx) {
@@ -1801,35 +1642,26 @@ function isCategoryMatchingType(katObj, jenisTrx) {
   const kJenis = (katObj.jenis || '').toLowerCase().trim();
   const tJenis = jenisTrx.toLowerCase().trim();
 
-  // Jika jenis kategori di Sheet kosong/belum diisi, selalu tampilkan (agar tidak memblokir)
+  // Jika jenis kategori di Sheet belum terisi, jangan blokir (fleksibel)
   if (!kJenis) return true;
 
-  // 1. Income / Pemasukan / Terima
   if (tJenis.includes('pemasukan') || tJenis.includes('income') || tJenis.includes('terima')) {
     return kJenis.includes('pemasukan') || kJenis.includes('income') || kJenis.includes('terima');
   }
-  // 2. Expense / Pengeluaran / Bayar
   if (tJenis.includes('pengeluaran') || tJenis.includes('expense') || tJenis.includes('bayar')) {
     return kJenis.includes('pengeluaran') || kJenis.includes('expense') || kJenis.includes('bayar');
   }
-  // 3. Transfer / Reimburse / AP-AR
-  if (tJenis.includes('transfer') || tJenis.includes('beri piutang') || tJenis.includes('menalangi') || tJenis.includes('reimburse')) {
-    return true; // Tampilkan kategori fleksibel untuk transaksi transit
-  }
   return true;
 }
-
-function groupKategoriData() {
+    function groupKategoriData() {
   const activeJenisTrx = document.getElementById('form-jenis').value || 'Pengeluaran';
   const groups = {}; 
-  const order = [];
+  const order = []; // PERBAIKAN: Tambahkan kata kunci 'const' agar tidak throw ReferenceError
   
   const allKategori = GLOBAL_DATA.kategori || [];
-
-  // 1. Filter kategori yang cocok
   let filtered = allKategori.filter(k => isCategoryMatchingType(k, activeJenisTrx));
-
-  // 2. GARANSI FALLBACK: Jika hasil filter 0 (kosong), tampilkan SEMUA kategori agar user tidak terkunci
+  
+  // Fallback: Jika filter menghasilkan 0 item, tampilkan seluruh kategori agar user tidak terisolasi
   if (filtered.length === 0) {
     filtered = allKategori;
   }
@@ -1842,18 +1674,24 @@ function groupKategoriData() {
     }
     groups[utama].items.push(k);
   });
-
+  
   return { groups, order };
 }
-
     function openKategoriPicker() {
-      renderKategoriPickerList();
-      openModal('modalKategoriPicker');
-    }
+  try {
+    renderKategoriPickerList();
+    openModal('modalKategoriPicker');
+  } catch (err) {
+    console.error("Error opening category picker:", err);
+    showToast("Failed to open category picker", "error");
+  }
+}
 
     function renderKategoriPickerList() {
   const { groups, order } = groupKategoriData();
   const listEl = document.getElementById('kategori-picker-list');
+  if (!listEl) return;
+  
   let html = "";
 
   order.forEach(utama => {
@@ -1888,7 +1726,7 @@ function groupKategoriData() {
       
       group.items.forEach((item, idx) => {
         const label = (item.subKategori && item.subKategori !== item.namaKategori) ? item.subKategori : item.namaKategori;
-        const borderCls = idx !== group.items.length -1 ? 'border-b border-slate-100 dark:border-[var(--border-color)]' : '';
+        const borderCls = idx !== group.items.length - 1 ? 'border-b border-slate-100 dark:border-[var(--border-color)]' : '';
         const mSub = getCategoryIconMeta(label, group.jenis);
         
         html += `
@@ -1902,6 +1740,7 @@ function groupKategoriData() {
       html += `</div></div>`;
     }
   });
+  
   listEl.innerHTML = html;
   lucide.createIcons();
 }
@@ -1909,104 +1748,89 @@ function groupKategoriData() {
     function toggleKategoriGroup(utama) { kategoriPickerExpanded[utama] = !kategoriPickerExpanded[utama]; renderKategoriPickerList(); }
 
     function selectKategori(namaKategori) {
-      document.getElementById('form-kategori').value = namaKategori;
-      const displayEl = document.getElementById('form-kategori-display');
-      displayEl.innerText = namaKategori;
-      displayEl.classList.remove('text-faint');
-      closeModal('modalKategoriPicker');
+  document.getElementById('form-kategori').value = namaKategori;
+  const displayEl = document.getElementById('form-kategori-display');
+  if (displayEl) {
+    displayEl.innerText = namaKategori;
+    displayEl.classList.remove('text-faint');
+  }
+  closeModal('modalKategoriPicker');
+}
+    function handleJenisChange() {
+      const jenis = document.getElementById('form-jenis').value;
+      const show = (id, isShow) => {
+        const el = document.getElementById(id);
+        if (isShow) el.classList.remove('hidden'); else el.classList.add('hidden');
+      };
+      const j = jenis.toLowerCase();
+      const hasSumber = j.includes('pengeluaran') || j.includes('expense') || j.includes('transfer') || j.includes('beri piutang') || j.includes('bayar hutang');
+      const hasTujuan = j.includes('pemasukan') || j.includes('income') || j.includes('transfer') || j.includes('terima piutang') || j.includes('terima hutang');
+      const hasHutang = j.includes('hutang') || j.includes('debt');
+      const hasPiutang = j.includes('piutang') || j.includes('receivable');
+
+      show('wrap-akunsumber', hasSumber); 
+      show('wrap-akuntujuan', hasTujuan); 
+      show('wrap-hutang', hasHutang); 
+      show('wrap-piutang', hasPiutang);
+
+      const selectedKatNama = document.getElementById('form-kategori').value;
+      if (selectedKatNama) {
+        const currentKatObj = (GLOBAL_DATA.kategori || []).find(k => k.namaKategori === selectedKatNama);
+        if (currentKatObj && !isCategoryMatchingType(currentKatObj, jenis)) resetKategoriPicker();
+      }
     }
 
-   // AUTO-RESET SAAT TRANSACTION TYPE DIGANTI
-function handleJenisChange() {
-  const jenis = document.getElementById('form-jenis').value;
-  const show = (id, isShow) => {
-    const el = document.getElementById(id);
-    if (isShow) el.classList.remove('hidden'); else el.classList.add('hidden');
-  };
-  const j = jenis.toLowerCase();
-  const hasSumber = j.includes('pengeluaran') || j.includes('expense') || j.includes('transfer') || j.includes('beri piutang') || j.includes('bayar hutang');
-  const hasTujuan = j.includes('pemasukan') || j.includes('income') || j.includes('transfer') || j.includes('terima piutang') || j.includes('terima hutang');
-  const hasHutang = j.includes('hutang') || j.includes('debt');
-  const hasPiutang = j.includes('piutang') || j.includes('receivable');
+    function showKpiDetail(kpiName) {
+      currentModalBackFn = null;
+      let displayTitle = kpiName;
+      if (kpiName === 'Total Kas') displayTitle = 'Total Cash';
+      else if (kpiName === 'Net Savings Operasional') displayTitle = 'Net Savings';
+      else if (kpiName === 'Total Piutang') displayTitle = 'Total Receivables';
+      else if (kpiName === 'Total Hutang') displayTitle = 'Total Payables';
 
-  show('wrap-akunsumber', hasSumber); 
-  show('wrap-akuntujuan', hasTujuan); 
-  show('wrap-hutang', hasHutang); 
-  show('wrap-piutang', hasPiutang);
+      let kpiColor = 'text-main';
+      if (displayTitle === 'Total Cash' || displayTitle === 'Net Savings' || displayTitle === 'Disposable Income') kpiColor = 'amount-in';
+      else if (displayTitle === 'Total Receivables') kpiColor = 'amount-info';
+      else if (displayTitle === 'Total Payables') kpiColor = 'amount-out';
 
-  // AUTO-RESET PILIHAN KATEGORI JIKA TIDAK COCOK DENGAN JENIS TRANSAKSI BARU
-  const selectedKatNama = document.getElementById('form-kategori').value;
-  if (selectedKatNama) {
-    const currentKatObj = (GLOBAL_DATA.kategori || []).find(k => k.namaKategori === selectedKatNama);
-    if (currentKatObj && !isCategoryMatchingType(currentKatObj, jenis)) {
-      resetKategoriPicker();
+      let html = `<div class="space-y-4 pt-1">
+          <div class="text-center pb-2">
+            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">KPI Details</span>
+            <h3 class="text-lg font-extrabold text-main leading-tight">${displayTitle}</h3>
+            <p class="text-3xl font-black mt-2 ${kpiColor}">${formatRupiah(GLOBAL_DATA.kpi[kpiName])}</p>
+          </div>
+          <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
+      `;
+
+      if (displayTitle === 'Net Worth') {
+        html += `
+          <p class="font-extrabold text-main mb-3 text-[13px]">Net Worth Components:</p>
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Total Cash & Savings:</span> <span class="font-extrabold amount-in">${formatRupiah(GLOBAL_DATA.kpi['Total Kas'])}</span></div>
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Total Receivables:</span> <span class="font-extrabold amount-info">${formatRupiah(GLOBAL_DATA.kpi['Total Piutang'])}</span></div>
+          <div class="flex justify-between amount-out pb-2 mt-2"><span>Total Payables (-):</span> <span class="font-extrabold">${formatRupiah(GLOBAL_DATA.kpi['Total Hutang'])}</span></div>
+          <div class="flex justify-between font-black text-main pt-3 mt-1 border-t border-slate-200/50 dark:border-[var(--border-color)] text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(GLOBAL_DATA.kpi['Net Worth'])}</span></div>
+        `;
+      } else if (displayTitle === 'Disposable Income') {
+        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">Remaining daily operational cash that is free to use for consumption and savings after deducting monthly commitments.</p>`;
+      } else if (displayTitle === 'Total Cash') {
+        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Account Balance Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
+        GLOBAL_DATA.akun.forEach(a => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${a.namaAkun} (${a.pemilik}):</span> <span class="font-extrabold amount-in">${formatRupiah(a.saldoBerjalan)}</span></div>`; });
+        html += `</div>`;
+      } else if (displayTitle === 'Total Receivables') {
+        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Receivables Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
+        GLOBAL_DATA.piutang.forEach(p => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${p.namaPiutang}:</span> <span class="font-extrabold amount-info">${formatRupiah(p.sisaPiutang)}</span></div>`; });
+        html += `</div>`;
+      } else if (displayTitle === 'Total Payables') {
+        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Payables Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
+        GLOBAL_DATA.hutang.forEach(h => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${h.namaHutang}:</span> <span class="font-extrabold amount-out">${formatRupiah(h.sisaHutang)}</span></div>`; });
+        html += `</div>`;
+      } else if (displayTitle === 'Net Savings') {
+        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">Net difference between operational income and operational expenses.</p>`;
+      }
+      
+      html += `</div></div>`;
+      document.getElementById('modal-detail-inner').innerHTML = html; openModal('modalDetail');
     }
-  }
-}
-    
-    // ==========================================
-// 2. MODAL DETAIL KPI (FULL ENGLISH + 3 COLOR RULES)
-// ==========================================
-
-function showKpiDetail(kpiName) {
-  currentModalBackFn = null;
-  
-  // NAMA KPI ENGLISH MAPPER
-  let displayTitle = kpiName;
-  if (kpiName === 'Total Kas') displayTitle = 'Total Cash';
-  else if (kpiName === 'Net Savings Operasional') displayTitle = 'Net Savings';
-  else if (kpiName === 'Total Piutang') displayTitle = 'Total Receivables';
-  else if (kpiName === 'Total Hutang') displayTitle = 'Total Payables';
-
-  // WARNA NOMINAL HEADER UTAMA SESUAI 3 COLOR RULES
-  let kpiColor = 'text-main';
-  if (displayTitle === 'Total Cash' || displayTitle === 'Net Savings' || displayTitle === 'Disposable Income') {
-    kpiColor = 'amount-in'; // 🟢 GREEN
-  } else if (displayTitle === 'Total Receivables') {
-    kpiColor = 'amount-info'; // 🔵 BLUE
-  } else if (displayTitle === 'Total Payables') {
-    kpiColor = 'amount-out'; // 🔴 RED
-  }
-
-  let html = `<div class="space-y-4 pt-1">
-      <div class="text-center pb-2">
-        <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">KPI Details</span>
-        <h3 class="text-lg font-extrabold text-main leading-tight">${displayTitle}</h3>
-        <p class="text-3xl font-black mt-2 ${kpiColor}">${formatRupiah(GLOBAL_DATA.kpi[kpiName])}</p>
-      </div>
-      <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
-  `;
-
-  if (displayTitle === 'Net Worth') {
-    html += `
-      <p class="font-extrabold text-main mb-3 text-[13px]">Net Worth Components:</p>
-      <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Total Cash & Savings:</span> <span class="font-extrabold amount-in">${formatRupiah(GLOBAL_DATA.kpi['Total Kas'])}</span></div>
-      <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Total Receivables:</span> <span class="font-extrabold amount-info">${formatRupiah(GLOBAL_DATA.kpi['Total Piutang'])}</span></div>
-      <div class="flex justify-between amount-out pb-2 mt-2"><span>Total Payables (-):</span> <span class="font-extrabold">${formatRupiah(GLOBAL_DATA.kpi['Total Hutang'])}</span></div>
-      <div class="flex justify-between font-black text-main pt-3 mt-1 border-t border-slate-200/50 dark:border-[var(--border-color)] text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(GLOBAL_DATA.kpi['Net Worth'])}</span></div>
-    `;
-  } else if (displayTitle === 'Disposable Income') {
-    html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">Remaining daily operational cash that is free to use for consumption and savings after deducting monthly commitments.</p>`;
-  } else if (displayTitle === 'Total Cash') {
-    html += `<p class="font-extrabold text-main mb-3 text-[13px]">Account Balance Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-    GLOBAL_DATA.akun.forEach(a => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${a.namaAkun} (${a.pemilik}):</span> <span class="font-extrabold amount-in">${formatRupiah(a.saldoBerjalan)}</span></div>`; });
-    html += `</div>`;
-  } else if (displayTitle === 'Total Receivables') {
-    html += `<p class="font-extrabold text-main mb-3 text-[13px]">Receivables Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-    GLOBAL_DATA.piutang.forEach(p => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${p.namaPiutang}:</span> <span class="font-extrabold amount-info">${formatRupiah(p.sisaPiutang)}</span></div>`; });
-    html += `</div>`;
-  } else if (displayTitle === 'Total Payables') {
-    html += `<p class="font-extrabold text-main mb-3 text-[13px]">Payables Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-    GLOBAL_DATA.hutang.forEach(h => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${h.namaHutang}:</span> <span class="font-extrabold amount-out">${formatRupiah(h.sisaHutang)}</span></div>`; });
-    html += `</div>`;
-  } else if (displayTitle === 'Net Savings') {
-    html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">Net difference between operational income and operational expenses.</p>`;
-  }
-  
-  html += `</div></div>`;
-  document.getElementById('modal-detail-inner').innerHTML = html; 
-  openModal('modalDetail');
-}
 
     function showTrxDetail(idTrx) {
       const trx = GLOBAL_DATA.transaksi.find(t => t.idTransaksi === idTrx); 
@@ -2016,107 +1840,44 @@ function showKpiDetail(kpiName) {
       const m = getIconMeta(trx.jenis, trx.kategori);
 
       let html = `<div class="space-y-4 pt-1">`;
-      
       if (currentModalBackFn) {
         window.isNestedModalView = true;
-        html += `
-          <button onclick="vibrate(30); window.isNestedModalView = false; currentModalBackFn()" class="tap-shrink text-xs font-extrabold text-main flex items-center mb-2 transition-colors">
-            <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back
-          </button>
-        `;
-      } else {
-        window.isNestedModalView = false;
-      }
+        html += `<button onclick="vibrate(30); window.isNestedModalView = false; currentModalBackFn()" class="tap-shrink text-xs font-extrabold text-main flex items-center mb-2 transition-colors"><i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back</button>`;
+      } else { window.isNestedModalView = false; }
       
       html += `
-        <!-- HEADER TRANSAKSI -->
         <div class="text-center flex flex-col items-center mb-5 pb-4 border-b border-slate-200/60 dark:border-[var(--border-color)]">
-          
-          <span class="text-[10px] font-mono font-black tracking-wider px-3 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mb-4 shadow-sm border border-[var(--border-color)]">
-            REF: ${trx.idTransaksi}
-          </span>
-
-          <div class="icon-chip ${m.chip} w-14 h-14 rounded-2xl mb-3 shadow-sm border border-slate-100 dark:border-[var(--border-color)]">
-            <i data-lucide="${m.icon}" class="w-6 h-6"></i>
-          </div>
-          
+          <span class="text-[10px] font-mono font-black tracking-wider px-3 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mb-4 shadow-sm border border-[var(--border-color)]">REF: ${trx.idTransaksi}</span>
+          <div class="icon-chip ${m.chip} w-14 h-14 rounded-2xl mb-3 shadow-sm border border-slate-100 dark:border-[var(--border-color)]"><i data-lucide="${m.icon}" class="w-6 h-6"></i></div>
           <h3 class="text-base font-extrabold text-main leading-snug px-4">${trx.deskripsi || trx.kategori}</h3>
-          
           <p class="text-3xl font-black mt-1.5 tracking-tight ${meta.cls}">${meta.prefix}${formatRupiah(trx.jumlah)}</p>
-          
-          <span class="text-[10px] font-black px-3.5 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mt-2.5 uppercase tracking-wider shadow-sm border border-[var(--border-color)]">
-            ${trx.jenis}
-          </span>
+          <span class="text-[10px] font-black px-3.5 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mt-2.5 uppercase tracking-wider shadow-sm border border-[var(--border-color)]">${trx.jenis}</span>
         </div>
         
-        <!-- CONTAINER RINCIAN -->
         <div class="bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-2xl p-4 border border-slate-200/60 dark:border-[var(--border-color)] space-y-2.5 text-xs font-semibold">
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]">
-            <span class="text-muted">Date</span>
-            <span class="font-extrabold text-main">${trx.tanggal}</span>
-          </div>
-          
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]">
-            <span class="text-muted">Category</span>
-            <span class="font-extrabold text-main">${trx.kategori}</span>
-          </div>
-
-          ${trx.akunSumber ? `
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]">
-            <span class="text-muted">Source Account</span>
-            <span class="font-extrabold text-main">${trx.akunSumber}</span>
-          </div>` : ''}
-
-          ${trx.akunTujuan ? `
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]">
-            <span class="text-muted">Target Account</span>
-            <span class="font-extrabold text-main">${trx.akunTujuan}</span>
-          </div>` : ''}
-
-          ${trx.terkaitHutang ? `
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]">
-            <span class="text-muted">Related Payable</span>
-            <span class="font-extrabold text-main">${trx.terkaitHutang}</span>
-          </div>` : ''}
-
-          ${trx.terkaitPiutang ? `
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]">
-            <span class="text-muted">Related Receivable</span>
-            <span class="font-extrabold text-main">${trx.terkaitPiutang}</span>
-          </div>` : ''}
-
-          <div class="flex justify-between items-center pt-0.5">
-            <span class="text-muted">Input By</span>
-            <span class="font-extrabold text-main">${trx.inputOleh}</span>
-          </div>
+          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Date</span><span class="font-extrabold text-main">${trx.tanggal}</span></div>
+          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Category</span><span class="font-extrabold text-main">${trx.kategori}</span></div>
+          ${trx.akunSumber ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Source Account</span><span class="font-extrabold text-main">${trx.akunSumber}</span></div>` : ''}
+          ${trx.akunTujuan ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Target Account</span><span class="font-extrabold text-main">${trx.akunTujuan}</span></div>` : ''}
+          ${trx.terkaitHutang ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Payable</span><span class="font-extrabold text-main">${trx.terkaitHutang}</span></div>` : ''}
+          ${trx.terkaitPiutang ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Receivable</span><span class="font-extrabold text-main">${trx.terkaitPiutang}</span></div>` : ''}
+          <div class="flex justify-between items-center pt-0.5"><span class="text-muted">Input By</span><span class="font-extrabold text-main">${trx.inputOleh}</span></div>
         </div>
 
-        ${trx.catatan ? `
-        <div class="text-xs bg-[var(--chip-info-bg)] p-3.5 rounded-2xl amount-info border border-[var(--border-color)]">
-          <span class="font-bold block mb-0.5">Notes:</span>
-          <span class="font-medium leading-relaxed block">${trx.catatan}</span>
-        </div>` : ''}
+        ${trx.catatan ? `<div class="text-xs bg-[var(--chip-info-bg)] p-3.5 rounded-2xl amount-info border border-[var(--border-color)]"><span class="font-bold block mb-0.5">Notes:</span><span class="font-medium leading-relaxed block">${trx.catatan}</span></div>` : ''}
         
-        <!-- BUTTONS -->
         <div class="flex space-x-3 pt-3">
-          <button onclick="handleEditTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center">
-            <i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit
-          </button>
-          
-          <button onclick="promptDeleteTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]">
-            <i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete
-          </button>
+          <button onclick="handleEditTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit</button>
+          <button onclick="promptDeleteTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
         </div>
       </div>`;
 
-      document.getElementById('modal-detail-inner').innerHTML = html;
-      openModal('modalDetail');
+      document.getElementById('modal-detail-inner').innerHTML = html; openModal('modalDetail');
     }
     
     function showAkunHistory(namaAkun) {
       currentModalBackFn = () => showAkunHistory(namaAkun);
       window.isNestedModalView = false;
-      
       const fullHistory = GLOBAL_DATA.transaksi.filter(t => t.akunSumber === namaAkun || t.akunTujuan === namaAkun);
       const history = fullHistory.slice(0, 50);
 
@@ -2127,39 +1888,30 @@ function showKpiDetail(kpiName) {
         </div>
         <div class="space-y-1.5 max-h-[60vh] overflow-y-auto pr-1">
       `;
-      if (history.length === 0) {
-        html += `<p class="text-xs text-center text-muted py-4 font-semibold">No mutations for this account yet.</p>`;
-      } else {
+      if (history.length === 0) html += `<p class="text-xs text-center text-muted py-4 font-semibold">No mutations for this account yet.</p>`;
+      else {
         history.forEach(t => {
           const meta = getAmountMeta(t.jenis);
           html += `
-            <div 
-              onclick="vibrate(30); showTrxDetail('${t.idTransaksi}')"
-              class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-              
+            <div onclick="vibrate(30); showTrxDetail('${t.idTransaksi}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
               <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
                 <div class="truncate">
                   <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
                   <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${t.tanggal}</p>
                 </div>
               </div>
-              <span class="font-black flex-shrink-0 whitespace-nowrap text-[13px] ${meta.cls} pointer-events-none">
-                ${meta.prefix}${formatRupiah(t.jumlah)}
-              </span>
+              <span class="font-black flex-shrink-0 whitespace-nowrap text-[13px] ${meta.cls} pointer-events-none">${meta.prefix}${formatRupiah(t.jumlah)}</span>
             </div>
           `;
         });
       }
       html += `</div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html;
-      openModal('modalDetail');
-      lucide.createIcons();
+      document.getElementById('modal-detail-inner').innerHTML = html; openModal('modalDetail'); lucide.createIcons();
     }
 
     function showHutangDetail(h) {
       currentModalBackFn = () => showHutangDetail(h);
       window.isNestedModalView = false;
-      
       const relatedTrx = GLOBAL_DATA.transaksi.filter(t => t.terkaitHutang === h.namaHutang);
       let html = `
         <div class="space-y-4 pt-1">
@@ -2176,16 +1928,12 @@ function showKpiDetail(kpiName) {
             <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
             <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
       `;
-      if (relatedTrx.length === 0) {
-        html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
-      } else {
+      if (relatedTrx.length === 0) html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
+      else {
         relatedTrx.forEach(t => {
           const meta = getAmountMeta(t.jenis);
           html += `
-            <div 
-              onclick="vibrate(30); showTrxDetail('${t.idTransaksi}')"
-              class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-              
+            <div onclick="vibrate(30); showTrxDetail('${t.idTransaksi}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
               <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
                 <div class="truncate">
                   <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
@@ -2198,15 +1946,12 @@ function showKpiDetail(kpiName) {
         });
       }
       html += `</div></div></div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html;
-      openModal('modalDetail');
-      lucide.createIcons();
+      document.getElementById('modal-detail-inner').innerHTML = html; openModal('modalDetail'); lucide.createIcons();
     }
 
     function showPiutangDetail(p) {
       currentModalBackFn = () => showPiutangDetail(p);
       window.isNestedModalView = false;
-      
       const relatedTrx = GLOBAL_DATA.transaksi.filter(t => t.terkaitPiutang === p.namaPiutang);
       let html = `
         <div class="space-y-4 pt-1">
@@ -2223,16 +1968,12 @@ function showKpiDetail(kpiName) {
             <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
             <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
       `;
-      if (relatedTrx.length === 0) {
-        html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
-      } else {
+      if (relatedTrx.length === 0) html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
+      else {
         relatedTrx.forEach(t => {
           const meta = getAmountMeta(t.jenis);
           html += `
-            <div 
-              onclick="vibrate(30); showTrxDetail('${t.idTransaksi}')"
-              class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-              
+            <div onclick="vibrate(30); showTrxDetail('${t.idTransaksi}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
               <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
                 <div class="truncate">
                   <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
@@ -2245,9 +1986,7 @@ function showKpiDetail(kpiName) {
         });
       }
       html += `</div></div></div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html;
-      openModal('modalDetail');
-      lucide.createIcons();
+      document.getElementById('modal-detail-inner').innerHTML = html; openModal('modalDetail'); lucide.createIcons();
     }
 
     async function handleSaveTransaksi(event) {
@@ -2280,15 +2019,12 @@ function showKpiDetail(kpiName) {
         catatan: document.getElementById('form-catatan').value
       };
 
-      if (idTrxLama) {
-        payload.idTransaksi = idTrxLama;
-      }
+      if (idTrxLama) payload.idTransaksi = idTrxLama;
 
       closeModal('modalInputTrx');
       
       setTimeout(async () => {
         let loadingToast = showToast("Saving transaction...", "info");
-        
         try {
           const actionType = idTrxLama ? 'editTransaksi' : 'saveTransaksi';
           const res = await fetch(API_URL, {
@@ -2301,11 +2037,8 @@ function showKpiDetail(kpiName) {
 
           if(loadingToast && loadingToast.parentNode) loadingToast.remove();
           
-          if (!idTrxLama) {
-            await showRewardAnimation("Transaction Saved");
-          } else {
-            await showRewardAnimation("Transaction Updated");
-          }
+          if (!idTrxLama) await showRewardAnimation("Transaction Saved");
+          else await showRewardAnimation("Transaction Updated");
           
           await loadAppData(true);
         } catch (err) {
@@ -2438,9 +2171,7 @@ function showKpiDetail(kpiName) {
       const type = document.getElementById('master-type').value;
       const nama = document.getElementById('master-nama').value;
       
-      if (!nama || nama.trim() === '') {
-        return triggerInputError('master-nama', 'Name is required.');
-      }
+      if (!nama || nama.trim() === '') return triggerInputError('master-nama', 'Name is required.');
 
       let payload = { namaAkun: nama, namaKategori: nama, namaHutang: nama, namaPiutang: nama };
 
@@ -2452,9 +2183,7 @@ function showKpiDetail(kpiName) {
         const selVal = document.getElementById('master-kategoriutama-select').value;
         const kategoriUtama = selVal === '__BARU__' ? document.getElementById('master-kategoriutama-baru').value.trim() : selVal;
         
-        if (!kategoriUtama) {
-          return triggerInputError('master-kategoriutama-baru', "Main category name is required.");
-        }
+        if (!kategoriUtama) return triggerInputError('master-kategoriutama-baru', "Main category name is required.");
         
         payload.kategoriUtama = kategoriUtama;
         payload.subKategori = nama.trim();
