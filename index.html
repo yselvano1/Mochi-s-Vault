@@ -7,7 +7,7 @@
   
   <!-- PWA & Manifest Integration -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#F4F7F9">
+  <meta name="theme-color" content="#FAF8F5">
   <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192">
   <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192">
 
@@ -20,15 +20,14 @@
         extend: {
           colors: {
             mochi: {
-              light: '#E29B71',   
-              DEFAULT: '#C87A4B', /* Caramel Brown (Aksen Universal) */
-              dark: '#A65F36'     
+              light: '#E8A87C',   /* Soft Warm Caramel */
+              DEFAULT: '#C87A4B', /* Mochi Warm Brown */
+              dark: '#A45D33'     /* Dark Cinnamon */
             },
-            forest: {
-              darkest: '#0E1715', /* Deep Dark Teal (Latar Dark Mode) */
-              dark: '#14201D',    /* Dark Slate (Kartu Sekunder Dark Mode) */
-              emerald: '#1A2E2A', /* Dark Emerald (Kartu Utama) */
-              sage: '#E2ECE9'     /* Soft Sage */
+            coffee: {
+              darkest: '#181412', /* Latar Dark Mode Neutral */
+              dark: '#221C19',    /* Kartu Dark Mode */
+              subtle: '#2D2520'
             }
           }
         }
@@ -41,53 +40,75 @@
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
     :root {
-      /* Warm Cream Light Mode (Menyatukan Hijau & Cokelat) */
-      --bg-app: #F8F6F0; 
+      /* Mochi Warm Cream Light Mode */
+      --bg-app: #FAF8F5; 
       --bg-card: #FFFFFF;
-      --bg-subtle: #EBE7DD;
-      --bg-subtle-2: #E3DECED;
+      --bg-subtle: #F3ECE4;
+      --bg-subtle-2: #EFE6DC;
       
-      --text-primary: #1A2E2A; /* Teks menggunakan Dark Emerald agar senada */
-      --text-secondary: #4A5D58; 
-      --text-tertiary: #7D8F8A;  
+      --text-primary: #2D241E;
+      --text-secondary: #80736B; 
+      --text-tertiary: #A89B91;  
       
-      --border-color: rgba(26, 46, 42, 0.08); 
+      --border-color: rgba(45, 36, 30, 0.07); 
 
-      /* Premium iOS Variables */
+      /* Functional Colors (Light Mode) */
+      --amount-in: #5A8D63;      /* Soft Sage Green */
+      --amount-out: #C85A54;     /* Terracotta Red */
+      --amount-info: #5C82A6;    /* Muted Denim Blue */
+      --amount-warn: #C28B38;    /* Warm Ochre */
+
+      /* Icon Chip Backgrounds */
+      --chip-in-bg: rgba(90, 141, 99, 0.12);
+      --chip-out-bg: rgba(200, 90, 84, 0.12);
+      --chip-info-bg: rgba(92, 130, 166, 0.12);
+      --chip-warn-bg: rgba(194, 139, 56, 0.12);
+
+      /* iOS Frosted Glass Variables */
       --glass-bg: rgba(255, 255, 255, 0.85);
-      --glass-border: rgba(255, 255, 255, 0.6);
-      --glass-modal-bg: rgba(248, 246, 240, 0.95); /* Menggunakan Warm Cream */
+      --glass-border: rgba(255, 255, 255, 0.7);
+      --glass-modal-bg: rgba(250, 248, 245, 0.92);
       
-      /* iOS Soft Shadows */
-      --shadow-card: 0 4px 24px -6px rgba(26, 46, 42, 0.05), 0 2px 8px -2px rgba(26, 46, 42, 0.03);
-      --shadow-item: 0 2px 12px -2px rgba(26, 46, 42, 0.03);
-      --shadow-premium: 0 10px 40px -10px rgba(26, 46, 42, 0.1);
-      --shadow-inset: inset 0 2px 4px rgba(26, 46, 42, 0.03);
+      /* Soft Earthy Shadows */
+      --shadow-card: 0 10px 30px -6px rgba(45, 36, 30, 0.05), 0 2px 8px -2px rgba(45, 36, 30, 0.03);
+      --shadow-item: 0 2px 10px -2px rgba(45, 36, 30, 0.03);
+      --shadow-premium: 0 12px 35px -8px rgba(200, 122, 75, 0.15);
+      --shadow-inset: inset 0 2px 4px rgba(45, 36, 30, 0.03);
     }
 
     html.dark {
-      /* Deep Dark Teal Dark Mode */
-      --bg-app: #0E1715; 
-      --bg-card: #14201D; 
-      --bg-subtle: #1A2E2A;
-      --bg-subtle-2: #223732;
+      /* Mochi Warm Dark Mode */
+      --bg-app: #181412; 
+      --bg-card: #221C19; 
+      --bg-subtle: #2D2520;
+      --bg-subtle-2: #382F2A;
       
-      --text-primary: #F8F6F0; /* Teks menggunakan Warm Cream untuk kontras nyaman */
-      --text-secondary: #A0B2AC; 
-      --text-tertiary: #768782;  
+      --text-primary: #FAF8F5; 
+      --text-secondary: #A89B91; 
+      --text-tertiary: #786C64;  
       
-      --border-color: rgba(248, 246, 240, 0.05); 
+      --border-color: rgba(250, 248, 245, 0.06); 
 
-      /* Premium Variables Dark Mode */
-      --glass-bg: rgba(20, 32, 29, 0.85); 
-      --glass-border: rgba(248, 246, 240, 0.05);
-      --glass-modal-bg: rgba(14, 23, 21, 0.95);
+      /* Functional Colors (Dark Mode) */
+      --amount-in: #72A87B;
+      --amount-out: #DC736C;
+      --amount-info: #789EC2;
+      --amount-warn: #D8A250;
+
+      --chip-in-bg: rgba(114, 168, 123, 0.15);
+      --chip-out-bg: rgba(220, 115, 108, 0.15);
+      --chip-info-bg: rgba(120, 158, 194, 0.15);
+      --chip-warn-bg: rgba(216, 162, 80, 0.15);
+
+      /* Smoked Glass Variables */
+      --glass-bg: rgba(34, 28, 25, 0.85); 
+      --glass-border: rgba(250, 248, 245, 0.08);
+      --glass-modal-bg: rgba(24, 20, 18, 0.94);
       
-      /* Shadows Dark */
-      --shadow-card: 0 4px 24px -6px rgba(0, 0, 0, 0.5);
-      --shadow-item: 0 2px 12px -2px rgba(0, 0, 0, 0.3);
-      --shadow-premium: 0 10px 40px -10px rgba(0, 0, 0, 0.7);
-      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+      --shadow-card: 0 10px 30px -6px rgba(0, 0, 0, 0.4);
+      --shadow-item: 0 2px 10px -2px rgba(0, 0, 0, 0.25);
+      --shadow-premium: 0 12px 35px -8px rgba(0, 0, 0, 0.6);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.25);
     }
 
     * { font-variant-numeric: tabular-nums; -webkit-tap-highlight-color: transparent; }
@@ -128,8 +149,8 @@
     }
     .ios-input:focus {
       outline: none;
-      border: 1px solid rgba(141, 64, 18, 0.4);
-      box-shadow: 0 0 0 3px rgba(141, 64, 18, 0.15), var(--shadow-inset);
+      border: 1px solid rgba(200, 122, 75, 0.4);
+      box-shadow: 0 0 0 3px rgba(200, 122, 75, 0.15), var(--shadow-inset);
       background-color: var(--bg-card);
     }
 
@@ -141,8 +162,8 @@
     }
     .input-error {
       animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-      border: 1px solid #F43F5E !important;
-      box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.2), var(--shadow-inset) !important;
+      border: 1px solid var(--amount-out) !important;
+      box-shadow: 0 0 0 3px var(--chip-out-bg), var(--shadow-inset) !important;
       background-color: var(--bg-card) !important;
     }
 
@@ -151,11 +172,11 @@
     .text-muted { color: var(--text-secondary); }
     .text-faint { color: var(--text-tertiary); }
     
-    /* WARNA FUNGSIONAL (Tajam, Terbaca & Bersih) */
-    .amount-in { color: #10B981; } 
-    .amount-out { color: #F43F5E; } 
-    html.dark .amount-in { color: #34D399; }
-    html.dark .amount-out { color: #FB7185; }
+    /* Functional Colors */
+    .amount-in { color: var(--amount-in) !important; }
+    .amount-out { color: var(--amount-out) !important; }
+    .amount-info { color: var(--amount-info) !important; }
+    .amount-warn { color: var(--amount-warn) !important; }
     
     .icon-chip {
       width: 34px; height: 34px; border-radius: 10px;
@@ -163,11 +184,11 @@
       flex-shrink: 0; box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
     }
     
-    .chip-pemasukan { background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05)); color: #10B981; }
-    .chip-pengeluaran { background: linear-gradient(135deg, rgba(244,63,94,0.15), rgba(244,63,94,0.05)); color: #F43F5E; }
-    .chip-transfer { background: linear-gradient(135deg, rgba(141,64,18,0.15), rgba(141,64,18,0.05)); color: var(--mochi-brown); }
-    .chip-hutang { background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05)); color: #F59E0B; }
-    .chip-piutang { background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(56,189,248,0.05)); color: #38BDF8; }
+    .chip-pemasukan { background-color: var(--chip-in-bg); color: var(--amount-in); }
+    .chip-pengeluaran { background-color: var(--chip-out-bg); color: var(--amount-out); }
+    .chip-transfer { background-color: var(--bg-subtle-2); color: var(--text-secondary); }
+    .chip-hutang { background-color: var(--chip-warn-bg); color: var(--amount-warn); }
+    .chip-piutang { background-color: var(--chip-info-bg); color: var(--amount-info); }
 
     /* === CLEAN TOP BAR === */
     .clean-topbar {
@@ -190,9 +211,9 @@
 
     /* === PAW FAB ANIMATIONS === */
     @keyframes pawPulse {
-      0% { box-shadow: 0 0 0 0 rgba(141, 64, 18, 0.4); }
-      70% { box-shadow: 0 0 0 15px rgba(141, 64, 18, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(141, 64, 18, 0); }
+      0% { box-shadow: 0 0 0 0 rgba(200, 122, 75, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(200, 122, 75, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(200, 122, 75, 0); }
     }
     .paw-fab {
       animation: pawPulse 2.5s infinite;
@@ -213,7 +234,7 @@
 
     /* Interaksi hover & active */
     .card-hover { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease; }
-    .card-hover:hover { transform: translateY(-2px); box-shadow: var(--shadow-premium); border-color: rgba(141, 64, 18, 0.3); }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: var(--shadow-premium); border-color: rgba(200, 122, 75, 0.3); }
     .card-hover:active { transform: scale(0.97); }
     .tap-shrink { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .tap-shrink:active { transform: scale(0.92); }
@@ -269,16 +290,16 @@
   <!-- ============================================== -->
   <!-- 0. INITIAL SPLASH SCREEN (PLAYFUL LOADING) -->
   <!-- ============================================== -->
-  <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[#F4F7F9] dark:bg-[#0A1413] transition-opacity duration-700">
+  <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[#FAF8F5] dark:bg-[#181412] transition-opacity duration-700">
     <div class="animate-float flex flex-col items-center">
       <!-- Mochi Logo / Paw -->
-      <div class="w-28 h-28 bg-gradient-to-tr from-mochi to-mochi-light rounded-full flex items-center justify-center shadow-xl shadow-mochi/20 border-4 border-white dark:border-forest-dark relative overflow-hidden">
+      <div class="w-28 h-28 bg-gradient-to-tr from-mochi to-mochi-light rounded-full flex items-center justify-center shadow-xl shadow-mochi/20 border-4 border-white dark:border-coffee-darkest relative overflow-hidden">
         <img src="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192" alt="Mochi" class="w-full h-full object-cover">
       </div>
       <h2 class="mt-6 text-2xl font-black text-main tracking-tight">Mochi's Vault</h2>
       
       <!-- Animated loading text -->
-      <div class="mt-3 bg-mochi-light/10 dark:bg-forest-dark px-4 py-1.5 rounded-full border border-mochi-light/20 flex items-center space-x-2">
+      <div class="mt-3 bg-mochi-light/10 dark:bg-coffee-dark px-4 py-1.5 rounded-full border border-mochi-light/20 flex items-center space-x-2">
         <i data-lucide="loader-2" class="w-3.5 h-3.5 text-mochi animate-spin"></i>
         <span id="splash-text" class="text-xs font-bold text-mochi dark:text-mochi-light">Membangunkan Mochi...</span>
       </div>
@@ -287,11 +308,11 @@
 
   <!-- REWARDING ANIMATION OVERLAY -->
   <div id="reward-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center pointer-events-none">
-    <div class="absolute inset-0 bg-mochi-dark/60 dark:bg-forest-darkest/80 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="reward-bg"></div>
+    <div class="absolute inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/80 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="reward-bg"></div>
     <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="reward-content">
       <div class="relative">
         <div class="absolute inset-0 bg-mochi-light rounded-full animate-ping opacity-75"></div>
-        <div class="w-24 h-24 bg-gradient-to-tr from-mochi to-mochi-light rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(219,159,117,0.8)] relative z-10 border-4 border-white dark:border-forest-darkest">
+        <div class="w-24 h-24 bg-gradient-to-tr from-mochi to-mochi-light rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(219,159,117,0.8)] relative z-10 border-4 border-white dark:border-coffee-darkest">
           <svg class="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 21.5c-3 0-5.5-2-6-5-.5-2.5.5-4 2-5 1.5-1 3-1.5 4-1.5s2.5.5 4 1.5c1.5 1 2.5 2.5 2 5-.5 3-3 5-6 5z" />
             <circle cx="7.5" cy="8.5" r="2.5"/>
@@ -301,7 +322,7 @@
         </div>
       </div>
       <h2 class="text-white text-3xl font-black mt-6 drop-shadow-lg tracking-tight">Purr-fect! 🐾</h2>
-      <p id="reward-subtitle" class="text-mochi-light font-bold mt-1.5 drop-shadow-md text-sm bg-mochi-dark/50 px-4 py-1 rounded-full">Tersimpan</p>
+      <p id="reward-subtitle" class="text-mochi-light font-bold mt-1.5 drop-shadow-md text-sm bg-coffee-dark/50 px-4 py-1 rounded-full">Tersimpan</p>
     </div>
   </div>
 
@@ -311,7 +332,7 @@
   <!-- TOP BAR CLEAN -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-6 pb-4 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-3.5">
-      <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-mochi to-mochi-light overflow-hidden flex items-center justify-center shadow-md border-2 border-white dark:border-forest-darkest flex-shrink-0">
+      <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-mochi to-mochi-light overflow-hidden flex items-center justify-center shadow-md border-2 border-white dark:border-coffee-darkest flex-shrink-0">
         <img src="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192" alt="Avatar" class="w-full h-full object-cover" onerror="this.style.display='none';">
       </div>
       <div class="flex flex-col justify-center">
@@ -321,7 +342,7 @@
     </div>
     
     <div class="flex items-center space-x-2.5">
-      <button onclick="toggleDarkMode(); vibrate(10);" class="tap-shrink w-10 h-10 rounded-full bg-white dark:bg-forest-dark border border-slate-200 dark:border-[rgba(255,255,255,0.08)] flex items-center justify-center text-main shadow-[0_2px_10px_rgba(0,0,0,0.05)]" aria-label="Toggle Mode">
+      <button onclick="toggleDarkMode(); vibrate(10);" class="tap-shrink w-10 h-10 rounded-full bg-white dark:bg-coffee-dark border border-slate-200 dark:border-[rgba(255,255,255,0.08)] flex items-center justify-center text-main shadow-[0_2px_10px_rgba(0,0,0,0.05)]" aria-label="Toggle Mode">
         <i data-lucide="sun" id="icon-sun" class="w-4.5 h-4.5 hidden"></i>
         <i data-lucide="moon" id="icon-moon" class="w-4.5 h-4.5"></i>
       </button>
@@ -334,87 +355,86 @@
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
 
     <!-- 1. HALAMAN DASHBOARD -->
-    <section id="page-dashboard" class="space-y-5 page-animate">
+    <section id="page-dashboard" class="space-y-4 page-animate">
       
-  <!-- GRID KARTU DASHBOARD -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- BARIS 1: HERO CARD (NET WORTH - ALPHA FOCUS) -->
+      <div onclick="vibrate(10); showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden group bg-gradient-to-br from-mochi-light to-mochi text-white border-none shadow-[0_12px_35px_-8px_rgba(200,122,75,0.4)] dark:shadow-[0_12px_35px_-8px_rgba(0,0,0,0.6)]">
+        <!-- Efek Pendaran Cahaya Halus -->
+        <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-white/20 rounded-full mix-blend-overlay filter blur-[20px] group-hover:opacity-70 transition-opacity duration-500"></div>
+        <div class="absolute -top-6 -left-6 w-24 h-24 bg-white/10 rounded-full mix-blend-overlay filter blur-[10px]"></div>
         
-        <!-- KARTU NET WORTH (Soft Sage di Light, Dark Emerald di Dark) -->
-        <div onclick="vibrate(10); showKpiDetail('Net Worth')" class="floating-card p-5 cursor-pointer card-hover relative overflow-hidden group bg-gradient-to-br from-[#DCE8E4] to-[#CDE0DA] dark:from-[#0F4C3A] dark:to-[#082B21] text-[#0F2E28] dark:text-[#F8F6F0] border-none shadow-[0_8px_30px_-6px_rgba(15,46,40,0.15)] dark:shadow-[0_8px_30px_-6px_rgba(8,43,33,0.8)]">
-          <!-- Efek Pendaran Cahaya -->
-          <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/40 dark:bg-emerald-400/20 rounded-full mix-blend-overlay filter blur-[30px] group-hover:opacity-70 transition-opacity duration-500"></div>
-          
-          <div class="flex justify-between items-center mb-2 relative z-10">
-            <span class="text-[11px] font-extrabold tracking-wider uppercase text-[#0F2E28]/70 dark:text-white/80">Net Worth</span>
-            <div class="w-8 h-8 rounded-full bg-[#0F2E28]/10 dark:bg-white/15 flex items-center justify-center text-[#0F2E28] dark:text-emerald-300">
-              <i data-lucide="trending-up" class="w-4 h-4"></i>
-            </div>
+        <div class="flex justify-between items-center mb-3 relative z-10">
+          <span class="text-xs font-black tracking-widest uppercase text-white/80">Kekayaan Bersih (Net Worth)</span>
+          <div class="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center text-white backdrop-blur-sm border border-white/20">
+            <i data-lucide="trending-up" class="w-4 h-4"></i>
           </div>
-          <div id="kpi-networth" class="text-3xl font-black tracking-tight relative z-10 mt-1 text-[#0F2E28] dark:text-white">-</div>
-          <p class="text-[11px] text-[#0F2E28]/60 dark:text-white/70 mt-2 relative z-10 font-bold">Ketuk untuk rincian komponen</p>
         </div>
-        
-        <!-- KARTU DISPOSABLE INCOME (Inverted Soft Sage di Light, Inverted Dark Emerald di Dark) -->
-        <div onclick="vibrate(10); showKpiDetail('Disposable Income')" class="floating-card p-5 cursor-pointer card-hover relative overflow-hidden group bg-gradient-to-br from-[#CDE0DA] to-[#DCE8E4] dark:from-[#082B21] dark:to-[#0F4C3A] text-[#0F2E28] dark:text-[#F8F6F0] border-none shadow-[0_8px_30px_-6px_rgba(15,46,40,0.15)] dark:shadow-[0_8px_30px_-6px_rgba(8,43,33,0.8)]">
-          <!-- Efek Pendaran Cahaya -->
-          <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-white/40 dark:bg-emerald-400/20 rounded-full mix-blend-overlay filter blur-[30px] group-hover:opacity-70 transition-opacity duration-500"></div>
-          
-          <div class="flex justify-between items-center mb-2 relative z-10">
-            <span class="text-[11px] font-extrabold tracking-wider uppercase text-[#0F2E28]/70 dark:text-white/80">Disposable</span>
-            <div class="w-8 h-8 rounded-full bg-[#0F2E28]/10 dark:bg-white/15 flex items-center justify-center text-[#0F2E28] dark:text-sky-300">
-              <i data-lucide="wallet" class="w-4 h-4"></i>
-            </div>
-          </div>
-          <div id="kpi-disposable" class="text-3xl font-black tracking-tight relative z-10 mt-1 text-[#0F2E28] dark:text-white">-</div>
-          <p class="text-[11px] text-[#0F2E28]/60 dark:text-white/70 mt-2 relative z-10 font-bold">Dana bebas konsumsi & tabungan</p>
-        </div>
-        
+        <div id="kpi-networth" class="text-4xl md:text-5xl font-black tracking-tighter relative z-10 text-white drop-shadow-md">-</div>
       </div>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div onclick="vibrate(10); showKpiDetail('Total Kas')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center">
-          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Total Kas</span>
-          <span id="kpi-kas" class="text-sm font-extrabold text-main block">-</span>
+      
+      <!-- BARIS 2: SECONDARY HIGHLIGHTS (DISPOSABLE & SAVINGS) -->
+      <div class="grid grid-cols-2 gap-3">
+        <!-- Disposable Income -->
+        <div onclick="vibrate(10); showKpiDetail('Disposable Income')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center relative overflow-hidden group bg-card">
+          <span class="text-[10px] text-muted font-black uppercase tracking-wider mb-1 flex items-center">
+            <i data-lucide="wallet" class="w-3 h-3 mr-1.5 text-mochi"></i> Disposable
+          </span>
+          <span id="kpi-disposable" class="text-lg md:text-xl font-extrabold text-main block tracking-tight">-</span>
         </div>
-        <div onclick="vibrate(10); showKpiDetail('Total Piutang')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center">
-          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Total Piutang</span>
-          <span id="kpi-piutang" class="text-sm font-extrabold amount-in block">-</span>
-        </div>
-        <div onclick="vibrate(10); showKpiDetail('Total Hutang')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center">
-          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Total Hutang</span>
-          <span id="kpi-hutang" class="text-sm font-extrabold amount-out block">-</span>
-        </div>
-        <div onclick="vibrate(10); showKpiDetail('Net Savings Operasional')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center">
-          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Net Savings</span>
-          <span id="kpi-savings" class="text-sm font-extrabold text-sky-500 dark:text-sky-400 block">-</span>
+        
+        <!-- Net Savings -->
+        <div onclick="vibrate(10); showKpiDetail('Net Savings Operasional')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center relative overflow-hidden group bg-card">
+          <span class="text-[10px] text-muted font-black uppercase tracking-wider mb-1 flex items-center">
+             <i data-lucide="piggy-bank" class="w-3 h-3 mr-1.5 text-mochi"></i> Net Savings
+          </span>
+          <span id="kpi-savings" class="text-lg md:text-xl font-extrabold amount-info block tracking-tight">-</span>
         </div>
       </div>
 
-      <div class="floating-card p-5 mt-6 relative overflow-hidden">
-        <div class="flex justify-between items-center mb-4">
+      <!-- BARIS 3: COMPACT STATUS (KAS, PIUTANG, HUTANG) -->
+      <div class="grid grid-cols-3 gap-2.5">
+        <div onclick="vibrate(10); showKpiDetail('Total Kas')" class="floating-item p-3 cursor-pointer card-hover flex flex-col items-center justify-center text-center bg-card">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1">Kas Total</span>
+          <span id="kpi-kas" class="text-sm font-extrabold text-main block truncate w-full">-</span>
+        </div>
+        <div onclick="vibrate(10); showKpiDetail('Total Piutang')" class="floating-item p-3 cursor-pointer card-hover flex flex-col items-center justify-center text-center bg-card">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1">Piutang</span>
+          <span id="kpi-piutang" class="text-sm font-extrabold amount-info block truncate w-full">-</span>
+        </div>
+        <div onclick="vibrate(10); showKpiDetail('Total Hutang')" class="floating-item p-3 cursor-pointer card-hover flex flex-col items-center justify-center text-center bg-card">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1">Hutang</span>
+          <span id="kpi-hutang" class="text-sm font-extrabold amount-warn block truncate w-full">-</span>
+        </div>
+      </div>
+
+      <!-- ANALISA PENGELUARAN -->
+      <div class="floating-card p-5 mt-5 relative overflow-hidden">
+        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-coffee-dark/50 pb-3">
           <h3 class="text-sm font-extrabold text-main">Analisa Pengeluaran</h3>
-          <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">Kategori</span>
+          <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">Bulan Ini</span>
         </div>
         <div id="dashboard-kategori-analysis" class="space-y-3 relative z-10"></div>
       </div>
 
-      <div class="floating-card p-5 mt-6 mb-8">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-sm font-extrabold text-main">5 Transaksi Terbaru</h3>
-          <button onclick="vibrate(10); switchTab('riwayat')" class="text-xs font-bold text-mochi hover:text-mochi-dark dark:text-mochi-light dark:hover:text-white bg-mochi-light/10 dark:bg-forest-muted/50 px-3 py-1.5 rounded-full transition-colors border border-transparent hover:border-mochi-light/30">Lihat Semua</button>
+      <!-- TRANSAKSI TERBARU -->
+      <div class="floating-card p-5 mt-5 mb-8">
+        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-coffee-dark/50 pb-3">
+          <h3 class="text-sm font-extrabold text-main">Transaksi Terbaru</h3>
+          <button onclick="vibrate(10); switchTab('riwayat')" class="text-xs font-bold text-mochi hover:text-mochi-dark dark:text-mochi-light dark:hover:text-white bg-mochi-light/10 dark:bg-coffee-subtle/50 px-3 py-1.5 rounded-full transition-colors border border-transparent hover:border-mochi-light/30">Semua</button>
         </div>
-        <div id="dashboard-trx-list" class="space-y-1.5"></div>
+        <div id="dashboard-trx-list" class="space-y-2"></div>
       </div>
     </section>
 
     <!-- 2. HALAMAN RIWAYAT TRANSAKSI -->
     <section id="page-riwayat" class="hidden space-y-4 page-animate">
       <div class="floating-card p-5 space-y-4">
-        <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 dark:border-forest-muted/50 pb-4 gap-3">
+        <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 dark:border-coffee-dark/50 pb-4 gap-3">
           <div class="flex items-center space-x-2 text-main">
             <div class="w-8 h-8 rounded-full bg-mochi-light/20 dark:bg-mochi-light/10 flex items-center justify-center text-mochi dark:text-mochi-light"><i data-lucide="file-text" class="w-4 h-4"></i></div>
             <span class="text-sm font-extrabold uppercase tracking-wider">e-Statement & Mutasi</span>
           </div>
-          <button onclick="vibrate(10); downloadEStatement()" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-4 py-2 rounded-full text-xs font-bold flex items-center shadow-[0_4px_14px_0_rgba(141,64,18,0.2)] justify-center transition-colors">
+          <button onclick="vibrate(10); downloadEStatement()" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-4 py-2 rounded-full text-xs font-bold flex items-center shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] justify-center transition-colors">
             <i data-lucide="download" class="w-3.5 h-3.5 mr-1.5"></i> Download CSV
           </button>
         </div>
@@ -473,13 +493,13 @@
           <input type="text" id="filter-search" oninput="renderRiwayat()" placeholder="Cari deskripsi transaksi..." class="w-full text-sm ios-input pl-10 pr-4 py-2.5">
         </div>
 
-        <!-- REVISI SUMMARY VERTIKAL -->
-        <div id="statement-summary" class="floating-item p-4 mt-3 flex flex-col space-y-3 border border-slate-100 dark:border-forest-muted/50">
-          <div class="flex justify-between items-center border-b border-slate-100 dark:border-forest-muted/50 pb-3">
+        <!-- SUMMARY VERTIKAL -->
+        <div id="statement-summary" class="floating-item p-4 mt-3 flex flex-col space-y-3 border border-slate-100 dark:border-coffee-dark/50">
+          <div class="flex justify-between items-center border-b border-slate-100 dark:border-coffee-dark/50 pb-3">
             <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Total Masuk</span>
             <span id="sum-masuk" class="font-extrabold amount-in text-[15px]">Rp 0</span>
           </div>
-          <div class="flex justify-between items-center border-b border-slate-100 dark:border-forest-muted/50 pb-3">
+          <div class="flex justify-between items-center border-b border-slate-100 dark:border-coffee-dark/50 pb-3">
             <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Total Keluar</span>
             <span id="sum-keluar" class="font-extrabold amount-out text-[15px]">Rp 0</span>
           </div>
@@ -512,13 +532,13 @@
     <!-- 4. HALAMAN HUTANG & PIUTANG -->
     <section id="page-hutang" class="hidden space-y-6 page-animate pb-8">
       <div class="floating-card p-5">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider text-rose-500 dark:text-[#FB7185] mb-4 flex items-center">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider amount-out mb-4 flex items-center">
           <i data-lucide="alert-circle" class="w-4 h-4 mr-2"></i> Hutang Aktif
         </h3>
         <div id="list-hutang-aktif" class="space-y-3"></div>
       </div>
       <div class="floating-card p-5">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider text-sky-500 dark:text-sky-400 mb-4 flex items-center">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider amount-info mb-4 flex items-center">
           <i data-lucide="clock" class="w-4 h-4 mr-2"></i> Piutang Belum Lunas
         </h3>
         <div id="list-piutang-aktif" class="space-y-3"></div>
@@ -527,7 +547,7 @@
   </main>
 
   <!-- === BOTTOM NAVIGATION === -->
-  <nav class="fixed bottom-0 left-0 right-0 nav-bar-bottom z-40 rounded-t-3xl border-t border-slate-200/50 dark:border-forest-muted/50">
+  <nav class="fixed bottom-0 left-0 right-0 nav-bar-bottom z-40 rounded-t-3xl border-t border-slate-200/50 dark:border-coffee-dark/50">
     <div class="flex justify-between items-center w-full max-w-md mx-auto px-6 py-3 relative">
       
       <!-- Tab Home -->
@@ -536,20 +556,20 @@
         <span class="nav-text text-[12px] font-extrabold tracking-wide whitespace-nowrap">Home</span>
       </button>
 
-      <!-- Tab History (Sebelumnya: Riwayat) -->
-      <button onclick="vibrate(10); switchTab('riwayat')" id="tab-riwayat" class="nav-item text-slate-400 dark:text-[#A3B1AA] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
+      <!-- Tab History -->
+      <button onclick="vibrate(10); switchTab('riwayat')" id="tab-riwayat" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="list" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">History</span>
       </button>
 
-      <!-- Tab Wallets (Sebelumnya: Akun) -->
-      <button onclick="vibrate(10); switchTab('saldo')" id="tab-saldo" class="nav-item text-slate-400 dark:text-[#A3B1AA] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
+      <!-- Tab Wallets -->
+      <button onclick="vibrate(10); switchTab('saldo')" id="tab-saldo" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="wallet" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">Wallets</span>
       </button>
 
       <!-- Tab AP/R -->
-      <button onclick="vibrate(10); switchTab('hutang')" id="tab-hutang" class="nav-item text-slate-400 dark:text-[#A3B1AA] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
+      <button onclick="vibrate(10); switchTab('hutang')" id="tab-hutang" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
         <div class="relative flex-shrink-0">
           <i data-lucide="credit-card" class="w-5 h-5"></i>
           <span id="badge-hutang-nav" class="hidden absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-[var(--glass-bg)]"></span>
@@ -575,11 +595,11 @@
   </div>
 
   <!-- MODAL 1: FORM INPUT TRANSAKSI -->
-  <div id="modalInputTrx" class="fixed inset-0 bg-forest-darkest/50 dark:bg-forest-darkest/90 z-[60] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalInputTrx')">
+  <div id="modalInputTrx" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalInputTrx')">
     <div id="modalInputTrx-content" class="glass-modal-content w-full max-w-lg rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl modal-content-bottom md:modal-content-center">
-      <div class="flex justify-between items-center border-b border-slate-200 dark:border-forest-muted/50 pb-4 mb-4">
+      <div class="flex justify-between items-center border-b border-slate-200 dark:border-coffee-dark/50 pb-4 mb-4">
         <h3 id="modal-title-trx" class="font-extrabold text-main text-base">Tambah Transaksi</h3>
-        <button type="button" onclick="vibrate(10); closeModal('modalInputTrx')" class="tap-shrink text-faint hover:text-main bg-slate-100/50 dark:bg-forest-dark p-2 rounded-full transition-colors border border-slate-200/50 dark:border-forest-muted">
+        <button type="button" onclick="vibrate(10); closeModal('modalInputTrx')" class="tap-shrink text-faint hover:text-main bg-slate-100/50 dark:bg-coffee-dark p-2 rounded-full transition-colors border border-slate-200/50 dark:border-coffee-subtle">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
@@ -677,7 +697,7 @@
         </div>
 
         <div class="pt-3 pb-1">
-          <button type="submit" id="btn-submit-trx" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(141,64,18,0.2)] transition-colors">
+          <button type="submit" id="btn-submit-trx" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] transition-colors">
             Simpan Transaksi
           </button>
         </div>
@@ -686,9 +706,9 @@
   </div>
 
   <!-- MODAL 2: DETAIL TRANSAKSI / RIWAYAT AKUN -->
-  <div id="modalDetail" class="fixed inset-0 bg-forest-darkest/50 dark:bg-forest-darkest/90 z-[60] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDetail')">
+  <div id="modalDetail" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDetail')">
     <div id="modalDetail-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto modal-content-center">
-      <button onclick="vibrate(10); closeModal('modalDetail')" class="tap-shrink absolute top-4 right-4 text-faint hover:text-main bg-slate-100/50 dark:bg-forest-dark p-2 rounded-full transition z-20 border border-slate-200/50 dark:border-forest-muted">
+      <button onclick="vibrate(10); closeModal('modalDetail')" class="tap-shrink absolute top-4 right-4 text-faint hover:text-main bg-slate-100/50 dark:bg-coffee-dark p-2 rounded-full transition z-20 border border-slate-200/50 dark:border-coffee-subtle">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
       <div id="modal-detail-inner" class="relative mt-2"></div>
@@ -696,11 +716,11 @@
   </div>
 
   <!-- MODAL 2b: PILIH KATEGORI -->
-  <div id="modalKategoriPicker" class="fixed inset-0 bg-forest-darkest/50 dark:bg-forest-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalKategoriPicker')">
+  <div id="modalKategoriPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalKategoriPicker')">
     <div id="modalKategoriPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
-      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-forest-muted/50 pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
+      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-coffee-dark/50 pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
         <h3 class="font-extrabold text-main text-sm">Pilih Kategori</h3>
-        <button onclick="vibrate(10); closeModal('modalKategoriPicker')" class="tap-shrink bg-slate-100/50 dark:bg-forest-dark p-2 rounded-full transition border border-slate-200/50 dark:border-forest-muted">
+        <button onclick="vibrate(10); closeModal('modalKategoriPicker')" class="tap-shrink bg-slate-100/50 dark:bg-coffee-dark p-2 rounded-full transition border border-slate-200/50 dark:border-coffee-subtle">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
@@ -709,11 +729,11 @@
   </div>
 
   <!-- MODAL 3: TAMBAH MASTER DATA -->
-  <div id="modalMaster" class="fixed inset-0 bg-forest-darkest/50 dark:bg-forest-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
+  <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
-      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-forest-muted/50 pb-3 mb-3">
+      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-coffee-dark/50 pb-3 mb-3">
         <h4 id="master-title" class="font-extrabold text-main text-base">Tambah Data</h4>
-        <button type="button" onclick="vibrate(10); closeModal('modalMaster')" class="tap-shrink bg-slate-100/50 dark:bg-forest-dark p-2 rounded-full transition border border-slate-200/50 dark:border-forest-muted"><i data-lucide="x" class="w-4 h-4"></i></button>
+        <button type="button" onclick="vibrate(10); closeModal('modalMaster')" class="tap-shrink bg-slate-100/50 dark:bg-coffee-dark p-2 rounded-full transition border border-slate-200/50 dark:border-coffee-subtle"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
       <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-3 text-sm">
         <input type="hidden" id="master-type">
@@ -736,28 +756,28 @@
         <div id="master-extra-field" class="space-y-3"></div>
         
         <div class="pt-3">
-          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(141,64,18,0.2)] transition-colors">Simpan Master Data</button>
+          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] transition-colors">Simpan Master Data</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- MODAL 4: CUSTOM DELETE CONFIRMATION -->
-  <div id="modalDelete" class="fixed inset-0 bg-forest-darkest/60 dark:bg-forest-darkest/95 z-[80] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDelete')">
+  <div id="modalDelete" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDelete')">
     <div id="modalDelete-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center text-center">
-      <div class="w-16 h-16 bg-rose-500/10 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-500/20">
+      <div class="w-16 h-16 bg-rose-500/10 amount-out rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-500/20">
         <i data-lucide="trash-2" class="w-8 h-8"></i>
       </div>
       <h3 class="text-lg font-black text-main mb-2 tracking-tight">Hapus Transaksi?</h3>
       <p class="text-sm font-medium text-muted mb-6 px-2">Tindakan ini tidak dapat dibatalkan. Data akan dihapus permanen dari Vault.</p>
       
       <div class="flex space-x-3">
-        <button onclick="vibrate(10); closeModal('modalDelete')" class="flex-1 py-3 bg-slate-100 dark:bg-forest-dark text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-slate-200/50 dark:border-forest-muted">Batal</button>
+        <button onclick="vibrate(10); closeModal('modalDelete')" class="flex-1 py-3 bg-slate-100 dark:bg-coffee-dark text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-slate-200/50 dark:border-coffee-subtle">Batal</button>
         <button id="btn-confirm-delete" class="flex-1 py-3 bg-rose-500 hover:bg-rose-600 text-white font-extrabold rounded-xl tap-shrink shadow-sm">Ya, Hapus</button>
       </div>
     </div>
   </div>
-<!-- SCRIPT JAVASCRIPT DIMULAI DI SINI -->
+  <!-- SCRIPT JAVASCRIPT DIMULAI DI SINI -->
   <script>
     // ==========================================
     // CONFIGURATION URL GOOGLE APPS SCRIPT
@@ -774,21 +794,17 @@
 
     let activeModals = []; 
     history.replaceState({ modal: null }, '');
-    window.isNestedModalView = false; // Satpam Anti-Loop Modal
+    window.isNestedModalView = false;
 
     window.addEventListener('popstate', (e) => {
-      // OS Back Button atau Edge Swipe (Native) Ditekan
       if (activeModals.length > 0) {
         const topModal = activeModals[activeModals.length - 1];
-        
-        // Hanya memicu fungsi kembali jika sedang ada di dalam nested modal (Detail Transaksi)
         if (topModal === 'modalDetail' && window.isNestedModalView && currentModalBackFn) {
           let fn = currentModalBackFn;
-          window.isNestedModalView = false; // Lepas pengaman, kita mundur 1 langkah
+          window.isNestedModalView = false;
           history.pushState({ modal: 'modalDetail' }, '');
-          fn(); // Kembali ke Riwayat Akun / AP/R
+          fn();
         } else {
-          // Jika tidak ada nested view, tutup modal sepenuhnya!
           window.isNestedModalView = false;
           currentModalBackFn = null;
           performVisualClose(topModal);
@@ -820,8 +836,8 @@
       const isError = type === 'error';
       const isInfo = type === 'info';
       
-      let bgClass = isError ? 'bg-rose-500' : (isInfo ? 'bg-sky-500' : 'bg-forest-darkest dark:bg-white');
-      let textClass = (isInfo || isError) ? 'text-white' : 'text-white dark:text-forest-darkest';
+      let bgClass = isError ? 'bg-rose-500' : (isInfo ? 'bg-sky-600' : 'bg-coffee-darkest dark:bg-white');
+      let textClass = (isInfo || isError) ? 'text-white' : 'text-white dark:text-coffee-darkest';
       let icon = isError ? 'alert-circle' : (isInfo ? 'loader' : 'check-circle');
       let iconSpin = isInfo ? 'animate-spin' : '';
 
@@ -904,11 +920,9 @@
 
     function closeModal(id) {
       if (activeModals.includes(id)) {
-        // Paksa lepas status nested jika menekan X agar benar-benar tertutup
         if (id === 'modalDetail') {
           window.isNestedModalView = false;
         }
-        // Memicu native popstate agar sinkron dengan history browser OS
         history.back();
       } else {
         performVisualClose(id);
@@ -933,14 +947,14 @@
       currentTab = tabId;
       document.querySelectorAll('.nav-item').forEach(el => {
         el.classList.remove('bg-mochi-light/20', 'text-mochi', 'dark:text-mochi-light', 'px-4', 'py-2.5', 'rounded-2xl');
-        el.classList.add('text-slate-400', 'dark:text-[#A3B1AA]', 'p-2.5');
+        el.classList.add('text-slate-400', 'dark:text-[#A89B91]', 'p-2.5');
         const textSpan = el.querySelector('.nav-text');
         if(textSpan) textSpan.classList.add('hidden');
       });
 
       const activeBtn = document.getElementById('tab-' + tabId);
       if(activeBtn) {
-        activeBtn.classList.remove('text-slate-400', 'dark:text-[#A3B1AA]', 'p-2.5');
+        activeBtn.classList.remove('text-slate-400', 'dark:text-[#A89B91]', 'p-2.5');
         activeBtn.classList.add('bg-mochi-light/20', 'text-mochi', 'dark:text-mochi-light', 'px-4', 'py-2.5', 'rounded-2xl');
         const textSpan = activeBtn.querySelector('.nav-text');
         if(textSpan) textSpan.classList.remove('hidden');
@@ -975,7 +989,6 @@
       let dy = tEndY - tStartY;
 
       if (Math.abs(dx) > 60 && Math.abs(dy) < 40) {
-        // Diserahkan 100% kepada OS untuk Edge Swipe Back
         let isEdgeSwipe = (tStartX < 40) || (tStartX > window.innerWidth - 40);
         
         if (!isEdgeSwipe && activeModals.length === 0) {
@@ -996,7 +1009,6 @@
     let holdStartX = 0;
     let holdStartY = 0;
 
-    // clearBackFn digunakan agar Hold di Riwayat Akun tidak menghapus memori kembali ke akun tersebut
     window.startHold = function(e, idTrx, clearBackFn = true) {
       holdActive = true;
       let clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -1044,16 +1056,14 @@
       const isDark = pref ? pref === 'dark' : systemDark;
       document.documentElement.classList.toggle('dark', isDark);
       updateDarkModeIcon(isDark);
-      // UPDATE: Sesuaikan dengan hex palette baru
-      document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#0E1715" : "#F8F6F0");
+      document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#181412" : "#FAF8F5");
     }
     
     function toggleDarkMode() {
       const isDark = document.documentElement.classList.toggle('dark');
       localStorage.setItem('yf-theme', isDark ? 'dark' : 'light');
       updateDarkModeIcon(isDark);
-      // UPDATE: Sesuaikan dengan hex palette baru
-      document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#0E1715" : "#F8F6F0");
+      document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#181412" : "#FAF8F5");
     }
     
     function updateDarkModeIcon(isDark) {
@@ -1119,7 +1129,7 @@
     function getAmountMeta(jenis) {
       if (['Pemasukan', 'Terima Piutang', 'Terima Hutang (Pinjam)'].includes(jenis)) return { cls: 'amount-in', prefix: '+' };
       if (['Pengeluaran', 'Beri Piutang (Menalangi)', 'Bayar Hutang/Cicilan'].includes(jenis)) return { cls: 'amount-out', prefix: '-' };
-      return { cls: 'amount-neutral', prefix: '' };
+      return { cls: 'text-main', prefix: '' };
     }
 
     function getIconMeta(jenis) {
@@ -1359,13 +1369,13 @@
                 <span class="text-[9px] font-bold text-mochi dark:text-mochi-light">${pct.toFixed(0)}%</span>
               </div>
             </div>
-            <div class="w-full bg-slate-200/50 dark:bg-forest-muted/50 rounded-full h-1.5 overflow-hidden">
+            <div class="w-full bg-slate-200/50 dark:bg-coffee-dark/50 rounded-full h-1.5 overflow-hidden">
               <div class="bg-gradient-to-r from-mochi-light to-mochi h-1.5 rounded-full transition-all duration-1000 ease-out" style="width:0%" data-target-width="${pct}%"></div>
             </div>
           </div>`;
 
         if (hasMultipleSubs) {
-          html += `<div class="${isExpanded ? '' : 'hidden'} mt-2.5 pl-4 border-l-2 border-slate-200 dark:border-forest-muted space-y-1.5">`;
+          html += `<div class="${isExpanded ? '' : 'hidden'} mt-2.5 pl-4 border-l-2 border-slate-200 dark:border-coffee-dark space-y-1.5">`;
           subKeys.forEach(sub => {
             html += `
               <div class="flex justify-between items-center text-[10px]">
@@ -1557,8 +1567,8 @@
         div.style.animationDelay = `${i*0.05}s`;
         div.onclick = () => { vibrate(10); showAkunHistory(akun.namaAkun); };
         div.innerHTML = `
-          <div class="flex items-center space-x-3 mb-3 pb-3 border-b border-slate-100 dark:border-forest-muted/50">
-            <div class="w-10 h-10 rounded-full bg-mochi dark:bg-mochi-light text-white dark:text-forest-darkest flex items-center justify-center text-sm font-black flex-shrink-0 shadow-sm">${initial}</div>
+          <div class="flex items-center space-x-3 mb-3 pb-3 border-b border-slate-100 dark:border-coffee-dark/50">
+            <div class="w-10 h-10 rounded-full bg-mochi dark:bg-mochi-light text-white dark:text-coffee-darkest flex items-center justify-center text-sm font-black flex-shrink-0 shadow-sm">${initial}</div>
             <div class="flex-1 truncate">
               <h4 class="text-[13px] font-extrabold text-main leading-tight truncate">${akun.namaAkun}</h4>
               <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${akun.pemilik} • ${akun.jenisAkun}</p>
@@ -1593,15 +1603,15 @@
           div.style.animationDelay = `${i*0.05}s`;
           div.onclick = () => { vibrate(10); showHutangDetail(h); };
           div.innerHTML = `
-            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-forest-muted/50">
+            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-coffee-dark/50">
               <h4 class="text-[13px] font-extrabold text-main leading-tight">${h.namaHutang}</h4>
-              <span class="text-[9px] text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${h.jenisHutang || 'Cicilan'}</span>
+              <span class="text-[9px] amount-warn bg-amber-500/10 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${h.jenisHutang || 'Cicilan'}</span>
             </div>
             <div class="flex flex-col mb-3">
               <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Sisa Hutang</span>
               <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(h.sisaHutang)}</span>
             </div>
-            <div class="w-full bg-slate-200/50 dark:bg-forest-muted/50 rounded-full h-1.5 overflow-hidden">
+            <div class="w-full bg-slate-200/50 dark:bg-coffee-dark/50 rounded-full h-1.5 overflow-hidden">
               <div class="bg-gradient-to-r from-rose-400 to-rose-500 h-1.5 rounded-full" style="width:${pct}%"></div>
             </div>
           `;
@@ -1618,13 +1628,13 @@
           div.style.animationDelay = `${i*0.05}s`;
           div.onclick = () => { vibrate(10); showPiutangDetail(p); };
           div.innerHTML = `
-            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-forest-muted/50">
+            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-coffee-dark/50">
               <h4 class="text-[13px] font-extrabold text-main leading-tight">${p.namaPiutang}</h4>
-              <span class="text-[9px] text-sky-500 bg-sky-500/10 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${p.jenisPiutang || 'Piutang'}</span>
+              <span class="text-[9px] amount-info bg-sky-500/10 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${p.jenisPiutang || 'Piutang'}</span>
             </div>
             <div>
               <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Sisa Piutang</span>
-              <span class="text-[18px] font-black text-sky-500 block leading-none tracking-tight">${formatRupiah(p.sisaPiutang)}</span>
+              <span class="text-[18px] font-black amount-info block leading-none tracking-tight">${formatRupiah(p.sisaPiutang)}</span>
             </div>
           `;
           piutangEl.appendChild(div);
@@ -1679,27 +1689,27 @@
       order.forEach(utama => {
         const group = groups[utama];
         const isExpanded = !!kategoriPickerExpanded[utama];
-        const badgeColor = group.jenis === 'Pemasukan' ? 'text-emerald-600 bg-emerald-500/10 dark:text-emerald-400' : 'text-rose-500 bg-rose-500/10 dark:text-rose-400';
+        const badgeColor = group.jenis === 'Pemasukan' ? 'amount-in bg-emerald-500/10' : 'amount-out bg-rose-500/10';
         const onlyMainItem = group.items.length === 1 && (!group.items[0].subKategori || group.items[0].subKategori === group.items[0].namaKategori);
 
         if (onlyMainItem) {
           html += `
-            <div onclick="vibrate(10); selectKategori('${escapeAttr(group.items[0].namaKategori)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-forest-muted transition-colors">
+            <div onclick="vibrate(10); selectKategori('${escapeAttr(group.items[0].namaKategori)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-coffee-dark transition-colors">
               <span class="font-extrabold text-main text-[13px]">${utama}</span>
               <span class="text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badgeColor}">${group.jenis}</span>
             </div>`;
         } else {
           html += `
-            <div class="mb-2 floating-item border border-slate-100 dark:border-forest-muted overflow-hidden">
-              <div onclick="vibrate(10); toggleKategoriGroup('${escapeAttr(utama)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-forest-dark cursor-pointer transition tap-shrink">
+            <div class="mb-2 floating-item border border-slate-100 dark:border-coffee-dark overflow-hidden">
+              <div onclick="vibrate(10); toggleKategoriGroup('${escapeAttr(utama)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-coffee-dark cursor-pointer transition tap-shrink">
                 <span class="font-extrabold text-[13px]">${utama}</span>
                 <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-4 h-4 text-faint"></i>
               </div>
-              <div class="${isExpanded ? '' : 'hidden'} border-t border-slate-100 dark:border-forest-muted bg-white dark:bg-forest-darkest">`;
+              <div class="${isExpanded ? '' : 'hidden'} border-t border-slate-100 dark:border-coffee-dark bg-white dark:bg-coffee-darkest">`;
           group.items.forEach((item, idx) => {
             const label = (item.subKategori && item.subKategori !== item.namaKategori) ? item.subKategori : item.namaKategori;
-            const borderCls = idx !== group.items.length -1 ? 'border-b border-slate-100 dark:border-forest-muted' : '';
-            html += `<div onclick="vibrate(10); selectKategori('${escapeAttr(item.namaKategori)}')" class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-forest-muted cursor-pointer text-main font-semibold tap-shrink transition text-[13px] ${borderCls}">${label}</div>`;
+            const borderCls = idx !== group.items.length -1 ? 'border-b border-slate-100 dark:border-coffee-dark' : '';
+            html += `<div onclick="vibrate(10); selectKategori('${escapeAttr(item.namaKategori)}')" class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-coffee-subtle cursor-pointer text-main font-semibold tap-shrink transition text-[13px] ${borderCls}">${label}</div>`;
           });
           html += `</div></div>`;
         }
@@ -1745,24 +1755,24 @@
       if (kpiName === 'Net Worth') {
         html += `
           <p class="font-extrabold text-main mb-3 text-[13px]">Komponen Kekayaan Bersih:</p>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted pb-2"><span>Total Kas & Tab:</span> <span class="font-extrabold text-main">${formatRupiah(GLOBAL_DATA.kpi['Total Kas'])}</span></div>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted pb-2 mt-2"><span>Total Piutang:</span> <span class="font-extrabold text-main">${formatRupiah(GLOBAL_DATA.kpi['Total Piutang'])}</span></div>
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-coffee-dark pb-2"><span>Total Kas & Tab:</span> <span class="font-extrabold text-main">${formatRupiah(GLOBAL_DATA.kpi['Total Kas'])}</span></div>
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-coffee-dark pb-2 mt-2"><span>Total Piutang:</span> <span class="font-extrabold text-main">${formatRupiah(GLOBAL_DATA.kpi['Total Piutang'])}</span></div>
           <div class="flex justify-between amount-out pb-2 mt-2"><span>Total Hutang (-):</span> <span class="font-extrabold">${formatRupiah(GLOBAL_DATA.kpi['Total Hutang'])}</span></div>
-          <div class="flex justify-between font-black text-main pt-3 mt-1 border-t border-slate-200/50 dark:border-forest-muted text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(GLOBAL_DATA.kpi['Net Worth'])}</span></div>
+          <div class="flex justify-between font-black text-main pt-3 mt-1 border-t border-slate-200/50 dark:border-coffee-dark text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(GLOBAL_DATA.kpi['Net Worth'])}</span></div>
         `;
       } else if (kpiName === 'Disposable Income') {
         html += `<p class="font-extrabold text-main mb-2 text-[13px]">Keterangan:</p><p class="text-muted leading-relaxed font-semibold">Dana sisa kas operasional harian yang bebas digunakan untuk konsumsi dan tabungan setelah mengurangi komitmen bulanan.</p>`;
       } else if (kpiName === 'Total Kas') {
         html += `<p class="font-extrabold text-main mb-3 text-[13px]">Rincian Saldo Akun:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.akun.forEach(a => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted pb-2"><span>${a.namaAkun} (${a.pemilik}):</span> <span class="font-extrabold text-main">${formatRupiah(a.saldoBerjalan)}</span></div>`; });
+        GLOBAL_DATA.akun.forEach(a => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-coffee-dark pb-2"><span>${a.namaAkun} (${a.pemilik}):</span> <span class="font-extrabold text-main">${formatRupiah(a.saldoBerjalan)}</span></div>`; });
         html += `</div>`;
       } else if (kpiName === 'Total Piutang') {
         html += `<p class="font-extrabold text-main mb-3 text-[13px]">Rincian Piutang:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.piutang.forEach(p => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted pb-2"><span>${p.namaPiutang}:</span> <span class="font-extrabold text-sky-500">${formatRupiah(p.sisaPiutang)}</span></div>`; });
+        GLOBAL_DATA.piutang.forEach(p => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-coffee-dark pb-2"><span>${p.namaPiutang}:</span> <span class="font-extrabold amount-info">${formatRupiah(p.sisaPiutang)}</span></div>`; });
         html += `</div>`;
       } else if (kpiName === 'Total Hutang') {
         html += `<p class="font-extrabold text-main mb-3 text-[13px]">Rincian Hutang:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.hutang.forEach(h => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted pb-2"><span>${h.namaHutang}:</span> <span class="font-extrabold amount-out">${formatRupiah(h.sisaHutang)}</span></div>`; });
+        GLOBAL_DATA.hutang.forEach(h => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-coffee-dark pb-2"><span>${h.namaHutang}:</span> <span class="font-extrabold amount-out">${formatRupiah(h.sisaHutang)}</span></div>`; });
         html += `</div>`;
       } else if (kpiName === 'Net Savings Operasional') {
         html += `<p class="font-extrabold text-main mb-2 text-[13px]">Keterangan:</p><p class="text-muted leading-relaxed font-semibold">Selisih antara total pemasukan operasional dan total pengeluaran operasional.</p>`;
@@ -1780,7 +1790,6 @@
 
       let html = `<div class="space-y-4 pt-1">`;
       
-      // Tombol Back untuk Nested Modal
       if (currentModalBackFn) {
         window.isNestedModalView = true;
         html += `
@@ -1794,85 +1803,80 @@
       
       html += `
         <!-- HEADER TRANSAKSI -->
-        <div class="text-center flex flex-col items-center mb-5 pb-4 border-b border-slate-200/60 dark:border-forest-muted/50">
+        <div class="text-center flex flex-col items-center mb-5 pb-4 border-b border-slate-200/60 dark:border-coffee-dark/50">
           
-          <!-- Badge ID Referensi (Teks Hitam Pekat) -->
-          <span class="text-[10px] font-mono font-black tracking-wider px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-200 text-slate-900 mb-4 shadow-sm border border-slate-300">
+          <span class="text-[10px] font-mono font-black tracking-wider px-3 py-1 rounded-full bg-slate-200 dark:bg-coffee-subtle text-main mb-4 shadow-sm border border-slate-300/50">
             REF: ${trx.idTransaksi}
           </span>
 
-          <!-- Icon Chip & Deskripsi -->
-          <div class="icon-chip ${m.chip} w-14 h-14 rounded-2xl mb-3 shadow-sm border border-slate-100 dark:border-forest-muted">
+          <div class="icon-chip ${m.chip} w-14 h-14 rounded-2xl mb-3 shadow-sm border border-slate-100 dark:border-coffee-dark">
             <i data-lucide="${m.icon}" class="w-6 h-6"></i>
           </div>
           
           <h3 class="text-base font-extrabold text-main leading-snug px-4">${trx.deskripsi || trx.kategori}</h3>
           
-          <!-- Nominal -->
           <p class="text-3xl font-black mt-1.5 tracking-tight ${meta.cls}">${meta.prefix}${formatRupiah(trx.jumlah)}</p>
           
-          <!-- Badge Jenis Transaksi (Teks Hitam Pekat) -->
-          <span class="text-[10px] font-black px-3.5 py-1 rounded-full bg-slate-200 dark:bg-slate-200 text-slate-900 mt-2.5 uppercase tracking-wider shadow-sm border border-slate-300">
+          <span class="text-[10px] font-black px-3.5 py-1 rounded-full bg-slate-200 dark:bg-coffee-subtle text-main mt-2.5 uppercase tracking-wider shadow-sm border border-slate-300/50">
             ${trx.jenis}
           </span>
         </div>
         
-        <!-- CONTAINER RINCIAN (CLEAN CARD) -->
-        <div class="bg-slate-50 dark:bg-forest-dark/60 rounded-2xl p-4 border border-slate-200/60 dark:border-forest-muted/50 space-y-2.5 text-xs font-semibold">
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-forest-muted/30">
-            <span class="text-slate-500 dark:text-slate-400">Tanggal</span>
+        <!-- CONTAINER RINCIAN -->
+        <div class="bg-slate-50 dark:bg-coffee-dark/60 rounded-2xl p-4 border border-slate-200/60 dark:border-coffee-dark/50 space-y-2.5 text-xs font-semibold">
+          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-coffee-dark/30">
+            <span class="text-muted">Tanggal</span>
             <span class="font-extrabold text-main">${trx.tanggal}</span>
           </div>
           
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-forest-muted/30">
-            <span class="text-slate-500 dark:text-slate-400">Kategori</span>
+          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-coffee-dark/30">
+            <span class="text-muted">Kategori</span>
             <span class="font-extrabold text-main">${trx.kategori}</span>
           </div>
 
           ${trx.akunSumber ? `
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-forest-muted/30">
-            <span class="text-slate-500 dark:text-slate-400">Akun Sumber</span>
+          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-coffee-dark/30">
+            <span class="text-muted">Akun Sumber</span>
             <span class="font-extrabold text-main">${trx.akunSumber}</span>
           </div>` : ''}
 
           ${trx.akunTujuan ? `
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-forest-muted/30">
-            <span class="text-slate-500 dark:text-slate-400">Akun Tujuan</span>
+          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-coffee-dark/30">
+            <span class="text-muted">Akun Tujuan</span>
             <span class="font-extrabold text-main">${trx.akunTujuan}</span>
           </div>` : ''}
 
           ${trx.terkaitHutang ? `
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-forest-muted/30">
-            <span class="text-slate-500 dark:text-slate-400">Terkait Hutang</span>
+          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-coffee-dark/30">
+            <span class="text-muted">Terkait Hutang</span>
             <span class="font-extrabold text-main">${trx.terkaitHutang}</span>
           </div>` : ''}
 
           ${trx.terkaitPiutang ? `
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-forest-muted/30">
-            <span class="text-slate-500 dark:text-slate-400">Terkait Piutang</span>
+          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-coffee-dark/30">
+            <span class="text-muted">Terkait Piutang</span>
             <span class="font-extrabold text-main">${trx.terkaitPiutang}</span>
           </div>` : ''}
 
           <div class="flex justify-between items-center pt-0.5">
-            <span class="text-slate-500 dark:text-slate-400">Input Oleh</span>
+            <span class="text-muted">Input Oleh</span>
             <span class="font-extrabold text-main">${trx.inputOleh}</span>
           </div>
         </div>
 
-        <!-- CATATAN TRANSAKSI (JIKA ADA) -->
         ${trx.catatan ? `
-        <div class="text-xs bg-amber-500/10 p-3.5 rounded-2xl text-amber-800 dark:text-amber-400 border border-amber-500/20">
+        <div class="text-xs bg-amber-500/10 p-3.5 rounded-2xl amount-warn border border-amber-500/20">
           <span class="font-bold block mb-0.5">Catatan:</span>
           <span class="font-medium leading-relaxed block">${trx.catatan}</span>
         </div>` : ''}
         
         <!-- TOMBOL AKSI -->
         <div class="flex space-x-3 pt-3">
-          <button onclick="handleEditTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center">
+          <button onclick="handleEditTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-coffee-darkest hover:bg-coffee-dark dark:bg-slate-100 dark:hover:bg-white text-white dark:text-coffee-darkest font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center">
             <i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit
           </button>
           
-          <button onclick="promptDeleteTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-rose-500/20">
+          <button onclick="promptDeleteTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-rose-500/10 hover:bg-rose-500/20 amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-rose-500/20">
             <i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Hapus
           </button>
         </div>
@@ -1890,8 +1894,8 @@
       const history = fullHistory.slice(0, 50);
 
       let html = `
-        <div class="border-b border-slate-100 dark:border-forest-muted/50 pb-4 mb-4 pr-6">
-          <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-forest-muted/50 text-muted uppercase tracking-wider mb-2 inline-block">Riwayat Akun</span>
+        <div class="border-b border-slate-100 dark:border-coffee-dark/50 pb-4 mb-4 pr-6">
+          <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-coffee-subtle text-muted uppercase tracking-wider mb-2 inline-block">Riwayat Akun</span>
           <h3 class="text-lg font-extrabold text-main leading-tight">${namaAkun}</h3>
         </div>
         <div class="space-y-1.5 max-h-[60vh] overflow-y-auto pr-1">
@@ -1929,13 +1933,13 @@
       const relatedTrx = GLOBAL_DATA.transaksi.filter(t => t.terkaitHutang === h.namaHutang);
       let html = `
         <div class="space-y-4 pt-1">
-          <div class="border-b border-slate-100 dark:border-forest-muted/50 pb-4 pr-6">
-            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-rose-500/10 text-rose-500 uppercase tracking-wider mb-2 inline-block">Hutang Aktif</span>
+          <div class="border-b border-slate-100 dark:border-coffee-dark/50 pb-4 pr-6">
+            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-amber-500/10 amount-warn uppercase tracking-wider mb-2 inline-block">Hutang Aktif</span>
             <h3 class="text-lg font-extrabold text-main leading-tight">${h.namaHutang}</h3>
           </div>
           <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted/50 pb-2"><span>Jenis Hutang:</span> <span class="font-extrabold text-main">${h.jenisHutang || '-'}</span></div>
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted/50 pb-2 mt-2 items-center"><span>Sisa Hutang:</span> <span class="font-black amount-out text-[15px]">${formatRupiah(h.sisaHutang)}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-coffee-dark/50 pb-2"><span>Jenis Hutang:</span> <span class="font-extrabold text-main">${h.jenisHutang || '-'}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-coffee-dark/50 pb-2 mt-2 items-center"><span>Sisa Hutang:</span> <span class="font-black amount-out text-[15px]">${formatRupiah(h.sisaHutang)}</span></div>
             <div class="flex justify-between mt-2"><span>Status:</span> <span class="font-extrabold text-main">${h.status}</span></div>
           </div>
           <div>
@@ -1972,13 +1976,13 @@
       const relatedTrx = GLOBAL_DATA.transaksi.filter(t => t.terkaitPiutang === p.namaPiutang);
       let html = `
         <div class="space-y-4 pt-1">
-          <div class="border-b border-slate-100 dark:border-forest-muted/50 pb-4 pr-6">
-            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 uppercase tracking-wider mb-2 inline-block">Piutang Belum Lunas</span>
+          <div class="border-b border-slate-100 dark:border-coffee-dark/50 pb-4 pr-6">
+            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-sky-500/10 amount-info uppercase tracking-wider mb-2 inline-block">Piutang Belum Lunas</span>
             <h3 class="text-lg font-extrabold text-main leading-tight">${p.namaPiutang}</h3>
           </div>
           <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted/50 pb-2"><span>Jenis Piutang:</span> <span class="font-extrabold text-main">${p.jenisPiutang || '-'}</span></div>
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-forest-muted/50 pb-2 mt-2 items-center"><span>Sisa Piutang:</span> <span class="font-black text-sky-500 text-[15px]">${formatRupiah(p.sisaPiutang)}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-coffee-dark/50 pb-2"><span>Jenis Piutang:</span> <span class="font-extrabold text-main">${p.jenisPiutang || '-'}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-coffee-dark/50 pb-2 mt-2 items-center"><span>Sisa Piutang:</span> <span class="font-black amount-info text-[15px]">${formatRupiah(p.sisaPiutang)}</span></div>
             <div class="flex justify-between mt-2"><span>Status:</span> <span class="font-extrabold text-main">${p.status}</span></div>
           </div>
           <div>
@@ -1997,7 +2001,7 @@
                 <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
                 <p class="text-[10px] text-faint font-semibold mt-0.5">${t.tanggal}</p>
               </div>
-              <span class="font-black text-sky-500 flex-shrink-0 text-[13px] pointer-events-none">${formatRupiah(t.jumlah)}</span>
+              <span class="font-black amount-info flex-shrink-0 text-[13px] pointer-events-none">${formatRupiah(t.jumlah)}</span>
             </div>
           `;
         });
