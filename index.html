@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Mochi's Vault — Keuangan Yosa & Fani</title>
+  <title>Mochi's Vault — Household Finances</title>
   
   <!-- PWA & Manifest Integration -->
   <link rel="manifest" href="manifest.json">
-  <!-- Default Light Mode Theme Color (Bisa sinkron dengan poni layar) -->
   <meta name="theme-color" content="#FAF8F5">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   
@@ -28,11 +27,11 @@
               dark: '#A45D33'     /* Dark Cinnamon */
             },
             coffee: {
-              darkest: '#181412', /* Latar Dark Mode Neutral */
-              dark: '#221C19',    /* Kartu Dark Mode */
+              darkest: '#181412', /* Neutral Dark Mode Background */
+              dark: '#221C19',    /* Dark Mode Cards */
               subtle: '#2D2520'  
             },
-            obsidian: '#231A15'   /* Hero Card Light Mode (Black Card) */
+            obsidian: '#231A15'   /* Light Mode Hero Card (Black Card) */
           }
         }
       }
@@ -93,7 +92,7 @@
       
       --border-color: rgba(250, 248, 245, 0.06); 
 
-      /* Functional Colors (Sedikit lebih terang agar terbaca di gelap) */
+      /* Functional Colors */
       --amount-in: #72A87B;
       --amount-out: #DC736C;
       --amount-info: #789EC2;
@@ -105,7 +104,7 @@
       --chip-info-bg: rgba(120, 158, 194, 0.15);
       --chip-warn-bg: rgba(216, 162, 80, 0.15);
 
-      /* Smoked Espresso Glass */
+      /* Smoked Glass Variables */
       --glass-bg: rgba(34, 28, 25, 0.85); 
       --glass-border: rgba(250, 248, 245, 0.08);
       --glass-modal-bg: rgba(24, 20, 18, 0.94);
@@ -124,7 +123,6 @@
       color: var(--text-primary);
       overflow-x: hidden;
       transition: background-color 0.3s ease, color 0.3s ease;
-      /* Padding bottom aman untuk navigasi */
       padding-bottom: max(6rem, env(safe-area-inset-bottom)); 
     }
 
@@ -161,7 +159,7 @@
       background-color: var(--bg-card);
     }
 
-    /* Animasi Validasi Error */
+    /* Error Validation Animation */
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       20%, 60% { transform: translateX(-5px); }
@@ -197,12 +195,11 @@
     .chip-hutang { background-color: var(--chip-warn-bg); color: var(--amount-warn); }
     .chip-piutang { background-color: var(--chip-info-bg); color: var(--amount-info); }
 
-    /* === CLEAN TOP BAR (Aman dari Poni Layar iOS) === */
+    /* === CLEAN TOP BAR === */
     .clean-topbar {
       background: linear-gradient(180deg, var(--bg-app) 60%, transparent 100%);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      /* Padding khusus agar area poni layar tidak tertabrak konten */
       padding-top: max(1.5rem, env(safe-area-inset-top));
     }
 
@@ -222,7 +219,7 @@
     @keyframes pawPulse {
       0% { box-shadow: 0 0 0 0 rgba(200, 122, 75, 0.4); }
       70% { box-shadow: 0 0 0 15px rgba(200, 122, 75, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(200, 122, 75, 0); }
+      100% { shadow: 0 0 0 0 rgba(200, 122, 75, 0); }
     }
     .paw-fab {
       animation: pawPulse 2.5s infinite;
@@ -241,7 +238,7 @@
       border: 1px solid var(--glass-border);
     }
 
-    /* Interaksi hover & active */
+    /* Hover & Active Interactions */
     .card-hover { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease; }
     .card-hover:hover { transform: translateY(-2px); box-shadow: var(--shadow-premium); border-color: rgba(200, 122, 75, 0.2); }
     .card-hover:active { transform: scale(0.97); }
@@ -285,22 +282,20 @@
 <body class="min-h-screen">
 
   <!-- ============================================== -->
-  <!-- 0. SPLASH SCREEN (Menyatu sempurna dgn Latar) -->
+  <!-- 0. SPLASH SCREEN -->
   <!-- ============================================== -->
   <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-700">
     <div class="animate-float flex flex-col items-center">
       
-      <!-- Wrapper Logo Tanpa Bingkai Hijau -->
       <div class="w-28 h-28 flex items-center justify-center rounded-full shadow-[0_8px_30px_rgba(200,122,75,0.15)] relative overflow-hidden bg-transparent">
         <img src="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192" alt="Mochi" class="w-full h-full object-cover">
       </div>
       
       <h2 class="mt-6 text-2xl font-black text-main tracking-tight">Mochi's Vault</h2>
       
-      <!-- Animated loading text -->
       <div class="mt-3 bg-[var(--bg-subtle-2)] px-4 py-1.5 rounded-full flex items-center space-x-2">
         <i data-lucide="loader-2" class="w-3.5 h-3.5 text-mochi animate-spin"></i>
-        <span id="splash-text" class="text-xs font-bold text-mochi dark:text-mochi-light">Membangunkan Mochi...</span>
+        <span id="splash-text" class="text-xs font-bold text-mochi dark:text-mochi-light">Waking up Mochi...</span>
       </div>
     </div>
   </div>
@@ -321,7 +316,7 @@
         </div>
       </div>
       <h2 class="text-white text-3xl font-black mt-6 drop-shadow-lg tracking-tight">Purr-fect! 🐾</h2>
-      <p id="reward-subtitle" class="text-mochi-light font-bold mt-1.5 drop-shadow-md text-sm bg-coffee-dark/50 px-4 py-1 rounded-full">Tersimpan</p>
+      <p id="reward-subtitle" class="text-mochi-light font-bold mt-1.5 drop-shadow-md text-sm bg-coffee-dark/50 px-4 py-1 rounded-full">Saved</p>
     </div>
   </div>
 
@@ -336,7 +331,7 @@
       </div>
       <div class="flex flex-col justify-center">
         <h1 class="text-xl md:text-2xl font-extrabold text-main leading-none tracking-tight">Hello, Meow</h1>
-        <p class="text-[11px] md:text-[12px] font-semibold text-muted mt-1">Menabung pangkal kaya, mi-aw 🐾</p>
+        <p class="text-[11px] md:text-[12px] font-semibold text-muted mt-1">Saving is the key to wealth, meow 🐾</p>
       </div>
     </div>
     
@@ -353,17 +348,16 @@
   <!-- MAIN CONTAINER -->
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
 
-    <!-- 1. HALAMAN DASHBOARD -->
+    <!-- 1. DASHBOARD PAGE -->
     <section id="page-dashboard" class="space-y-4 page-animate">
       
-      <!-- BARIS 1: ALPHA HERO (NET WORTH) — DUAL-IDENTITY INVERSION -->
+      <!-- ROW 1: ALPHA HERO (NET WORTH) -->
       <div onclick="vibrate(10); showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden group bg-obsidian dark:bg-gradient-to-br dark:from-mochi dark:to-mochi-dark text-white border-none shadow-[0_12px_35px_-8px_rgba(35,26,21,0.3)] dark:shadow-[0_12px_35px_-8px_rgba(217,136,88,0.3)]">
-        <!-- Efek Pendaran Cahaya Halus -->
         <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-white/10 dark:bg-white/20 rounded-full mix-blend-overlay filter blur-[20px] group-hover:opacity-70 transition-opacity duration-500"></div>
         <div class="absolute -top-6 -left-6 w-24 h-24 bg-white/5 dark:bg-white/10 rounded-full mix-blend-overlay filter blur-[10px]"></div>
         
         <div class="flex justify-between items-center mb-3 relative z-10">
-          <span class="text-[11px] font-black tracking-widest uppercase text-white/70 dark:text-white/80">Kekayaan Bersih (Net Worth)</span>
+          <span class="text-[11px] font-black tracking-widest uppercase text-white/70 dark:text-white/80">Net Worth</span>
           <div class="w-8 h-8 rounded-full bg-white/10 dark:bg-white/20 flex items-center justify-center text-white backdrop-blur-sm border border-white/10 dark:border-white/20">
             <i data-lucide="trending-up" class="w-4 h-4"></i>
           </div>
@@ -371,61 +365,67 @@
         <div id="kpi-networth" class="text-4xl md:text-5xl font-black tracking-tighter relative z-10 text-white drop-shadow-sm">-</div>
       </div>
       
-      <!-- BARIS 2: BETA FOCUS (DISPOSABLE INCOME FULL-WIDTH) -->
-      <div onclick="vibrate(10); showKpiDetail('Disposable Income')" class="floating-item p-4 md:p-5 cursor-pointer card-hover flex flex-col justify-center relative overflow-hidden group bg-card">
-        <div class="flex items-center mb-1.5">
-          <i data-lucide="wallet" class="w-4 h-4 mr-2 text-mochi"></i>
-          <span class="text-[10px] text-muted font-black uppercase tracking-wider">Disposable Income</span>
+      <!-- ROW 2: BETA HERO (DISPOSABLE INCOME - FULL WIDTH) -->
+      <div onclick="vibrate(10); showKpiDetail('Disposable Income')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden group bg-card">
+        <div class="flex justify-between items-center mb-3 relative z-10">
+          <span class="text-[11px] font-black tracking-widest uppercase text-muted">Disposable Income</span>
+          <div class="w-8 h-8 rounded-full bg-[var(--bg-subtle-2)] flex items-center justify-center text-mochi">
+            <i data-lucide="wallet" class="w-4 h-4"></i>
+          </div>
         </div>
-        <span id="kpi-disposable" class="text-2xl md:text-3xl font-extrabold text-main block tracking-tight">-</span>
+        <div id="kpi-disposable" class="text-4xl md:text-5xl font-black tracking-tighter relative z-10 text-main">-</div>
       </div>
 
-      <!-- BARIS 3: GRID SEKUNDER (4 KOTAK METRIK) -->
+      <!-- ROW 3: METRICS GRID (2x2) -->
       <div class="grid grid-cols-2 gap-3">
-        <div onclick="vibrate(10); showKpiDetail('Net Savings Operasional')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1">Net Savings</span>
-          <span id="kpi-savings" class="text-sm md:text-base font-extrabold amount-info block truncate w-full">-</span>
+        <div onclick="vibrate(10); showKpiDetail('Net Savings Operasional')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1 flex items-center">
+             <i data-lucide="piggy-bank" class="w-3 h-3 mr-1.5 text-mochi"></i> Net Savings
+          </span>
+          <span id="kpi-savings" class="text-lg md:text-xl font-extrabold amount-info block tracking-tight">-</span>
         </div>
-        <div onclick="vibrate(10); showKpiDetail('Total Kas')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1">Kas Total</span>
-          <span id="kpi-kas" class="text-sm md:text-base font-extrabold text-main block truncate w-full">-</span>
+        <div onclick="vibrate(10); showKpiDetail('Total Kas')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1 flex items-center">
+             <i data-lucide="coins" class="w-3 h-3 mr-1.5 text-mochi"></i> Total Cash
+          </span>
+          <span id="kpi-kas" class="text-lg md:text-xl font-extrabold text-main block tracking-tight">-</span>
         </div>
-        <div onclick="vibrate(10); showKpiDetail('Total Piutang')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1">Piutang</span>
-          <span id="kpi-piutang" class="text-sm md:text-base font-extrabold amount-info block truncate w-full">-</span>
+        <div onclick="vibrate(10); showKpiDetail('Total Piutang')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1">Receivables</span>
+          <span id="kpi-piutang" class="text-base md:text-lg font-extrabold amount-info block truncate w-full">-</span>
         </div>
-        <div onclick="vibrate(10); showKpiDetail('Total Hutang')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1">Hutang</span>
-          <span id="kpi-hutang" class="text-sm md:text-base font-extrabold amount-warn block truncate w-full">-</span>
+        <div onclick="vibrate(10); showKpiDetail('Total Hutang')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1">Payables</span>
+          <span id="kpi-hutang" class="text-base md:text-lg font-extrabold amount-warn block truncate w-full">-</span>
         </div>
       </div>
 
-      <!-- ANALISA PENGELUARAN -->
+      <!-- EXPENSE ANALYSIS -->
       <div class="floating-card p-5 mt-5 relative overflow-hidden">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
-          <h3 class="text-sm font-extrabold text-main">Analisa Pengeluaran</h3>
-          <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">Bulan Ini</span>
+          <h3 class="text-sm font-extrabold text-main">Expense Analysis</h3>
+          <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">This Month</span>
         </div>
         <div id="dashboard-kategori-analysis" class="space-y-3 relative z-10"></div>
       </div>
 
-      <!-- TRANSAKSI TERBARU -->
+      <!-- RECENT TRANSACTIONS -->
       <div class="floating-card p-5 mt-5 mb-8">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
-          <h3 class="text-sm font-extrabold text-main">Transaksi Terbaru</h3>
-          <button onclick="vibrate(10); switchTab('riwayat')" class="text-xs font-bold text-mochi hover:text-mochi-dark dark:text-mochi-light dark:hover:text-white bg-mochi-light/10 dark:bg-coffee-subtle/50 px-3 py-1.5 rounded-full transition-colors border border-transparent hover:border-mochi-light/30">Semua</button>
+          <h3 class="text-sm font-extrabold text-main">Recent Transactions</h3>
+          <button onclick="vibrate(10); switchTab('riwayat')" class="text-xs font-bold text-mochi hover:text-mochi-dark dark:text-mochi-light dark:hover:text-white bg-mochi-light/10 dark:bg-coffee-subtle/50 px-3 py-1.5 rounded-full transition-colors border border-transparent hover:border-mochi-light/30">See All</button>
         </div>
         <div id="dashboard-trx-list" class="space-y-2"></div>
       </div>
     </section>
 
-    <!-- 2. HALAMAN RIWAYAT TRANSAKSI -->
+    <!-- 2. HISTORY PAGE -->
     <section id="page-riwayat" class="hidden space-y-4 page-animate">
       <div class="floating-card p-5 space-y-4">
         <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 dark:border-[var(--border-color)] pb-4 gap-3">
           <div class="flex items-center space-x-2 text-main">
             <div class="w-8 h-8 rounded-full bg-mochi-light/20 dark:bg-mochi-light/10 flex items-center justify-center text-mochi dark:text-mochi-light"><i data-lucide="file-text" class="w-4 h-4"></i></div>
-            <span class="text-sm font-extrabold uppercase tracking-wider">e-Statement & Mutasi</span>
+            <span class="text-sm font-extrabold uppercase tracking-wider">e-Statement & Mutations</span>
           </div>
           <button onclick="vibrate(10); downloadEStatement()" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-4 py-2 rounded-full text-xs font-bold flex items-center shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] justify-center transition-colors">
             <i data-lucide="download" class="w-3.5 h-3.5 mr-1.5"></i> Download CSV
@@ -434,46 +434,46 @@
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div>
-            <label for="filter-bulan" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Bulan</label>
+            <label for="filter-bulan" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Month</label>
             <select id="filter-bulan" onchange="renderRiwayat()" class="w-full text-xs ios-input cursor-pointer">
-              <option value="ALL">Semua Bulan</option>
-              <option value="01">01 - Januari</option>
-              <option value="02">02 - Februari</option>
-              <option value="03">03 - Maret</option>
+              <option value="ALL">All Months</option>
+              <option value="01">01 - January</option>
+              <option value="02">02 - February</option>
+              <option value="03">03 - March</option>
               <option value="04">04 - April</option>
-              <option value="05">05 - Mei</option>
-              <option value="06">06 - Juni</option>
-              <option value="07">07 - Juli</option>
-              <option value="08">08 - Agustus</option>
+              <option value="05">05 - May</option>
+              <option value="06">06 - June</option>
+              <option value="07">07 - July</option>
+              <option value="08">08 - August</option>
               <option value="09">09 - September</option>
-              <option value="10">10 - Oktober</option>
+              <option value="10">10 - October</option>
               <option value="11">11 - November</option>
-              <option value="12">12 - Desember</option>
+              <option value="12">12 - December</option>
             </select>
           </div>
           <div>
-            <label for="filter-tahun" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Tahun</label>
+            <label for="filter-tahun" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Year</label>
             <select id="filter-tahun" onchange="renderRiwayat()" class="w-full text-xs ios-input cursor-pointer">
-              <option value="ALL">Semua Tahun</option>
+              <option value="ALL">All Years</option>
             </select>
           </div>
           <div>
-            <label for="filter-jenis" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Jenis Mutasi</label>
+            <label for="filter-jenis" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Type</label>
             <select id="filter-jenis" onchange="renderRiwayat()" class="w-full text-xs ios-input cursor-pointer">
-              <option value="ALL">Semua Transaksi</option>
-              <option value="Pemasukan">Pemasukan (+)</option>
-              <option value="Pengeluaran">Pengeluaran (-)</option>
-              <option value="Transfer Internal">Transfer Internal</option>
-              <option value="Beri Piutang (Menalangi)">Beri Piutang</option>
-              <option value="Terima Piutang">Terima Piutang</option>
-              <option value="Terima Hutang (Pinjam)">Terima Hutang</option>
-              <option value="Bayar Hutang/Cicilan">Bayar Hutang/Cicilan</option>
+              <option value="ALL">All Transactions</option>
+              <option value="Pemasukan">Income (+)</option>
+              <option value="Pengeluaran">Expense (-)</option>
+              <option value="Transfer Internal">Internal Transfer</option>
+              <option value="Beri Piutang (Menalangi)">Give Receivable (Lend)</option>
+              <option value="Terima Piutang">Receive Receivable</option>
+              <option value="Terima Hutang (Pinjam)">Receive Payable (Borrow)</option>
+              <option value="Bayar Hutang/Cicilan">Pay Installment</option>
             </select>
           </div>
           <div>
             <label for="filter-user" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">User</label>
             <select id="filter-user" onchange="renderRiwayat()" class="w-full text-xs ios-input cursor-pointer">
-              <option value="ALL">Semua User</option>
+              <option value="ALL">All Users</option>
               <option value="Yosa">Yosa</option>
               <option value="Fani">Fani</option>
             </select>
@@ -481,24 +481,24 @@
         </div>
 
         <div class="relative">
-          <label for="filter-search" class="sr-only">Cari Transaksi</label>
+          <label for="filter-search" class="sr-only">Search</label>
           <i data-lucide="search" class="w-4 h-4 text-faint absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-          <input type="text" id="filter-search" oninput="renderRiwayat()" placeholder="Cari deskripsi transaksi..." class="w-full text-sm ios-input pl-10 pr-4 py-2.5">
+          <input type="text" id="filter-search" oninput="renderRiwayat()" placeholder="Search description..." class="w-full text-sm ios-input pl-10 pr-4 py-2.5">
         </div>
 
-        <!-- SUMMARY VERTIKAL -->
+        <!-- SUMMARY VERTICAL -->
         <div id="statement-summary" class="floating-item p-4 mt-3 flex flex-col space-y-3 border border-slate-100 dark:border-[var(--border-color)]">
           <div class="flex justify-between items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
-            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Total Masuk</span>
-            <span id="sum-masuk" class="font-extrabold amount-in text-[15px]">Rp 0</span>
+            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Total In</span>
+            <span id="sum-masuk" class="font-extrabold amount-in text-[15px]">-</span>
           </div>
           <div class="flex justify-between items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
-            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Total Keluar</span>
-            <span id="sum-keluar" class="font-extrabold amount-out text-[15px]">Rp 0</span>
+            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Total Out</span>
+            <span id="sum-keluar" class="font-extrabold amount-out text-[15px]">-</span>
           </div>
           <div class="flex justify-between items-center">
-            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Surplus / Defisit</span>
-            <span id="sum-net" class="font-black text-main text-[16px]">Rp 0</span>
+            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Surplus / Deficit</span>
+            <span id="sum-net" class="font-black text-main text-[16px]">-</span>
           </div>
         </div>
       </div>
@@ -506,33 +506,33 @@
       <div id="riwayat-trx-list" class="space-y-2 pb-8"></div>
     </section>
 
-    <!-- 3. HALAMAN SALDO AKUN -->
+    <!-- 3. WALLETS PAGE -->
     <section id="page-saldo" class="hidden space-y-6 page-animate pb-8">
       <div class="floating-card p-5">
         <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted mb-4 flex items-center">
-          <i data-lucide="briefcase" class="w-4 h-4 mr-2"></i> Operasional Harian
+          <i data-lucide="briefcase" class="w-4 h-4 mr-2"></i> Daily Operations
         </h3>
         <div id="list-akun-operasional" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
       </div>
       <div class="floating-card p-5">
         <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted mb-4 flex items-center">
-          <i data-lucide="piggy-bank" class="w-4 h-4 mr-2"></i> Dana Darurat & Tabungan
+          <i data-lucide="piggy-bank" class="w-4 h-4 mr-2"></i> Emergency & Savings
         </h3>
         <div id="list-akun-tabungan" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
       </div>
     </section>
 
-    <!-- 4. HALAMAN HUTANG & PIUTANG -->
+    <!-- 4. AP/R PAGE -->
     <section id="page-hutang" class="hidden space-y-6 page-animate pb-8">
       <div class="floating-card p-5">
         <h3 class="text-xs font-extrabold uppercase tracking-wider amount-warn mb-4 flex items-center">
-          <i data-lucide="alert-circle" class="w-4 h-4 mr-2"></i> Hutang Aktif
+          <i data-lucide="alert-circle" class="w-4 h-4 mr-2"></i> Active Payables
         </h3>
         <div id="list-hutang-aktif" class="space-y-3"></div>
       </div>
       <div class="floating-card p-5">
         <h3 class="text-xs font-extrabold uppercase tracking-wider amount-info mb-4 flex items-center">
-          <i data-lucide="clock" class="w-4 h-4 mr-2"></i> Piutang Belum Lunas
+          <i data-lucide="clock" class="w-4 h-4 mr-2"></i> Unpaid Receivables
         </h3>
         <div id="list-piutang-aktif" class="space-y-3"></div>
       </div>
@@ -565,7 +565,7 @@
       <button onclick="vibrate(10); switchTab('hutang')" id="tab-hutang" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
         <div class="relative flex-shrink-0">
           <i data-lucide="credit-card" class="w-5 h-5"></i>
-          <span id="badge-hutang-nav" class="hidden absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-[var(--glass-bg)]"></span>
+          <span id="badge-hutang-nav" class="hidden absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-amber-500 ring-2 ring-[var(--glass-bg)]"></span>
         </div>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">AP/R</span>
       </button>
@@ -587,11 +587,11 @@
     </div>
   </div>
 
-  <!-- MODAL 1: FORM INPUT TRANSAKSI -->
+  <!-- MODAL 1: ADD TRANSACTION FORM -->
   <div id="modalInputTrx" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalInputTrx')">
     <div id="modalInputTrx-content" class="glass-modal-content w-full max-w-lg rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200 dark:border-[var(--border-color)] pb-4 mb-4">
-        <h3 id="modal-title-trx" class="font-extrabold text-main text-base">Tambah Transaksi</h3>
+        <h3 id="modal-title-trx" class="font-extrabold text-main text-base">Add Transaction</h3>
         <button type="button" onclick="vibrate(10); closeModal('modalInputTrx')" class="tap-shrink text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition-colors border border-[var(--border-color)]">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
@@ -602,54 +602,54 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label for="form-user" class="font-bold text-main block mb-1 text-xs cursor-pointer">Oleh</label>
+            <label for="form-user" class="font-bold text-main block mb-1 text-xs cursor-pointer">By</label>
             <select id="form-user" class="w-full ios-input cursor-pointer">
               <option value="Yosa">Yosa</option>
               <option value="Fani">Fani</option>
             </select>
           </div>
           <div>
-            <label for="form-tgl" class="font-bold text-main block mb-1 text-xs cursor-pointer">Tanggal</label>
+            <label for="form-tgl" class="font-bold text-main block mb-1 text-xs cursor-pointer">Date</label>
             <input type="date" id="form-tgl" class="w-full ios-input" required>
           </div>
         </div>
 
         <div>
-          <label for="form-jenis" class="font-bold text-main block mb-1 text-xs cursor-pointer">Jenis Transaksi</label>
+          <label for="form-jenis" class="font-bold text-main block mb-1 text-xs cursor-pointer">Transaction Type</label>
           <select id="form-jenis" onchange="handleJenisChange()" class="w-full ios-input text-main cursor-pointer" required>
-            <option value="Pengeluaran">Pengeluaran</option>
-            <option value="Pemasukan">Pemasukan</option>
-            <option value="Transfer Internal">Transfer Internal</option>
-            <option value="Beri Piutang (Menalangi)">Beri Piutang (Menalangi)</option>
-            <option value="Terima Piutang">Terima Piutang</option>
-            <option value="Terima Hutang (Pinjam)">Terima Hutang (Pinjam)</option>
-            <option value="Bayar Hutang/Cicilan">Bayar Hutang/Cicilan</option>
+            <option value="Pengeluaran">Expense</option>
+            <option value="Pemasukan">Income</option>
+            <option value="Transfer Internal">Internal Transfer</option>
+            <option value="Beri Piutang (Menalangi)">Give Receivable (Lend)</option>
+            <option value="Terima Piutang">Receive Receivable</option>
+            <option value="Terima Hutang (Pinjam)">Receive Payable (Borrow)</option>
+            <option value="Bayar Hutang/Cicilan">Pay Installment</option>
           </select>
         </div>
 
         <div id="wrap-akunsumber" class="space-y-1">
           <div class="flex justify-between items-center">
-            <label for="form-akunsumber" class="font-bold text-main text-xs cursor-pointer">Akun Sumber</label>
-            <button type="button" onclick="vibrate(10); openMasterModal('akun')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Akun Baru</button>
+            <label for="form-akunsumber" class="font-bold text-main text-xs cursor-pointer">Source Account</label>
+            <button type="button" onclick="vibrate(10); openMasterModal('akun')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
           </div>
           <select id="form-akunsumber" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div id="wrap-akuntujuan" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label for="form-akuntujuan" class="font-bold text-main text-xs cursor-pointer">Akun Tujuan</label>
-            <button type="button" onclick="vibrate(10); openMasterModal('akun')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Akun Baru</button>
+            <label for="form-akuntujuan" class="font-bold text-main text-xs cursor-pointer">Destination Account</label>
+            <button type="button" onclick="vibrate(10); openMasterModal('akun')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
           </div>
           <select id="form-akuntujuan" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div class="space-y-1">
           <div class="flex justify-between items-center">
-            <label class="font-bold text-main text-xs">Kategori</label>
-            <button type="button" onclick="vibrate(10); openMasterModal('kategori')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Kategori Baru</button>
+            <label class="font-bold text-main text-xs">Category</label>
+            <button type="button" onclick="vibrate(10); openMasterModal('kategori')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Category</button>
           </div>
           <div onclick="vibrate(10); openKategoriPicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
-            <span id="form-kategori-display" class="font-semibold text-faint truncate">Pilih Kategori...</span>
+            <span id="form-kategori-display" class="font-semibold text-faint truncate">Select Category...</span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
           </div>
           <input type="hidden" id="form-kategori">
@@ -657,22 +657,22 @@
 
         <div id="wrap-hutang" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label for="form-hutang" class="font-bold text-main text-xs cursor-pointer">Terkait Hutang</label>
-            <button type="button" onclick="vibrate(10); openMasterModal('hutang')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Hutang Baru</button>
+            <label for="form-hutang" class="font-bold text-main text-xs cursor-pointer">Related Payable</label>
+            <button type="button" onclick="vibrate(10); openMasterModal('hutang')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Payable</button>
           </div>
           <select id="form-hutang" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div id="wrap-piutang" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label for="form-piutang" class="font-bold text-main text-xs cursor-pointer">Terkait Piutang</label>
-            <button type="button" onclick="vibrate(10); openMasterModal('piutang')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Piutang Baru</button>
+            <label for="form-piutang" class="font-bold text-main text-xs cursor-pointer">Related Receivable</label>
+            <button type="button" onclick="vibrate(10); openMasterModal('piutang')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Receivable</button>
           </div>
           <select id="form-piutang" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div>
-          <label for="form-jumlah-display" class="font-bold text-main block mb-1 text-xs cursor-pointer">Jumlah (Rp)</label>
+          <label for="form-jumlah-display" class="font-bold text-main block mb-1 text-xs cursor-pointer">Amount (Rp)</label>
           <div class="relative">
             <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-sm">Rp</span>
             <input type="text" inputmode="numeric" id="form-jumlah-display" oninput="formatInputRupiah(this)" placeholder="0" class="w-full ios-input pl-10 text-base font-extrabold text-main" required>
@@ -681,24 +681,24 @@
         </div>
 
         <div>
-          <label for="form-deskripsi" class="font-bold text-main block mb-1 text-xs cursor-pointer">Deskripsi / Judul Transaksi</label>
-          <input type="text" id="form-deskripsi" placeholder="Contoh: Belanja Bulanan" class="w-full ios-input">
+          <label for="form-deskripsi" class="font-bold text-main block mb-1 text-xs cursor-pointer">Description / Title</label>
+          <input type="text" id="form-deskripsi" placeholder="e.g. Monthly Groceries" class="w-full ios-input">
         </div>
         <div>
-          <label for="form-catatan" class="font-bold text-main block mb-1 text-xs cursor-pointer">Catatan Tambahan (Opsional)</label>
-          <textarea id="form-catatan" rows="2" placeholder="Catatan opsional..." class="w-full ios-input"></textarea>
+          <label for="form-catatan" class="font-bold text-main block mb-1 text-xs cursor-pointer">Additional Notes (Optional)</label>
+          <textarea id="form-catatan" rows="2" placeholder="Optional notes..." class="w-full ios-input"></textarea>
         </div>
 
         <div class="pt-3 pb-1">
           <button type="submit" id="btn-submit-trx" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] transition-colors">
-            Simpan Transaksi
+            Save Transaction
           </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL 2: DETAIL TRANSAKSI / RIWAYAT AKUN -->
+  <!-- MODAL 2: TRANSACTION DETAIL / ACCOUNT HISTORY -->
   <div id="modalDetail" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDetail')">
     <div id="modalDetail-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto modal-content-center">
       <button onclick="vibrate(10); closeModal('modalDetail')" class="tap-shrink absolute top-4 right-4 text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition z-20 border border-[var(--border-color)]">
@@ -708,11 +708,11 @@
     </div>
   </div>
 
-  <!-- MODAL 2b: PILIH KATEGORI -->
+  <!-- MODAL 2b: CATEGORY PICKER -->
   <div id="modalKategoriPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalKategoriPicker')">
     <div id="modalKategoriPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
-        <h3 class="font-extrabold text-main text-sm">Pilih Kategori</h3>
+        <h3 class="font-extrabold text-main text-sm">Select Category</h3>
         <button onclick="vibrate(10); closeModal('modalKategoriPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
@@ -721,56 +721,56 @@
     </div>
   </div>
 
-  <!-- MODAL 3: TAMBAH MASTER DATA -->
+  <!-- MODAL 3: ADD MASTER DATA -->
   <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3">
-        <h4 id="master-title" class="font-extrabold text-main text-base">Tambah Data</h4>
+        <h4 id="master-title" class="font-extrabold text-main text-base">Add Data</h4>
         <button type="button" onclick="vibrate(10); closeModal('modalMaster')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
       <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-3 text-sm">
         <input type="hidden" id="master-type">
         
         <div id="master-kategoriutama-wrap" class="hidden">
-          <label for="master-kategoriutama-select" class="font-bold text-main block mb-1 text-xs cursor-pointer">Kategori Utama</label>
+          <label for="master-kategoriutama-select" class="font-bold text-main block mb-1 text-xs cursor-pointer">Main Category</label>
           <select id="master-kategoriutama-select" onchange="handleKategoriUtamaSelectChange()" class="w-full ios-input cursor-pointer"></select>
         </div>
         
         <div id="master-kategoriutama-baru-wrap" class="hidden">
-          <label for="master-kategoriutama-baru" class="font-bold text-main block mb-1 text-xs cursor-pointer">Nama Kategori Utama Baru</label>
-          <input type="text" id="master-kategoriutama-baru" placeholder="Contoh: Investasi" class="w-full ios-input">
+          <label for="master-kategoriutama-baru" class="font-bold text-main block mb-1 text-xs cursor-pointer">New Main Category Name</label>
+          <input type="text" id="master-kategoriutama-baru" placeholder="e.g. Investment" class="w-full ios-input">
         </div>
         
         <div>
-          <label for="master-nama" class="font-bold text-main block mb-1 text-xs cursor-pointer" id="master-nama-label">Nama</label>
+          <label for="master-nama" class="font-bold text-main block mb-1 text-xs cursor-pointer" id="master-nama-label">Name</label>
           <input type="text" id="master-nama" class="w-full ios-input" required>
         </div>
         
         <div id="master-extra-field" class="space-y-3"></div>
         
         <div class="pt-3">
-          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] transition-colors">Simpan Master Data</button>
+          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] transition-colors">Save Master Data</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL 4: CUSTOM DELETE CONFIRMATION -->
+  <!-- MODAL 4: DELETE CONFIRMATION -->
   <div id="modalDelete" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDelete')">
     <div id="modalDelete-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center text-center">
       <div class="w-16 h-16 bg-rose-500/10 amount-out rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-500/20">
         <i data-lucide="trash-2" class="w-8 h-8"></i>
       </div>
-      <h3 class="text-lg font-black text-main mb-2 tracking-tight">Hapus Transaksi?</h3>
-      <p class="text-sm font-medium text-muted mb-6 px-2">Tindakan ini tidak dapat dibatalkan. Data akan dihapus permanen dari Vault.</p>
+      <h3 class="text-lg font-black text-main mb-2 tracking-tight">Delete Transaction?</h3>
+      <p class="text-sm font-medium text-muted mb-6 px-2">This action cannot be undone. Data will be permanently deleted from the Vault.</p>
       
       <div class="flex space-x-3">
-        <button onclick="vibrate(10); closeModal('modalDelete')" class="flex-1 py-3 bg-[var(--bg-subtle-2)] text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-[var(--border-color)]">Batal</button>
-        <button id="btn-confirm-delete" class="flex-1 py-3 bg-rose-500 hover:bg-rose-600 text-white font-extrabold rounded-xl tap-shrink shadow-sm">Ya, Hapus</button>
+        <button onclick="vibrate(10); closeModal('modalDelete')" class="flex-1 py-3 bg-[var(--bg-subtle-2)] text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-[var(--border-color)]">Cancel</button>
+        <button id="btn-confirm-delete" class="flex-1 py-3 bg-rose-500 hover:bg-rose-600 text-white font-extrabold rounded-xl tap-shrink shadow-sm">Yes, Delete</button>
       </div>
     </div>
   </div>
-  <!-- SCRIPT JAVASCRIPT DIMULAI DI SINI -->
+  <!-- JAVASCRIPT START -->
   <script>
     // ==========================================
     // CONFIGURATION URL GOOGLE APPS SCRIPT
@@ -829,8 +829,8 @@
       const isError = type === 'error';
       const isInfo = type === 'info';
       
-      let bgClass = isError ? 'bg-rose-500' : (isInfo ? 'bg-slate-600' : 'bg-coffee-darkest dark:bg-white');
-      let textClass = (isInfo || isError) ? 'text-white' : 'text-white dark:text-coffee-darkest';
+      let bgClass = isError ? 'bg-rose-500' : (isInfo ? 'bg-[var(--amount-info)]' : 'bg-obsidian dark:bg-white');
+      let textClass = (isInfo || isError) ? 'text-white' : 'text-white dark:text-obsidian';
       let icon = isError ? 'alert-circle' : (isInfo ? 'loader' : 'check-circle');
       let iconSpin = isInfo ? 'animate-spin' : '';
 
@@ -855,7 +855,7 @@
       return toast; 
     }
 
-    function showRewardAnimation(subtitleText = "Tersimpan") {
+    function showRewardAnimation(subtitleText = "Saved") {
       return new Promise(resolve => {
         const overlay = document.getElementById('reward-overlay');
         const bg = document.getElementById('reward-bg');
@@ -1097,7 +1097,7 @@
         renderHutangPiutang();
         lucide.createIcons();
       } catch (err) {
-        showToast("Gagal memuat data: " + err.message, "error");
+        showToast("Failed to load data: " + err.message, "error");
       }
     }
 
@@ -1164,11 +1164,11 @@
       document.getElementById('form-jumlah-val').value = "";
       
       const katDisplay = document.getElementById('form-kategori-display');
-      katDisplay.innerText = "Pilih Kategori...";
+      katDisplay.innerText = "Select Category...";
       katDisplay.classList.add('text-faint');
       
-      document.getElementById('modal-title-trx').innerText = "Tambah Transaksi";
-      document.getElementById('btn-submit-trx').innerText = "Simpan Transaksi";
+      document.getElementById('modal-title-trx').innerText = "Add Transaction";
+      document.getElementById('btn-submit-trx').innerText = "Save Transaction";
       
       handleJenisChange();
       openModal('modalInputTrx');
@@ -1200,7 +1200,7 @@
           katDisplay.innerText = trx.kategori;
           katDisplay.classList.remove('text-faint');
         } else {
-          katDisplay.innerText = "Pilih Kategori...";
+          katDisplay.innerText = "Select Category...";
           katDisplay.classList.add('text-faint');
         }
         
@@ -1210,8 +1210,8 @@
         document.getElementById('form-deskripsi').value = trx.deskripsi || "";
         document.getElementById('form-catatan').value = trx.catatan || "";
 
-        document.getElementById('modal-title-trx').innerText = "Edit Transaksi";
-        document.getElementById('btn-submit-trx').innerText = "Update Transaksi";
+        document.getElementById('modal-title-trx').innerText = "Edit Transaction";
+        document.getElementById('btn-submit-trx').innerText = "Update Transaction";
 
         openModal('modalInputTrx');
       }, 400);
@@ -1232,7 +1232,7 @@
 
     async function handleDeleteTrx(idTrx) {
       closeModal('modalDelete');
-      let loadingToast = showToast("Menghapus transaksi...", "info");
+      let loadingToast = showToast("Deleting transaction...", "info");
 
       try {
         const res = await fetch(API_URL, {
@@ -1245,11 +1245,11 @@
 
         if(loadingToast && loadingToast.parentNode) loadingToast.remove();
         
-        await showRewardAnimation("Transaksi Dihapus");
+        await showRewardAnimation("Transaction Deleted");
         await loadAppData(true);
       } catch (err) {
         if(loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Gagal menghapus: " + err.message, "error");
+        showToast("Failed to delete: " + err.message, "error");
       }
     }
 
@@ -1270,7 +1270,7 @@
       dashListEl.innerHTML = "";
 
       if (trxList.length === 0) {
-        dashListEl.innerHTML = `<p class="text-xs text-center text-muted py-4 font-semibold">Belum ada transaksi.</p>`;
+        dashListEl.innerHTML = `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
         return;
       }
 
@@ -1323,14 +1323,14 @@
       );
 
       if (trxBulanIni.length === 0) {
-        el.innerHTML = `<p class="text-xs text-center text-muted py-4 font-semibold">Belum ada transaksi pengeluaran bulan ini.</p>`;
+        el.innerHTML = `<p class="text-xs text-center text-muted py-4 font-semibold">No expense transactions this month.</p>`;
         return;
       }
 
       const groups = {};
       let grandTotal = 0;
       trxBulanIni.forEach(t => {
-        const utama = t.kategoriUtama || t.kategori || 'Lainnya';
+        const utama = t.kategoriUtama || t.kategori || 'Others';
         const jumlah = Number(t.jumlah) || 0;
         grandTotal += jumlah;
         if (!groups[utama]) groups[utama] = { total: 0, subs: {} };
@@ -1434,7 +1434,7 @@
       elNet.className = net >= 0 ? "font-extrabold amount-in text-[15px]" : "font-extrabold amount-out text-[15px]";
 
       if (filtered.length === 0) {
-        listEl.innerHTML = `<p class="text-xs text-center text-muted py-8 font-semibold">Tidak ada hasil pada filter ini.</p>`;
+        listEl.innerHTML = `<p class="text-xs text-center text-muted py-8 font-semibold">No results for this filter.</p>`;
         return;
       }
 
@@ -1484,7 +1484,7 @@
       });
 
       const sortedYears = Array.from(years).sort().reverse();
-      let html = `<option value="ALL">Semua Tahun</option>`;
+      let html = `<option value="ALL">All Years</option>`;
       sortedYears.forEach(y => { html += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`; });
       yearSelect.innerHTML = html;
 
@@ -1510,18 +1510,18 @@
       });
 
       if (filtered.length === 0) {
-        showToast("Tidak ada data transaksi pada periode yang dipilih.", "error");
+        showToast("No transaction data in the selected period.", "error");
         return;
       }
       
-      showToast("Sedang menyiapkan file CSV...", "info");
+      showToast("Preparing CSV file...", "info");
 
       let csvContent = "\uFEFF";
       csvContent += "sep=;\r\n";
       csvContent += "e-STATEMENT MUTASI KEUANGAN RUMAH TANGGA — MOCHI'S VAULT\r\n";
-      csvContent += `Periode Bulan: ${filterBulan} | Tahun: ${filterTahun}\r\n`;
-      csvContent += `Diunduh Pada: ${new Date().toLocaleDateString('id-ID')}\r\n\r\n`;
-      csvContent += "ID Transaksi;Tanggal;Oleh;Jenis Mutasi;Kategori;Akun Sumber;Akun Tujuan;Deskripsi;Jumlah (Rp);Catatan\r\n";
+      csvContent += `Month Period: ${filterBulan} | Year: ${filterTahun}\r\n`;
+      csvContent += `Downloaded On: ${new Date().toLocaleDateString('id-ID')}\r\n\r\n`;
+      csvContent += "Transaction ID;Date;By;Type;Category;Source Account;Destination Account;Description;Amount (Rp);Notes\r\n";
 
       filtered.forEach(t => {
         const row = [
@@ -1549,7 +1549,7 @@
       operasionalEl.innerHTML = ""; tabunganEl.innerHTML = "";
 
       if (!GLOBAL_DATA.akun || GLOBAL_DATA.akun.length === 0) {
-        operasionalEl.innerHTML = `<p class="text-xs text-muted font-semibold">Belum ada akun.</p>`;
+        operasionalEl.innerHTML = `<p class="text-xs text-muted font-semibold">No accounts yet.</p>`;
         return;
       }
 
@@ -1568,7 +1568,7 @@
             </div>
           </div>
           <div>
-            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Saldo Berjalan</span>
+            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Running Balance</span>
             <span class="text-[18px] font-black text-main block leading-none tracking-tight">${formatRupiah(akun.saldoBerjalan)}</span>
           </div>
         `;
@@ -1587,7 +1587,7 @@
       hutangEl.innerHTML = ""; piutangEl.innerHTML = "";
 
       const hutangAktif = (GLOBAL_DATA.hutang || []).filter(h => h.status === 'Aktif').sort((a, b) => b.sisaHutang - a.sisaHutang);
-      if (hutangAktif.length === 0) hutangEl.innerHTML = `<p class="text-xs text-muted font-semibold">Semua hutang sudah lunas.</p>`;
+      if (hutangAktif.length === 0) hutangEl.innerHTML = `<p class="text-xs text-muted font-semibold">All payables are settled.</p>`;
       else {
         hutangAktif.forEach((h, i) => {
           const pct = h.totalHutangAwal > 0 ? Math.min(100, ((h.totalHutangAwal - h.sisaHutang) / h.totalHutangAwal) * 100) : 0;
@@ -1598,14 +1598,14 @@
           div.innerHTML = `
             <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
               <h4 class="text-[13px] font-extrabold text-main leading-tight">${h.namaHutang}</h4>
-              <span class="text-[9px] amount-warn bg-[var(--chip-warn-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${h.jenisHutang || 'Cicilan'}</span>
+              <span class="text-[9px] amount-warn bg-[var(--chip-warn-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${h.jenisHutang || 'Installment'}</span>
             </div>
             <div class="flex flex-col mb-3">
-              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Sisa Hutang</span>
+              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Remaining Payable</span>
               <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(h.sisaHutang)}</span>
             </div>
             <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
-              <div class="bg-[var(--amount-out)] h-1.5 rounded-full" style="width:${pct}%"></div>
+              <div class="h-1.5 rounded-full transition-all duration-1000 ease-out" style="background-color: var(--amount-out); width:${pct}%"></div>
             </div>
           `;
           hutangEl.appendChild(div);
@@ -1613,7 +1613,7 @@
       }
 
       const piutangAktif = (GLOBAL_DATA.piutang || []).filter(p => p.status === 'Belum Lunas' || p.status === 'Aktif');
-      if (piutangAktif.length === 0) piutangEl.innerHTML = `<p class="text-xs text-muted font-semibold">Semua piutang sudah diterima.</p>`;
+      if (piutangAktif.length === 0) piutangEl.innerHTML = `<p class="text-xs text-muted font-semibold">All receivables are settled.</p>`;
       else {
         piutangAktif.forEach((p, i) => {
           const div = document.createElement('div');
@@ -1623,10 +1623,10 @@
           div.innerHTML = `
             <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
               <h4 class="text-[13px] font-extrabold text-main leading-tight">${p.namaPiutang}</h4>
-              <span class="text-[9px] amount-info bg-[var(--chip-info-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${p.jenisPiutang || 'Piutang'}</span>
+              <span class="text-[9px] amount-info bg-[var(--chip-info-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${p.jenisPiutang || 'Receivable'}</span>
             </div>
             <div>
-              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Sisa Piutang</span>
+              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Remaining Receivable</span>
               <span class="text-[18px] font-black amount-info block leading-none tracking-tight">${formatRupiah(p.sisaPiutang)}</span>
             </div>
           `;
@@ -1638,7 +1638,7 @@
     function populateFormDropdowns() {
       const fillSelect = (id, items, key) => {
         const sel = document.getElementById(id);
-        sel.innerHTML = `<option value="">-- Pilih --</option>`;
+        sel.innerHTML = `<option value="">-- Select --</option>`;
         items.forEach(item => { sel.innerHTML += `<option value="${item[key]}">${item[key]}</option>`; });
       };
       fillSelect('form-akunsumber', GLOBAL_DATA.akun, 'namaAkun');
@@ -1655,7 +1655,7 @@
     function resetKategoriPicker() {
       document.getElementById('form-kategori').value = "";
       const displayEl = document.getElementById('form-kategori-display');
-      displayEl.innerText = "Pilih Kategori...";
+      displayEl.innerText = "Select Category...";
       displayEl.classList.add('text-faint');
     }
 
@@ -1683,13 +1683,14 @@
         const group = groups[utama];
         const isExpanded = !!kategoriPickerExpanded[utama];
         const badgeColor = group.jenis === 'Pemasukan' ? 'amount-in bg-[var(--chip-in-bg)]' : 'amount-out bg-[var(--chip-out-bg)]';
+        const typeLabel = group.jenis === 'Pemasukan' ? 'INCOME' : 'EXPENSE';
         const onlyMainItem = group.items.length === 1 && (!group.items[0].subKategori || group.items[0].subKategori === group.items[0].namaKategori);
 
         if (onlyMainItem) {
           html += `
             <div onclick="vibrate(10); selectKategori('${escapeAttr(group.items[0].namaKategori)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-[var(--border-color)] transition-colors">
               <span class="font-extrabold text-main text-[13px]">${utama}</span>
-              <span class="text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badgeColor}">${group.jenis}</span>
+              <span class="text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badgeColor}">${typeLabel}</span>
             </div>`;
         } else {
           html += `
@@ -1739,7 +1740,7 @@
       currentModalBackFn = null;
       let html = `<div class="space-y-4 pt-1">
           <div class="text-center pb-2">
-            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">Detail KPI</span>
+            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">KPI Detail</span>
             <h3 class="text-lg font-extrabold text-main leading-tight">${kpiName}</h3>
             <p class="text-3xl font-black text-mochi dark:text-mochi-light mt-2">${formatRupiah(GLOBAL_DATA.kpi[kpiName])}</p>
           </div>
@@ -1747,28 +1748,28 @@
       `;
       if (kpiName === 'Net Worth') {
         html += `
-          <p class="font-extrabold text-main mb-3 text-[13px]">Komponen Kekayaan Bersih:</p>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Total Kas & Tab:</span> <span class="font-extrabold text-main">${formatRupiah(GLOBAL_DATA.kpi['Total Kas'])}</span></div>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Total Piutang:</span> <span class="font-extrabold amount-info">${formatRupiah(GLOBAL_DATA.kpi['Total Piutang'])}</span></div>
-          <div class="flex justify-between amount-out pb-2 mt-2"><span>Total Hutang (-):</span> <span class="font-extrabold">${formatRupiah(GLOBAL_DATA.kpi['Total Hutang'])}</span></div>
+          <p class="font-extrabold text-main mb-3 text-[13px]">Net Worth Components:</p>
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Total Cash & Savings:</span> <span class="font-extrabold text-main">${formatRupiah(GLOBAL_DATA.kpi['Total Kas'])}</span></div>
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Total Receivables:</span> <span class="font-extrabold amount-info">${formatRupiah(GLOBAL_DATA.kpi['Total Piutang'])}</span></div>
+          <div class="flex justify-between amount-out pb-2 mt-2"><span>Total Payables (-):</span> <span class="font-extrabold">${formatRupiah(GLOBAL_DATA.kpi['Total Hutang'])}</span></div>
           <div class="flex justify-between font-black text-main pt-3 mt-1 border-t border-slate-200/50 dark:border-[var(--border-color)] text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(GLOBAL_DATA.kpi['Net Worth'])}</span></div>
         `;
       } else if (kpiName === 'Disposable Income') {
-        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Keterangan:</p><p class="text-muted leading-relaxed font-semibold">Dana sisa kas operasional harian yang bebas digunakan untuk konsumsi dan tabungan setelah mengurangi komitmen bulanan.</p>`;
+        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">Remaining operational cash free to use for consumption and savings after deducting monthly commitments.</p>`;
       } else if (kpiName === 'Total Kas') {
-        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Rincian Saldo Akun:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
+        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Account Balance Details:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
         GLOBAL_DATA.akun.forEach(a => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${a.namaAkun} (${a.pemilik}):</span> <span class="font-extrabold text-main">${formatRupiah(a.saldoBerjalan)}</span></div>`; });
         html += `</div>`;
       } else if (kpiName === 'Total Piutang') {
-        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Rincian Piutang:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
+        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Receivable Details:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
         GLOBAL_DATA.piutang.forEach(p => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${p.namaPiutang}:</span> <span class="font-extrabold amount-info">${formatRupiah(p.sisaPiutang)}</span></div>`; });
         html += `</div>`;
       } else if (kpiName === 'Total Hutang') {
-        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Rincian Hutang:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
+        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Payable Details:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
         GLOBAL_DATA.hutang.forEach(h => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${h.namaHutang}:</span> <span class="font-extrabold amount-out">${formatRupiah(h.sisaHutang)}</span></div>`; });
         html += `</div>`;
       } else if (kpiName === 'Net Savings Operasional') {
-        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Keterangan:</p><p class="text-muted leading-relaxed font-semibold">Selisih antara total pemasukan operasional dan total pengeluaran operasional.</p>`;
+        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">The difference between total operational income and total operational expenses for this month.</p>`;
       }
       html += `</div></div>`;
       document.getElementById('modal-detail-inner').innerHTML = html; openModal('modalDetail');
@@ -1787,13 +1788,15 @@
         window.isNestedModalView = true;
         html += `
           <button onclick="vibrate(10); window.isNestedModalView = false; currentModalBackFn()" class="tap-shrink text-xs font-extrabold text-main flex items-center mb-2 transition-colors">
-            <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Kembali
+            <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back
           </button>
         `;
       } else {
         window.isNestedModalView = false;
       }
       
+      const typeEn = trx.jenis === 'Pemasukan' ? 'INCOME' : (trx.jenis === 'Pengeluaran' ? 'EXPENSE' : 'TRANSFER');
+
       html += `
         <!-- HEADER TRANSAKSI -->
         <div class="text-center flex flex-col items-center mb-5 pb-4 border-b border-slate-200/60 dark:border-[var(--border-color)]">
@@ -1811,55 +1814,55 @@
           <p class="text-3xl font-black mt-1.5 tracking-tight ${meta.cls}">${meta.prefix}${formatRupiah(trx.jumlah)}</p>
           
           <span class="text-[10px] font-black px-3.5 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mt-2.5 uppercase tracking-wider shadow-sm border border-[var(--border-color)]">
-            ${trx.jenis}
+            ${typeEn}
           </span>
         </div>
         
         <!-- CONTAINER RINCIAN -->
         <div class="bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-2xl p-4 border border-slate-200/60 dark:border-[var(--border-color)] space-y-2.5 text-xs font-semibold">
           <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]">
-            <span class="text-muted">Tanggal</span>
+            <span class="text-muted">Date</span>
             <span class="font-extrabold text-main">${trx.tanggal}</span>
           </div>
           
           <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]">
-            <span class="text-muted">Kategori</span>
+            <span class="text-muted">Category</span>
             <span class="font-extrabold text-main">${trx.kategori}</span>
           </div>
 
           ${trx.akunSumber ? `
           <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]">
-            <span class="text-muted">Akun Sumber</span>
+            <span class="text-muted">Source Account</span>
             <span class="font-extrabold text-main">${trx.akunSumber}</span>
           </div>` : ''}
 
           ${trx.akunTujuan ? `
           <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]">
-            <span class="text-muted">Akun Tujuan</span>
+            <span class="text-muted">Dest. Account</span>
             <span class="font-extrabold text-main">${trx.akunTujuan}</span>
           </div>` : ''}
 
           ${trx.terkaitHutang ? `
           <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]">
-            <span class="text-muted">Terkait Hutang</span>
+            <span class="text-muted">Related Payable</span>
             <span class="font-extrabold text-main">${trx.terkaitHutang}</span>
           </div>` : ''}
 
           ${trx.terkaitPiutang ? `
           <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]">
-            <span class="text-muted">Terkait Piutang</span>
+            <span class="text-muted">Related Receivable</span>
             <span class="font-extrabold text-main">${trx.terkaitPiutang}</span>
           </div>` : ''}
 
           <div class="flex justify-between items-center pt-0.5">
-            <span class="text-muted">Input Oleh</span>
+            <span class="text-muted">Input By</span>
             <span class="font-extrabold text-main">${trx.inputOleh}</span>
           </div>
         </div>
 
         ${trx.catatan ? `
         <div class="text-xs bg-[var(--chip-warn-bg)] p-3.5 rounded-2xl amount-warn border border-[var(--border-color)]">
-          <span class="font-bold block mb-0.5">Catatan:</span>
+          <span class="font-bold block mb-0.5">Notes:</span>
           <span class="font-medium leading-relaxed block">${trx.catatan}</span>
         </div>` : ''}
         
@@ -1870,7 +1873,7 @@
           </button>
           
           <button onclick="promptDeleteTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(200,90,84,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]">
-            <i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Hapus
+            <i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete
           </button>
         </div>
       </div>`;
@@ -1888,13 +1891,13 @@
 
       let html = `
         <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 mb-4 pr-6">
-          <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-[var(--bg-subtle)] text-muted uppercase tracking-wider mb-2 inline-block">Riwayat Akun</span>
+          <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-[var(--bg-subtle)] text-muted uppercase tracking-wider mb-2 inline-block">Account History</span>
           <h3 class="text-lg font-extrabold text-main leading-tight">${namaAkun}</h3>
         </div>
         <div class="space-y-1.5 max-h-[60vh] overflow-y-auto pr-1">
       `;
       if (history.length === 0) {
-        html += `<p class="text-xs text-center text-muted py-4 font-semibold">Belum ada mutasi untuk akun ini.</p>`;
+        html += `<p class="text-xs text-center text-muted py-4 font-semibold">No mutations for this account yet.</p>`;
       } else {
         history.forEach(t => {
           const isKeluar = (t.akunSumber === namaAkun);
@@ -1927,20 +1930,20 @@
       let html = `
         <div class="space-y-4 pt-1">
           <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
-            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--chip-warn-bg)] amount-warn uppercase tracking-wider mb-2 inline-block">Hutang Aktif</span>
+            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--chip-warn-bg)] amount-warn uppercase tracking-wider mb-2 inline-block">Active Payable</span>
             <h3 class="text-lg font-extrabold text-main leading-tight">${h.namaHutang}</h3>
           </div>
           <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Jenis Hutang:</span> <span class="font-extrabold text-main">${h.jenisHutang || '-'}</span></div>
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2 items-center"><span>Sisa Hutang:</span> <span class="font-black amount-out text-[15px]">${formatRupiah(h.sisaHutang)}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Payable Type:</span> <span class="font-extrabold text-main">${h.jenisHutang || '-'}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2 items-center"><span>Remaining Payable:</span> <span class="font-black amount-out text-[15px]">${formatRupiah(h.sisaHutang)}</span></div>
             <div class="flex justify-between mt-2"><span>Status:</span> <span class="font-extrabold text-main">${h.status}</span></div>
           </div>
           <div>
-            <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Riwayat Transaksi Terkait</p>
+            <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
             <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
       `;
       if (relatedTrx.length === 0) {
-        html += `<p class="text-xs text-center text-muted py-4 font-semibold">Belum ada transaksi.</p>`;
+        html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
       } else {
         relatedTrx.forEach(t => {
           html += `
@@ -1970,20 +1973,20 @@
       let html = `
         <div class="space-y-4 pt-1">
           <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
-            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--chip-info-bg)] amount-info uppercase tracking-wider mb-2 inline-block">Piutang Belum Lunas</span>
+            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--chip-info-bg)] amount-info uppercase tracking-wider mb-2 inline-block">Unpaid Receivable</span>
             <h3 class="text-lg font-extrabold text-main leading-tight">${p.namaPiutang}</h3>
           </div>
           <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Jenis Piutang:</span> <span class="font-extrabold text-main">${p.jenisPiutang || '-'}</span></div>
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2 items-center"><span>Sisa Piutang:</span> <span class="font-black amount-info text-[15px]">${formatRupiah(p.sisaPiutang)}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Receivable Type:</span> <span class="font-extrabold text-main">${p.jenisPiutang || '-'}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2 items-center"><span>Remaining Receivable:</span> <span class="font-black amount-info text-[15px]">${formatRupiah(p.sisaPiutang)}</span></div>
             <div class="flex justify-between mt-2"><span>Status:</span> <span class="font-extrabold text-main">${p.status}</span></div>
           </div>
           <div>
-            <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Riwayat Transaksi Terkait</p>
+            <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
             <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
       `;
       if (relatedTrx.length === 0) {
-        html += `<p class="text-xs text-center text-muted py-4 font-semibold">Belum ada transaksi.</p>`;
+        html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
       } else {
         relatedTrx.forEach(t => {
           html += `
@@ -2010,12 +2013,12 @@
       
       const valJumlah = document.getElementById('form-jumlah-val').value;
       if (!valJumlah || Number(valJumlah) <= 0) {
-        triggerInputError('form-jumlah-display', "Jumlah transaksi tidak boleh kosong.");
+        triggerInputError('form-jumlah-display', "Transaction amount cannot be empty.");
         return;
       }
 
       if (!document.getElementById('form-kategori').value) {
-        triggerInputError('form-kategori-display', "Silakan pilih kategori transaksi terlebih dahulu.");
+        triggerInputError('form-kategori-display', "Please select a transaction category first.");
         return;
       }
 
@@ -2042,7 +2045,7 @@
       closeModal('modalInputTrx');
       
       setTimeout(async () => {
-        let loadingToast = showToast("Menyimpan transaksi...", "info");
+        let loadingToast = showToast("Saving transaction...", "info");
         
         try {
           const actionType = idTrxLama ? 'editTransaksi' : 'saveTransaksi';
@@ -2057,15 +2060,15 @@
           if(loadingToast && loadingToast.parentNode) loadingToast.remove();
           
           if (!idTrxLama) {
-            await showRewardAnimation("Transaksi Tersimpan");
+            await showRewardAnimation("Transaction Saved");
           } else {
-            await showRewardAnimation("Transaksi Diperbarui");
+            await showRewardAnimation("Transaction Updated");
           }
           
           await loadAppData(true);
         } catch (err) {
           if(loadingToast && loadingToast.parentNode) loadingToast.remove();
-          showToast("Gagal menyimpan: " + err.message, "error");
+          showToast("Failed to save: " + err.message, "error");
         }
       }, 300);
     }
@@ -2090,18 +2093,18 @@
 
       kategoriUtamaWrap.classList.add('hidden');
       kategoriUtamaBaruWrap.classList.add('hidden');
-      namaLabelEl.innerText = "Nama";
+      namaLabelEl.innerText = "Name";
       namaInputEl.required = true;
       namaInputEl.placeholder = "";
 
       if (type === 'kategori') {
-        namaLabelEl.innerText = "Nama Sub-Kategori (opsional)";
+        namaLabelEl.innerText = "Sub-Category Name (optional)";
         namaInputEl.required = false;
-        namaInputEl.placeholder = "Kosongkan jika ini kategori utama";
+        namaInputEl.placeholder = "Leave empty if main category";
 
         kategoriUtamaWrap.classList.remove('hidden');
         const { order } = groupKategoriData();
-        let optHtml = `<option value="__BARU__">+ Buat Kategori Utama Baru</option>`;
+        let optHtml = `<option value="__BARU__">+ Create New Main Category</option>`;
         order.forEach(u => { optHtml += `<option value="${u}">${u}</option>`; });
         const sel = document.getElementById('master-kategoriutama-select');
         sel.innerHTML = optHtml;
@@ -2110,78 +2113,78 @@
       }
 
       if (type === 'akun') {
-        titleEl.innerText = "Tambah Akun Baru";
+        titleEl.innerText = "Add New Account";
         extraEl.innerHTML = `
           <div>
-            <label for="master-jenisakun" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Jenis Akun</label>
+            <label for="master-jenisakun" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Type</label>
             <select id="master-jenisakun" class="w-full ios-input cursor-pointer py-2.5">
               <option value="Bank">Bank</option>
               <option value="E-Wallet">E-Wallet</option>
-              <option value="Cash">Cash / Tunai</option>
+              <option value="Cash">Cash</option>
             </select>
           </div>
           <div>
-            <label for="master-fungsialiran" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Fungsi / Kategori</label>
+            <label for="master-fungsialiran" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Function / Category</label>
             <select id="master-fungsialiran" class="w-full ios-input cursor-pointer py-2.5">
-              <option value="Operasional Harian">Operasional Harian</option>
-              <option value="Dana Darurat & Tabungan">Dana Darurat & Tabungan</option>
+              <option value="Operasional Harian">Daily Operations</option>
+              <option value="Dana Darurat & Tabungan">Emergency & Savings</option>
             </select>
           </div>
           <div>
-            <label for="master-saldoawal" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Saldo Awal (Rp)</label>
+            <label for="master-saldoawal" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Balance (Rp)</label>
             <input type="number" id="master-saldoawal" class="w-full ios-input py-2.5" value="0">
           </div>
         `;
       } else if (type === 'kategori') {
-        titleEl.innerText = "Tambah Kategori Baru";
+        titleEl.innerText = "Add New Category";
         extraEl.innerHTML = `
           <div>
-            <label for="master-jeniskat" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Jenis Kategori</label>
+            <label for="master-jeniskat" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Category Type</label>
             <select id="master-jeniskat" class="w-full ios-input cursor-pointer py-2.5">
-              <option value="Pengeluaran">Pengeluaran</option>
-              <option value="Pemasukan">Pemasukan</option>
+              <option value="Pengeluaran">Expense</option>
+              <option value="Pemasukan">Income</option>
             </select>
           </div>
         `;
       } else if (type === 'hutang') {
-        titleEl.innerText = "Tambah Hutang Baru";
+        titleEl.innerText = "Add New Payable";
         extraEl.innerHTML = `
           <div>
-            <label for="master-jenishutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Jenis Hutang</label>
+            <label for="master-jenishutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Payable Type</label>
             <select id="master-jenishutang" class="w-full ios-input cursor-pointer py-2.5">
-              <option value="Cicilan Kendaraan">Cicilan Kendaraan</option>
-              <option value="KTA / Bank">KTA / Bank</option>
-              <option value="Pinjaman Personal">Pinjaman Personal</option>
-              <option value="Lainnya">Lainnya</option>
+              <option value="Cicilan Kendaraan">Vehicle Installment</option>
+              <option value="KTA / Bank">Bank Loan</option>
+              <option value="Pinjaman Personal">Personal Loan</option>
+              <option value="Lainnya">Others</option>
             </select>
           </div>
           <div>
-            <label for="master-totalhutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Total Hutang Awal (Rp)</label>
+            <label for="master-totalhutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Total Payable (Rp)</label>
             <input type="number" id="master-totalhutang" class="w-full ios-input py-2.5" value="0" required>
           </div>
           <div>
-            <label for="master-kethutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Keterangan</label>
-            <input type="text" id="master-kethutang" class="w-full ios-input py-2.5" placeholder="Catatan cicilan...">
+            <label for="master-kethutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Description</label>
+            <input type="text" id="master-kethutang" class="w-full ios-input py-2.5" placeholder="Installment notes...">
           </div>
         `;
       } else if (type === 'piutang') {
-        titleEl.innerText = "Tambah Piutang Baru";
+        titleEl.innerText = "Add New Receivable";
         extraEl.innerHTML = `
           <div>
-            <label for="master-jenispiutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Jenis Piutang</label>
+            <label for="master-jenispiutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Receivable Type</label>
             <select id="master-jenispiutang" class="w-full ios-input cursor-pointer py-2.5">
-              <option value="Talangan Belanja">Talangan Belanja</option>
-              <option value="Pinjaman Teman/Keluarga">Pinjaman Teman/Keluarga</option>
-              <option value="Lainnya">Lainnya</option>
+              <option value="Talangan Belanja">Shopping Advance</option>
+              <option value="Pinjaman Teman/Keluarga">Family/Friend Loan</option>
+              <option value="Lainnya">Others</option>
             </select>
           </div>
           <div>
-            <label for="master-totalpiutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Total Piutang Awal (Rp)</label>
+            <label for="master-totalpiutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Total Receivable (Rp)</label>
             <input type="number" id="master-totalpiutang" class="w-full ios-input py-2.5" value="0" required>
           </div>
           <div>
-            <label for="master-ketpiutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Rincian / Keterangan</label>
-            <textarea id="master-ketpiutang" rows="2" class="w-full ios-input py-2.5" placeholder="Contoh: Titip belanja token, galon, dll"></textarea>
+            <label for="master-ketpiutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Details / Description</label>
+            <textarea id="master-ketpiutang" rows="2" class="w-full ios-input py-2.5" placeholder="e.g. Paid for electricity token, etc."></textarea>
           </div>
         `;
       }
@@ -2194,7 +2197,7 @@
       const nama = document.getElementById('master-nama').value;
       
       if (!nama || nama.trim() === '') {
-        return triggerInputError('master-nama', 'Nama wajib diisi.');
+        return triggerInputError('master-nama', 'Name is required.');
       }
 
       let payload = { namaAkun: nama, namaKategori: nama, namaHutang: nama, namaPiutang: nama };
@@ -2208,7 +2211,7 @@
         const kategoriUtama = selVal === '__BARU__' ? document.getElementById('master-kategoriutama-baru').value.trim() : selVal;
         
         if (!kategoriUtama) {
-          return triggerInputError('master-kategoriutama-baru', "Nama Kategori Utama wajib diisi.");
+          return triggerInputError('master-kategoriutama-baru', "Main Category Name is required.");
         }
         
         payload.kategoriUtama = kategoriUtama;
@@ -2226,7 +2229,7 @@
       }
 
       closeModal('modalMaster');
-      let loadingToast = showToast("Menyimpan master data...", "info");
+      let loadingToast = showToast("Saving master data...", "info");
 
       try {
         const res = await fetch(API_URL, {
@@ -2238,12 +2241,12 @@
         if (result.status === 'error') throw new Error(result.message);
 
         if(loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Master data berhasil ditambahkan!", "success");
+        showToast("Master data successfully added!", "success");
         document.getElementById('formMaster').reset();
         await loadAppData(true);
       } catch (err) {
         if(loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Gagal: " + err.message, "error");
+        showToast("Failed to save: " + err.message, "error");
       }
     }
   </script>
