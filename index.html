@@ -7,11 +7,11 @@
   
   <!-- PWA & Manifest Integration -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#F4F7F9">
+  <meta name="theme-color" content="#F8F6F0">
   <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192">
   <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192">
 
-  <!-- Tailwind CSS & Lucide Icons via CDN -->
+  <!-- CDN Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -22,14 +22,14 @@
           colors: {
             mochi: {
               light: '#E29B71',   
-              DEFAULT: '#C87A4B', /* Caramel Brown (Aksen Universal) */
+              DEFAULT: '#C87A4B',
               dark: '#A65F36'     
             },
             forest: {
-              darkest: '#0E1715', /* Deep Dark Teal (Latar Dark Mode) */
-              dark: '#14201D',    /* Dark Slate (Kartu Sekunder Dark Mode) */
-              emerald: '#1A2E2A', /* Dark Emerald (Kartu Utama) */
-              sage: '#E2ECE9'     /* Soft Sage */
+              darkest: '#0E1715',
+              dark: '#14201D',
+              emerald: '#1A2E2A',
+              sage: '#E2ECE9'
             }
           }
         }
@@ -42,24 +42,21 @@
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
     :root {
-      /* Warm Cream Light Mode (Menyatukan Hijau & Cokelat) */
       --bg-app: #F8F6F0; 
       --bg-card: #FFFFFF;
       --bg-subtle: #EBE7DD;
-      --bg-subtle-2: #E3DECED;
+      --bg-subtle-2: #E3DECE;
       
-      --text-primary: #1A2E2A; /* Teks menggunakan Dark Emerald agar senada */
+      --text-primary: #1A2E2A; 
       --text-secondary: #4A5D58; 
       --text-tertiary: #7D8F8A;  
       
       --border-color: rgba(26, 46, 42, 0.08); 
 
-      /* Premium iOS Variables */
       --glass-bg: rgba(255, 255, 255, 0.85);
       --glass-border: rgba(255, 255, 255, 0.6);
-      --glass-modal-bg: rgba(248, 246, 240, 0.95); /* Menggunakan Warm Cream */
+      --glass-modal-bg: rgba(248, 246, 240, 0.95);
       
-      /* iOS Soft Shadows */
       --shadow-card: 0 4px 24px -6px rgba(26, 46, 42, 0.05), 0 2px 8px -2px rgba(26, 46, 42, 0.03);
       --shadow-item: 0 2px 12px -2px rgba(26, 46, 42, 0.03);
       --shadow-premium: 0 10px 40px -10px rgba(26, 46, 42, 0.1);
@@ -67,24 +64,21 @@
     }
 
     html.dark {
-      /* Deep Dark Teal Dark Mode */
       --bg-app: #0E1715; 
       --bg-card: #14201D; 
       --bg-subtle: #1A2E2A;
       --bg-subtle-2: #223732;
       
-      --text-primary: #F8F6F0; /* Teks menggunakan Warm Cream untuk kontras nyaman */
+      --text-primary: #F8F6F0; 
       --text-secondary: #A0B2AC; 
       --text-tertiary: #768782;  
       
       --border-color: rgba(248, 246, 240, 0.05); 
 
-      /* Premium Variables Dark Mode */
       --glass-bg: rgba(20, 32, 29, 0.85); 
       --glass-border: rgba(248, 246, 240, 0.05);
       --glass-modal-bg: rgba(14, 23, 21, 0.95);
       
-      /* Shadows Dark */
       --shadow-card: 0 4px 24px -6px rgba(0, 0, 0, 0.5);
       --shadow-item: 0 2px 12px -2px rgba(0, 0, 0, 0.3);
       --shadow-premium: 0 10px 40px -10px rgba(0, 0, 0, 0.7);
@@ -101,50 +95,6 @@
       padding-bottom: max(6rem, env(safe-area-inset-bottom)); 
     }
 
-    <!-- CARD 1: DONUT CHART PENGELUARAN & MOCHI MOOD -->
-      <div class="floating-card p-5 mt-6 relative overflow-hidden">
-        <div class="flex justify-between items-center mb-2">
-          <div>
-            <h3 class="text-sm font-extrabold text-main">Proporsi Pengeluaran</h3>
-            <p class="text-[11px] text-muted font-medium mt-0.5">Bulan Ini</p>
-          </div>
-          <span id="mochi-status-badge" class="text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-            Aman 🐾
-          </span>
-        </div>
-
-        <!-- Donut Chart Container dengan Mochi Mood Center -->
-        <div class="relative flex items-center justify-center my-2">
-          <div id="chart-donut-kategori" class="w-full"></div>
-          
-          <!-- Central Overlay (Wajah/Ekspresi Mochi) -->
-          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-2">
-            <span id="mochi-emoji" class="text-3xl filter drop-shadow-md animate-bounce">😸</span>
-            <span id="mochi-chart-label" class="text-[9px] font-black uppercase tracking-wider text-muted mt-1">Status Vault</span>
-          </div>
-        </div>
-
-        <!-- Breakdown Kategori Teks (Bisa Di-expand) -->
-        <div id="dashboard-kategori-analysis" class="space-y-2 mt-4 pt-3 border-t border-slate-100 dark:border-forest-muted/50"></div>
-      </div>
-
-      <!-- CARD 2: SPLINE AREA CHART (TREN & MILESTONE TABUNGAN) -->
-      <div class="floating-card p-5 mt-4 relative overflow-hidden">
-        <div class="flex justify-between items-center mb-1">
-          <div>
-            <h3 class="text-sm font-extrabold text-main">Proyeksi & Target Vault</h3>
-            <p class="text-[11px] text-muted font-medium mt-0.5">Target Milestone: Juni 2026</p>
-          </div>
-          <div class="w-8 h-8 rounded-full bg-mochi-light/20 dark:bg-mochi-light/10 flex items-center justify-center text-mochi dark:text-mochi-light">
-            <i data-lucide="target" class="w-4 h-4"></i>
-          </div>
-        </div>
-
-        <!-- Spline Area Chart Container -->
-        <div id="chart-savings-trend" class="w-full -ml-2"></div>
-      </div>
-
-    /* === COMPACT IOS INPUT FORMS === */
     .ios-input {
       background-color: var(--bg-subtle-2);
       border: 1px solid transparent; 
@@ -162,7 +112,6 @@
       background-color: var(--bg-card);
     }
 
-    /* Animasi Validasi Error (Shake) */
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       20%, 60% { transform: translateX(-5px); }
@@ -175,12 +124,10 @@
       background-color: var(--bg-card) !important;
     }
 
-    /* Core Utilities */
     .text-main { color: var(--text-primary); }
     .text-muted { color: var(--text-secondary); }
     .text-faint { color: var(--text-tertiary); }
     
-    /* WARNA FUNGSIONAL (Tajam, Terbaca & Bersih) */
     .amount-in { color: #10B981; } 
     .amount-out { color: #F43F5E; } 
     html.dark .amount-in { color: #34D399; }
@@ -198,14 +145,12 @@
     .chip-hutang { background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05)); color: #F59E0B; }
     .chip-piutang { background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(56,189,248,0.05)); color: #38BDF8; }
 
-    /* === CLEAN TOP BAR === */
     .clean-topbar {
       background: linear-gradient(180deg, var(--bg-app) 60%, transparent 100%);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
 
-    /* === BOTTOM NAV === */
     .nav-bar-bottom {
       background-color: var(--glass-bg) !important;
       backdrop-filter: blur(20px);
@@ -217,7 +162,6 @@
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* === PAW FAB ANIMATIONS === */
     @keyframes pawPulse {
       0% { box-shadow: 0 0 0 0 rgba(141, 64, 18, 0.4); }
       70% { box-shadow: 0 0 0 15px rgba(141, 64, 18, 0); }
@@ -231,7 +175,6 @@
       transform: scale(0.9);
     }
 
-    /* Glassmorphism Modals */
     .glass-modal-content {
       background-color: var(--glass-modal-bg) !important;
       backdrop-filter: blur(25px);
@@ -240,14 +183,12 @@
       border: 1px solid var(--glass-border);
     }
 
-    /* Interaksi hover & active */
     .card-hover { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease; }
     .card-hover:hover { transform: translateY(-2px); box-shadow: var(--shadow-premium); border-color: rgba(141, 64, 18, 0.3); }
     .card-hover:active { transform: scale(0.97); }
     .tap-shrink { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .tap-shrink:active { transform: scale(0.92); }
 
-    /* Staggered Fade In */
     @keyframes slideUpFade {
       from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
@@ -255,7 +196,6 @@
     .stagger-item { animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
     .page-animate { animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
-    /* Skeleton Loading Smooth */
     @keyframes shimmer {
       0% { background-position: -400px 0; }
       100% { background-position: 400px 0; }
@@ -267,14 +207,12 @@
       border-radius: 12px;
     }
 
-    /* Splash Screen Animations */
     @keyframes floatCat {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-10px); }
     }
     .animate-float { animation: floatCat 3s ease-in-out infinite; }
 
-    /* Modal Animation */
     .modal-backdrop { transition: opacity 0.3s ease; opacity: 0; backdrop-filter: blur(0px); }
     .modal-backdrop.show { opacity: 1; backdrop-filter: blur(3px); }
     .modal-content-bottom { transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); }
@@ -295,18 +233,14 @@
 </head>
 <body class="min-h-screen">
 
-  <!-- ============================================== -->
-  <!-- 0. INITIAL SPLASH SCREEN (PLAYFUL LOADING) -->
-  <!-- ============================================== -->
+  <!-- 0. SPLASH SCREEN -->
   <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[#F4F7F9] dark:bg-[#0A1413] transition-opacity duration-700">
     <div class="animate-float flex flex-col items-center">
-      <!-- Mochi Logo / Paw -->
       <div class="w-28 h-28 bg-gradient-to-tr from-mochi to-mochi-light rounded-full flex items-center justify-center shadow-xl shadow-mochi/20 border-4 border-white dark:border-forest-dark relative overflow-hidden">
         <img src="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192" alt="Mochi" class="w-full h-full object-cover">
       </div>
       <h2 class="mt-6 text-2xl font-black text-main tracking-tight">Mochi's Vault</h2>
       
-      <!-- Animated loading text -->
       <div class="mt-3 bg-mochi-light/10 dark:bg-forest-dark px-4 py-1.5 rounded-full border border-mochi-light/20 flex items-center space-x-2">
         <i data-lucide="loader-2" class="w-3.5 h-3.5 text-mochi animate-spin"></i>
         <span id="splash-text" class="text-xs font-bold text-mochi dark:text-mochi-light">Membangunkan Mochi...</span>
@@ -314,7 +248,7 @@
     </div>
   </div>
 
-  <!-- REWARDING ANIMATION OVERLAY -->
+  <!-- REWARDING OVERLAY -->
   <div id="reward-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center pointer-events-none">
     <div class="absolute inset-0 bg-mochi-dark/60 dark:bg-forest-darkest/80 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="reward-bg"></div>
     <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="reward-content">
@@ -357,20 +291,17 @@
     </div>
   </header>
 
-  <!-- LOADING SKELETON (Hidden by default karena ada Splash Screen) -->
-  <div id="loader" class="max-w-3xl mx-auto px-4 py-2 space-y-4 hidden"></div>
   <!-- MAIN CONTAINER -->
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
 
     <!-- 1. HALAMAN DASHBOARD -->
     <section id="page-dashboard" class="space-y-5 page-animate">
       
-  <!-- GRID KARTU DASHBOARD -->
+      <!-- GRID KARTU DASHBOARD -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         
-        <!-- KARTU NET WORTH (Soft Sage di Light, Dark Emerald di Dark) -->
+        <!-- KARTU NET WORTH -->
         <div onclick="vibrate(10); showKpiDetail('Net Worth')" class="floating-card p-5 cursor-pointer card-hover relative overflow-hidden group bg-gradient-to-br from-[#DCE8E4] to-[#CDE0DA] dark:from-[#0F4C3A] dark:to-[#082B21] text-[#0F2E28] dark:text-[#F8F6F0] border-none shadow-[0_8px_30px_-6px_rgba(15,46,40,0.15)] dark:shadow-[0_8px_30px_-6px_rgba(8,43,33,0.8)]">
-          <!-- Efek Pendaran Cahaya -->
           <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/40 dark:bg-emerald-400/20 rounded-full mix-blend-overlay filter blur-[30px] group-hover:opacity-70 transition-opacity duration-500"></div>
           
           <div class="flex justify-between items-center mb-2 relative z-10">
@@ -383,9 +314,8 @@
           <p class="text-[11px] text-[#0F2E28]/60 dark:text-white/70 mt-2 relative z-10 font-bold">Ketuk untuk rincian komponen</p>
         </div>
         
-        <!-- KARTU DISPOSABLE INCOME (Inverted Soft Sage di Light, Inverted Dark Emerald di Dark) -->
+        <!-- KARTU DISPOSABLE INCOME -->
         <div onclick="vibrate(10); showKpiDetail('Disposable Income')" class="floating-card p-5 cursor-pointer card-hover relative overflow-hidden group bg-gradient-to-br from-[#CDE0DA] to-[#DCE8E4] dark:from-[#082B21] dark:to-[#0F4C3A] text-[#0F2E28] dark:text-[#F8F6F0] border-none shadow-[0_8px_30px_-6px_rgba(15,46,40,0.15)] dark:shadow-[0_8px_30px_-6px_rgba(8,43,33,0.8)]">
-          <!-- Efek Pendaran Cahaya -->
           <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-white/40 dark:bg-emerald-400/20 rounded-full mix-blend-overlay filter blur-[30px] group-hover:opacity-70 transition-opacity duration-500"></div>
           
           <div class="flex justify-between items-center mb-2 relative z-10">
@@ -399,6 +329,7 @@
         </div>
         
       </div>
+
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div onclick="vibrate(10); showKpiDetail('Total Kas')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center">
           <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1">Total Kas</span>
@@ -418,12 +349,43 @@
         </div>
       </div>
 
+      <!-- DONUT CHART PENGELUARAN & MOCHI MOOD -->
       <div class="floating-card p-5 mt-6 relative overflow-hidden">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-sm font-extrabold text-main">Analisa Pengeluaran</h3>
-          <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">Kategori</span>
+        <div class="flex justify-between items-center mb-2">
+          <div>
+            <h3 class="text-sm font-extrabold text-main">Proporsi Pengeluaran</h3>
+            <p class="text-[11px] text-muted font-medium mt-0.5">Bulan Ini</p>
+          </div>
+          <span id="mochi-status-badge" class="text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            Aman 🐾
+          </span>
         </div>
-        <div id="dashboard-kategori-analysis" class="space-y-3 relative z-10"></div>
+
+        <div class="relative flex items-center justify-center my-2">
+          <div id="chart-donut-kategori" class="w-full"></div>
+          
+          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-2">
+            <span id="mochi-emoji" class="text-3xl filter drop-shadow-md animate-bounce">😸</span>
+            <span id="mochi-chart-label" class="text-[9px] font-black uppercase tracking-wider text-muted mt-1">Status Vault</span>
+          </div>
+        </div>
+
+        <div id="dashboard-kategori-analysis" class="space-y-2 mt-4 pt-3 border-t border-slate-100 dark:border-forest-muted/50"></div>
+      </div>
+
+      <!-- SPLINE AREA CHART (TREN & MILESTONE TABUNGAN) -->
+      <div class="floating-card p-5 mt-4 relative overflow-hidden">
+        <div class="flex justify-between items-center mb-1">
+          <div>
+            <h3 class="text-sm font-extrabold text-main">Proyeksi & Target Vault</h3>
+            <p class="text-[11px] text-muted font-medium mt-0.5">Target Milestone: Juni 2026</p>
+          </div>
+          <div class="w-8 h-8 rounded-full bg-mochi-light/20 dark:bg-mochi-light/10 flex items-center justify-center text-mochi dark:text-mochi-light">
+            <i data-lucide="target" class="w-4 h-4"></i>
+          </div>
+        </div>
+
+        <div id="chart-savings-trend" class="w-full -ml-2"></div>
       </div>
 
       <div class="floating-card p-5 mt-6 mb-8">
@@ -502,7 +464,6 @@
           <input type="text" id="filter-search" oninput="renderRiwayat()" placeholder="Cari deskripsi transaksi..." class="w-full text-sm ios-input pl-10 pr-4 py-2.5">
         </div>
 
-        <!-- REVISI SUMMARY VERTIKAL -->
         <div id="statement-summary" class="floating-item p-4 mt-3 flex flex-col space-y-3 border border-slate-100 dark:border-forest-muted/50">
           <div class="flex justify-between items-center border-b border-slate-100 dark:border-forest-muted/50 pb-3">
             <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Total Masuk</span>
@@ -555,29 +516,25 @@
     </section>
   </main>
 
-  <!-- === BOTTOM NAVIGATION === -->
+  <!-- BOTTOM NAVIGATION -->
   <nav class="fixed bottom-0 left-0 right-0 nav-bar-bottom z-40 rounded-t-3xl border-t border-slate-200/50 dark:border-forest-muted/50">
     <div class="flex justify-between items-center w-full max-w-md mx-auto px-6 py-3 relative">
       
-      <!-- Tab Home -->
       <button onclick="vibrate(10); switchTab('dashboard')" id="tab-dashboard" class="nav-item bg-mochi-light/20 text-mochi dark:text-mochi-light px-4 py-2.5 rounded-2xl flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="layout-dashboard" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text text-[12px] font-extrabold tracking-wide whitespace-nowrap">Home</span>
       </button>
 
-      <!-- Tab History (Sebelumnya: Riwayat) -->
       <button onclick="vibrate(10); switchTab('riwayat')" id="tab-riwayat" class="nav-item text-slate-400 dark:text-[#A3B1AA] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="list" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">History</span>
       </button>
 
-      <!-- Tab Wallets (Sebelumnya: Akun) -->
       <button onclick="vibrate(10); switchTab('saldo')" id="tab-saldo" class="nav-item text-slate-400 dark:text-[#A3B1AA] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="wallet" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">Wallets</span>
       </button>
 
-      <!-- Tab AP/R -->
       <button onclick="vibrate(10); switchTab('hutang')" id="tab-hutang" class="nav-item text-slate-400 dark:text-[#A3B1AA] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
         <div class="relative flex-shrink-0">
           <i data-lucide="credit-card" class="w-5 h-5"></i>
@@ -589,7 +546,7 @@
     </div>
   </nav>
 
-  <!-- === FLOATING ACTION BUTTON (PAW KUCING) === -->
+  <!-- FLOATING ACTION BUTTON -->
   <div class="fixed bottom-[5.5rem] left-0 right-0 z-50 pointer-events-none">
     <div class="max-w-3xl mx-auto px-5 relative h-full">
       <button onclick="vibrate(15); openFormTransaksiBaru()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full text-white shadow-[0_8px_20px_-6px_rgba(200,122,75,0.5)] flex items-center justify-center pointer-events-auto border border-white/20 group">
@@ -786,20 +743,10 @@
       </div>
     </div>
   </div>
-<!-- SCRIPT JAVASCRIPT DIMULAI DI SINI -->
-  <script>
-    // ==========================================
-    // CONFIGURATION URL GOOGLE APPS SCRIPT
-    // ==========================================
-    const API_URL = "https://script.google.com/macros/s/AKfycbx8HzV4KHpr6QAM4bDebEbBTIwSNeg5idIaQZUeBUuPu6OJ3xWMFvby82aOrq1CPYCLHg/exec";
 
-    let GLOBAL_DATA = {};
-    let currentModalBackFn = null;
-    let trxToDelete = null; <!-- SCRIPT JAVASCRIPT DIMULAI DI SINI -->
+  <!-- SCRIPT JAVASCRIPT -->
   <script>
-    // ==========================================
     // CONFIGURATION & GLOBAL STATES
-    // ==========================================
     const API_URL = "https://script.google.com/macros/s/AKfycbx8HzV4KHpr6QAM4bDebEbBTIwSNeg5idIaQZUeBUuPu6OJ3xWMFvby82aOrq1CPYCLHg/exec";
 
     let GLOBAL_DATA = {};
@@ -816,10 +763,7 @@
     window.isNestedModalView = false;
     history.replaceState({ modal: null }, '');
 
-    // ==========================================
     // 1. SYSTEM, UX HELPERS & HISTORY API
-    // ==========================================
-
     window.addEventListener('popstate', (e) => {
       if (activeModals.length > 0) {
         const topModal = activeModals[activeModals.length - 1];
@@ -921,10 +865,7 @@
       });
     }
 
-    // ==========================================
     // 2. MODAL & NAVIGATION MANAGERS
-    // ==========================================
-
     function openModal(id) {
       const modal = document.getElementById(id);
       const content = document.getElementById(id + '-content');
@@ -991,10 +932,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // ==========================================
-    // 3. GESTURE SENSORS (TAB SWIPE & HOLD)
-    // ==========================================
-    
+    // 3. GESTURE SENSORS
     let tStartX = 0;
     let tStartY = 0;
 
@@ -1067,10 +1005,7 @@
       clearTimeout(holdTimer);
     };
 
-    // ==========================================
     // 4. CORE LOGIC & INITIALIZATION
-    // ==========================================
-
     function applyDarkModePref() {
       const pref = localStorage.getItem('yf-theme');
       const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -1130,10 +1065,7 @@
       }
     }
 
-    // ==========================================
     // 5. CHARTS & VISUALIZATIONS
-    // ==========================================
-
     function renderVisualCharts() {
       renderDonutChart();
       renderAreaChart();
@@ -1275,10 +1207,7 @@
       areaChartInstance.render();
     }
 
-    // ==========================================
     // 6. RENDERING & UI UPDATES
-    // ==========================================
-
     function formatRupiah(number) {
       if (number === undefined || number === null) return "Rp 0";
       return new Intl.NumberFormat('id-ID', {
@@ -2041,14 +1970,12 @@
           </div>
         </div>
 
-        <!-- CATATAN TRANSAKSI (JIKA ADA) -->
         ${trx.catatan ? `
         <div class="text-xs bg-amber-500/10 p-3.5 rounded-2xl text-amber-800 dark:text-amber-400 border border-amber-500/20">
           <span class="font-bold block mb-0.5">Catatan:</span>
           <span class="font-medium leading-relaxed block">${trx.catatan}</span>
         </div>` : ''}
         
-        <!-- TOMBOL AKSI -->
         <div class="flex space-x-3 pt-3">
           <button onclick="handleEditTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center">
             <i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit
