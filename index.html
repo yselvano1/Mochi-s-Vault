@@ -1305,48 +1305,55 @@ function updateJenisDisplay(value) {
   openModal('modalInputTrx');
 }
     
-    function handleEditTrx(idTrx) {
-      vibrate(30);
-      const trx = GLOBAL_DATA.transaksi.find(t => t.idTransaksi === idTrx);
-      if(!trx) return;
+    // PERBAIKAN PADA MODE EDIT TRANSAKSI
+function handleEditTrx(idTrx) {
+  vibrate(30);
+  const trx = GLOBAL_DATA.transaksi.find(t => t.idTransaksi === idTrx);
+  if(!trx) return;
 
-      closeModal('modalDetail'); 
+  closeModal('modalDetail'); 
 
-      setTimeout(() => {
-        document.getElementById('form-idtrx').value = trx.idTransaksi;
-        document.getElementById('form-user').value = trx.inputOleh;
-        document.getElementById('form-tgl').value = trx.tanggal;
-        document.getElementById('form-jenis').value = trx.jenis;
-        
-        handleJenisChange(); 
-        
-        document.getElementById('form-akunsumber').value = trx.akunSumber || "";
-        document.getElementById('form-akuntujuan').value = trx.akunTujuan || "";
-        document.getElementById('form-hutang').value = trx.terkaitHutang || "";
-        document.getElementById('form-piutang').value = trx.terkaitPiutang || "";
-        
-        document.getElementById('form-kategori').value = trx.kategori || "";
-        const katDisplay = document.getElementById('form-kategori-display');
-        if (trx.kategori) {
-          katDisplay.innerText = trx.kategori;
-          katDisplay.classList.remove('text-faint');
-        } else {
-          katDisplay.innerText = "Select Category...";
-          katDisplay.classList.add('text-faint');
-        }
-        
-        document.getElementById('form-jumlah-val').value = trx.jumlah;
-        document.getElementById('form-jumlah-display').value = new Intl.NumberFormat('id-ID').format(trx.jumlah);
-        
-        document.getElementById('form-deskripsi').value = trx.deskripsi || "";
-        document.getElementById('form-catatan').value = trx.catatan || "";
-
-        document.getElementById('modal-title-trx').innerText = "Edit Transaction";
-        document.getElementById('btn-submit-trx').innerText = "Update Transaction";
-
-        openModal('modalInputTrx');
-      }, 400);
+  setTimeout(() => {
+    document.getElementById('form-idtrx').value = trx.idTransaksi;
+    document.getElementById('form-user').value = trx.inputOleh;
+    document.getElementById('form-tgl').value = trx.tanggal;
+    
+    // Setel nilai & perbarui tampilan picker jenis transaksi
+    const jenisVal = trx.jenis || "Pengeluaran";
+    document.getElementById('form-jenis').value = jenisVal;
+    if (typeof updateJenisDisplay === 'function') {
+      updateJenisDisplay(jenisVal);
     }
+    
+    handleJenisChange(); 
+    
+    document.getElementById('form-akunsumber').value = trx.akunSumber || "";
+    document.getElementById('form-akuntujuan').value = trx.akunTujuan || "";
+    document.getElementById('form-hutang').value = trx.terkaitHutang || "";
+    document.getElementById('form-piutang').value = trx.terkaitPiutang || "";
+    
+    document.getElementById('form-kategori').value = trx.kategori || "";
+    const katDisplay = document.getElementById('form-kategori-display');
+    if (trx.kategori) {
+      katDisplay.innerText = trx.kategori;
+      katDisplay.classList.remove('text-faint');
+    } else {
+      katDisplay.innerText = "Select Category...";
+      katDisplay.classList.add('text-faint');
+    }
+    
+    document.getElementById('form-jumlah-val').value = trx.jumlah;
+    document.getElementById('form-jumlah-display').value = new Intl.NumberFormat('id-ID').format(trx.jumlah);
+    
+    document.getElementById('form-deskripsi').value = trx.deskripsi || "";
+    document.getElementById('form-catatan').value = trx.catatan || "";
+
+    document.getElementById('modal-title-trx').innerText = "Edit Transaction";
+    document.getElementById('btn-submit-trx').innerText = "Update Transaction";
+
+    openModal('modalInputTrx');
+  }, 400);
+}
 
     function promptDeleteTrx(idTrx) {
       vibrate(40);
@@ -1785,39 +1792,57 @@ function updateJenisDisplay(value) {
 // STRICT CATEGORY & TRANSACTION TYPE MATCHING
 // ==========================================
 
+// ==========================================
+// FIX: FLEXIBLE CATEGORY MATCHING & FALLBACK
+// ==========================================
+
 function isCategoryMatchingType(katObj, jenisTrx) {
   if (!katObj || !jenisTrx) return true;
-  const kJenis = (katObj.jenis || '').toLowerCase();
-  const tJenis = jenisTrx.toLowerCase();
+  const kJenis = (katObj.jenis || '').toLowerCase().trim();
+  const tJenis = jenisTrx.toLowerCase().trim();
 
-  // 1. Income Types
-  if (tJenis.includes('pemasukan') || tJenis.includes('income') || tJenis.includes('terima piutang') || tJenis.includes('terima hutang')) {
-    return kJenis.includes('pemasukan') || kJenis.includes('income');
+  // Jika jenis kategori di Sheet kosong/belum diisi, selalu tampilkan (agar tidak memblokir)
+  if (!kJenis) return true;
+
+  // 1. Income / Pemasukan / Terima
+  if (tJenis.includes('pemasukan') || tJenis.includes('income') || tJenis.includes('terima')) {
+    return kJenis.includes('pemasukan') || kJenis.includes('income') || kJenis.includes('terima');
   }
-  // 2. Expense Types
-  if (tJenis.includes('pengeluaran') || tJenis.includes('expense') || tJenis.includes('bayar hutang')) {
-    return kJenis.includes('pengeluaran') || kJenis.includes('expense');
+  // 2. Expense / Pengeluaran / Bayar
+  if (tJenis.includes('pengeluaran') || tJenis.includes('expense') || tJenis.includes('bayar')) {
+    return kJenis.includes('pengeluaran') || kJenis.includes('expense') || kJenis.includes('bayar');
   }
-  // 3. Transfer & AP/R Types
-  if (tJenis.includes('transfer') || tJenis.includes('beri piutang') || tJenis.includes('menalangi')) {
-    return kJenis.includes('transfer') || kJenis.includes('piutang') || kJenis.includes('hutang') || kJenis.includes('payables') || kJenis.includes('receivables');
+  // 3. Transfer / Reimburse / AP-AR
+  if (tJenis.includes('transfer') || tJenis.includes('beri piutang') || tJenis.includes('menalangi') || tJenis.includes('reimburse')) {
+    return true; // Tampilkan kategori fleksibel untuk transaksi transit
   }
   return true;
 }
 
-// DYNAMIC FILTERING PADA CATEGORY PICKER
 function groupKategoriData() {
   const activeJenisTrx = document.getElementById('form-jenis').value || 'Pengeluaran';
-  const groups = {}; const order = [];
+  const groups = {}; 
+  const order = [];
   
-  (GLOBAL_DATA.kategori || []).forEach(k => {
-    // FILTER: HANYA MASUKKAN KATEGORI YANG COCOK DENGAN JENIS TRANSAKSI
-    if (!isCategoryMatchingType(k, activeJenisTrx)) return;
+  const allKategori = GLOBAL_DATA.kategori || [];
 
+  // 1. Filter kategori yang cocok
+  let filtered = allKategori.filter(k => isCategoryMatchingType(k, activeJenisTrx));
+
+  // 2. GARANSI FALLBACK: Jika hasil filter 0 (kosong), tampilkan SEMUA kategori agar user tidak terkunci
+  if (filtered.length === 0) {
+    filtered = allKategori;
+  }
+
+  filtered.forEach(k => {
     const utama = k.kategoriUtama || k.namaKategori;
-    if (!groups[utama]) { groups[utama] = { jenis: k.jenis, items: [] }; order.push(utama); }
+    if (!groups[utama]) { 
+      groups[utama] = { jenis: k.jenis, items: [] }; 
+      order.push(utama); 
+    }
     groups[utama].items.push(k);
   });
+
   return { groups, order };
 }
 
