@@ -1,350 +1,223 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Mochi's Vault — Household Finances</title>
-  
-  <!-- PWA & Manifest Integration -->
-  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#FAF8F5">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Mochi's Vault</title>
   
-  <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192">
-  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192">
-
-  <!-- Tailwind CSS & Lucide Icons via CDN -->
+  <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Font: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <script>
-    tailwind.config = { 
+    tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
-            mochi: {
-              light: '#E8A87C',   /* Soft Warm Caramel */
-              DEFAULT: '#C87A4B', /* Mochi Warm Brown */
-              dark: '#A45D33'     /* Dark Cinnamon */
-            },
-            coffee: {
-              darkest: '#181412', /* Neutral Dark Mode Background */
-              dark: '#221C19',    /* Dark Mode Cards */
-              subtle: '#2D2520'  
-            },
-            obsidian: '#231A15'   /* Light Mode Hero Card (Black Card) */
+            obsidian: '#181412',
+            mochi: { DEFAULT: '#C87A4B', light: '#D98858', dark: '#A85E32' },
+            coffee: { dark: '#231A15', darkest: '#181412', subtle: '#3A2C23' }
           }
         }
       }
     }
   </script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
-
+    /* === COLOR RULES (MUTED EARTH TONES) === */
     :root {
-      /* === MOCHI WARM MONOCHROME (LIGHT MODE) === */
-      --bg-app: #FAF8F5; 
+      --amount-in: #5A8F69;       /* Sage Green */
+      --chip-in-bg: #EBF4EE;
+      --amount-out: #C85A54;      /* Warm Terracotta Red */
+      --chip-out-bg: #FDF0EF;
+      --amount-info: #4A7C9B;     /* Muted Denim Blue */
+      --chip-info-bg: #EDF4F8;
+
+      --bg-main: #FAF8F5;
       --bg-card: #FFFFFF;
-      --bg-subtle: #F3ECE4;
-      --bg-subtle-2: #EFE6DC;
-      
-      --text-primary: #2D241E;
-      --text-secondary: #80736B; 
-      --text-tertiary: #A89B91;  
-      
-      --border-color: rgba(45, 36, 30, 0.07); 
-
-      /* Functional Colors (Muted & Earthy) */
-      --amount-in: #5A8D63;      /* Soft Sage Green */
-      --amount-out: #C85A54;     /* Terracotta Red */
-      --amount-info: #5C82A6;    /* Muted Denim Blue */
-      --amount-warn: #C28B38;    /* Warm Ochre */
-
-      /* Icon Chip Backgrounds (12% Opacity) */
-      --chip-in-bg: rgba(90, 141, 99, 0.12);
-      --chip-out-bg: rgba(200, 90, 84, 0.12);
-      --chip-info-bg: rgba(92, 130, 166, 0.12);
-      --chip-warn-bg: rgba(194, 139, 56, 0.12);
-
-      /* iOS Frosted Milk Glass */
-      --glass-bg: rgba(255, 255, 255, 0.85);
-      --glass-border: rgba(255, 255, 255, 0.7);
-      --glass-modal-bg: rgba(250, 248, 245, 0.92);
-      
-      /* Soft Earthy Shadows */
-      --shadow-card: 0 10px 30px -6px rgba(45, 36, 30, 0.05), 0 2px 8px -2px rgba(45, 36, 30, 0.03);
-      --shadow-item: 0 2px 10px -2px rgba(45, 36, 30, 0.03);
-      --shadow-premium: 0 12px 35px -8px rgba(200, 122, 75, 0.15);
-      --shadow-inset: inset 0 2px 4px rgba(45, 36, 30, 0.03);
+      --bg-subtle: #F3EFEA;
+      --bg-subtle-2: #EFEBE4;
+      --text-main: #181412;
+      --text-muted: #8C7E75;
+      --text-faint: #B5A89E;
+      --border-color: #EAE3DA;
+      --glass-bg: rgba(250, 248, 245, 0.85);
     }
 
-    html.dark {
-      /* === MOCHI WARM MONOCHROME (DARK MODE) === */
-      --bg-app: #181412; 
-      --bg-card: #221C19; 
-      --bg-subtle: #2D2520;
-      --bg-subtle-2: #382F2A;
-      
-      --text-primary: #FAF8F5; 
-      --text-secondary: #A89B91; 
-      --text-tertiary: #786C64;  
-      
-      --border-color: rgba(250, 248, 245, 0.06); 
+    .dark {
+      --amount-in: #73A983;
+      --chip-in-bg: rgba(115, 169, 131, 0.18);
+      --amount-out: #E07A74;
+      --chip-out-bg: rgba(224, 122, 116, 0.18);
+      --amount-info: #689CBF;
+      --chip-info-bg: rgba(104, 156, 191, 0.18);
 
-      /* Functional Colors */
-      --amount-in: #72A87B;
-      --amount-out: #DC736C;
-      --amount-info: #789EC2;
-      --amount-warn: #D8A250;
-
-      /* Icon Chip Backgrounds (15% Opacity) */
-      --chip-in-bg: rgba(114, 168, 123, 0.15);
-      --chip-out-bg: rgba(220, 115, 108, 0.15);
-      --chip-info-bg: rgba(120, 158, 194, 0.15);
-      --chip-warn-bg: rgba(216, 162, 80, 0.15);
-
-      /* Smoked Glass Variables */
-      --glass-bg: rgba(34, 28, 25, 0.85); 
-      --glass-border: rgba(250, 248, 245, 0.08);
-      --glass-modal-bg: rgba(24, 20, 18, 0.94);
-      
-      /* Dark Shadows */
-      --shadow-card: 0 10px 30px -6px rgba(0, 0, 0, 0.4);
-      --shadow-item: 0 2px 10px -2px rgba(0, 0, 0, 0.25);
-      --shadow-premium: 0 12px 35px -8px rgba(0, 0, 0, 0.6);
-      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.25);
+      --bg-main: #181412;
+      --bg-card: #231A15;
+      --bg-subtle: #2D221C;
+      --bg-subtle-2: #382B23;
+      --text-main: #F5EFEA;
+      --text-muted: #A89B91;
+      --text-faint: #73655B;
+      --border-color: #33261F;
+      --glass-bg: rgba(24, 20, 18, 0.85);
     }
 
-    * { font-variant-numeric: tabular-nums; -webkit-tap-highlight-color: transparent; }
     body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: var(--bg-app);
-      color: var(--text-primary);
-      overflow-x: hidden;
-      transition: background-color 0.3s ease, color 0.3s ease;
-      padding-bottom: max(6rem, env(safe-area-inset-bottom)); 
+      -webkit-tap-highlight-color: transparent;
     }
 
-    /* === FLOATING CARDS & ITEMS === */
-    .floating-card {
-      background-color: var(--bg-card);
-      box-shadow: var(--shadow-card);
-      border-radius: 1.5rem;
-      border: 1px solid var(--border-color); 
-    }
-    
-    .floating-item {
-      background-color: var(--bg-card);
-      box-shadow: var(--shadow-item);
-      border-radius: 1rem;
-      border: 1px solid var(--border-color); 
-    }
+    /* UI Classes & Components */
+    .bg-main { background-color: var(--bg-main); }
+    .bg-card { background-color: var(--bg-card); }
+    .text-main { color: var(--text-main); }
+    .text-muted { color: var(--text-muted); }
+    .text-faint { color: var(--text-faint); }
+    .amount-in { color: var(--amount-in); }
+    .amount-out { color: var(--amount-out); }
+    .amount-info { color: var(--amount-info); }
+    .amount-warn { color: var(--amount-out); }
 
-    /* === COMPACT IOS INPUT FORMS === */
-    .ios-input {
-      background-color: var(--bg-subtle-2);
-      border: 1px solid transparent; 
-      border-radius: 0.85rem;
-      padding: 0.6rem 1rem;
-      box-shadow: var(--shadow-inset);
-      font-weight: 600;
-      color: var(--text-primary);
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .ios-input:focus {
-      outline: none;
-      border: 1px solid rgba(200, 122, 75, 0.4);
-      box-shadow: 0 0 0 3px rgba(200, 122, 75, 0.15), var(--shadow-inset);
-      background-color: var(--bg-card);
-    }
-
-    /* Error Validation Animation */
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-5px); }
-      40%, 80% { transform: translateX(5px); }
-    }
-    .input-error {
-      animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-      border: 1px solid var(--amount-out) !important;
-      box-shadow: 0 0 0 3px var(--chip-out-bg), var(--shadow-inset) !important;
-      background-color: var(--bg-card) !important;
-    }
-
-    /* Core Utilities */
-    .text-main { color: var(--text-primary); }
-    .text-muted { color: var(--text-secondary); }
-    .text-faint { color: var(--text-tertiary); }
-    
-    /* Functional Utility Classes */
-    .amount-in { color: var(--amount-in) !important; }
-    .amount-out { color: var(--amount-out) !important; }
-    .amount-info { color: var(--amount-info) !important; }
-    .amount-warn { color: var(--amount-warn) !important; }
-    
+    /* Chip Styles */
     .icon-chip {
-      width: 34px; height: 34px; border-radius: 10px;
+      width: 36px; height: 36px;
+      border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; box-shadow: inset 0 1px 1px rgba(255,255,255,0.05);
+      flex-shrink: 0;
     }
-    
     .chip-pemasukan { background-color: var(--chip-in-bg); color: var(--amount-in); }
     .chip-pengeluaran { background-color: var(--chip-out-bg); color: var(--amount-out); }
-    .chip-transfer { background-color: var(--bg-subtle-2); color: var(--text-secondary); }
-    .chip-hutang { background-color: var(--chip-warn-bg); color: var(--amount-warn); }
+    .chip-hutang { background-color: var(--chip-out-bg); color: var(--amount-out); }
     .chip-piutang { background-color: var(--chip-info-bg); color: var(--amount-info); }
+    .chip-transfer { background-color: var(--chip-info-bg); color: var(--amount-info); }
 
-    /* === CLEAN TOP BAR === */
-    .clean-topbar {
-      background: linear-gradient(180deg, var(--bg-app) 60%, transparent 100%);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      padding-top: max(1.5rem, env(safe-area-inset-top));
+    /* Floating Cards */
+    .floating-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      box-shadow: 0 10px 30px -10px rgba(35, 26, 21, 0.05);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
+    .floating-item {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+    }
+    .card-hover:active { transform: scale(0.98); }
 
-    /* === BOTTOM NAV === */
+    /* Navigation & Modal */
     .nav-bar-bottom {
-      background-color: var(--glass-bg) !important;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid var(--glass-border);
-      padding-bottom: env(safe-area-inset-bottom);
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
-    .nav-item {
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    /* === PAW FAB ANIMATIONS === */
-    @keyframes pawPulse {
-      0% { box-shadow: 0 0 0 0 rgba(200, 122, 75, 0.4); }
-      70% { box-shadow: 0 0 0 15px rgba(200, 122, 75, 0); }
-      100% { shadow: 0 0 0 0 rgba(200, 122, 75, 0); }
-    }
-    .paw-fab {
-      animation: pawPulse 2.5s infinite;
-      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .paw-fab:active {
-      transform: scale(0.9);
-    }
-
-    /* Glassmorphism Modals */
     .glass-modal-content {
-      background-color: var(--glass-modal-bg) !important;
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      box-shadow: var(--shadow-premium);
-      border: 1px solid var(--glass-border);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
     }
 
-    /* Hover & Active Interactions */
-    .card-hover { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease; }
-    .card-hover:hover { transform: translateY(-2px); box-shadow: var(--shadow-premium); border-color: rgba(200, 122, 75, 0.2); }
-    .card-hover:active { transform: scale(0.97); }
-    .tap-shrink { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    .tap-shrink:active { transform: scale(0.92); }
+    /* Input Styles */
+    .ios-input {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 14px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .ios-input:focus { border-color: #C87A4B; }
 
-    /* Staggered Fade In */
-    @keyframes slideUpFade {
-      from { opacity: 0; transform: translateY(15px); }
+    /* Animations */
+    .page-animate { animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .stagger-item { animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
-    .page-animate { animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-
-    /* Splash Screen Animations */
-    @keyframes floatCat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    .animate-float { animation: floatCat 3s ease-in-out infinite; }
-
-    /* Modal Animation */
-    .modal-backdrop { transition: opacity 0.3s ease; opacity: 0; backdrop-filter: blur(0px); }
-    .modal-backdrop.show { opacity: 1; backdrop-filter: blur(3px); }
-    .modal-content-bottom { transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); }
+    .modal-backdrop { transition: opacity 0.3s ease; }
+    .modal-content-bottom { transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
     .modal-content-bottom.show { transform: translateY(0); }
-    .modal-content-center { transform: scale(0.9) translateY(20px); opacity: 0; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1); }
-    .modal-content-center.show { transform: scale(1) translateY(0); opacity: 1; }
+    .modal-content-center { transform: scale(0.95); opacity: 0; transition: all 0.25s ease; }
+    .modal-content-center.show { transform: scale(1); opacity: 1; }
 
-    ::-webkit-scrollbar { width: 4px; height: 4px; }
-    ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-  </style>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW reg error:', err));
-      });
+    /* Input Error Animation */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
     }
-  </script>
+    .input-error { animation: shake 0.4s ease-in-out; border-color: var(--amount-out) !important; }
+  </style>
 </head>
-<body class="min-h-screen">
 
-  <!-- ============================================== -->
-  <!-- 0. SPLASH SCREEN -->
-  <!-- ============================================== -->
-  <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-700">
-    <div class="animate-float flex flex-col items-center">
-      
-      <div class="w-28 h-28 flex items-center justify-center rounded-full shadow-[0_8px_30px_rgba(200,122,75,0.15)] relative overflow-hidden bg-transparent">
-        <img src="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192" alt="Mochi" class="w-full h-full object-cover">
-      </div>
-      
-      <h2 class="mt-6 text-2xl font-black text-main tracking-tight">Mochi's Vault</h2>
-      
-      <div class="mt-3 bg-[var(--bg-subtle-2)] px-4 py-1.5 rounded-full flex items-center space-x-2">
-        <i data-lucide="loader-2" class="w-3.5 h-3.5 text-mochi animate-spin"></i>
-        <span id="splash-text" class="text-xs font-bold text-mochi dark:text-mochi-light">Waking up Mochi 🐾🐾🐾</span>
-      </div>
-    </div>
-  </div>
+<body class="antialiased min-h-screen pb-28 select-none">
 
-  <!-- REWARDING ANIMATION OVERLAY -->
-  <div id="reward-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center pointer-events-none">
-    <div class="absolute inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/80 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="reward-bg"></div>
-    <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="reward-content">
-      <div class="relative">
-        <div class="absolute inset-0 bg-mochi-light rounded-full animate-ping opacity-75"></div>
-        <div class="w-24 h-24 bg-gradient-to-tr from-mochi to-mochi-light rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(200,122,75,0.6)] relative z-10 border-4 border-white dark:border-coffee-darkest">
-          <svg class="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 21.5c-3 0-5.5-2-6-5-.5-2.5.5-4 2-5 1.5-1 3-1.5 4-1.5s2.5.5 4 1.5c1.5 1 2.5 2.5 2 5-.5 3-3 5-6 5z" />
-            <circle cx="7.5" cy="8.5" r="2.5"/>
-            <circle cx="11.5" cy="5.5" r="2.8"/>
-            <circle cx="16.5" cy="8.5" r="2.5"/>
-          </svg>
-        </div>
-      </div>
-      <h2 class="text-white text-3xl font-black mt-6 drop-shadow-lg tracking-tight">Purr-fect! 🐾</h2>
-      <p id="reward-subtitle" class="text-mochi-light font-bold mt-1.5 drop-shadow-md text-sm bg-coffee-dark/50 px-4 py-1 rounded-full">Saved</p>
+  <!-- SPLASH SCREEN -->
+  <div id="splash-screen" class="fixed inset-0 z-[100] bg-main flex flex-col items-center justify-center transition-opacity duration-700">
+    <div class="w-20 h-20 bg-mochi/10 rounded-full flex items-center justify-center mb-4 animate-pulse">
+      <span class="text-4xl">🐾</span>
     </div>
+    <h1 class="text-lg font-black text-main tracking-tight">Mochi's Vault</h1>
+    <p class="text-xs text-muted font-bold mt-1">Guarding your wealth, me-ow 🐾</p>
   </div>
 
   <!-- TOAST CONTAINER -->
-  <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
+  <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] w-full max-w-sm px-5 pointer-events-none space-y-2"></div>
 
-  <!-- TOP BAR CLEAN -->
-  <header class="clean-topbar sticky top-0 z-40 px-5 pb-4 flex items-center justify-between max-w-3xl mx-auto">
-    <div class="flex items-center space-x-3.5">
-      <div class="w-11 h-11 rounded-full bg-[var(--bg-subtle-2)] overflow-hidden flex items-center justify-center shadow-sm border border-[var(--border-color)] flex-shrink-0">
-        <img src="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192" alt="Avatar" class="w-full h-full object-cover" onerror="this.style.display='none';">
+  <!-- REWARD OVERLAY (NATURAL DUAL-TONE PAW) -->
+  <div id="reward-overlay" class="fixed inset-0 z-[95] hidden items-center justify-center p-5 pointer-events-none">
+    <div id="reward-bg" class="absolute inset-0 bg-coffee-darkest/40 dark:bg-coffee-darkest/80 backdrop-blur-sm transition-opacity duration-500 opacity-0"></div>
+    <div id="reward-content" class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500">
+      
+      <!-- ICON PAW NATURAL -->
+      <div class="w-24 h-24 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(200,122,75,0.6)] relative z-10 border-4 border-white dark:border-coffee-darkest">
+        <svg class="w-13 h-13 drop-shadow-md" viewBox="0 0 24 24" fill="none">
+          <path d="M 12 12.5 C 9.2 12.5 6.8 14.8 6.8 17.8 C 6.8 19.8 8.4 21.5 10.4 21.5 C 11.3 21.5 12 21.1 12 21.1 C 12 21.1 12.7 21.5 13.6 21.5 C 15.6 21.5 17.2 19.8 17.2 17.8 C 17.2 14.8 14.8 12.5 12 12.5 Z" fill="#FFF2E8"/>
+          <ellipse cx="4.5" cy="9.5" rx="2.1" ry="2.7" transform="rotate(-25 4.5 9.5)" fill="#F4A27E"/>
+          <ellipse cx="9.2" cy="5.2" rx="2.2" ry="2.8" transform="rotate(-8 9.2 5.2)" fill="#F4A27E"/>
+          <ellipse cx="14.8" cy="5.2" rx="2.2" ry="2.8" transform="rotate(8 14.8 5.2)" fill="#F4A27E"/>
+          <ellipse cx="19.5" cy="9.5" rx="2.1" ry="2.7" transform="rotate(25 19.5 9.5)" fill="#F4A27E"/>
+        </svg>
       </div>
-      <div class="flex flex-col justify-center">
-        <h1 class="text-xl md:text-2xl font-extrabold text-main leading-none tracking-tight">Hello, Meow</h1>
-        <p class="text-[11px] md:text-[12px] font-semibold text-muted mt-1">Guarding every coin in your vault, me-ow 🐾</p>
+
+      <div class="bg-card border border-[var(--border-color)] px-6 py-3 rounded-2xl shadow-2xl -mt-4 pt-6 text-center">
+        <h4 class="text-sm font-black text-main uppercase tracking-wider">Purr-fect!</h4>
+        <p id="reward-subtitle" class="text-xs font-bold text-mochi dark:text-mochi-light mt-0.5">Transaction Saved</p>
       </div>
     </div>
-    
-    <div class="flex items-center space-x-2.5">
-      <button onclick="toggleDarkMode(); vibrate(10);" class="tap-shrink w-10 h-10 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-[0_2px_10px_rgba(45,36,30,0.05)]" aria-label="Toggle Mode">
-        <i data-lucide="sun" id="icon-sun" class="w-4.5 h-4.5 hidden"></i>
-        <i data-lucide="moon" id="icon-moon" class="w-4.5 h-4.5"></i>
-      </button>
+  </div>
+
+  <!-- HEADER / TOP NAV -->
+  <header class="max-w-3xl mx-auto px-5 pt-6 pb-2 flex justify-between items-center sticky top-0 bg-[var(--glass-bg)] backdrop-blur-md z-30 transition-colors">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-full bg-mochi/20 flex items-center justify-center text-xl overflow-hidden border border-mochi/30">
+        🐱
+      </div>
+      <div>
+        <h2 class="text-sm font-black text-main leading-none">Hello, Meow</h2>
+        <p class="text-[10px] text-muted font-bold mt-1">Guarding your wealth, me-ow 🐾</p>
+      </div>
     </div>
+
+    <!-- SAKELAR DARK MODE -->
+    <button onclick="vibrate(10); toggleDarkMode()" class="w-9 h-9 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center text-main border border-[var(--border-color)] tap-shrink">
+      <i data-lucide="sun" id="icon-sun" class="w-4 h-4 hidden"></i>
+      <i data-lucide="moon" id="icon-moon" class="w-4 h-4"></i>
+    </button>
   </header>
-
-  <!-- LOADING SKELETON -->
-  <div id="loader" class="max-w-3xl mx-auto px-4 py-2 space-y-4 hidden"></div>
+  
   <!-- MAIN CONTAINER -->
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
 
@@ -1126,29 +999,43 @@
       input.value = numberVal > 0 ? new Intl.NumberFormat('id-ID').format(numberVal) : "";
     }
 
-    // DUAL-LANGUAGE AMOUNT META FORMATTER
-    function getAmountMeta(jenis) {
-      const j = (jenis || '').trim();
-      if (['Pemasukan', 'Income', 'Terima Piutang', 'Receive Receivable', 'Terima Hutang (Pinjam)', 'Receive Payable'].includes(j)) {
-        return { cls: 'amount-in', prefix: '+' };
-      }
-      if (['Pengeluaran', 'Expense', 'Beri Piutang (Menalangi)', 'Give Receivable', 'Bayar Hutang/Cicilan', 'Pay Installment'].includes(j)) {
-        return { cls: 'amount-out', prefix: '-' };
-      }
-      return { cls: 'text-main', prefix: '' };
-    }
-
-    // DUAL-LANGUAGE & KEYWORD-BASED ICON CHIP META
-    function getIconMeta(jenis) {
-      const j = (jenis || '').trim();
-      
-      if (['Pemasukan', 'Income'].includes(j)) return { icon: 'arrow-down-left', chip: 'chip-pemasukan' };
-      if (['Pengeluaran', 'Expense'].includes(j)) return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
-      if (['Transfer Internal', 'Internal Transfer', 'Transfer/Top-up Internal', 'Transfer', 'Setor Tabungan/Dana Darurat', 'Tarik Tabungan/Dana Darurat', 'Transfer External'].includes(j)) return { icon: 'arrow-right-left', chip: 'chip-transfer' };
-      if (['Beri Piutang (Menalangi)', 'Give Receivable', 'Piutang/Talangan/Reimburse'].includes(j)) return { icon: 'hand-coins', chip: 'chip-piutang' };
-      if (['Terima Piutang', 'Receive Receivable'].includes(j)) return { icon: 'hand-coins', chip: 'chip-pemasukan' };
-      if (['Terima Hutang (Pinjam)', 'Receive Payable'].includes(j)) return { icon: 'credit-card', chip: 'chip-pemasukan' };
-      if (['Bayar Hutang/Cicilan', 'Pay Installment', 'Cicilan/Hutang'].includes(j)) return { icon: 'credit-card', chip: 'chip-hutang' };
+    // Function Pengunci Warna Nominal
+function getAmountMeta(jenis) {
+  const j = (jenis || '').trim();
+  if (['Pemasukan', 'Income', 'Terima Piutang', 'Receive Receivable', 'Terima Hutang (Pinjam)', 'Receive Payable'].includes(j)) {
+    return { cls: 'amount-in', prefix: '+' };
+  }
+  if (['Pengeluaran', 'Expense', 'Bayar Hutang/Cicilan', 'Pay Installment', 'Cicilan/Hutang'].includes(j)) {
+    return { cls: 'amount-out', prefix: '-' };
+  }
+  if (['Beri Piutang (Menalangi)', 'Give Receivable', 'Piutang/Talangan/Reimburse'].includes(j)) {
+    return { cls: 'amount-info', prefix: '-' }; // Biru untuk Piutang/Talangan
+  }
+  return { cls: 'amount-info', prefix: '' }; // Biru untuk Transfer Internal
+}
+    
+    // Function Pengunci Warna & Icon Chip (Synchronized with Amount)
+function getIconMeta(jenis) {
+  const j = (jenis || '').trim();
+  
+  if (['Pemasukan', 'Income', 'Terima Piutang', 'Receive Receivable'].includes(j)) {
+    return { icon: 'arrow-down-left', chip: 'chip-pemasukan' }; // Green Chip
+  }
+  if (['Pengeluaran', 'Expense'].includes(j)) {
+    return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' }; // Red Chip
+  }
+  if (['Bayar Hutang/Cicilan', 'Pay Installment', 'Cicilan/Hutang'].includes(j)) {
+    return { icon: 'credit-card', chip: 'chip-hutang' }; // Red Chip (Payable)
+  }
+  if (['Beri Piutang (Menalangi)', 'Give Receivable', 'Piutang/Talangan/Reimburse'].includes(j)) {
+    return { icon: 'hand-coins', chip: 'chip-piutang' }; // Blue Chip (Receivable)
+  }
+  if (['Transfer Internal', 'Internal Transfer', 'Transfer/Top-up Internal', 'Transfer'].includes(j)) {
+    return { icon: 'arrow-right-left', chip: 'chip-transfer' }; // Blue Chip (Transfer)
+  }
+  
+  return { icon: 'receipt', chip: 'chip-transfer' };
+}
       
       // Smart Fallback berdasarkan kata kunci jika exact match gagal
       const lower = j.toLowerCase();
