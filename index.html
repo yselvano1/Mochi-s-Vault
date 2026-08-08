@@ -1263,6 +1263,20 @@
         renderRiwayat();
         renderSaldo();
         renderHutangPiutang();
+        renderVisualCharts(); // Render grafik Donut & Spline
+        lucide.createIcons();
+      } catch (err) {
+        showToast("Gagal memuat data: " + err.message, "error");
+      }
+    }
+        
+        populateFormDropdowns();
+        populateYearFilter();
+        renderDashboard();
+        renderKategoriAnalysis();
+        renderRiwayat();
+        renderSaldo();
+        renderHutangPiutang();
         async function loadAppData(isSilentReload = false) {
       try {
         const res = await fetch(API_URL + "?action=getAppData", { redirect: 'follow' });
