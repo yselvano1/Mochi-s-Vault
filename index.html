@@ -365,20 +365,11 @@
         <div class="relative flex items-center justify-center my-3">
           <div id="chart-donut-kategori" class="w-full"></div>
           
-          <!-- Central Overlay dengan Maskot Mochi -->
+          <!-- Central Overlay -->
           <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <div class="w-12 h-12 rounded-full overflow-hidden shadow-md mb-1 border-2 border-white dark:border-forest-dark bg-slate-100">
-              <img id="mochi-avatar-chart" src="assets/mochi-happy.png" alt="Mochi Status" class="w-full h-full object-cover">
-            </div>
-            <span class="text-[9px] font-bold uppercase tracking-wider text-muted">Total Keluar</span>
-            <span id="mochi-total-pengeluaran" class="text-sm font-black text-main tracking-tight mt-0.5">Rp 0</span>
-          </div>
-        </div>
-          
-          <!-- Central Overlay (Total & Status Badge) -->
-          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <div class="w-7 h-7 rounded-full bg-mochi/10 dark:bg-forest-muted flex items-center justify-center mb-1 border border-mochi/20">
-              <span id="mochi-emoji" class="text-xs">🐾</span>
+            <div class="w-11 h-11 rounded-full overflow-hidden shadow-sm border-2 border-white dark:border-forest-dark bg-slate-100 flex items-center justify-center mb-1">
+              <img id="mochi-avatar-chart" src="" alt="Mochi" class="w-full h-full object-cover hidden" onload="this.classList.remove('hidden')" onerror="this.classList.add('hidden')">
+              <span id="mochi-fallback-icon" class="text-base">🐾</span>
             </div>
             <span class="text-[9px] font-bold uppercase tracking-wider text-muted">Total Keluar</span>
             <span id="mochi-total-pengeluaran" class="text-sm font-black text-main tracking-tight mt-0.5">Rp 0</span>
@@ -1119,26 +1110,28 @@
       const totalEl = document.getElementById('mochi-total-pengeluaran');
       if (totalEl) totalEl.innerText = formatRupiah(totalPengeluaran);
 
-      // Logika Ganti Gambar Mochi Dinamis
-      const budgetLimit = 10000000; // Contoh batas budget Rp 10 Juta
+      // Status Indicator & Avatar Swap
+      const budgetLimit = 10000000; 
       const ratio = totalPengeluaran / budgetLimit;
       const avatarEl = document.getElementById('mochi-avatar-chart');
       const badgeEl = document.getElementById('mochi-status-badge');
 
-      if (avatarEl && badgeEl) {
+      if (badgeEl) {
+        let avatarSrc = "";
         if (ratio > 1.0) {
-          avatarEl.src = MOCHI_ASSETS.angry;
+          if (typeof MOCHI_ASSETS !== 'undefined') avatarSrc = MOCHI_ASSETS.angry;
           badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20";
           badgeEl.innerText = "Overbudget! 🔥";
         } else if (ratio > 0.75) {
-          avatarEl.src = MOCHI_ASSETS.sweat;
+          if (typeof MOCHI_ASSETS !== 'undefined') avatarSrc = MOCHI_ASSETS.sweat;
           badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20";
           badgeEl.innerText = "Waspada ⚠️";
         } else {
-          avatarEl.src = MOCHI_ASSETS.happy;
+          if (typeof MOCHI_ASSETS !== 'undefined') avatarSrc = MOCHI_ASSETS.happy;
           badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20";
           badgeEl.innerText = "Aman 🐾";
         }
+        if (avatarEl && avatarSrc) avatarEl.src = avatarSrc;
       }
 
       const chartEl = document.querySelector("#chart-donut-kategori");
@@ -1174,7 +1167,10 @@
           pie: {
             donut: {
               size: '80%',
-              background: 'transparent'
+              background: 'transparent',
+              labels: {
+                show: false // MEMATIKAN TEKS INNER BAWAAN APEXCHARTS
+              }
             }
           }
         },
@@ -1187,7 +1183,7 @@
       if (donutChartInstance) donutChartInstance.destroy();
       donutChartInstance = new ApexCharts(chartEl, options);
       donutChartInstance.render();
-      }
+    }
     
     function renderAreaChart() {
       const chartEl = document.querySelector("#chart-savings-trend");
