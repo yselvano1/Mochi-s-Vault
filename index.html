@@ -1217,6 +1217,67 @@ function getIconMeta(jenis, kategori = '') {
       requestAnimationFrame(tick);
     }
 
+    // ==========================================
+// CUSTOM PICKER JENIS TRANSAKSI & 3 COLOR RULES
+// ==========================================
+
+const JENIS_OPTIONS = [
+  { value: 'Pengeluaran', label: 'Expense (-)', icon: 'arrow-up-right', chip: 'chip-pengeluaran', badge: '🔴' },
+  { value: 'Pemasukan', label: 'Income (+)', icon: 'trending-up', chip: 'chip-pemasukan', badge: '🟢' },
+  { value: 'Transfer Internal', label: 'Internal Transfer', icon: 'arrow-right-left', chip: 'chip-info', badge: '🔵' },
+  { value: 'Beri Piutang (Menalangi)', label: 'Give Receivables / Reimburse', icon: 'send', chip: 'chip-info', badge: '🔵' },
+  { value: 'Terima Piutang', label: 'Receive Receivables (+)', icon: 'hand-coins', chip: 'chip-pemasukan', badge: '🟢' },
+  { value: 'Terima Hutang (Pinjam)', label: 'Receive Debt (+)', icon: 'piggy-bank', chip: 'chip-pemasukan', badge: '🟢' },
+  { value: 'Bayar Hutang/Cicilan', label: 'Pay Debt / Installment (-)', icon: 'credit-card', chip: 'chip-pengeluaran', badge: '🔴' }
+];
+
+function openJenisPicker() {
+  renderJenisPickerList();
+  openModal('modalJenisPicker');
+}
+
+function renderJenisPickerList() {
+  const container = document.getElementById('jenis-picker-list');
+  let html = "";
+  const currentVal = document.getElementById('form-jenis').value || 'Pengeluaran';
+
+  JENIS_OPTIONS.forEach(opt => {
+    const isSelected = opt.value === currentVal;
+    const borderCls = isSelected ? 'border-mochi ring-2 ring-mochi/20' : 'border-slate-100 dark:border-[var(--border-color)]';
+    
+    html += `
+      <div onclick="vibrate(30); selectJenis('${opt.value}')" class="floating-item flex justify-between items-center px-4 py-3 cursor-pointer tap-shrink border ${borderCls} transition-all">
+        <div class="flex items-center space-x-3">
+          <div class="icon-chip ${opt.chip}"><i data-lucide="${opt.icon}" class="w-4 h-4"></i></div>
+          <span class="font-extrabold text-main text-[13px]">${opt.label}</span>
+        </div>
+        <span class="text-xs">${opt.badge}</span>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+  lucide.createIcons();
+}
+
+function selectJenis(value) {
+  document.getElementById('form-jenis').value = value;
+  updateJenisDisplay(value);
+  handleJenisChange();
+  closeModal('modalJenisPicker');
+}
+
+function updateJenisDisplay(value) {
+  const opt = JENIS_OPTIONS.find(o => o.value === value) || JENIS_OPTIONS[0];
+  const displayEl = document.getElementById('form-jenis-display');
+  if (displayEl) {
+    displayEl.innerHTML = `
+      <div class="icon-chip ${opt.chip} w-6 h-6 rounded-md"><i data-lucide="${opt.icon}" class="w-3.5 h-3.5"></i></div>
+      <span class="font-extrabold text-main text-xs">${opt.label}</span>
+    `;
+    lucide.createIcons();
+  }
+}
+    
     function openFormTransaksiBaru() {
   // 1. Reset seluruh isi inputan form
   document.getElementById('formTransaksi').reset();
