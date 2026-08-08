@@ -1155,17 +1155,35 @@ function getAmountMeta(jenis) {
       closeModal('modalJenisPicker');
     }
 
-    function updateJenisDisplay(value) {
-      const opt = JENIS_OPTIONS.find(o => o.value === value) || JENIS_OPTIONS[0];
-      const displayEl = document.getElementById('form-jenis-display');
-      if (displayEl) {
-        displayEl.innerHTML = `
-          <div class="icon-chip ${opt.chip} w-6 h-6 rounded-md"><i data-lucide="${opt.icon}" class="w-3.5 h-3.5"></i></div>
-          <span class="font-extrabold text-main text-xs">${opt.label}</span>
-        `;
-        lucide.createIcons();
-      }
-    }
+    function findJenisOption(val) {
+  if (!val) return JENIS_OPTIONS[0];
+  const v = val.toLowerCase().trim();
+  
+  return JENIS_OPTIONS.find(o => {
+    const optVal = o.value.toLowerCase();
+    const optLbl = o.label.toLowerCase();
+    return optVal === v || optLbl.includes(v) || v.includes(optVal) ||
+      (v.includes('receive') && v.includes('receivable') && o.value.includes('Terima Piutang')) ||
+      (v.includes('give') && v.includes('receivable') && o.value.includes('Beri Piutang')) ||
+      (v.includes('receive') && v.includes('debt') && o.value.includes('Terima Hutang')) ||
+      (v.includes('pay') && v.includes('debt') && o.value.includes('Bayar Hutang')) ||
+      (v.includes('income') && o.value.includes('Pemasukan')) ||
+      (v.includes('expense') && o.value.includes('Pengeluaran')) ||
+      (v.includes('transfer') && o.value.includes('Transfer Internal'));
+  }) || JENIS_OPTIONS[0];
+}
+
+function updateJenisDisplay(value) {
+  const opt = findJenisOption(value);
+  const displayEl = document.getElementById('form-jenis-display');
+  if (displayEl) {
+    displayEl.innerHTML = `
+      <div class="icon-chip ${opt.chip} w-6 h-6 rounded-md"><i data-lucide="${opt.icon}" class="w-3.5 h-3.5"></i></div>
+      <span class="font-extrabold text-main text-xs">${opt.label}</span>
+    `;
+    lucide.createIcons();
+  }
+}
 
     function animateNumber(el, targetValue, duration = 700) {
       const start = 0;
