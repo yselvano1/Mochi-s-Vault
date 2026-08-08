@@ -650,6 +650,7 @@
       </div>
     </div>
   </div>
+
   <!-- JAVASCRIPT START -->
   <script>
     // ==========================================
@@ -1000,42 +1001,39 @@
     }
 
     // Function Pengunci Warna Nominal
-function getAmountMeta(jenis) {
-  const j = (jenis || '').trim();
-  if (['Pemasukan', 'Income', 'Terima Piutang', 'Receive Receivable', 'Terima Hutang (Pinjam)', 'Receive Payable'].includes(j)) {
-    return { cls: 'amount-in', prefix: '+' };
-  }
-  if (['Pengeluaran', 'Expense', 'Bayar Hutang/Cicilan', 'Pay Installment', 'Cicilan/Hutang'].includes(j)) {
-    return { cls: 'amount-out', prefix: '-' };
-  }
-  if (['Beri Piutang (Menalangi)', 'Give Receivable', 'Piutang/Talangan/Reimburse'].includes(j)) {
-    return { cls: 'amount-info', prefix: '-' }; // Biru untuk Piutang/Talangan
-  }
-  return { cls: 'amount-info', prefix: '' }; // Biru untuk Transfer Internal
-}
+    function getAmountMeta(jenis) {
+      const j = (jenis || '').trim();
+      if (['Pemasukan', 'Income', 'Terima Piutang', 'Receive Receivable', 'Terima Hutang (Pinjam)', 'Receive Payable'].includes(j)) {
+        return { cls: 'amount-in', prefix: '+' };
+      }
+      if (['Pengeluaran', 'Expense', 'Bayar Hutang/Cicilan', 'Pay Installment', 'Cicilan/Hutang'].includes(j)) {
+        return { cls: 'amount-out', prefix: '-' };
+      }
+      if (['Beri Piutang (Menalangi)', 'Give Receivable', 'Piutang/Talangan/Reimburse'].includes(j)) {
+        return { cls: 'amount-info', prefix: '-' }; // Biru untuk Piutang/Talangan
+      }
+      return { cls: 'amount-info', prefix: '' }; // Biru untuk Transfer Internal
+    }
     
     // Function Pengunci Warna & Icon Chip (Synchronized with Amount)
-function getIconMeta(jenis) {
-  const j = (jenis || '').trim();
-  
-  if (['Pemasukan', 'Income', 'Terima Piutang', 'Receive Receivable'].includes(j)) {
-    return { icon: 'arrow-down-left', chip: 'chip-pemasukan' }; // Green Chip
-  }
-  if (['Pengeluaran', 'Expense'].includes(j)) {
-    return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' }; // Red Chip
-  }
-  if (['Bayar Hutang/Cicilan', 'Pay Installment', 'Cicilan/Hutang'].includes(j)) {
-    return { icon: 'credit-card', chip: 'chip-hutang' }; // Red Chip (Payable)
-  }
-  if (['Beri Piutang (Menalangi)', 'Give Receivable', 'Piutang/Talangan/Reimburse'].includes(j)) {
-    return { icon: 'hand-coins', chip: 'chip-piutang' }; // Blue Chip (Receivable)
-  }
-  if (['Transfer Internal', 'Internal Transfer', 'Transfer/Top-up Internal', 'Transfer'].includes(j)) {
-    return { icon: 'arrow-right-left', chip: 'chip-transfer' }; // Blue Chip (Transfer)
-  }
-  
-  return { icon: 'receipt', chip: 'chip-transfer' };
-}
+    function getIconMeta(jenis) {
+      const j = (jenis || '').trim();
+      
+      if (['Pemasukan', 'Income', 'Terima Piutang', 'Receive Receivable'].includes(j)) {
+        return { icon: 'arrow-down-left', chip: 'chip-pemasukan' }; // Green Chip
+      }
+      if (['Pengeluaran', 'Expense'].includes(j)) {
+        return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' }; // Red Chip
+      }
+      if (['Bayar Hutang/Cicilan', 'Pay Installment', 'Cicilan/Hutang'].includes(j)) {
+        return { icon: 'credit-card', chip: 'chip-hutang' }; // Red Chip (Payable)
+      }
+      if (['Beri Piutang (Menalangi)', 'Give Receivable', 'Piutang/Talangan/Reimburse'].includes(j)) {
+        return { icon: 'hand-coins', chip: 'chip-piutang' }; // Blue Chip (Receivable)
+      }
+      if (['Transfer Internal', 'Internal Transfer', 'Transfer/Top-up Internal', 'Transfer'].includes(j)) {
+        return { icon: 'arrow-right-left', chip: 'chip-transfer' }; // Blue Chip (Transfer)
+      }
       
       // Smart Fallback berdasarkan kata kunci jika exact match gagal
       const lower = j.toLowerCase();
