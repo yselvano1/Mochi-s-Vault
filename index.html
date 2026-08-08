@@ -580,18 +580,17 @@
           </div>
         </div>
 
-        <div>
-          <label for="form-jenis" class="font-bold text-main block mb-1 text-xs cursor-pointer">Transaction Type</label>
-          <select id="form-jenis" onchange="handleJenisChange()" class="w-full ios-input text-main cursor-pointer" required>
-            <option value="Pengeluaran">Expense (-)</option>
-            <option value="Pemasukan">Income (+)</option>
-            <option value="Transfer Internal">Internal Transfer</option>
-            <option value="Beri Piutang (Menalangi)">Give Receivables / Reimburse</option>
-            <option value="Terima Piutang">Receive Receivables</option>
-            <option value="Terima Hutang (Pinjam)">Receive Debt (+)</option>
-            <option value="Bayar Hutang/Cicilan">Pay Debt / Installment (-)</option>
-          </select>
-        </div>
+        <!-- CUSTOM TRIGGER JENIS TRANSAKSI -->
+<div>
+  <label class="font-bold text-main block mb-1 text-xs">Transaction Type</label>
+  <div ontouchstart="vibrate(30)" onclick="openJenisPicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+    <div id="form-jenis-display" class="flex items-center space-x-2.5">
+      <!-- Diisi otomatis oleh JavaScript -->
+    </div>
+    <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
+  </div>
+  <input type="hidden" id="form-jenis" value="Pengeluaran">
+</div>
 
         <div id="wrap-akunsumber" class="space-y-1">
           <div class="flex justify-between items-center">
@@ -674,18 +673,18 @@
     </div>
   </div>
 
-  <!-- MODAL 2b: CATEGORY PICKER -->
-  <div id="modalKategoriPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalKategoriPicker')">
-    <div id="modalKategoriPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
-      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
-        <h3 class="font-extrabold text-main text-sm">Select Category</h3>
-        <button ontouchstart="vibrate(30)" onclick="closeModal('modalKategoriPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-      <div id="kategori-picker-list" class="text-xs space-y-1.5"></div>
+  <!-- MODAL PICKER JENIS TRANSAKSI BER-IKON -->
+<div id="modalJenisPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[75] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalJenisPicker')">
+  <div id="modalJenisPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
+    <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
+      <h3 class="font-extrabold text-main text-sm">Select Transaction Type</h3>
+      <button ontouchstart="vibrate(30)" onclick="closeModal('modalJenisPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
     </div>
+    <div id="jenis-picker-list" class="text-xs space-y-2"></div>
   </div>
+</div>
 
   <!-- MODAL 3: ADD MASTER DATA -->
   <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
@@ -1219,22 +1218,32 @@ function getIconMeta(jenis, kategori = '') {
     }
 
     function openFormTransaksiBaru() {
-      document.getElementById('formTransaksi').reset();
-      document.getElementById('form-idtrx').value = "";
-      document.getElementById('form-tgl').valueAsDate = new Date();
-      document.getElementById('form-jumlah-val').value = "";
-      
-      const katDisplay = document.getElementById('form-kategori-display');
-      katDisplay.innerText = "Select Category...";
-      katDisplay.classList.add('text-faint');
-      
-      document.getElementById('modal-title-trx').innerText = "Add Transaction";
-      document.getElementById('btn-submit-trx').innerText = "Save Transaction";
-      
-      handleJenisChange();
-      openModal('modalInputTrx');
-    }
-
+  // 1. Reset seluruh isi inputan form
+  document.getElementById('formTransaksi').reset();
+  document.getElementById('form-idtrx').value = "";
+  document.getElementById('form-tgl').valueAsDate = new Date();
+  document.getElementById('form-jumlah-val').value = "";
+  
+  // 2. Reset tampilan pilihan Kategori
+  const katDisplay = document.getElementById('form-kategori-display');
+  katDisplay.innerText = "Select Category...";
+  katDisplay.classList.add('text-faint');
+  
+  // 3. Reset judul modal & tombol ke mode Tambah
+  document.getElementById('modal-title-trx').innerText = "Add Transaction";
+  document.getElementById('btn-submit-trx').innerText = "Save Transaction";
+  
+  // 4. SETEL TAMPILAN KOTAK JENIS TRANSAKSI KE DEFAULT (Expense)
+  document.getElementById('form-jenis').value = "Pengeluaran";
+  updateJenisDisplay("Pengeluaran"); // <--- Ini baris yang dimaksud
+  
+  // 5. Sembunyikan/tampilkan input terkait (akun sumber/tujuan)
+  handleJenisChange();
+  
+  // 6. Buka modal form
+  openModal('modalInputTrx');
+}
+    
     function handleEditTrx(idTrx) {
       vibrate(30);
       const trx = GLOBAL_DATA.transaksi.find(t => t.idTransaksi === idTrx);
