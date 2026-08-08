@@ -12,6 +12,7 @@
   <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192">
 
   <!-- Tailwind CSS & Lucide Icons via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = { 
@@ -100,20 +101,48 @@
       padding-bottom: max(6rem, env(safe-area-inset-bottom)); 
     }
 
-    /* === FLOATING CARDS & ITEMS === */
-    .floating-card {
-      background-color: var(--bg-card);
-      box-shadow: var(--shadow-card);
-      border-radius: 1.5rem;
-      border: 1px solid var(--border-color); 
-    }
-    
-    .floating-item {
-      background-color: var(--bg-card);
-      box-shadow: var(--shadow-item);
-      border-radius: 1rem;
-      border: 1px solid var(--border-color); 
-    }
+    <!-- CARD 1: DONUT CHART PENGELUARAN & MOCHI MOOD -->
+      <div class="floating-card p-5 mt-6 relative overflow-hidden">
+        <div class="flex justify-between items-center mb-2">
+          <div>
+            <h3 class="text-sm font-extrabold text-main">Proporsi Pengeluaran</h3>
+            <p class="text-[11px] text-muted font-medium mt-0.5">Bulan Ini</p>
+          </div>
+          <span id="mochi-status-badge" class="text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            Aman 🐾
+          </span>
+        </div>
+
+        <!-- Donut Chart Container dengan Mochi Mood Center -->
+        <div class="relative flex items-center justify-center my-2">
+          <div id="chart-donut-kategori" class="w-full"></div>
+          
+          <!-- Central Overlay (Wajah/Ekspresi Mochi) -->
+          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-2">
+            <span id="mochi-emoji" class="text-3xl filter drop-shadow-md animate-bounce">😸</span>
+            <span id="mochi-chart-label" class="text-[9px] font-black uppercase tracking-wider text-muted mt-1">Status Vault</span>
+          </div>
+        </div>
+
+        <!-- Breakdown Kategori Teks (Bisa Di-expand) -->
+        <div id="dashboard-kategori-analysis" class="space-y-2 mt-4 pt-3 border-t border-slate-100 dark:border-forest-muted/50"></div>
+      </div>
+
+      <!-- CARD 2: SPLINE AREA CHART (TREN & MILESTONE TABUNGAN) -->
+      <div class="floating-card p-5 mt-4 relative overflow-hidden">
+        <div class="flex justify-between items-center mb-1">
+          <div>
+            <h3 class="text-sm font-extrabold text-main">Proyeksi & Target Vault</h3>
+            <p class="text-[11px] text-muted font-medium mt-0.5">Target Milestone: Juni 2026</p>
+          </div>
+          <div class="w-8 h-8 rounded-full bg-mochi-light/20 dark:bg-mochi-light/10 flex items-center justify-center text-mochi dark:text-mochi-light">
+            <i data-lucide="target" class="w-4 h-4"></i>
+          </div>
+        </div>
+
+        <!-- Spline Area Chart Container -->
+        <div id="chart-savings-trend" class="w-full -ml-2"></div>
+      </div>
 
     /* === COMPACT IOS INPUT FORMS === */
     .ios-input {
@@ -846,6 +875,148 @@
       return toast; 
     }
 
+    let donutChartInstance = null;
+    let areaChartInstance = null;
+
+    // Fungsi Render Keduanya
+    function renderVisualCharts() {
+      renderDonutChart();
+      renderAreaChart();
+    }
+
+    // 1. Donut Chart + Mochi Dynamic Mood
+    function renderDonutChart() {
+      const now = new Date();
+      const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+
+      const trxBulanIni = (GLOBAL_DATA.transaksi || []).filter(t =>
+        t.jenis === 'Pengeluaran' && t.tanggal && t.tanggal.substring(0, 7) === ym
+      );
+
+      const groups = {};
+      let totalPengeluaran = 0;
+      trxBulanIni.forEach(t => {
+        const utama = t.kategoriUtama || t.kategori || 'Lainnya';
+        const val = Number(t.jumlah) || 0;
+        groups[utama] = (groups[utama] || 0) + val;
+        totalPengeluaran += val;
+      });
+
+      const labels = Object.keys(groups);
+      const series = Object.values(groups);
+
+      // Logika Mood Mochi berdasarkan rasio pengeluaran (Contoh Budget Ideal: Rp 10 Juta)
+      const budgetLimit = 10000000; 
+      const ratio = totalPengeluaran / budgetLimit;
+      
+      const emojiEl = document.getElementById('mochi-emoji');
+      const badgeEl = document.getElementById('mochi-status-badge');
+
+      if (ratio > 1.0) {
+        emojiEl.innerText = "🙀"; // Panik / Overbudget
+        badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20";
+        badgeEl.innerText = "Overbudget! 🔥";
+      } else if (ratio > 0.75) {
+        emojiEl.innerText = "😾"; // Waspada
+        badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20";
+        badgeEl.innerText = "Waspada ⚠️";
+      } else {
+        emojiEl.innerText = "😸"; // Aman & Bahagia
+        badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20";
+        badgeEl.innerText = "Aman 🐾";
+      }
+
+      if (series.length === 0) {
+        if(donutChartInstance) donutChartInstance.destroy();
+        document.getElementById('chart-donut-kategori').innerHTML = `<p class="text-xs text-center text-muted py-6 font-semibold">Belum ada pengeluaran bulan ini.</p>`;
+        return;
+      }
+
+      const isDark = document.documentElement.classList.contains('dark');
+      const options = {
+        series: series,
+        labels: labels,
+        chart: { type: 'donut', height: 260, fontFamily: 'Plus Jakarta Sans, sans-serif' },
+        colors: ['#8D4012', '#DB9F75', '#10B981', '#38BDF8', '#F59E0B', '#8B5CF6'],
+        stroke: { show: false },
+        dataLabels: { enabled: false },
+        legend: { position: 'bottom', fontSize: '11px', labels: { colors: isDark ? '#CBD5E1' : '#334155' } },
+        plotOptions: {
+          pie: {
+            donut: {
+              size: '72%',
+              background: 'transparent'
+            }
+          }
+        },
+        tooltip: {
+          y: { formatter: (val) => formatRupiah(val) }
+        }
+      };
+
+      if (donutChartInstance) donutChartInstance.destroy();
+      donutChartInstance = new ApexCharts(document.querySelector("#chart-donut-kategori"), options);
+      donutChartInstance.render();
+    }
+
+    // 2. Spline Area Chart + Milestone Goal Line
+    function renderAreaChart() {
+      const isDark = document.documentElement.classList.contains('dark');
+      
+      // Simulasi/Kalkulasi Tren Net Savings per Bulan
+      const categories = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun (Target)'];
+      const dataSavings = [15000000, 28000000, 42000000, 58000000, 75000000, 100000000]; // Progres menuju 100 Juta
+
+      const options = {
+        series: [{ name: 'Total Vault', data: dataSavings }],
+        chart: {
+          type: 'area',
+          height: 220,
+          toolbar: { show: false },
+          sparkline: { enabled: false },
+          fontFamily: 'Plus Jakarta Sans, sans-serif'
+        },
+        colors: ['#10B981'],
+        stroke: { curve: 'smooth', width: 3 },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shadeIntensity: 1,
+            opacityFrom: 0.45,
+            opacityTo: 0.05,
+            stops: [0, 90, 100]
+          }
+        },
+        xaxis: {
+          categories: categories,
+          labels: { style: { colors: isDark ? '#94A3B8' : '#64748B', fontSize: '10px' } },
+          axisBorder: { show: false },
+          axisTicks: { show: false }
+        },
+        yaxis: { show: false },
+        grid: { show: false },
+        annotations: {
+          xaxis: [{
+            x: 'Jun (Target)',
+            borderColor: '#F59E0B',
+            label: {
+              borderColor: '#F59E0B',
+              style: { color: '#fff', background: '#F59E0B', fontSize: '9px', fontWeight: 'bold' },
+              text: 'Goal: Rp 100M'
+            }
+          }]
+        },
+        tooltip: {
+          theme: isDark ? 'dark' : 'light',
+          y: { formatter: (val) => formatRupiah(val) }
+        }
+      };
+
+      if (areaChartInstance) areaChartInstance.destroy();
+      areaChartInstance = new ApexCharts(document.querySelector("#chart-savings-trend"), options);
+      areaChartInstance.render();
+    }
+    
     function showRewardAnimation(subtitleText = "Tersimpan") {
       return new Promise(resolve => {
         const overlay = document.getElementById('reward-overlay');
@@ -1092,6 +1263,34 @@
         renderRiwayat();
         renderSaldo();
         renderHutangPiutang();
+        async function loadAppData(isSilentReload = false) {
+      try {
+        const res = await fetch(API_URL + "?action=getAppData", { redirect: 'follow' });
+        const result = await res.json();
+        if (result.status === 'error') throw new Error(result.message);
+
+        GLOBAL_DATA = result.data || result;
+        
+        if(!isSilentReload) {
+          const splash = document.getElementById('splash-screen');
+          if(splash) {
+            splash.classList.add('opacity-0');
+            setTimeout(() => splash.classList.add('hidden'), 700);
+          }
+          document.getElementById('main-content').classList.remove('hidden');
+        }
+        
+        populateFormDropdowns();
+        populateYearFilter();
+        renderDashboard();
+        renderKategoriAnalysis();
+        renderRiwayat();
+        renderSaldo();
+        renderHutangPiutang();
+        
+        // 🐾 TAMBAHKAN BARIS KODE INI DI SINI:
+        renderVisualCharts();
+        
         lucide.createIcons();
       } catch (err) {
         showToast("Gagal memuat data: " + err.message, "error");
