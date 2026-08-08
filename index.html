@@ -1720,15 +1720,45 @@ function getIconMeta(jenis, kategori = '') {
       displayEl.classList.add('text-faint');
     }
 
-    function groupKategoriData() {
-      const groups = {}; const order = [];
-      (GLOBAL_DATA.kategori || []).forEach(k => {
-        const utama = k.kategoriUtama || k.namaKategori;
-        if (!groups[utama]) { groups[utama] = { jenis: k.jenis, items: [] }; order.push(utama); }
-        groups[utama].items.push(k);
-      });
-      return { groups, order };
-    }
+    // ==========================================
+// STRICT CATEGORY & TRANSACTION TYPE MATCHING
+// ==========================================
+
+function isCategoryMatchingType(katObj, jenisTrx) {
+  if (!katObj || !jenisTrx) return true;
+  const kJenis = (katObj.jenis || '').toLowerCase();
+  const tJenis = jenisTrx.toLowerCase();
+
+  // 1. Income Types
+  if (tJenis.includes('pemasukan') || tJenis.includes('income') || tJenis.includes('terima piutang') || tJenis.includes('terima hutang')) {
+    return kJenis.includes('pemasukan') || kJenis.includes('income');
+  }
+  // 2. Expense Types
+  if (tJenis.includes('pengeluaran') || tJenis.includes('expense') || tJenis.includes('bayar hutang')) {
+    return kJenis.includes('pengeluaran') || kJenis.includes('expense');
+  }
+  // 3. Transfer & AP/R Types
+  if (tJenis.includes('transfer') || tJenis.includes('beri piutang') || tJenis.includes('menalangi')) {
+    return kJenis.includes('transfer') || kJenis.includes('piutang') || kJenis.includes('hutang') || kJenis.includes('payables') || kJenis.includes('receivables');
+  }
+  return true;
+}
+
+// DYNAMIC FILTERING PADA CATEGORY PICKER
+function groupKategoriData() {
+  const activeJenisTrx = document.getElementById('form-jenis').value || 'Pengeluaran';
+  const groups = {}; const order = [];
+  
+  (GLOBAL_DATA.kategori || []).forEach(k => {
+    // FILTER: HANYA MASUKKAN KATEGORI YANG COCOK DENGAN JENIS TRANSAKSI
+    if (!isCategoryMatchingType(k, activeJenisTrx)) return;
+
+    const utama = k.kategoriUtama || k.namaKategori;
+    if (!groups[utama]) { groups[utama] = { jenis: k.jenis, items: [] }; order.push(utama); }
+    groups[utama].items.push(k);
+  });
+  return { groups, order };
+}
 
     function openKategoriPicker() {
       renderKategoriPickerList();
@@ -1800,21 +1830,34 @@ function getIconMeta(jenis, kategori = '') {
       closeModal('modalKategoriPicker');
     }
 
-    function handleJenisChange() {
-      const jenis = document.getElementById('form-jenis').value;
-      const show = (id, isShow) => {
-        const el = document.getElementById(id);
-        if (isShow) el.classList.remove('hidden'); else el.classList.add('hidden');
-      };
-      const j = jenis.toLowerCase();
-      const hasSumber = j.includes('pengeluaran') || j.includes('expense') || j.includes('transfer') || j.includes('beri piutang') || j.includes('bayar hutang');
-      const hasTujuan = j.includes('pemasukan') || j.includes('income') || j.includes('transfer') || j.includes('terima piutang') || j.includes('terima hutang');
-      const hasHutang = j.includes('hutang') || j.includes('debt');
-      const hasPiutang = j.includes('piutang') || j.includes('receivable');
+   // AUTO-RESET SAAT TRANSACTION TYPE DIGANTI
+function handleJenisChange() {
+  const jenis = document.getElementById('form-jenis').value;
+  const show = (id, isShow) => {
+    const el = document.getElementById(id);
+    if (isShow) el.classList.remove('hidden'); else el.classList.add('hidden');
+  };
+  const j = jenis.toLowerCase();
+  const hasSumber = j.includes('pengeluaran') || j.includes('expense') || j.includes('transfer') || j.includes('beri piutang') || j.includes('bayar hutang');
+  const hasTujuan = j.includes('pemasukan') || j.includes('income') || j.includes('transfer') || j.includes('terima piutang') || j.includes('terima hutang');
+  const hasHutang = j.includes('hutang') || j.includes('debt');
+  const hasPiutang = j.includes('piutang') || j.includes('receivable');
 
-      show('wrap-akunsumber', hasSumber); show('wrap-akuntujuan', hasTujuan); show('wrap-hutang', hasHutang); show('wrap-piutang', hasPiutang);
+  show('wrap-akunsumber', hasSumber); 
+  show('wrap-akuntujuan', hasTujuan); 
+  show('wrap-hutang', hasHutang); 
+  show('wrap-piutang', hasPiutang);
+
+  // AUTO-RESET PILIHAN KATEGORI JIKA TIDAK COCOK DENGAN JENIS TRANSAKSI BARU
+  const selectedKatNama = document.getElementById('form-kategori').value;
+  if (selectedKatNama) {
+    const currentKatObj = (GLOBAL_DATA.kategori || []).find(k => k.namaKategori === selectedKatNama);
+    if (currentKatObj && !isCategoryMatchingType(currentKatObj, jenis)) {
+      resetKategoriPicker();
     }
-
+  }
+}
+    
     // ==========================================
 // 2. MODAL DETAIL KPI (FULL ENGLISH + 3 COLOR RULES)
 // ==========================================
