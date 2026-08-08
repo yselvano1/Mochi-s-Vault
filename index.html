@@ -1626,136 +1626,135 @@
     let kategoriPickerExpanded = {};
     function escapeAttr(str) { return String(str).replace(/'/g, "\\'"); }
 
-    function resetKategoriPicker() {
+    unction resetKategoriPicker() {
       document.getElementById('form-kategori').value = "";
       const displayEl = document.getElementById('form-kategori-display');
-      displayEl.innerText = "Select Category...";
-      displayEl.classList.add('text-faint');
+      if (displayEl) {
+        displayEl.innerText = "Select Category...";
+        displayEl.classList.add('text-faint');
+      }
     }
 
-/ ==========================================
-// FIX: CATEGORY PICKER & DYNAMIC MATCHING
-// ==========================================
+    // ==========================================
+    // FIX: CATEGORY PICKER & DYNAMIC MATCHING
+    // ==========================================
 
-function isCategoryMatchingType(katObj, jenisTrx) {
-  if (!katObj || !jenisTrx) return true;
-  const kJenis = (katObj.jenis || '').toLowerCase().trim();
-  const tJenis = jenisTrx.toLowerCase().trim();
+    function isCategoryMatchingType(katObj, jenisTrx) {
+      if (!katObj || !jenisTrx) return true;
+      const kJenis = (katObj.jenis || '').toLowerCase().trim();
+      const tJenis = jenisTrx.toLowerCase().trim();
 
-  // Jika jenis kategori di Sheet belum terisi, jangan blokir (fleksibel)
-  if (!kJenis) return true;
+      if (!kJenis) return true;
 
-  if (tJenis.includes('pemasukan') || tJenis.includes('income') || tJenis.includes('terima')) {
-    return kJenis.includes('pemasukan') || kJenis.includes('income') || kJenis.includes('terima');
-  }
-  if (tJenis.includes('pengeluaran') || tJenis.includes('expense') || tJenis.includes('bayar')) {
-    return kJenis.includes('pengeluaran') || kJenis.includes('expense') || kJenis.includes('bayar');
-  }
-  return true;
-}
+      if (tJenis.includes('pemasukan') || tJenis.includes('income') || tJenis.includes('terima')) {
+        return kJenis.includes('pemasukan') || kJenis.includes('income') || kJenis.includes('terima');
+      }
+      if (tJenis.includes('pengeluaran') || tJenis.includes('expense') || tJenis.includes('bayar')) {
+        return kJenis.includes('pengeluaran') || kJenis.includes('expense') || kJenis.includes('bayar');
+      }
+      return true;
+    }
+
     function groupKategoriData() {
-  const activeJenisTrx = document.getElementById('form-jenis').value || 'Pengeluaran';
-  const groups = {}; 
-  const order = []; // PERBAIKAN: Tambahkan kata kunci 'const' agar tidak throw ReferenceError
-  
-  const allKategori = GLOBAL_DATA.kategori || [];
-  let filtered = allKategori.filter(k => isCategoryMatchingType(k, activeJenisTrx));
-  
-  // Fallback: Jika filter menghasilkan 0 item, tampilkan seluruh kategori agar user tidak terisolasi
-  if (filtered.length === 0) {
-    filtered = allKategori;
-  }
+      const activeJenisTrx = document.getElementById('form-jenis').value || 'Pengeluaran';
+      const groups = {}; 
+      const order = []; // PERBAIKAN: Ditambahkan kata kunci 'const'
+      
+      const allKategori = GLOBAL_DATA.kategori || [];
+      let filtered = allKategori.filter(k => isCategoryMatchingType(k, activeJenisTrx));
+      if (filtered.length === 0) filtered = allKategori;
 
-  filtered.forEach(k => {
-    const utama = k.kategoriUtama || k.namaKategori;
-    if (!groups[utama]) { 
-      groups[utama] = { jenis: k.jenis, items: [] }; 
-      order.push(utama); 
+      filtered.forEach(k => {
+        const utama = k.kategoriUtama || k.namaKategori;
+        if (!groups[utama]) { groups[utama] = { jenis: k.jenis, items: [] }; order.push(utama); }
+        groups[utama].items.push(k);
+      });
+      return { groups, order };
     }
-    groups[utama].items.push(k);
-  });
-  
-  return { groups, order };
-}
+
     function openKategoriPicker() {
-  try {
-    renderKategoriPickerList();
-    openModal('modalKategoriPicker');
-  } catch (err) {
-    console.error("Error opening category picker:", err);
-    showToast("Failed to open category picker", "error");
-  }
-}
+      try {
+        renderKategoriPickerList();
+        openModal('modalKategoriPicker');
+      } catch (err) {
+        console.error("Error opening category picker:", err);
+        showToast("Failed to open category picker", "error");
+      }
+    }
 
     function renderKategoriPickerList() {
-  const { groups, order } = groupKategoriData();
-  const listEl = document.getElementById('kategori-picker-list');
-  if (!listEl) return;
-  
-  let html = "";
-
-  order.forEach(utama => {
-    const group = groups[utama];
-    const isExpanded = !!kategoriPickerExpanded[utama];
-    const isIncome = (group.jenis || '').toLowerCase().includes('masuk') || (group.jenis || '').toLowerCase().includes('income');
-    const badgeColor = isIncome ? 'amount-in bg-[var(--chip-in-bg)]' : 'amount-out bg-[var(--chip-out-bg)]';
-    const onlyMainItem = group.items.length === 1 && (!group.items[0].subKategori || group.items[0].subKategori === group.items[0].namaKategori);
-
-    const mMain = getCategoryIconMeta(utama, group.jenis);
-
-    if (onlyMainItem) {
-      html += `
-        <div onclick="vibrate(30); selectKategori('${escapeAttr(group.items[0].namaKategori)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-[var(--border-color)] transition-colors">
-          <div class="flex items-center space-x-3">
-            <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
-            <span class="font-extrabold text-main text-[13px]">${utama}</span>
-          </div>
-          <span class="text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badgeColor}">${group.jenis}</span>
-        </div>`;
-    } else {
-      html += `
-        <div class="mb-2 floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden">
-          <div onclick="vibrate(30); toggleKategoriGroup('${escapeAttr(utama)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
-            <div class="flex items-center space-x-3">
-              <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
-              <span class="font-extrabold text-[13px]">${utama}</span>
-            </div>
-            <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-4 h-4 text-faint"></i>
-          </div>
-          <div class="${isExpanded ? '' : 'hidden'} border-t border-slate-100 dark:border-[var(--border-color)] bg-white dark:bg-card">`;
+      const { groups, order } = groupKategoriData();
+      const listEl = document.getElementById('kategori-picker-list');
+      if (!listEl) return;
       
-      group.items.forEach((item, idx) => {
-        const label = (item.subKategori && item.subKategori !== item.namaKategori) ? item.subKategori : item.namaKategori;
-        const borderCls = idx !== group.items.length - 1 ? 'border-b border-slate-100 dark:border-[var(--border-color)]' : '';
-        const mSub = getCategoryIconMeta(label, group.jenis);
-        
-        html += `
-          <div onclick="vibrate(30); selectKategori('${escapeAttr(item.namaKategori)}')" class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between ${borderCls}">
-            <div class="flex items-center space-x-3">
-              <div class="icon-chip ${mSub.chip} w-7 h-7"><i data-lucide="${mSub.icon}" class="w-3.5 h-3.5"></i></div>
-              <span>${label}</span>
-            </div>
-          </div>`;
-      });
-      html += `</div></div>`;
-    }
-  });
-  
-  listEl.innerHTML = html;
-  lucide.createIcons();
-}
+      let html = "";
 
-    function toggleKategoriGroup(utama) { kategoriPickerExpanded[utama] = !kategoriPickerExpanded[utama]; renderKategoriPickerList(); }
+      order.forEach(utama => {
+        const group = groups[utama];
+        const isExpanded = !!kategoriPickerExpanded[utama];
+        const isIncome = (group.jenis || '').toLowerCase().includes('masuk') || (group.jenis || '').toLowerCase().includes('income');
+        const badgeColor = isIncome ? 'amount-in bg-[var(--chip-in-bg)]' : 'amount-out bg-[var(--chip-out-bg)]';
+        const onlyMainItem = group.items.length === 1 && (!group.items[0].subKategori || group.items[0].subKategori === group.items[0].namaKategori);
+
+        const mMain = getCategoryIconMeta(utama, group.jenis);
+
+        if (onlyMainItem) {
+          html += `
+            <div onclick="vibrate(30); selectKategori('${escapeAttr(group.items[0].namaKategori)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-[var(--border-color)] transition-colors">
+              <div class="flex items-center space-x-3">
+                <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
+                <span class="font-extrabold text-main text-[13px]">${utama}</span>
+              </div>
+              <span class="text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badgeColor}">${group.jenis}</span>
+            </div>`;
+        } else {
+          html += `
+            <div class="mb-2 floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden">
+              <div onclick="vibrate(30); toggleKategoriGroup('${escapeAttr(utama)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
+                <div class="flex items-center space-x-3">
+                  <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
+                  <span class="font-extrabold text-[13px]">${utama}</span>
+                </div>
+                <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-4 h-4 text-faint"></i>
+              </div>
+              <div class="${isExpanded ? '' : 'hidden'} border-t border-slate-100 dark:border-[var(--border-color)] bg-white dark:bg-card">`;
+          
+          group.items.forEach((item, idx) => {
+            const label = (item.subKategori && item.subKategori !== item.namaKategori) ? item.subKategori : item.namaKategori;
+            const borderCls = idx !== group.items.length - 1 ? 'border-b border-slate-100 dark:border-[var(--border-color)]' : '';
+            const mSub = getCategoryIconMeta(label, group.jenis);
+            
+            html += `
+              <div onclick="vibrate(30); selectKategori('${escapeAttr(item.namaKategori)}')" class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between ${borderCls}">
+                <div class="flex items-center space-x-3">
+                  <div class="icon-chip ${mSub.chip} w-7 h-7"><i data-lucide="${mSub.icon}" class="w-3.5 h-3.5"></i></div>
+                  <span>${label}</span>
+                </div>
+              </div>`;
+          });
+          html += `</div></div>`;
+        }
+      });
+      
+      listEl.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function toggleKategoriGroup(utama) { 
+      kategoriPickerExpanded[utama] = !kategoriPickerExpanded[utama]; 
+      renderKategoriPickerList(); 
+    }
 
     function selectKategori(namaKategori) {
-  document.getElementById('form-kategori').value = namaKategori;
-  const displayEl = document.getElementById('form-kategori-display');
-  if (displayEl) {
-    displayEl.innerText = namaKategori;
-    displayEl.classList.remove('text-faint');
-  }
-  closeModal('modalKategoriPicker');
-}
+      document.getElementById('form-kategori').value = namaKategori;
+      const displayEl = document.getElementById('form-kategori-display');
+      if (displayEl) {
+        displayEl.innerText = namaKategori;
+        displayEl.classList.remove('text-faint');
+      }
+      closeModal('modalKategoriPicker');
+    }
+    
     function handleJenisChange() {
       const jenis = document.getElementById('form-jenis').value;
       const show = (id, isShow) => {
