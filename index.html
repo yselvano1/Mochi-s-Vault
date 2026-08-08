@@ -1150,88 +1150,91 @@
       return `<div class="icon-chip ${m.chip}"><i data-lucide="${m.icon}" class="w-4 h-4"></i></div>`;
     }
 
-    // Helper untuk menyesuaikan font angka secara dinamis berdasarkan panjang string
-    function fitNumberFontSize(el, formattedText) {
-      el.innerText = formattedText;
-      const len = formattedText.length;
-      
-      // Jika nominal sangat panjang (> 18 Karakter, misal Triliunan: Rp 1.000.000.000.000)
-      if (len > 18) {
-        el.style.fontSize = "10px";
-      } else if (len > 14) { // Milyaran (Rp 9.823.987.252)
-        el.style.fontSize = "12px";
-      } else if (len > 11) { // Ratusan Juta
-        el.style.fontSize = "13px";
-      } else {
-        el.style.fontSize = ""; // Mengikuti kelas CSS default
-      }
-    }
+    // 1. Font Scaler KHUSUS Kotak Metrik Kecil (2x2 Grid)
+function fitCompactGridFontSize(el, formattedText) {
+  el.innerText = formattedText;
+  const len = formattedText.length;
+  if (len > 18) {
+    el.style.fontSize = "10px";
+  } else if (len > 14) {
+    el.style.fontSize = "12px";
+  } else if (len > 11) {
+    el.style.fontSize = "13px";
+  } else {
+    el.style.fontSize = "";
+  }
+}
 
-    function animateNumber(el, targetValue, duration = 700) {
-      const start = 0;
-      const startTime = performance.now();
-      function tick(now) {
-        const progress = Math.min((now - startTime) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const current = Math.round(start + (targetValue - start) * eased);
-        fitNumberFontSize(el, formatRupiah(current));
-        if (progress < 1) requestAnimationFrame(tick);
-        else fitNumberFontSize(el, formatRupiah(targetValue));
-      }
-      requestAnimationFrame(tick);
-    }
+// 2. Animate Number Murni Untuk Hero Cards (Tanpa Pengecilan Font)
+function animateNumber(el, targetValue, duration = 700) {
+  const start = 0;
+  const startTime = performance.now();
+  function tick(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(start + (targetValue - start) * eased);
+    el.innerText = formatRupiah(current);
+    if (progress < 1) requestAnimationFrame(tick);
+    else el.innerText = formatRupiah(targetValue);
+  }
+  requestAnimationFrame(tick);
+}
 
-    function renderDashboard() {
-      const kpi = GLOBAL_DATA.kpi || {};
-      animateNumber(document.getElementById('kpi-networth'), kpi['Net Worth'] || 0);
-      animateNumber(document.getElementById('kpi-disposable'), kpi['Disposable Income'] || 0);
-      
-      fitNumberFontSize(document.getElementById('kpi-kas'), formatRupiah(kpi['Total Kas']));
-      fitNumberFontSize(document.getElementById('kpi-piutang'), formatRupiah(kpi['Total Piutang']));
-      fitNumberFontSize(document.getElementById('kpi-hutang'), formatRupiah(kpi['Total Hutang']));
-      fitNumberFontSize(document.getElementById('kpi-savings'), formatRupiah(kpi['Net Savings Operasional']));
+// 3. Render Dashboard Terpisah
+function renderDashboard() {
+  const kpi = GLOBAL_DATA.kpi || {};
+  
+  // Hero Cards: Tetap Mewah & Besar (Ukuran Murni CSS)
+  animateNumber(document.getElementById('kpi-networth'), kpi['Net Worth'] || 0);
+  animateNumber(document.getElementById('kpi-disposable'), kpi['Disposable Income'] || 0);
+  
+  // Compact Grid: Auto-Shrink Khusus 4 Kotak Kecil
+  fitCompactGridFontSize(document.getElementById('kpi-kas'), formatRupiah(kpi['Total Kas']));
+  fitCompactGridFontSize(document.getElementById('kpi-piutang'), formatRupiah(kpi['Total Piutang']));
+  fitCompactGridFontSize(document.getElementById('kpi-hutang'), formatRupiah(kpi['Total Hutang']));
+  fitCompactGridFontSize(document.getElementById('kpi-savings'), formatRupiah(kpi['Net Savings Operasional']));
 
-      const hasHutangAktif = (GLOBAL_DATA.hutang || []).some(h => h.status === 'Aktif' || h.status === 'Active');
-      document.getElementById('badge-hutang-nav').classList.toggle('hidden', !hasHutangAktif);
+  const hasHutangAktif = (GLOBAL_DATA.hutang || []).some(h => h.status === 'Aktif' || h.status === 'Active');
+  document.getElementById('badge-hutang-nav').classList.toggle('hidden', !hasHutangAktif);
 
-      const trxList = GLOBAL_DATA.transaksi || [];
-      const dashListEl = document.getElementById('dashboard-trx-list');
-      dashListEl.innerHTML = "";
+  const trxList = GLOBAL_DATA.transaksi || [];
+  const dashListEl = document.getElementById('dashboard-trx-list');
+  dashListEl.innerHTML = "";
 
-      if (trxList.length === 0) {
-        dashListEl.innerHTML = `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
-        return;
-      }
+  if (trxList.length === 0) {
+    dashListEl.innerHTML = `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
+    return;
+  }
 
-      trxList.slice(0, 5).forEach((trx, i) => {
-        const meta = getAmountMeta(trx.jenis);
-        const div = document.createElement('div');
-        div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-2 last:mb-0 select-none";
-        div.style.animationDelay = `${i * 0.05}s`;
-        
-        div.setAttribute("ontouchstart", `startHold(event, '${trx.idTransaksi}', true)`);
-        div.setAttribute("ontouchend", "endHold()");
-        div.setAttribute("ontouchmove", "cancelHold(event)");
-        div.setAttribute("onmousedown", `startHold(event, '${trx.idTransaksi}', true)`);
-        div.setAttribute("onmouseup", "endHold()");
-        div.setAttribute("onmouseleave", "cancelHold(event)");
-        div.setAttribute("oncontextmenu", "event.preventDefault();");
-        div.onclick = () => { vibrate(10); currentModalBackFn = null; showTrxDetail(trx.idTransaksi); };
+  trxList.slice(0, 5).forEach((trx, i) => {
+    const meta = getAmountMeta(trx.jenis);
+    const div = document.createElement('div');
+    div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-2 last:mb-0 select-none";
+    div.style.animationDelay = `${i * 0.05}s`;
+    
+    div.setAttribute("ontouchstart", `startHold(event, '${trx.idTransaksi}', true)`);
+    div.setAttribute("ontouchend", "endHold()");
+    div.setAttribute("ontouchmove", "cancelHold(event)");
+    div.setAttribute("onmousedown", `startHold(event, '${trx.idTransaksi}', true)`);
+    div.setAttribute("onmouseup", "endHold()");
+    div.setAttribute("onmouseleave", "cancelHold(event)");
+    div.setAttribute("oncontextmenu", "event.preventDefault();");
+    div.onclick = () => { vibrate(10); currentModalBackFn = null; showTrxDetail(trx.idTransaksi); };
 
-        div.innerHTML = `
-          <div class="flex items-center space-x-3 pointer-events-none">
-            ${iconChipHtml(trx.jenis)}
-            <div>
-              <p class="text-[13px] font-bold text-main leading-tight">${trx.deskripsi || trx.kategori}</p>
-              <p class="text-[10px] text-faint font-medium mt-0.5">${trx.tanggal} • ${trx.inputOleh}</p>
-            </div>
-          </div>
-          <span class="text-[13px] font-extrabold ${meta.cls} pointer-events-none">${meta.prefix}${formatRupiah(trx.jumlah)}</span>
-        `;
-        dashListEl.appendChild(div);
-      });
-      lucide.createIcons();
-    }
+    div.innerHTML = `
+      <div class="flex items-center space-x-3 pointer-events-none">
+        ${iconChipHtml(trx.jenis)}
+        <div>
+          <p class="text-[13px] font-bold text-main leading-tight">${trx.deskripsi || trx.kategori}</p>
+          <p class="text-[10px] text-faint font-medium mt-0.5">${trx.tanggal} • ${trx.inputOleh}</p>
+        </div>
+      </div>
+      <span class="text-[13px] font-extrabold ${meta.cls} pointer-events-none">${meta.prefix}${formatRupiah(trx.jumlah)}</span>
+    `;
+    dashListEl.appendChild(div);
+  });
+  lucide.createIcons();
+}
 
     function openFormTransaksiBaru() {
       document.getElementById('formTransaksi').reset();
