@@ -376,27 +376,34 @@
         <div id="kpi-disposable" class="text-4xl md:text-5xl font-black tracking-tighter relative z-10 text-main">-</div>
       </div>
 
-      <!-- ROW 3: METRICS GRID (2x2) -->
+      <!-- ROW 3: METRICS GRID (2x2) — AUTO-FITTING FOR TRILLIONS -->
       <div class="grid grid-cols-2 gap-3">
-        <div onclick="vibrate(10); showKpiDetail('Net Savings Operasional')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+        <!-- Net Savings -->
+        <div onclick="vibrate(10); showKpiDetail('Net Savings Operasional')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1 flex items-center">
-             <i data-lucide="piggy-bank" class="w-3 h-3 mr-1.5 text-mochi"></i> Net Savings
+             <i data-lucide="piggy-bank" class="w-3 h-3 mr-1.5 text-mochi flex-shrink-0"></i> Net Savings
           </span>
-          <span id="kpi-savings" class="text-lg md:text-xl font-extrabold amount-info block tracking-tight">-</span>
+          <span id="kpi-savings" class="text-[clamp(10px,3.2vw,15px)] font-black amount-info block tracking-tighter leading-tight whitespace-nowrap overflow-hidden">-</span>
         </div>
-        <div onclick="vibrate(10); showKpiDetail('Total Kas')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+
+        <!-- Total Cash -->
+        <div onclick="vibrate(10); showKpiDetail('Total Kas')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1 flex items-center">
-             <i data-lucide="coins" class="w-3 h-3 mr-1.5 text-mochi"></i> Total Cash
+             <i data-lucide="coins" class="w-3 h-3 mr-1.5 text-mochi flex-shrink-0"></i> Total Cash
           </span>
-          <span id="kpi-kas" class="text-lg md:text-xl font-extrabold text-main block tracking-tight">-</span>
+          <span id="kpi-kas" class="text-[clamp(10px,3.2vw,15px)] font-black text-main block tracking-tighter leading-tight whitespace-nowrap overflow-hidden">-</span>
         </div>
-        <div onclick="vibrate(10); showKpiDetail('Total Piutang')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+
+        <!-- Receivables -->
+        <div onclick="vibrate(10); showKpiDetail('Total Piutang')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1">Receivables</span>
-          <span id="kpi-piutang" class="text-base md:text-lg font-extrabold amount-info block truncate w-full">-</span>
+          <span id="kpi-piutang" class="text-[clamp(10px,3.2vw,15px)] font-black amount-info block tracking-tighter leading-tight whitespace-nowrap overflow-hidden">-</span>
         </div>
-        <div onclick="vibrate(10); showKpiDetail('Total Hutang')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+
+        <!-- Payables -->
+        <div onclick="vibrate(10); showKpiDetail('Total Hutang')" class="floating-item p-3.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1">Payables</span>
-          <span id="kpi-hutang" class="text-base md:text-lg font-extrabold amount-warn block truncate w-full">-</span>
+          <span id="kpi-hutang" class="text-[clamp(10px,3.2vw,15px)] font-black amount-warn block tracking-tighter leading-tight whitespace-nowrap overflow-hidden">-</span>
         </div>
       </div>
 
@@ -1143,6 +1150,23 @@
       return `<div class="icon-chip ${m.chip}"><i data-lucide="${m.icon}" class="w-4 h-4"></i></div>`;
     }
 
+    // Helper untuk menyesuaikan font angka secara dinamis berdasarkan panjang string
+    function fitNumberFontSize(el, formattedText) {
+      el.innerText = formattedText;
+      const len = formattedText.length;
+      
+      // Jika nominal sangat panjang (> 18 Karakter, misal Triliunan: Rp 1.000.000.000.000)
+      if (len > 18) {
+        el.style.fontSize = "10px";
+      } else if (len > 14) { // Milyaran (Rp 9.823.987.252)
+        el.style.fontSize = "12px";
+      } else if (len > 11) { // Ratusan Juta
+        el.style.fontSize = "13px";
+      } else {
+        el.style.fontSize = ""; // Mengikuti kelas CSS default
+      }
+    }
+
     function animateNumber(el, targetValue, duration = 700) {
       const start = 0;
       const startTime = performance.now();
@@ -1150,11 +1174,63 @@
         const progress = Math.min((now - startTime) / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
         const current = Math.round(start + (targetValue - start) * eased);
-        el.innerText = formatRupiah(current);
+        fitNumberFontSize(el, formatRupiah(current));
         if (progress < 1) requestAnimationFrame(tick);
-        else el.innerText = formatRupiah(targetValue);
+        else fitNumberFontSize(el, formatRupiah(targetValue));
       }
       requestAnimationFrame(tick);
+    }
+
+    function renderDashboard() {
+      const kpi = GLOBAL_DATA.kpi || {};
+      animateNumber(document.getElementById('kpi-networth'), kpi['Net Worth'] || 0);
+      animateNumber(document.getElementById('kpi-disposable'), kpi['Disposable Income'] || 0);
+      
+      fitNumberFontSize(document.getElementById('kpi-kas'), formatRupiah(kpi['Total Kas']));
+      fitNumberFontSize(document.getElementById('kpi-piutang'), formatRupiah(kpi['Total Piutang']));
+      fitNumberFontSize(document.getElementById('kpi-hutang'), formatRupiah(kpi['Total Hutang']));
+      fitNumberFontSize(document.getElementById('kpi-savings'), formatRupiah(kpi['Net Savings Operasional']));
+
+      const hasHutangAktif = (GLOBAL_DATA.hutang || []).some(h => h.status === 'Aktif' || h.status === 'Active');
+      document.getElementById('badge-hutang-nav').classList.toggle('hidden', !hasHutangAktif);
+
+      const trxList = GLOBAL_DATA.transaksi || [];
+      const dashListEl = document.getElementById('dashboard-trx-list');
+      dashListEl.innerHTML = "";
+
+      if (trxList.length === 0) {
+        dashListEl.innerHTML = `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
+        return;
+      }
+
+      trxList.slice(0, 5).forEach((trx, i) => {
+        const meta = getAmountMeta(trx.jenis);
+        const div = document.createElement('div');
+        div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-2 last:mb-0 select-none";
+        div.style.animationDelay = `${i * 0.05}s`;
+        
+        div.setAttribute("ontouchstart", `startHold(event, '${trx.idTransaksi}', true)`);
+        div.setAttribute("ontouchend", "endHold()");
+        div.setAttribute("ontouchmove", "cancelHold(event)");
+        div.setAttribute("onmousedown", `startHold(event, '${trx.idTransaksi}', true)`);
+        div.setAttribute("onmouseup", "endHold()");
+        div.setAttribute("onmouseleave", "cancelHold(event)");
+        div.setAttribute("oncontextmenu", "event.preventDefault();");
+        div.onclick = () => { vibrate(10); currentModalBackFn = null; showTrxDetail(trx.idTransaksi); };
+
+        div.innerHTML = `
+          <div class="flex items-center space-x-3 pointer-events-none">
+            ${iconChipHtml(trx.jenis)}
+            <div>
+              <p class="text-[13px] font-bold text-main leading-tight">${trx.deskripsi || trx.kategori}</p>
+              <p class="text-[10px] text-faint font-medium mt-0.5">${trx.tanggal} • ${trx.inputOleh}</p>
+            </div>
+          </div>
+          <span class="text-[13px] font-extrabold ${meta.cls} pointer-events-none">${meta.prefix}${formatRupiah(trx.jumlah)}</span>
+        `;
+        dashListEl.appendChild(div);
+      });
+      lucide.createIcons();
     }
 
     function openFormTransaksiBaru() {
