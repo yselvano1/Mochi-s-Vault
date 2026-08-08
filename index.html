@@ -1010,13 +1010,26 @@
       else { el.style.fontSize = ''; el.style.lineHeight = ''; }
     }
 
-    function getAmountMeta(jenis) {
-      if (!jenis) return { cls: 'amount-out', prefix: '-' };
-      const j = jenis.toLowerCase().trim();
-      if (j.includes('transfer') || j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi') || j.includes('reimburse')) return { cls: 'amount-info', prefix: '' };
-      if (j.includes('masuk') || j.includes('income') || j.includes('terima')) return { cls: 'amount-in', prefix: '+' };
-      return { cls: 'amount-out', prefix: '-' };
-    }
+    // ==========================================
+// UNIFIED AMOUNT & COLOR META (BILINGUAL FIX)
+// ==========================================
+function getAmountMeta(jenis) {
+  if (!jenis) return { cls: 'amount-out', prefix: '-' };
+  const j = jenis.toLowerCase().trim();
+
+  // 🔵 BLUE: Assets in Transit / Transfers / Give Receivables / Reimburse
+  if (j.includes('transfer') || j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi') || j.includes('reimburse')) {
+    return { cls: 'amount-info', prefix: '' };
+  }
+
+  // 🟢 GREEN: Money In (Income, Receive Receivable, Receive Debt)
+  if (j.includes('masuk') || j.includes('income') || j.includes('terima') || j.includes('receive')) {
+    return { cls: 'amount-in', prefix: '+' };
+  }
+
+  // 🔴 RED: Money Out (Expense, Pay Debt)
+  return { cls: 'amount-out', prefix: '-' };
+}
 
     function getCategoryIconMeta(namaKategori, jenis) {
   const k = (namaKategori || '').toLowerCase().trim();
@@ -1860,47 +1873,50 @@
     }
 
     function showTrxDetail(idTrx) {
-      const trx = GLOBAL_DATA.transaksi.find(t => t.idTransaksi === idTrx); 
-      if (!trx) return;
-      
-      const meta = getAmountMeta(trx.jenis);
-      const m = getIconMeta(trx.jenis, trx.kategori);
+  const trx = GLOBAL_DATA.transaksi.find(t => t.idTransaksi === idTrx); 
+  if (!trx) return;
+  
+  const meta = getAmountMeta(trx.jenis);
+  // GUNAKAN FUNGSI YANG SAMA DENGAN DAFTAR TRANSAKSI
+  const m = getCategoryIconMeta(trx.kategori, trx.jenis);
 
-      let html = `<div class="space-y-4 pt-1">`;
-      if (currentModalBackFn) {
-        window.isNestedModalView = true;
-        html += `<button onclick="vibrate(30); window.isNestedModalView = false; currentModalBackFn()" class="tap-shrink text-xs font-extrabold text-main flex items-center mb-2 transition-colors"><i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back</button>`;
-      } else { window.isNestedModalView = false; }
-      
-      html += `
-        <div class="text-center flex flex-col items-center mb-5 pb-4 border-b border-slate-200/60 dark:border-[var(--border-color)]">
-          <span class="text-[10px] font-mono font-black tracking-wider px-3 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mb-4 shadow-sm border border-[var(--border-color)]">REF: ${trx.idTransaksi}</span>
-          <div class="icon-chip ${m.chip} w-14 h-14 rounded-2xl mb-3 shadow-sm border border-slate-100 dark:border-[var(--border-color)]"><i data-lucide="${m.icon}" class="w-6 h-6"></i></div>
-          <h3 class="text-base font-extrabold text-main leading-snug px-4">${trx.deskripsi || trx.kategori}</h3>
-          <p class="text-3xl font-black mt-1.5 tracking-tight ${meta.cls}">${meta.prefix}${formatRupiah(trx.jumlah)}</p>
-          <span class="text-[10px] font-black px-3.5 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mt-2.5 uppercase tracking-wider shadow-sm border border-[var(--border-color)]">${trx.jenis}</span>
-        </div>
-        
-        <div class="bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-2xl p-4 border border-slate-200/60 dark:border-[var(--border-color)] space-y-2.5 text-xs font-semibold">
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Date</span><span class="font-extrabold text-main">${trx.tanggal}</span></div>
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Category</span><span class="font-extrabold text-main">${trx.kategori}</span></div>
-          ${trx.akunSumber ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Source Account</span><span class="font-extrabold text-main">${trx.akunSumber}</span></div>` : ''}
-          ${trx.akunTujuan ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Target Account</span><span class="font-extrabold text-main">${trx.akunTujuan}</span></div>` : ''}
-          ${trx.terkaitHutang ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Payable</span><span class="font-extrabold text-main">${trx.terkaitHutang}</span></div>` : ''}
-          ${trx.terkaitPiutang ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Receivable</span><span class="font-extrabold text-main">${trx.terkaitPiutang}</span></div>` : ''}
-          <div class="flex justify-between items-center pt-0.5"><span class="text-muted">Input By</span><span class="font-extrabold text-main">${trx.inputOleh}</span></div>
-        </div>
+  let html = `<div class="space-y-4 pt-1">`;
+  if (currentModalBackFn) {
+    window.isNestedModalView = true;
+    html += `<button onclick="vibrate(30); window.isNestedModalView = false; currentModalBackFn()" class="tap-shrink text-xs font-extrabold text-main flex items-center mb-2 transition-colors"><i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back</button>`;
+  } else { window.isNestedModalView = false; }
+  
+  html += `
+    <div class="text-center flex flex-col items-center mb-5 pb-4 border-b border-slate-200/60 dark:border-[var(--border-color)]">
+      <span class="text-[10px] font-mono font-black tracking-wider px-3 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mb-4 shadow-sm border border-[var(--border-color)]">REF: ${trx.idTransaksi}</span>
+      <div class="icon-chip ${m.chip} w-14 h-14 rounded-2xl mb-3 shadow-sm border border-slate-100 dark:border-[var(--border-color)]"><i data-lucide="${m.icon}" class="w-6 h-6"></i></div>
+      <h3 class="text-base font-extrabold text-main leading-snug px-4">${trx.deskripsi || trx.kategori}</h3>
+      <p class="text-3xl font-black mt-1.5 tracking-tight ${meta.cls}">${meta.prefix}${formatRupiah(trx.jumlah)}</p>
+      <span class="text-[10px] font-black px-3.5 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mt-2.5 uppercase tracking-wider shadow-sm border border-[var(--border-color)]">${trx.jenis}</span>
+    </div>
+    
+    <div class="bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-2xl p-4 border border-slate-200/60 dark:border-[var(--border-color)] space-y-2.5 text-xs font-semibold">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Date</span><span class="font-extrabold text-main">${trx.tanggal}</span></div>
+      <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Category</span><span class="font-extrabold text-main">${trx.kategori}</span></div>
+      ${trx.akunSumber ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Source Account</span><span class="font-extrabold text-main">${trx.akunSumber}</span></div>` : ''}
+      ${trx.akunTujuan ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Target Account</span><span class="font-extrabold text-main">${trx.akunTujuan}</span></div>` : ''}
+      ${trx.terkaitHutang ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Payable</span><span class="font-extrabold text-main">${trx.terkaitHutang}</span></div>` : ''}
+      ${trx.terkaitPiutang ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Receivable</span><span class="font-extrabold text-main">${trx.terkaitPiutang}</span></div>` : ''}
+      <div class="flex justify-between items-center pt-0.5"><span class="text-muted">Input By</span><span class="font-extrabold text-main">${trx.inputOleh}</span></div>
+    </div>
 
-        ${trx.catatan ? `<div class="text-xs bg-[var(--chip-info-bg)] p-3.5 rounded-2xl amount-info border border-[var(--border-color)]"><span class="font-bold block mb-0.5">Notes:</span><span class="font-medium leading-relaxed block">${trx.catatan}</span></div>` : ''}
-        
-        <div class="flex space-x-3 pt-3">
-          <button onclick="handleEditTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit</button>
-          <button onclick="promptDeleteTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
-        </div>
-      </div>`;
+    ${trx.catatan ? `<div class="text-xs bg-[var(--chip-info-bg)] p-3.5 rounded-2xl amount-info border border-[var(--border-color)]"><span class="font-bold block mb-0.5">Notes:</span><span class="font-medium leading-relaxed block">${trx.catatan}</span></div>` : ''}
+    
+    <div class="flex space-x-3 pt-3">
+      <button onclick="handleEditTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit</button>
+      <button onclick="promptDeleteTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
+    </div>
+  </div>`;
 
-      document.getElementById('modal-detail-inner').innerHTML = html; openModal('modalDetail');
-    }
+  document.getElementById('modal-detail-inner').innerHTML = html; 
+  openModal('modalDetail');
+  lucide.createIcons();
+}
     
     function showAkunHistory(namaAkun) {
       currentModalBackFn = () => showAkunHistory(namaAkun);
