@@ -1568,59 +1568,72 @@
       lucide.createIcons();
     }
 
-    function renderHutangPiutang() {
-      const hutangEl = document.getElementById('list-hutang-aktif');
-      const piutangEl = document.getElementById('list-piutang-aktif');
-      hutangEl.innerHTML = ""; piutangEl.innerHTML = "";
+  function renderHutangPiutang() {
+  const hutangEl = document.getElementById('list-hutang-aktif');
+  const piutangEl = document.getElementById('list-piutang-aktif');
+  hutangEl.innerHTML = ""; 
+  piutangEl.innerHTML = "";
 
-      const hutangAktif = (GLOBAL_DATA.hutang || []).filter(h => h.status === 'Aktif').sort((a, b) => b.sisaHutang - a.sisaHutang);
-      if (hutangAktif.length === 0) hutangEl.innerHTML = `<p class="text-xs text-muted font-semibold">All payables are paid off.</p>`;
-      else {
-        hutangAktif.forEach((h, i) => {
-          const pct = h.totalHutangAwal > 0 ? Math.min(100, ((h.totalHutangAwal - h.sisaHutang) / h.totalHutangAwal) * 100) : 0;
-          const div = document.createElement('div');
-          div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
-          div.style.animationDelay = `${i*0.05}s`;
-          div.onclick = () => { vibrate(30); showHutangDetail(h); };
-          div.innerHTML = `
-            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-              <h4 class="text-[13px] font-extrabold text-main leading-tight">${h.namaHutang}</h4>
-              <span class="text-[9px] amount-out bg-[var(--chip-out-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${h.jenisHutang || 'Payable'}</span>
-            </div>
-            <div class="flex flex-col mb-3">
-              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Remaining Payable</span>
-              <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(h.sisaHutang)}</span>
-            </div>
-            <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
-              <div class="bg-[var(--amount-out)] h-1.5 rounded-full" style="width:${pct}%"></div>
-            </div>
-          `;
-          hutangEl.appendChild(div);
-        });
-      }
+  // 1. FILTER HUTANG (DUKUNGAN BILINGUAL)
+  const hutangAktif = (GLOBAL_DATA.hutang || []).filter(h => {
+    const st = (h.status || '').toLowerCase().trim();
+    return (st === 'aktif' || st === 'active' || st === 'belum lunas' || st === 'unsettled') && Number(h.sisaHutang) > 0;
+  }).sort((a, b) => b.sisaHutang - a.sisaHutang);
 
-      const piutangAktif = (GLOBAL_DATA.piutang || []).filter(p => p.status === 'Belum Lunas' || p.status === 'Aktif');
-      if (piutangAktif.length === 0) piutangEl.innerHTML = `<p class="text-xs text-muted font-semibold">All receivables have been collected.</p>`;
-      else {
-        piutangAktif.forEach((p, i) => {
-          const div = document.createElement('div');
-          div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
-          div.style.animationDelay = `${i*0.05}s`;
-          div.onclick = () => { vibrate(30); showPiutangDetail(p); };
-          div.innerHTML = `
-            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-              <h4 class="text-[13px] font-extrabold text-main leading-tight">${p.namaPiutang}</h4>
-              <span class="text-[9px] amount-info bg-[var(--chip-info-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${p.jenisPiutang || 'Receivable'}</span>
-            </div>
-            <div>
-              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Remaining Receivable</span>
-              <span class="text-[18px] font-black amount-info block leading-none tracking-tight">${formatRupiah(p.sisaPiutang)}</span>
-            </div>
-          `;
-          piutangEl.appendChild(div);
-        });
-      }
-    }
+  if (hutangAktif.length === 0) {
+    hutangEl.innerHTML = `<p class="text-xs text-muted font-semibold">All payables are paid off.</p>`;
+  } else {
+    hutangAktif.forEach((h, i) => {
+      const pct = h.totalHutangAwal > 0 ? Math.min(100, ((h.totalHutangAwal - h.sisaHutang) / h.totalHutangAwal) * 100) : 0;
+      const div = document.createElement('div');
+      div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
+      div.style.animationDelay = `${i*0.05}s`;
+      div.onclick = () => { vibrate(30); showHutangDetail(h); };
+      div.innerHTML = `
+        <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
+          <h4 class="text-[13px] font-extrabold text-main leading-tight">${h.namaHutang}</h4>
+          <span class="text-[9px] amount-out bg-[var(--chip-out-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${h.jenisHutang || 'Payable'}</span>
+        </div>
+        <div class="flex flex-col mb-3">
+          <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Remaining Payable</span>
+          <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(h.sisaHutang)}</span>
+        </div>
+        <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
+          <div class="bg-[var(--amount-out)] h-1.5 rounded-full" style="width:${pct}%"></div>
+        </div>
+      `;
+      hutangEl.appendChild(div);
+    });
+  }
+
+  // 2. FILTER PIUTANG (DUKUNGAN BILINGUAL: UNSETTLED / BELUM LUNAS / AKTIF)
+  const piutangAktif = (GLOBAL_DATA.piutang || []).filter(p => {
+    const st = (p.status || '').toLowerCase().trim();
+    return (st === 'unsettled' || st === 'belum lunas' || st === 'aktif' || st === 'active') && Number(p.sisaPiutang) > 0;
+  });
+
+  if (piutangAktif.length === 0) {
+    piutangEl.innerHTML = `<p class="text-xs text-muted font-semibold">All receivables have been collected.</p>`;
+  } else {
+    piutangAktif.forEach((p, i) => {
+      const div = document.createElement('div');
+      div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
+      div.style.animationDelay = `${i*0.05}s`;
+      div.onclick = () => { vibrate(30); showPiutangDetail(p); };
+      div.innerHTML = `
+        <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
+          <h4 class="text-[13px] font-extrabold text-main leading-tight">${p.namaPiutang}</h4>
+          <span class="text-[9px] amount-info bg-[var(--chip-info-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${p.jenisPiutang || 'Receivable'}</span>
+        </div>
+        <div>
+          <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Remaining Receivable</span>
+          <span class="text-[18px] font-black amount-info block leading-none tracking-tight">${formatRupiah(p.sisaPiutang)}</span>
+        </div>
+      `;
+      piutangEl.appendChild(div);
+    });
+  }
+}
 
     function populateFormDropdowns() {
       const fillSelect = (id, items, key) => {
