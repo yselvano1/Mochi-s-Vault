@@ -1,12 +1,12 @@
 {
-  "name": "Mochi's Vault — Keuangan Yosa & Fani",
+  "name": "Mochi's Vault",
   "short_name": "Mochi's Vault",
   "description": "Aplikasi Keuangan Rumah Tangga Yosa & Fani",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0B1120",
-  "theme_color": "#0F766E",
+  "background_color": "#FAF8F5",
+  "theme_color": "#FAF8F5",
   "icons": [
     {
       "src": "https://lh3.googleusercontent.com/d/1QxqJcDBCMkRnegr1rI5Sh9Q_atWia0LE=s192",
