@@ -795,29 +795,40 @@
 
     let GLOBAL_DATA = {};
     let currentModalBackFn = null;
+    let trxToDelete = null; <!-- SCRIPT JAVASCRIPT DIMULAI DI SINI -->
+  <script>
+    // ==========================================
+    // CONFIGURATION & GLOBAL STATES
+    // ==========================================
+    const API_URL = "https://script.google.com/macros/s/AKfycbx8HzV4KHpr6QAM4bDebEbBTIwSNeg5idIaQZUeBUuPu6OJ3xWMFvby82aOrq1CPYCLHg/exec";
+
+    let GLOBAL_DATA = {};
+    let currentModalBackFn = null;
     let trxToDelete = null; 
+    let activeModals = []; 
+    let donutChartInstance = null;
+    let areaChartInstance = null;
+    let kategoriAnalysisExpanded = {};
+    let kategoriPickerExpanded = {};
+    let currentTab = 'dashboard';
+    const tabs = ['dashboard', 'riwayat', 'saldo', 'hutang'];
+    
+    window.isNestedModalView = false;
+    history.replaceState({ modal: null }, '');
 
     // ==========================================
     // 1. SYSTEM, UX HELPERS & HISTORY API
     // ==========================================
 
-    let activeModals = []; 
-    history.replaceState({ modal: null }, '');
-    window.isNestedModalView = false; // Satpam Anti-Loop Modal
-
     window.addEventListener('popstate', (e) => {
-      // OS Back Button atau Edge Swipe (Native) Ditekan
       if (activeModals.length > 0) {
         const topModal = activeModals[activeModals.length - 1];
-        
-        // Hanya memicu fungsi kembali jika sedang ada di dalam nested modal (Detail Transaksi)
         if (topModal === 'modalDetail' && window.isNestedModalView && currentModalBackFn) {
           let fn = currentModalBackFn;
-          window.isNestedModalView = false; // Lepas pengaman, kita mundur 1 langkah
+          window.isNestedModalView = false;
           history.pushState({ modal: 'modalDetail' }, '');
-          fn(); // Kembali ke Riwayat Akun / AP/R
+          fn();
         } else {
-          // Jika tidak ada nested view, tutup modal sepenuhnya!
           window.isNestedModalView = false;
           currentModalBackFn = null;
           performVisualClose(topModal);
@@ -875,148 +886,6 @@
       return toast; 
     }
 
-    let donutChartInstance = null;
-    let areaChartInstance = null;
-
-    // Fungsi Render Keduanya
-    function renderVisualCharts() {
-      renderDonutChart();
-      renderAreaChart();
-    }
-
-    // 1. Donut Chart + Mochi Dynamic Mood
-    function renderDonutChart() {
-      const now = new Date();
-      const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
-
-      const trxBulanIni = (GLOBAL_DATA.transaksi || []).filter(t =>
-        t.jenis === 'Pengeluaran' && t.tanggal && t.tanggal.substring(0, 7) === ym
-      );
-
-      const groups = {};
-      let totalPengeluaran = 0;
-      trxBulanIni.forEach(t => {
-        const utama = t.kategoriUtama || t.kategori || 'Lainnya';
-        const val = Number(t.jumlah) || 0;
-        groups[utama] = (groups[utama] || 0) + val;
-        totalPengeluaran += val;
-      });
-
-      const labels = Object.keys(groups);
-      const series = Object.values(groups);
-
-      // Logika Mood Mochi berdasarkan rasio pengeluaran (Contoh Budget Ideal: Rp 10 Juta)
-      const budgetLimit = 10000000; 
-      const ratio = totalPengeluaran / budgetLimit;
-      
-      const emojiEl = document.getElementById('mochi-emoji');
-      const badgeEl = document.getElementById('mochi-status-badge');
-
-      if (ratio > 1.0) {
-        emojiEl.innerText = "🙀"; // Panik / Overbudget
-        badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20";
-        badgeEl.innerText = "Overbudget! 🔥";
-      } else if (ratio > 0.75) {
-        emojiEl.innerText = "😾"; // Waspada
-        badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20";
-        badgeEl.innerText = "Waspada ⚠️";
-      } else {
-        emojiEl.innerText = "😸"; // Aman & Bahagia
-        badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20";
-        badgeEl.innerText = "Aman 🐾";
-      }
-
-      if (series.length === 0) {
-        if(donutChartInstance) donutChartInstance.destroy();
-        document.getElementById('chart-donut-kategori').innerHTML = `<p class="text-xs text-center text-muted py-6 font-semibold">Belum ada pengeluaran bulan ini.</p>`;
-        return;
-      }
-
-      const isDark = document.documentElement.classList.contains('dark');
-      const options = {
-        series: series,
-        labels: labels,
-        chart: { type: 'donut', height: 260, fontFamily: 'Plus Jakarta Sans, sans-serif' },
-        colors: ['#8D4012', '#DB9F75', '#10B981', '#38BDF8', '#F59E0B', '#8B5CF6'],
-        stroke: { show: false },
-        dataLabels: { enabled: false },
-        legend: { position: 'bottom', fontSize: '11px', labels: { colors: isDark ? '#CBD5E1' : '#334155' } },
-        plotOptions: {
-          pie: {
-            donut: {
-              size: '72%',
-              background: 'transparent'
-            }
-          }
-        },
-        tooltip: {
-          y: { formatter: (val) => formatRupiah(val) }
-        }
-      };
-
-      if (donutChartInstance) donutChartInstance.destroy();
-      donutChartInstance = new ApexCharts(document.querySelector("#chart-donut-kategori"), options);
-      donutChartInstance.render();
-    }
-
-    // 2. Spline Area Chart + Milestone Goal Line
-    function renderAreaChart() {
-      const isDark = document.documentElement.classList.contains('dark');
-      
-      // Simulasi/Kalkulasi Tren Net Savings per Bulan
-      const categories = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun (Target)'];
-      const dataSavings = [15000000, 28000000, 42000000, 58000000, 75000000, 100000000]; // Progres menuju 100 Juta
-
-      const options = {
-        series: [{ name: 'Total Vault', data: dataSavings }],
-        chart: {
-          type: 'area',
-          height: 220,
-          toolbar: { show: false },
-          sparkline: { enabled: false },
-          fontFamily: 'Plus Jakarta Sans, sans-serif'
-        },
-        colors: ['#10B981'],
-        stroke: { curve: 'smooth', width: 3 },
-        fill: {
-          type: 'gradient',
-          gradient: {
-            shadeIntensity: 1,
-            opacityFrom: 0.45,
-            opacityTo: 0.05,
-            stops: [0, 90, 100]
-          }
-        },
-        xaxis: {
-          categories: categories,
-          labels: { style: { colors: isDark ? '#94A3B8' : '#64748B', fontSize: '10px' } },
-          axisBorder: { show: false },
-          axisTicks: { show: false }
-        },
-        yaxis: { show: false },
-        grid: { show: false },
-        annotations: {
-          xaxis: [{
-            x: 'Jun (Target)',
-            borderColor: '#F59E0B',
-            label: {
-              borderColor: '#F59E0B',
-              style: { color: '#fff', background: '#F59E0B', fontSize: '9px', fontWeight: 'bold' },
-              text: 'Goal: Rp 100M'
-            }
-          }]
-        },
-        tooltip: {
-          theme: isDark ? 'dark' : 'light',
-          y: { formatter: (val) => formatRupiah(val) }
-        }
-      };
-
-      if (areaChartInstance) areaChartInstance.destroy();
-      areaChartInstance = new ApexCharts(document.querySelector("#chart-savings-trend"), options);
-      areaChartInstance.render();
-    }
-    
     function showRewardAnimation(subtitleText = "Tersimpan") {
       return new Promise(resolve => {
         const overlay = document.getElementById('reward-overlay');
@@ -1075,11 +944,9 @@
 
     function closeModal(id) {
       if (activeModals.includes(id)) {
-        // Paksa lepas status nested jika menekan X agar benar-benar tertutup
         if (id === 'modalDetail') {
           window.isNestedModalView = false;
         }
-        // Memicu native popstate agar sinkron dengan history browser OS
         history.back();
       } else {
         performVisualClose(id);
@@ -1096,9 +963,6 @@
       }
       activeModals = activeModals.filter(m => m !== id);
     }
-
-    let currentTab = 'dashboard';
-    const tabs = ['dashboard', 'riwayat', 'saldo', 'hutang'];
 
     function switchTab(tabId) {
       currentTab = tabId;
@@ -1146,7 +1010,6 @@
       let dy = tEndY - tStartY;
 
       if (Math.abs(dx) > 60 && Math.abs(dy) < 40) {
-        // Diserahkan 100% kepada OS untuk Edge Swipe Back
         let isEdgeSwipe = (tStartX < 40) || (tStartX > window.innerWidth - 40);
         
         if (!isEdgeSwipe && activeModals.length === 0) {
@@ -1167,7 +1030,6 @@
     let holdStartX = 0;
     let holdStartY = 0;
 
-    // clearBackFn digunakan agar Hold di Riwayat Akun tidak menghapus memori kembali ke akun tersebut
     window.startHold = function(e, idTrx, clearBackFn = true) {
       holdActive = true;
       let clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -1215,7 +1077,6 @@
       const isDark = pref ? pref === 'dark' : systemDark;
       document.documentElement.classList.toggle('dark', isDark);
       updateDarkModeIcon(isDark);
-      // UPDATE: Sesuaikan dengan hex palette baru
       document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#0E1715" : "#F8F6F0");
     }
     
@@ -1223,7 +1084,6 @@
       const isDark = document.documentElement.classList.toggle('dark');
       localStorage.setItem('yf-theme', isDark ? 'dark' : 'light');
       updateDarkModeIcon(isDark);
-      // UPDATE: Sesuaikan dengan hex palette baru
       document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#0E1715" : "#F8F6F0");
     }
     
@@ -1263,48 +1123,7 @@
         renderRiwayat();
         renderSaldo();
         renderHutangPiutang();
-        renderVisualCharts(); // Render grafik Donut & Spline
-        lucide.createIcons();
-      } catch (err) {
-        showToast("Gagal memuat data: " + err.message, "error");
-      }
-    }
-        
-        populateFormDropdowns();
-        populateYearFilter();
-        renderDashboard();
-        renderKategoriAnalysis();
-        renderRiwayat();
-        renderSaldo();
-        renderHutangPiutang();
-        async function loadAppData(isSilentReload = false) {
-      try {
-        const res = await fetch(API_URL + "?action=getAppData", { redirect: 'follow' });
-        const result = await res.json();
-        if (result.status === 'error') throw new Error(result.message);
-
-        GLOBAL_DATA = result.data || result;
-        
-        if(!isSilentReload) {
-          const splash = document.getElementById('splash-screen');
-          if(splash) {
-            splash.classList.add('opacity-0');
-            setTimeout(() => splash.classList.add('hidden'), 700);
-          }
-          document.getElementById('main-content').classList.remove('hidden');
-        }
-        
-        populateFormDropdowns();
-        populateYearFilter();
-        renderDashboard();
-        renderKategoriAnalysis();
-        renderRiwayat();
-        renderSaldo();
-        renderHutangPiutang();
-        
-        // 🐾 TAMBAHKAN BARIS KODE INI DI SINI:
         renderVisualCharts();
-        
         lucide.createIcons();
       } catch (err) {
         showToast("Gagal memuat data: " + err.message, "error");
@@ -1312,7 +1131,152 @@
     }
 
     // ==========================================
-    // 5. RENDERING & UI UPDATES
+    // 5. CHARTS & VISUALIZATIONS
+    // ==========================================
+
+    function renderVisualCharts() {
+      renderDonutChart();
+      renderAreaChart();
+    }
+
+    function renderDonutChart() {
+      const now = new Date();
+      const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+
+      const trxBulanIni = (GLOBAL_DATA.transaksi || []).filter(t =>
+        t.jenis === 'Pengeluaran' && t.tanggal && t.tanggal.substring(0, 7) === ym
+      );
+
+      const groups = {};
+      let totalPengeluaran = 0;
+      trxBulanIni.forEach(t => {
+        const utama = t.kategoriUtama || t.kategori || 'Lainnya';
+        const val = Number(t.jumlah) || 0;
+        groups[utama] = (groups[utama] || 0) + val;
+        totalPengeluaran += val;
+      });
+
+      const labels = Object.keys(groups);
+      const series = Object.values(groups);
+
+      const budgetLimit = 10000000; 
+      const ratio = totalPengeluaran / budgetLimit;
+      
+      const emojiEl = document.getElementById('mochi-emoji');
+      const badgeEl = document.getElementById('mochi-status-badge');
+
+      if (emojiEl && badgeEl) {
+        if (ratio > 1.0) {
+          emojiEl.innerText = "🙀";
+          badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20";
+          badgeEl.innerText = "Overbudget! 🔥";
+        } else if (ratio > 0.75) {
+          emojiEl.innerText = "😾";
+          badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20";
+          badgeEl.innerText = "Waspada ⚠️";
+        } else {
+          emojiEl.innerText = "😸";
+          badgeEl.className = "text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20";
+          badgeEl.innerText = "Aman 🐾";
+        }
+      }
+
+      const chartEl = document.querySelector("#chart-donut-kategori");
+      if (!chartEl) return;
+
+      if (series.length === 0) {
+        if(donutChartInstance) donutChartInstance.destroy();
+        chartEl.innerHTML = `<p class="text-xs text-center text-muted py-6 font-semibold">Belum ada pengeluaran bulan ini.</p>`;
+        return;
+      }
+
+      const isDark = document.documentElement.classList.contains('dark');
+      const options = {
+        series: series,
+        labels: labels,
+        chart: { type: 'donut', height: 260, fontFamily: 'Plus Jakarta Sans, sans-serif' },
+        colors: ['#8D4012', '#DB9F75', '#10B981', '#38BDF8', '#F59E0B', '#8B5CF6'],
+        stroke: { show: false },
+        dataLabels: { enabled: false },
+        legend: { position: 'bottom', fontSize: '11px', labels: { colors: isDark ? '#CBD5E1' : '#334155' } },
+        plotOptions: {
+          pie: {
+            donut: {
+              size: '72%',
+              background: 'transparent'
+            }
+          }
+        },
+        tooltip: {
+          y: { formatter: (val) => formatRupiah(val) }
+        }
+      };
+
+      if (donutChartInstance) donutChartInstance.destroy();
+      donutChartInstance = new ApexCharts(chartEl, options);
+      donutChartInstance.render();
+    }
+
+    function renderAreaChart() {
+      const chartEl = document.querySelector("#chart-savings-trend");
+      if (!chartEl) return;
+
+      const isDark = document.documentElement.classList.contains('dark');
+      const categories = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun (Target)'];
+      const dataSavings = [15000000, 28000000, 42000000, 58000000, 75000000, 100000000];
+
+      const options = {
+        series: [{ name: 'Total Vault', data: dataSavings }],
+        chart: {
+          type: 'area',
+          height: 220,
+          toolbar: { show: false },
+          sparkline: { enabled: false },
+          fontFamily: 'Plus Jakarta Sans, sans-serif'
+        },
+        colors: ['#10B981'],
+        stroke: { curve: 'smooth', width: 3 },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shadeIntensity: 1,
+            opacityFrom: 0.45,
+            opacityTo: 0.05,
+            stops: [0, 90, 100]
+          }
+        },
+        xaxis: {
+          categories: categories,
+          labels: { style: { colors: isDark ? '#94A3B8' : '#64748B', fontSize: '10px' } },
+          axisBorder: { show: false },
+          axisTicks: { show: false }
+        },
+        yaxis: { show: false },
+        grid: { show: false },
+        annotations: {
+          xaxis: [{
+            x: 'Jun (Target)',
+            borderColor: '#F59E0B',
+            label: {
+              borderColor: '#F59E0B',
+              style: { color: '#fff', background: '#F59E0B', fontSize: '9px', fontWeight: 'bold' },
+              text: 'Goal: Rp 100M'
+            }
+          }]
+        },
+        tooltip: {
+          theme: isDark ? 'dark' : 'light',
+          y: { formatter: (val) => formatRupiah(val) }
+        }
+      };
+
+      if (areaChartInstance) areaChartInstance.destroy();
+      areaChartInstance = new ApexCharts(chartEl, options);
+      areaChartInstance.render();
+    }
+
+    // ==========================================
+    // 6. RENDERING & UI UPDATES
     // ==========================================
 
     function formatRupiah(number) {
@@ -1354,6 +1318,7 @@
     }
 
     function animateNumber(el, targetValue, duration = 700) {
+      if(!el) return;
       const start = 0;
       const startTime = performance.now();
       function tick(now) {
@@ -1514,7 +1479,6 @@
       lucide.createIcons();
     }
 
-    let kategoriAnalysisExpanded = {};
     function toggleKategoriAnalysis(utama) {
       vibrate(10);
       kategoriAnalysisExpanded[utama] = !kategoriAnalysisExpanded[utama];
@@ -1859,7 +1823,6 @@
       handleJenisChange();
     }
 
-    let kategoriPickerExpanded = {};
     function escapeAttr(str) { return String(str).replace(/'/g, "\\'"); }
 
     function resetKategoriPicker() {
@@ -1921,7 +1884,10 @@
       lucide.createIcons();
     }
 
-    function toggleKategoriGroup(utama) { kategoriPickerExpanded[utama] = !kategoriPickerExpanded[utama]; renderKategoriPickerList(); }
+    function toggleKategoriGroup(utama) { 
+      kategoriPickerExpanded[utama] = !kategoriPickerExpanded[utama]; 
+      renderKategoriPickerList(); 
+    }
 
     function selectKategori(namaKategori) {
       document.getElementById('form-kategori').value = namaKategori;
@@ -1942,7 +1908,10 @@
       const hasHutang = ['Terima Hutang (Pinjam)', 'Bayar Hutang/Cicilan'].includes(jenis);
       const hasPiutang = ['Beri Piutang (Menalangi)', 'Terima Piutang'].includes(jenis);
 
-      show('wrap-akunsumber', hasSumber); show('wrap-akuntujuan', hasTujuan); show('wrap-hutang', hasHutang); show('wrap-piutang', hasPiutang);
+      show('wrap-akunsumber', hasSumber); 
+      show('wrap-akuntujuan', hasTujuan); 
+      show('wrap-hutang', hasHutang); 
+      show('wrap-piutang', hasPiutang);
     }
 
     function showKpiDetail(kpiName) {
@@ -1981,7 +1950,8 @@
         html += `<p class="font-extrabold text-main mb-2 text-[13px]">Keterangan:</p><p class="text-muted leading-relaxed font-semibold">Selisih antara total pemasukan operasional dan total pengeluaran operasional.</p>`;
       }
       html += `</div></div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html; openModal('modalDetail');
+      document.getElementById('modal-detail-inner').innerHTML = html; 
+      openModal('modalDetail');
     }
 
     function showTrxDetail(idTrx) {
@@ -1993,7 +1963,6 @@
 
       let html = `<div class="space-y-4 pt-1">`;
       
-      // Tombol Back untuk Nested Modal
       if (currentModalBackFn) {
         window.isNestedModalView = true;
         html += `
