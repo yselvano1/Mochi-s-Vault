@@ -85,9 +85,6 @@
       box-shadow: 0 0 0 3px rgba(200, 122, 75, 0.15), var(--shadow-inset); background-color: var(--bg-card);
     }
 
-    @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
-    .input-error { animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; border: 1px solid var(--amount-out) !important; box-shadow: 0 0 0 3px var(--chip-out-bg), var(--shadow-inset) !important; background-color: var(--bg-card) !important; }
-
     .text-main { color: var(--text-primary); } .text-muted { color: var(--text-secondary); } .text-faint { color: var(--text-tertiary); }
     .amount-in { color: var(--amount-in) !important; } .amount-out { color: var(--amount-out) !important; }
     .amount-info { color: var(--amount-info) !important; } .amount-warn { color: var(--amount-warn) !important; }
@@ -98,7 +95,7 @@
     .chip-info { background-color: var(--chip-info-bg); color: var(--amount-info); }
     .chip-warn { background-color: var(--chip-warn-bg); color: var(--amount-warn); }
 
-    .clean-topbar { background: linear-gradient(180deg, var(--bg-app) 70%, transparent 100%); backdrop-filter: blur(12px); padding-top: max(2rem, env(safe-area-inset-top)); }
+    .clean-topbar { background: linear-gradient(180deg, var(--bg-app) 80%, transparent 100%); backdrop-filter: blur(12px); padding-top: max(2.5rem, env(safe-area-inset-top)); }
     .nav-bar-bottom { background-color: var(--glass-bg) !important; backdrop-filter: blur(20px); border-top: 1px solid var(--glass-border); padding-bottom: env(safe-area-inset-bottom); }
     .nav-item { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
@@ -136,41 +133,58 @@
     </div>
   </div>
 
+  <!-- REWARD OVERLAY -->
+  <div id="reward-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center pointer-events-none">
+    <div class="absolute inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/80 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="reward-bg"></div>
+    <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="reward-content">
+      <div class="relative">
+        <div class="absolute inset-0 bg-mochi-light rounded-full animate-ping opacity-75"></div>
+        <div class="w-24 h-24 bg-gradient-to-tr from-mochi to-mochi-light rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(200,122,75,0.6)] relative z-10 border-4 border-white dark:border-coffee-darkest">
+          <svg class="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 11.5c-2.8 0-5 2.1-5 4.8 0 2.2 1.8 3.7 5 3.7s5-1.5 5-3.7c0-2.7-2.2-4.8-5-4.8z"/>
+            <ellipse cx="6.5" cy="9.5" rx="1.8" ry="2.5"/>
+            <ellipse cx="10.2" cy="6.8" rx="1.8" ry="2.5"/>
+            <ellipse cx="13.8" cy="6.8" rx="1.8" ry="2.5"/>
+            <ellipse cx="17.5" cy="9.5" rx="1.8" ry="2.5"/>
+          </svg>
+        </div>
+      </div>
+      <h2 class="text-white text-3xl font-black mt-6 drop-shadow-lg tracking-tight">Purr-fect! 🐾</h2>
+      <p id="reward-subtitle" class="text-mochi-light font-bold mt-1.5 drop-shadow-md text-sm bg-coffee-dark/50 px-4 py-1 rounded-full">Tersimpan</p>
+    </div>
+  </div>
+
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- HEADER BAR -->
-  <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
-    <div class="flex items-center space-x-4 min-w-0 flex-1 pr-3">
-      <div class="relative w-16 h-16 md:w-20 md:h-20 flex-shrink-0 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-md flex items-center justify-center self-center">
-        <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Avatar" class="w-full h-full object-contain filter drop-shadow-sm transition-all duration-300">
-      </div>
-
-      <div class="flex flex-col justify-center min-w-0 flex-1">
-        <div class="flex items-center space-x-2 mb-0.5">
-          <span id="mochi-mood-badge" class="text-[8px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-in-bg)] amount-in">Rich Mochi</span>
-          <span class="text-[10px] text-faint font-semibold">• Live Status</span>
+  <!-- REVISI TOP BAR: LEBIH BESAR, BERANI & CLEAN AEN ALA REFERENSI GAMBAR -->
+  <header class="clean-topbar sticky top-0 z-40 px-6 pt-10 pb-6 max-w-3xl mx-auto">
+    <!-- BARIS 1: AVATAR MOCHI STATUS & TOMBOL THEME TOGGLE -->
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center space-x-3">
+        <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-md flex items-center justify-center">
+          <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Avatar" class="w-full h-full object-contain filter drop-shadow-sm transition-all duration-300">
         </div>
-        <h1 id="mochi-mood-title" class="text-sm md:text-base font-black text-main leading-tight tracking-tight truncate">
-          Mochi is purr-fectly happy! 💰
-        </h1>
-        <p id="mochi-mood-desc" class="text-[11px] font-semibold text-muted mt-0.5 leading-snug truncate">
-          Expenses are only at 0% of income!
-        </p>
-        <p id="mochi-mood-subdesc" class="text-[11px] font-semibold text-muted leading-snug truncate">
-          Mochi is swimming in gold bars!
-        </p>
+        <div class="flex flex-col">
+          <span id="mochi-mood-badge" class="text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-in-bg)] amount-in w-max">Rich Mochi</span>
+          <span class="text-[10px] text-faint font-semibold mt-0.5">• Live Status</span>
+        </div>
       </div>
-    </div>
 
-    <div class="flex items-center space-x-2">
-      <button onclick="requestReminderPermission()" class="tap-shrink w-10 h-10 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm flex-shrink-0" title="Aktifkan Pengingat Jam 8 Malam">
-        <i data-lucide="bell" class="w-4.5 h-4.5 text-mochi"></i>
-      </button>
-
+      <!-- HANYA TERSEDIA DARK / LIGHT MODE TOGGLE (LONCENG DIHAPUS BERSIH) -->
       <button onclick="toggleDarkMode(); vibrate(30);" class="tap-shrink w-11 h-11 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm flex-shrink-0" aria-label="Toggle Mode">
         <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
         <i data-lucide="moon" id="icon-moon" class="w-5 h-5"></i>
       </button>
+    </div>
+
+    <!-- BARIS 2: JUDUL & CAPTION BESAR DAN TEGAS -->
+    <div class="space-y-1">
+      <h1 id="mochi-mood-title" class="text-2xl md:text-3xl font-black text-main leading-tight tracking-tight">
+        Mochi is purr-fectly happy! 💰
+      </h1>
+      <p id="mochi-mood-desc" class="text-xs md:text-sm font-semibold text-muted leading-snug">
+        Expenses are only at 0% of income! Mochi is swimming in gold bars!
+      </p>
     </div>
   </header>
   
@@ -239,7 +253,7 @@
         <div id="dashboard-category-analysis" class="space-y-3 relative z-10"></div>
       </div>
 
-      <!-- BUDGET MANAGEMENT CARD (TAMPILAN HANYA YANG BER-BUDGET > 0) -->
+      <!-- BUDGET MANAGEMENT CARD -->
       <div class="floating-card p-5 relative overflow-hidden">
         <div class="flex justify-between items-center mb-3 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <div class="flex items-center space-x-2">
@@ -367,7 +381,7 @@
         <div id="list-accounts-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
       </div>
       <div class="floating-card p-5">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted mb-4 flex items-center">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
           <i data-lucide="piggy-bank" class="w-4 h-4 mr-2"></i> Dana Darurat & Tabungan
         </h3>
         <div id="list-accounts-savings" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
@@ -577,7 +591,7 @@
     </div>
   </div>
 
-  <!-- MODAL: MASTER DATA (PERBAIKAN REVISI 1: INPUT NAMA LAMA UNTUK EDIT AKUN) -->
+  <!-- MODAL: MASTER DATA -->
   <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3">
@@ -586,7 +600,6 @@
       </div>
       <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-3 text-sm">
         <input type="hidden" id="master-type">
-        <!-- FIELD RAHASIA UNTUK MENYIMPAN NAMA LAMA AGAR TIDAK DUPLIKAT SAAT EDIT AKUN -->
         <input type="hidden" id="master-old-name">
 
         <div id="master-category-type-wrap" class="hidden">
@@ -1382,6 +1395,19 @@
       renderCategoryAnalysis();
     }
 
+    const DEFAULT_CATEGORY_BUDGETS = {
+      'Food & Groceries': 3500000,
+      'Transportation': 1500000,
+      'Bills & Utilities': 2000000,
+      'Healthcare': 1000000,
+      'Household': 1000000,
+      'Personal Care': 800000,
+      'Entertainment': 1000000,
+      'Education': 1000000,
+      'Gifts & Donations': 500000,
+      'Other Expenses': 500000
+    };
+
     let currentMochiMood = 'chill';
     let mochiBlinkTimeout = null;
 
@@ -1455,7 +1481,6 @@
       }, 1500);
     }
 
-    // POIN 2: HANYA TAMPILKAN ANGGARAN DENGAN NILAI > 0
     function renderBudgetSummaryCard() {
       const container = document.getElementById('dashboard-budget-summary');
       if (!container) return;
@@ -1489,7 +1514,6 @@
       return saved ? JSON.parse(saved) : {};
     }
 
-    // POIN 2: DYNAMIC MAIN CATEGORIES PULLER DARI MASTER CATEGORY USER
     function getExpenseMainCategories() {
       const categories = GLOBAL_DATA.categories || [];
       const expenseCats = categories.filter(c => (c.type || '').toLowerCase() === 'expense');
@@ -1781,7 +1805,7 @@
         return;
       }
 
-      showToast("Menyiapkan dokumen PDF...", "info");
+      let loadingToast = showToast("Menyiapkan dokumen PDF...", "info");
 
       let totalIn = 0, totalOut = 0;
       filtered.forEach(t => {
@@ -1796,7 +1820,7 @@
       printContainer.style.color = '#181412';
 
       printContainer.innerHTML = `
-        <div style="border-bottom: 2px solid #C87A4B; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="border-bottom: 2px solid #C87A4B; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-between: space-between; align-items: center;">
           <div>
             <h1 style="font-size: 20px; font-weight: 900; margin: 0; color: #C87A4B;">MOCHI'S VAULT</h1>
             <p style="font-size: 11px; color: #80736B; margin: 4px 0 0 0;">Laporan Keuangan & Statement Mutasi Resmi — Yosa & Fani</p>
@@ -1859,44 +1883,12 @@
       };
 
       html2pdf().set(opt).from(printContainer).save().then(() => {
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         showToast("PDF berhasil diunduh!", "success");
+      }).catch(err => {
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+        showToast("Gagal membuat PDF: " + err.message, "error");
       });
-    }
-
-    function requestReminderPermission() {
-      if (!("Notification" in window)) {
-        showToast("Browser tidak mendukung notifikasi.", "error");
-        return;
-      }
-
-      Notification.requestPermission().then(permission => {
-        if (permission === "granted") {
-          showToast("Pengingat harian jam 8 malam aktif! 🐾");
-          scheduleDaily8PMReminder();
-        } else {
-          showToast("Izin notifikasi ditolak.", "error");
-        }
-      });
-    }
-
-    function scheduleDaily8PMReminder() {
-      if (Notification.permission !== "granted") return;
-
-      setInterval(() => {
-        const now = new Date();
-        if (now.getHours() === 20 && now.getMinutes() === 0) {
-          const lastTrigger = localStorage.getItem('mochi_reminder_last_triggered');
-          const today = now.toISOString().substring(0, 10);
-
-          if (lastTrigger !== today) {
-            new Notification("Mochi's Vault 🐾", {
-              body: "Meow! Jangan lupa catat transaksi keuanganmu dan Fani hari ini ya!",
-              icon: "mochi-logo-new.png"
-            });
-            localStorage.setItem('mochi_reminder_last_triggered', today);
-          }
-        }
-      }, 30000);
     }
 
     function renderWallets() {
@@ -2466,7 +2458,7 @@
 
     function openMasterModal(type) {
       document.getElementById('master-type').value = type;
-      document.getElementById('master-old-name').value = ""; // Reset old name
+      document.getElementById('master-old-name').value = "";
       const titleEl = document.getElementById('master-title');
       const extraEl = document.getElementById('master-extra-field');
       extraEl.innerHTML = "";
@@ -2578,7 +2570,6 @@
       openModal('modalMaster');
     }
 
-    // POIN 1 FIX: DENGAN MEMBAWA `oldName`, BACKEND AKAN MENGEDIT BARIS LAMA BUKAN MENAMBAH BARIS DUPLIKAT
     async function handleSaveMaster(event) {
       event.preventDefault();
       const type = document.getElementById('master-type').value;
@@ -2643,7 +2634,6 @@
       document.getElementById('form-date').valueAsDate = new Date();
 
       loadAppData().then(() => {
-        scheduleDaily8PMReminder();
         const params = new URLSearchParams(location.search);
         if (params.get('action') === 'add') {
           setTimeout(() => openNewTransactionForm(), 400);
