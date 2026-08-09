@@ -1,4 +1,4 @@
-const APP_VERSION = "v11.3";
+const APP_VERSION = "v11.4.1";
 const CACHE_NAME = "mochis-vault-" + APP_VERSION;
 
 const ASSETS = [
