@@ -169,15 +169,16 @@
 
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- TOP BAR (CLEAN, BOLD & SPACIOUS) -->
-  <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-4 flex items-center justify-between max-w-3xl mx-auto">
-    <div class="flex flex-col justify-center">
-      <h1 class="text-2xl md:text-3xl font-black text-main leading-none tracking-tight flex items-center">
-        Hello, Meow <span class="ml-2 text-xl">🐾</span>
-      </h1>
-      <p class="text-xs md:text-sm font-semibold text-muted mt-2">
-        Guarding your wealth, me-ow
-      </p>
+<!-- TOP BAR (RESTORED AVATAR & CLEAN HEADER) -->
+  <header class="clean-topbar sticky top-0 z-40 px-5 pt-7 pb-4 flex items-center justify-between max-w-3xl mx-auto">
+    <div class="flex items-center space-x-3.5">
+      <div class="w-12 h-12 rounded-full bg-[var(--bg-subtle-2)] overflow-hidden flex items-center justify-center shadow-sm border-2 border-[var(--border-color)] flex-shrink-0">
+        <img src="mochi-logo-new.png" alt="Mochi" class="w-full h-full object-cover">
+      </div>
+      <div class="flex flex-col justify-center">
+        <h1 class="text-xl md:text-2xl font-black text-main leading-none tracking-tight">Hello, Meow</h1>
+        <p class="text-xs font-semibold text-muted mt-1">Guarding your wealth, me-ow 🐾</p>
+      </div>
     </div>
 
     <button onclick="toggleDarkMode(); vibrate(30);" class="tap-shrink w-10 h-10 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm" aria-label="Toggle Mode">
@@ -189,8 +190,8 @@
   <!-- MAIN CONTAINER -->
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
 
-    <!-- 1. DASHBOARD PAGE (NEW IOS SPACIOUS LAYOUT) -->
-    <section id="page-dashboard" class="space-y-6 page-animate pt-2">
+    <!-- 1. DASHBOARD PAGE (NEW REORDERED LAYOUT) -->
+    <section id="page-dashboard" class="space-y-5 page-animate pt-2">
       
       <!-- 1. MOCHI BANK CREDIT CARD -->
       <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden bg-gradient-to-br from-obsidian via-[#2C201A] to-coffee-darkest dark:from-mochi-dark dark:via-[#3E2519] dark:to-obsidian text-white border border-white/10 shadow-xl rounded-[2rem]">
@@ -212,7 +213,6 @@
           <div id="kpi-networth" class="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-md truncate max-w-full">-</div>
         </div>
 
-        <!-- DISPOSABLE INCOME (METALLIC GOLD / ELEGANT PALETTE) -->
         <div ontouchstart="vibrate(30); event.stopPropagation(); showKpiDetail('Disposable Income')" class="relative z-10 bg-white/10 dark:bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/15 flex items-center justify-between">
           <div class="min-w-0 flex-1 pr-2">
             <span class="text-[9px] font-extrabold tracking-widest uppercase text-amber-200/90 block mb-0.5">DISPOSABLE INCOME</span>
@@ -225,31 +225,22 @@
         </div>
       </div>
 
-      <!-- 2. EXPENSE ANALYSIS -->
-      <div class="floating-card p-5 relative overflow-hidden">
-        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
-          <h3 class="text-sm font-extrabold text-main">Expense Analysis</h3>
-          <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">THIS MONTH</span>
-        </div>
-        <div id="dashboard-category-analysis" class="space-y-3 relative z-10"></div>
-      </div>
-
-      <!-- 3. LIVE MOCHI MOOD (SPACIOUS OPEN MASCOT) -->
-      <div id="mochi-mood-card" class="px-3 py-3 my-2 flex items-center space-x-5 relative transition-all duration-300">
-        <div class="relative w-24 h-24 flex-shrink-0 flex items-center justify-center">
+      <!-- 2. LIVE MOCHI MOOD (SEAMLESS OPEN MASCOT) -->
+      <div id="mochi-mood-card" class="px-2 py-2 my-1 flex items-center space-x-4 relative transition-all duration-300">
+        <div class="relative w-20 h-20 flex-shrink-0 flex items-center justify-center">
           <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Live Mood" class="w-full h-full object-contain filter drop-shadow-md transition-all duration-300">
         </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center space-x-2 mb-1.5">
+        <div class="flex-1 min-w-0 pr-1">
+          <div class="flex items-center space-x-2 mb-1">
             <span id="mochi-mood-badge" class="text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-info-bg)] amount-info">Chill Mochi</span>
             <span class="text-[10px] text-faint font-semibold">• Live Reaction</span>
           </div>
-          <h3 id="mochi-mood-title" class="text-base font-black text-main leading-snug">Mochi feels comfy~ 😸</h3>
+          <h3 id="mochi-mood-title" class="text-sm md:text-base font-black text-main leading-tight">Mochi feels comfy~ 😸</h3>
           <p id="mochi-mood-desc" class="text-xs font-semibold text-muted mt-1 leading-relaxed">Cashflow is stable. Mochi is carefully guarding your vault!</p>
         </div>
       </div>
 
-      <!-- 4. SECONDARY GRID (4 KOTAK) -->
+      <!-- 3. SECONDARY GRID (4 KOTAK) -->
       <div class="grid grid-cols-2 gap-3">
         <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-3.5 h-3.5 mr-1.5 amount-in"></i> TOTAL CASH</span>
@@ -270,6 +261,15 @@
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="credit-card" class="w-3.5 h-3.5 mr-1.5 amount-out"></i> PAYABLES</span>
           <span id="kpi-payables" class="text-sm md:text-base font-extrabold amount-out block truncate w-full">-</span>
         </div>
+      </div>
+
+      <!-- 4. EXPENSE ANALYSIS -->
+      <div class="floating-card p-5 relative overflow-hidden">
+        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+          <h3 class="text-sm font-extrabold text-main">Expense Analysis</h3>
+          <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">THIS MONTH</span>
+        </div>
+        <div id="dashboard-category-analysis" class="space-y-3 relative z-10"></div>
       </div>
 
       <!-- 5. RECURRING BILLS MANAGER -->
@@ -1365,13 +1365,13 @@
 
       if (ratio <= 0.40) {
         mood = 'rich';
-        title = "Mochi is purr-fectly happy! 💰";
+        title = "Mochi is purr-fectly happy!";
         desc = `Expenses are at ${(ratio * 100).toFixed(0)}% of income! Mochi is swimming in gold bars!`;
         badgeText = "Rich Mochi";
         badgeClass = "bg-[var(--chip-in-bg)] amount-in";
       } else if (ratio > 0.80) {
         mood = 'anxious';
-        title = "Mochi is sweating bullets! 😿";
+        title = "Mochi is sweating bullets!";
         desc = `Expenses reached ${(ratio * 100).toFixed(0)}% of income! Hold back non-essential spending!`;
         badgeText = "Anxious Mochi";
         badgeClass = "bg-[var(--chip-out-bg)] amount-out";
@@ -1396,7 +1396,7 @@
 
       startMochiBlinking();
     }
-
+    
     function startMochiBlinking() {
       if (mochiBlinkTimeout) clearTimeout(mochiBlinkTimeout);
 
@@ -1561,15 +1561,12 @@
         html += `<div class="mb-4 last:mb-0 stagger-item" style="animation-delay: ${index * 0.05}s">`;
         html += `
           <div ${hasMultipleSubs ? `onclick="toggleCategoryAnalysis('${escapeAttr(main)}')" class="cursor-pointer group"` : ''}>
-            <div class="flex justify-between items-end mb-1.5">
-              <span class="text-[11px] font-bold text-main flex items-center group-hover:text-mochi dark:group-hover:text-mochi-light transition-colors">
-                ${hasMultipleSubs ? `<i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-3.5 h-3.5 mr-1 text-faint"></i>` : ''}
-                ${escapeHtml(main)}
+            <div class="flex justify-between items-center mb-1.5 gap-2">
+              <span class="text-xs font-extrabold text-main flex items-center group-hover:text-mochi dark:group-hover:text-mochi-light transition-colors truncate">
+                ${hasMultipleSubs ? `<i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-3.5 h-3.5 mr-1 text-faint flex-shrink-0"></i>` : ''}
+                <span class="truncate">${escapeHtml(main)}</span>
               </span>
-              <div class="text-right">
-                <span class="text-xs font-extrabold text-main block leading-none mb-0.5">${budgetText}</span>
-                ${budgetLimit > 0 ? `<span class="text-[9px] font-bold ${budgetPct >= 90 ? 'amount-out' : 'text-muted'}">${budgetPct.toFixed(0)}% used</span>` : ''}
-              </div>
+              <span class="text-xs font-black text-main flex-shrink-0 text-right">${budgetText}</span>
             </div>
             <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
               <div class="bg-gradient-to-r ${barColor} h-1.5 rounded-full transition-all duration-1000 ease-out" style="width:0%" data-target-width="${budgetPct}%"></div>
@@ -1580,9 +1577,9 @@
           html += `<div class="${isExpanded ? '' : 'hidden'} mt-2.5 pl-4 border-l-2 border-slate-200 dark:border-[var(--border-color)] space-y-1.5">`;
           subKeys.forEach(sub => {
             html += `
-              <div class="flex justify-between items-center text-[10px]">
-                <span class="text-muted font-semibold">${escapeHtml(sub)}</span>
-                <span class="font-bold text-main">${formatRupiah(g.subs[sub])}</span>
+              <div class="flex justify-between items-center text-[11px]">
+                <span class="text-muted font-semibold truncate pr-2">${escapeHtml(sub)}</span>
+                <span class="font-extrabold text-main flex-shrink-0">${formatRupiah(g.subs[sub])}</span>
               </div>`;
           });
           html += `</div>`;
