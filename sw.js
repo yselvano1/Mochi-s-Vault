@@ -1,4 +1,4 @@
-const APP_VERSION = "v11.4.1";
+const APP_VERSION = "v15";
 const CACHE_NAME = "mochis-vault-" + APP_VERSION;
 
 const ASSETS = [
@@ -6,10 +6,14 @@ const ASSETS = [
   "./index.html",
   "./manifest.json",
   "./mochi-logo-new.png",
+  "./mochi-rich-open.png",
+  "./mochi-rich-closed.png",
+  "./mochi-chill-open.png",
+  "./mochi-chill-closed.png",
+  "./mochi-anxious-open.png",
+  "./mochi-anxious-closed.png",
   "https://cdn.tailwindcss.com",
-  "https://unpkg.com/lucide@0.469.0" // pinned to a specific version instead
-                                      // of @latest, so the cached copy can't
-                                      // silently change out from under you
+  "https://unpkg.com/lucide@0.469.0"
 ];
 
 self.addEventListener("install", (e) => {
