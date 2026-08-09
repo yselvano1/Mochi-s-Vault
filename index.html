@@ -31,6 +31,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
+    
+    /* SPLASH SCREEN SMOOTH FADE & SCALE */
+#splash-screen {
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+#splash-screen.splash-fade-out {
+  opacity: 0;
+  transform: scale(1.08); /* Efek zoom-out lembut saat menghilang */
+  pointer-events: none;
+}
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
     :root {
@@ -1276,51 +1288,56 @@
 
     // REVISI SPLASH SCREEN: SMOOTH FADE-OUT TANPA BLITZ
     function dismissSplashScreen() {
-      const splash = document.getElementById('splash-screen');
-      const main = document.getElementById('main-content');
-      if (!splash) return;
+  const splash = document.getElementById('splash-screen');
+  const main = document.getElementById('main-content');
+  if (!splash) return;
 
-      main.classList.remove('hidden');
-      splash.style.opacity = '0';
-      splash.style.pointerEvents = 'none';
+  // Pastikan halaman utama sudah siap di belakang splash screen
+  if (main) main.classList.remove('hidden');
 
-      setTimeout(() => {
-        splash.classList.add('hidden');
-      }, 500);
+  // Tampilkan splash screen selama 1.2 detik agar animasi Mochi dapat dinikmati
+  setTimeout(() => {
+    splash.classList.add('splash-fade-out'); // Memicu animasi CSS fade-out & scale
+
+    // Sembunyikan elemen secara permanen setelah animasi CSS selesai (600ms)
+    setTimeout(() => {
+      splash.classList.add('hidden');
+    }, 600);
+  }, 1500); // Waktu tampil splash screen (1.2 detik)
+}
+
+async function loadAppData(isSilentReload = false) {
+  const localCache = localStorage.getItem('mochi_vault_global_data');
+  if (localCache && !isSilentReload) {
+    try {
+      GLOBAL_DATA = JSON.parse(localCache);
+      renderAllViews();
+      dismissSplashScreen(); // Panggil transisi halus saat cache lokal siap
+      isSilentReload = true;
+    } catch(e) { console.error("Cache parse error", e); }
+  }
+
+  try {
+    const res = await fetch(API_URL, { redirect: 'follow' });
+    const result = await res.json();
+    if (result.status === 'error') throw new Error(result.message);
+    
+    GLOBAL_DATA = result.data || result;
+    localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+
+    renderAllViews();
+
+    if (!isSilentReload) {
+      dismissSplashScreen();
     }
-
-    async function loadAppData(isSilentReload = false) {
-      const localCache = localStorage.getItem('mochi_vault_global_data');
-      if (localCache && !isSilentReload) {
-        try {
-          GLOBAL_DATA = JSON.parse(localCache);
-          renderAllViews();
-          setTimeout(() => dismissSplashScreen(), 400); // Tampil sebentar 400ms lalu memudar halus
-          isSilentReload = true;
-        } catch(e) { console.error("Cache parse error", e); }
-      }
-
-      try {
-        const res = await fetch(API_URL, { redirect: 'follow' });
-        const result = await res.json();
-        if (result.status === 'error') throw new Error(result.message);
-        
-        GLOBAL_DATA = result.data || result;
-        localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
-
-        renderAllViews();
-
-        if (!isSilentReload) {
-          setTimeout(() => dismissSplashScreen(), 400);
-        }
-      } catch (err) {
-        if (!localCache) {
-          showToast("Gagal memuat data: " + err.message, "error");
-          dismissSplashScreen();
-        }
-      }
+  } catch (err) {
+    if (!localCache) {
+      showToast("Gagal memuat data: " + err.message, "error");
+      dismissSplashScreen();
     }
-
+  }
+}
+    
     function renderAllViews() {
       renderDashboard();
       renderMochiMood();
