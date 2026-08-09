@@ -1035,63 +1035,74 @@ function getAmountMeta(jenis) {
   const k = (namaKategori || '').toLowerCase().trim();
   const j = (jenis || '').toLowerCase().trim();
 
-  // Prioritas 1: Ikon Spesifik Berdasarkan Jenis Transaksi AP/AR
-  if (j.includes('terima piutang') || j.includes('receive receivable')) {
-    return { icon: 'hand-coins', chip: 'chip-pemasukan' }; // 🟢 GREEN
-  }
-  if (j.includes('terima hutang') || j.includes('receive debt') || j.includes('pinjam')) {
-    return { icon: 'piggy-bank', chip: 'chip-pemasukan' }; // 🟢 GREEN
-  }
-  if (j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi')) {
-    return { icon: 'send', chip: 'chip-info' }; // 🔵 BLUE
-  }
-  if (j.includes('bayar hutang') || j.includes('pay debt') || j.includes('cicilan')) {
-    return { icon: 'credit-card', chip: 'chip-pengeluaran' }; // 🔴 RED
-  }
+  // 1. AP/AR & AP-AR TRANSACTIONS (PRIORITAS UTAMA)
+  if (j.includes('terima piutang') || j.includes('receive receivable')) return { icon: 'hand-coins', chip: 'chip-pemasukan' };
+  if (j.includes('terima hutang') || j.includes('receive debt')) return { icon: 'piggy-bank', chip: 'chip-pemasukan' };
+  if (j.includes('beri piutang') || j.includes('give receivable')) return { icon: 'send', chip: 'chip-info' };
+  if (j.includes('bayar hutang') || j.includes('pay debt')) return { icon: 'credit-card', chip: 'chip-pengeluaran' };
 
-  // Prioritas 2: Kategori Pendapatan
+  // 2. INCOME CATEGORIES
   if (k.includes('salary') || k.includes('gaji')) return { icon: 'banknote', chip: 'chip-pemasukan' };
   if (k.includes('bonus') || k.includes('tunjangan')) return { icon: 'gift', chip: 'chip-pemasukan' };
   if (k.includes('freelance') || k.includes('proyek')) return { icon: 'briefcase', chip: 'chip-pemasukan' };
   if (k.includes('investment') || k.includes('investasi')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
 
-  // Transfer External vs Internal
-  if (k.includes('external transfer') || k.includes('transfer keluar')) {
-    return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
-  }
-  if (k.includes('internal transfer') || k.includes('pindah buku') || k.includes('transfer')) {
-    return { icon: 'arrow-right-left', chip: 'chip-info' };
-  }
+  // 3. TRANSFERS
+  if (k.includes('external transfer') || k.includes('transfer keluar')) return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
+  if (k.includes('internal transfer') || k.includes('pindah buku') || k.includes('transfer')) return { icon: 'arrow-right-left', chip: 'chip-info' };
 
-  // Subkategori Pengeluaran Harian
-  if (k.includes('checkup') || k.includes('dokter')) return { icon: 'stethoscope', chip: 'chip-pengeluaran' };
-  if (k.includes('medicine') || k.includes('vitamin') || k.includes('obat')) return { icon: 'pill', chip: 'chip-pengeluaran' };
-  if (k.includes('sport') || k.includes('fitness') || k.includes('gym')) return { icon: 'dumbbell', chip: 'chip-pengeluaran' };
+  // 4. EXPENSE CATEGORIES (MAIN & SUB-CATEGORIES)
+  
+  // Food & Groceries
+  if (k.includes('snack') || k.includes('drink') || k.includes('minuman')) return { icon: 'cookie', chip: 'chip-pengeluaran' };
+  if (k.includes('groceries') || k.includes('belanja dapur')) return { icon: 'shopping-basket', chip: 'chip-pengeluaran' };
+  if (k.includes('food') || k.includes('dining') || k.includes('makan')) return { icon: 'utensils', chip: 'chip-pengeluaran' };
+
+  // Transportation
   if (k.includes('fuel') || k.includes('bensin')) return { icon: 'fuel', chip: 'chip-pengeluaran' };
   if (k.includes('flight') || k.includes('tiket pesawat')) return { icon: 'plane', chip: 'chip-pengeluaran' };
   if (k.includes('train') || k.includes('kereta')) return { icon: 'train-front', chip: 'chip-pengeluaran' };
   if (k.includes('grab') || k.includes('gocar') || k.includes('ojek')) return { icon: 'car-front', chip: 'chip-pengeluaran' };
+  if (k.includes('vehicle maintenance') || k.includes('servis kendaraan')) return { icon: 'wrench', chip: 'chip-pengeluaran' };
+  if (k.includes('transport') || k.includes('transportation')) return { icon: 'car', chip: 'chip-pengeluaran' };
+
+  // Bills & Utilities
   if (k.includes('electricity') || k.includes('listrik')) return { icon: 'zap', chip: 'chip-pengeluaran' };
   if (k.includes('water') || k.includes('air') || k.includes('pdam')) return { icon: 'droplet', chip: 'chip-pengeluaran' };
   if (k.includes('internet') || k.includes('wifi')) return { icon: 'wifi', chip: 'chip-pengeluaran' };
   if (k.includes('phone') || k.includes('pulsa')) return { icon: 'smartphone', chip: 'chip-pengeluaran' };
   if (k.includes('gas')) return { icon: 'flame', chip: 'chip-pengeluaran' };
   if (k.includes('tax') || k.includes('pajak')) return { icon: 'receipt', chip: 'chip-pengeluaran' };
+  if (k.includes('bills') || k.includes('utility') || k.includes('utilities') || k.includes('tagihan')) return { icon: 'file-text', chip: 'chip-pengeluaran' };
+
+  // Healthcare
+  if (k.includes('checkup') || k.includes('dokter')) return { icon: 'stethoscope', chip: 'chip-pengeluaran' };
+  if (k.includes('medicine') || k.includes('vitamin') || k.includes('obat')) return { icon: 'pill', chip: 'chip-pengeluaran' };
+  if (k.includes('sport') || k.includes('fitness') || k.includes('gym')) return { icon: 'dumbbell', chip: 'chip-pengeluaran' };
+  if (k.includes('health') || k.includes('healthcare') || k.includes('kesehatan')) return { icon: 'heart-pulse', chip: 'chip-pengeluaran' };
+
+  // Household
   if (k.includes('houseware') || k.includes('perabot')) return { icon: 'armchair', chip: 'chip-pengeluaran' };
-  if (k.includes('home maintenance') || k.includes('servis rumah')) return { icon: 'hammer', chip: 'chip-pengeluaran' };
+  if (k.includes('home maintenance') || k.includes('perbaikan rumah')) return { icon: 'hammer', chip: 'chip-pengeluaran' };
   if (k.includes('home services') || k.includes('art')) return { icon: 'brush', chip: 'chip-pengeluaran' };
   if (k.includes('pet') || k.includes('anabul') || k.includes('kucing')) return { icon: 'paw-print', chip: 'chip-pengeluaran' };
+  if (k.includes('household') || k.includes('rumah tangga')) return { icon: 'home', chip: 'chip-pengeluaran' };
+
+  // Education, Entertainment & Gifts
+  if (k.includes('education') || k.includes('pendidikan') || k.includes('sekolah')) return { icon: 'graduation-cap', chip: 'chip-pengeluaran' };
+  if (k.includes('entertainment') || k.includes('hiburan') || k.includes('hobi')) return { icon: 'gamepad-2', chip: 'chip-pengeluaran' };
+  if (k.includes('gift') || k.includes('donation') || k.includes('zakat') || k.includes('sedekah')) return { icon: 'heart', chip: 'chip-pengeluaran' };
+
+  // Personal Care
   if (k.includes('skincare') || k.includes('makeup')) return { icon: 'sparkles', chip: 'chip-pengeluaran' };
   if (k.includes('treatment') || k.includes('salon')) return { icon: 'scissors', chip: 'chip-pengeluaran' };
-  if (k.includes('snack') || k.includes('drink') || k.includes('minuman')) return { icon: 'cookie', chip: 'chip-pengeluaran' };
-  if (k.includes('groceries') || k.includes('belanja dapur')) return { icon: 'shopping-basket', chip: 'chip-pengeluaran' };
-  if (k.includes('dining') || k.includes('food') || k.includes('makan')) return { icon: 'utensils', chip: 'chip-pengeluaran' };
+  if (k.includes('personal care') || k.includes('perawatan')) return { icon: 'sparkles', chip: 'chip-pengeluaran' };
 
-  // Fallback
-  if (j.includes('masuk') || j.includes('income') || j.includes('receive') || j.includes('terima')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
+  // 5. GENERAL FALLBACKS
+  if (j.includes('masuk') || j.includes('income') || j.includes('receive')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
   if (j.includes('transfer') || j.includes('piutang')) return { icon: 'send', chip: 'chip-info' };
 
-  return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
+  return { icon: 'shopping-bag', chip: 'chip-pengeluaran' };
 }
 
     function getIconMeta(jenis, kategori = '') {
