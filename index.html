@@ -171,7 +171,7 @@
 
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- HEADER BAR (REVERTED TO COMPACT BALANCED HORIZONTAL LAYOUT) -->
+  <!-- HEADER BAR CLEAN 2 BARIS -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-3">
       <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0 self-center">
@@ -183,19 +183,17 @@
           <span id="mochi-mood-badge" class="text-[8px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-in-bg)] amount-in">Rich Mochi</span>
           <span class="text-[10px] text-faint font-semibold">• Live Status</span>
         </div>
-        <h1 id="mochi-mood-title" class="text-sm md:text-base font-black text-main leading-tight tracking-tight truncate">
+        <!-- Baris 1: Judul Utama -->
+        <h1 id="mochi-mood-title" class="text-sm md:text-base font-black text-main leading-tight tracking-tight leading-snug">
           Mochi is purr-fectly happy! 💰
         </h1>
-        <p id="mochi-mood-desc" class="text-[11px] font-semibold text-muted mt-0.5 leading-snug truncate">
-          Expenses are only at 0% of income!
-        </p>
-        <p id="mochi-mood-subdesc" class="text-[11px] font-semibold text-muted leading-snug truncate">
-          Mochi is swimming in gold bars!
+        <!-- Baris 2: Subcaption Ringkas 1 Baris -->
+        <p id="mochi-mood-desc" class="text-[11px] font-semibold text-muted mt-0.5 leading-snug">
+          Expenses: 0% of income • Swimming in gold bars!
         </p>
       </div>
     </div>
 
-    <!-- TOMBOL THEME TOGGLE -->
     <button onclick="toggleDarkMode(); vibrate(30);" class="tap-shrink w-11 h-11 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm flex-shrink-0" aria-label="Toggle Mode">
       <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
       <i data-lucide="moon" id="icon-moon" class="w-5 h-5"></i>
@@ -1447,7 +1445,7 @@ async function loadAppData(isSilentReload = false) {
 
       let mood = 'chill';
       let title = "Mochi feels comfy~ 😸";
-      let desc = "Cashflow is stable. Mochi is guarding your vault!";
+      let desc = "Expenses under control • Guarding your vault!";
       let badgeText = "Chill Mochi";
       let badgeClass = "bg-[var(--chip-info-bg)] amount-info";
 
@@ -1457,19 +1455,19 @@ async function loadAppData(isSilentReload = false) {
       if (ratio <= 0.40) {
         mood = 'rich';
         title = "Mochi is purr-fectly happy! 💰";
-        desc = `Expenses are only at ${displayPct}% of income! Mochi is swimming in gold bars!`;
+        desc = `Expenses: ${displayPct}% of income • Swimming in gold bars!`;
         badgeText = "Rich Mochi";
         badgeClass = "bg-[var(--chip-in-bg)] amount-in";
       } else if (ratio > 0.80) {
         mood = 'anxious';
         title = "Mochi is sweating bullets! 😿";
-        desc = `Expenses reached ${displayPct}% of income! Hold back non-essential spending!`;
+        desc = `Expenses reached ${displayPct}% • Hold back non-essentials!`;
         badgeText = "Anxious Mochi";
         badgeClass = "bg-[var(--chip-out-bg)] amount-out";
       } else {
         mood = 'chill';
         title = "Mochi feels comfy~ 😸";
-        desc = `Expenses are at ${displayPct}% of income. Mochi keeps everything under control!`;
+        desc = `Expenses at ${displayPct}% of income • Everything stable!`;
         badgeText = "Chill Mochi";
         badgeClass = "bg-[var(--chip-info-bg)] amount-info";
       }
@@ -1999,16 +1997,26 @@ async function loadAppData(isSilentReload = false) {
 
     function promptDeleteAccount(accountName) {
       vibrate(40);
+      const titleEl = documefunction promptDeleteAccount(accountName) {
+      vibrate(40);
       const titleEl = document.getElementById('delete-modal-title');
       const descEl = document.getElementById('delete-modal-desc');
       if (titleEl) titleEl.innerText = `Hapus Akun "${accountName}"?`;
-      if (descEl) descEl.innerText = "Menghapus akun ini akan menghapusnya dari daftar Wallets. Riwayat transaksi dengan akun ini tetap tersimpan.";
+      if (descEl) descEl.innerText = "Menghapus akun ini akan menghapusnya dari daftar Wallets secara permanen.";
 
       document.getElementById('btn-confirm-delete').onclick = async () => {
         vibrate(30);
         closeModal('modalDelete');
         let loadingToast = showToast("Menghapus akun...", "info");
 
+        // 1. Hapus akun dari memori HP & cache lokal seketika
+        if (GLOBAL_DATA.accounts) {
+          GLOBAL_DATA.accounts = GLOBAL_DATA.accounts.filter(a => a.accountName.trim().toLowerCase() !== accountName.trim().toLowerCase());
+          localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+          renderWallets(); // Render ulang tampilan Wallets secara instan 0 detik
+        }
+
+        // 2. Kirim perintah hapus ke Google Sheets
         try {
           const res = await fetch(API_URL, {
             method: 'POST', redirect: 'follow',
@@ -2024,12 +2032,13 @@ async function loadAppData(isSilentReload = false) {
         } catch (err) {
           if (loadingToast && loadingToast.parentNode) loadingToast.remove();
           showToast("Gagal menghapus akun: " + err.message, "error");
+          await loadAppData(true); // Revert jika jaringan gagal
         }
       };
 
       openModal('modalDelete');
     }
-
+      
     function renderPayablesReceivables() {
       const payableEl = document.getElementById('list-payables-active');
       const receivableEl = document.getElementById('list-receivables-active');
