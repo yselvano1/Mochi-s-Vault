@@ -1,5 +1,3 @@
-// Bump APP_VERSION any time the ASSETS list below changes, so browsers know
-// to fetch fresh copies and drop the old cache.
 const APP_VERSION = "v11";
 const CACHE_NAME = "mochis-vault-" + APP_VERSION;
 
