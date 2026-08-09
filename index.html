@@ -28,7 +28,6 @@
     }
   </script>
   <script src="https://unpkg.com/lucide@0.469.0"></script>
-  <!-- Library PDF Exporter -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
@@ -86,6 +85,9 @@
       box-shadow: 0 0 0 3px rgba(200, 122, 75, 0.15), var(--shadow-inset); background-color: var(--bg-card);
     }
 
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+    .input-error { animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; border: 1px solid var(--amount-out) !important; box-shadow: 0 0 0 3px var(--chip-out-bg), var(--shadow-inset) !important; background-color: var(--bg-card) !important; }
+
     .text-main { color: var(--text-primary); } .text-muted { color: var(--text-secondary); } .text-faint { color: var(--text-tertiary); }
     .amount-in { color: var(--amount-in) !important; } .amount-out { color: var(--amount-out) !important; }
     .amount-info { color: var(--amount-info) !important; } .amount-warn { color: var(--amount-warn) !important; }
@@ -122,7 +124,7 @@
 
   <!-- SPLASH SCREEN -->
   <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-500">
-    <div class="flex flex-col items-center">
+    <div class="animate-float flex flex-col items-center">
       <div class="w-28 h-28 flex items-center justify-center rounded-full shadow-[0_8px_30px_rgba(200,122,75,0.15)] relative overflow-hidden bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)]">
         <img src="mochi-logo-new.png" alt="Mochi" class="w-full h-full object-cover">
       </div>
@@ -161,7 +163,6 @@
     </div>
 
     <div class="flex items-center space-x-2">
-      <!-- Tombol Izin Notifikasi Pengingat Jam 8 Malam -->
       <button onclick="requestReminderPermission()" class="tap-shrink w-10 h-10 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm flex-shrink-0" title="Aktifkan Pengingat Jam 8 Malam">
         <i data-lucide="bell" class="w-4.5 h-4.5 text-mochi"></i>
       </button>
@@ -238,7 +239,7 @@
         <div id="dashboard-category-analysis" class="space-y-3 relative z-10"></div>
       </div>
 
-      <!-- BUDGET MANAGEMENT CARD -->
+      <!-- BUDGET MANAGEMENT CARD (TAMPILAN HANYA YANG BER-BUDGET > 0) -->
       <div class="floating-card p-5 relative overflow-hidden">
         <div class="flex justify-between items-center mb-3 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <div class="flex items-center space-x-2">
@@ -252,7 +253,7 @@
           </button>
         </div>
         
-        <p class="text-xs text-muted font-medium mb-3">Atur batas anggaran pengeluaran bulanan per kategori:</p>
+        <p class="text-xs text-muted font-medium mb-3">Anggaran bulanan aktif per kategori pengeluaran:</p>
         <div id="dashboard-budget-summary" class="space-y-2"></div>
       </div>
 
@@ -266,7 +267,7 @@
       </div>
     </section>
 
-    <!-- 2. HISTORY PAGE (DENGAN TOMBOL EXPORT PDF ELEGAN) -->
+    <!-- 2. HISTORY PAGE -->
     <section id="page-history" class="hidden space-y-4 page-animate">
       <div class="floating-card p-5 space-y-4">
         <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 dark:border-[var(--border-color)] pb-4 gap-3">
@@ -275,7 +276,6 @@
             <span class="text-sm font-extrabold uppercase tracking-wider">e-Statement & Mutasi</span>
           </div>
           
-          <!-- TOMBOL CETAK / EXPORT PDF LENGKAP -->
           <button ontouchstart="vibrate(30)" onclick="exportPDFStatement()" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-4 py-2 rounded-full text-xs font-bold flex items-center shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] justify-center transition-colors">
             <i data-lucide="printer" class="w-3.5 h-3.5 mr-1.5"></i> Export PDF Laporan
           </button>
@@ -577,7 +577,7 @@
     </div>
   </div>
 
-  <!-- MODAL: MASTER DATA (PERBAIKAN REVISI 5: FIELD OWNER / PEMILIK AKUN) -->
+  <!-- MODAL: MASTER DATA (PERBAIKAN REVISI 1: INPUT NAMA LAMA UNTUK EDIT AKUN) -->
   <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3">
@@ -586,6 +586,8 @@
       </div>
       <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-3 text-sm">
         <input type="hidden" id="master-type">
+        <!-- FIELD RAHASIA UNTUK MENYIMPAN NAMA LAMA AGAR TIDAK DUPLIKAT SAAT EDIT AKUN -->
+        <input type="hidden" id="master-old-name">
 
         <div id="master-category-type-wrap" class="hidden">
           <label for="master-category-type" class="font-extrabold text-main block mb-1 text-xs cursor-pointer">Jenis Kategori</label>
@@ -1257,9 +1259,7 @@
       }
     }
 
-    // FITUR 3 (INSTANT LOCAL CACHE ENGINE): MEMOAT CACHE LOKAL SANGAT CEPAT 0 DETIK
     async function loadAppData(isSilentReload = false) {
-      // 1. Ambil data dari cache lokal jika ada
       const localCache = localStorage.getItem('mochi_vault_global_data');
       if (localCache && !isSilentReload) {
         try {
@@ -1270,11 +1270,10 @@
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('main-content').classList.remove('hidden');
           }, 300);
-          isSilentReload = true; // Lanjutkan update dari internet secara diam-diam
+          isSilentReload = true;
         } catch(e) { console.error("Cache parse error", e); }
       }
 
-      // 2. Fetch data terbaru dari Google Apps Script
       try {
         const res = await fetch(API_URL, { redirect: 'follow' });
         const result = await res.json();
@@ -1383,19 +1382,6 @@
       renderCategoryAnalysis();
     }
 
-    const DEFAULT_CATEGORY_BUDGETS = {
-      'Food & Groceries': 3500000,
-      'Transportation': 1500000,
-      'Bills & Utilities': 2000000,
-      'Healthcare': 1000000,
-      'Household': 1000000,
-      'Personal Care': 800000,
-      'Entertainment': 1000000,
-      'Education': 1000000,
-      'Gifts & Donations': 500000,
-      'Other Expenses': 500000
-    };
-
     let currentMochiMood = 'chill';
     let mochiBlinkTimeout = null;
 
@@ -1469,22 +1455,30 @@
       }, 1500);
     }
 
+    // POIN 2: HANYA TAMPILKAN ANGGARAN DENGAN NILAI > 0
     function renderBudgetSummaryCard() {
       const container = document.getElementById('dashboard-budget-summary');
       if (!container) return;
 
       const budgets = getCustomBudgets();
-      const categories = Object.keys(budgets).slice(0, 4);
+      const activeBudgets = Object.entries(budgets).filter(([cat, limit]) => Number(limit) > 0);
 
-      container.innerHTML = categories.map(cat => {
-        const limit = budgets[cat] || 0;
-        return `
-          <div class="floating-item p-3 bg-[var(--bg-subtle-2)] border border-[var(--border-color)] flex justify-between items-center text-xs">
-            <span class="font-extrabold text-main truncate">${escapeHtml(cat)}</span>
-            <span class="font-black text-mochi dark:text-mochi-light whitespace-nowrap">${formatRupiah(limit)} / bln</span>
+      if (activeBudgets.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-4 px-3 bg-[var(--bg-subtle-2)] rounded-2xl border border-[var(--border-color)]">
+            <p class="text-xs text-muted font-bold">Belum ada anggaran dikonfigurasi.</p>
+            <p class="text-[10px] text-faint mt-0.5">Klik 'Set Budget' untuk menentukan limit bulanan.</p>
           </div>
         `;
-      }).join('');
+        return;
+      }
+
+      container.innerHTML = activeBudgets.map(([cat, limit]) => `
+        <div class="floating-item p-3 bg-[var(--bg-subtle-2)] border border-[var(--border-color)] flex justify-between items-center text-xs">
+          <span class="font-extrabold text-main truncate pr-2">${escapeHtml(cat)}</span>
+          <span class="font-black text-mochi dark:text-mochi-light whitespace-nowrap">${formatRupiah(limit)} / bln</span>
+        </div>
+      `).join('');
     }
 
     function getCustomBudgets() {
@@ -1492,7 +1486,15 @@
         return GLOBAL_DATA.budgets;
       }
       const saved = localStorage.getItem('mochi_custom_budgets');
-      return saved ? JSON.parse(saved) : { ...DEFAULT_CATEGORY_BUDGETS };
+      return saved ? JSON.parse(saved) : {};
+    }
+
+    // POIN 2: DYNAMIC MAIN CATEGORIES PULLER DARI MASTER CATEGORY USER
+    function getExpenseMainCategories() {
+      const categories = GLOBAL_DATA.categories || [];
+      const expenseCats = categories.filter(c => (c.type || '').toLowerCase() === 'expense');
+      const mainSet = new Set(expenseCats.map(c => c.mainCategory || c.categoryName).filter(Boolean));
+      return Array.from(mainSet);
     }
 
     function openBudgetEditorModal() {
@@ -1500,16 +1502,21 @@
       const container = document.getElementById('budget-inputs-container');
       if (!container) return;
 
-      const categories = Object.keys(DEFAULT_CATEGORY_BUDGETS);
+      const categories = getExpenseMainCategories();
+      if (categories.length === 0) {
+        container.innerHTML = `<p class="text-xs text-muted text-center py-4 font-semibold">Belum ada master kategori pengeluaran.</p>`;
+        openModal('modalBudgetEditor');
+        return;
+      }
       
       container.innerHTML = categories.map(cat => {
-        const val = currentBudgets[cat] !== undefined ? currentBudgets[cat] : DEFAULT_CATEGORY_BUDGETS[cat];
+        const val = currentBudgets[cat] || 0;
         return `
           <div>
             <label class="font-bold text-main block mb-1 text-xs">${escapeHtml(cat)}</label>
             <div class="relative">
               <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-xs">Rp</span>
-              <input type="text" inputmode="numeric" data-budget-category="${escapeAttr(cat)}" value="${new Intl.NumberFormat('id-ID').format(val)}" oninput="formatInputRupiah(this)" placeholder="0" class="w-full ios-input pl-9 text-xs font-extrabold text-main">
+              <input type="text" inputmode="numeric" data-budget-category="${escapeAttr(cat)}" value="${val > 0 ? new Intl.NumberFormat('id-ID').format(val) : ''}" oninput="formatInputRupiah(this)" placeholder="0" class="w-full ios-input pl-9 text-xs font-extrabold text-main">
             </div>
           </div>
         `;
@@ -1529,7 +1536,7 @@
         updatedBudgets[cat] = numVal;
       });
 
-      let loadingToast = showToast("Menyimpan anggaran ke Vault...", "info");
+      let loadingToast = showToast("Menyimpan anggaran...", "info");
 
       try {
         const res = await fetch(API_URL, {
@@ -1618,7 +1625,7 @@
       sortedMain.forEach((main, index) => {
         const g = groups[main];
         const customBudgets = getCustomBudgets();
-        const budgetLimit = customBudgets[main] !== undefined ? customBudgets[main] : (DEFAULT_CATEGORY_BUDGETS[main] || 0);
+        const budgetLimit = customBudgets[main] || 0;
         
         let barColor = "from-mochi-light to-mochi";
         let budgetPct = 0;
@@ -1753,7 +1760,6 @@
       lucide.createIcons();
     }
 
-    // FITUR 1 (EXPORTER PDF ELEGAN BERSIH KUALITAS PRINTER): MENCETAK DENGAN TAMPILAN RESMI
     function exportPDFStatement() {
       const filterMonth = document.getElementById('filter-month').value;
       const filterYear = document.getElementById('filter-year').value;
@@ -1857,7 +1863,6 @@
       });
     }
 
-    // FITUR 2 (DAILY REMINDER 8 PM ENGINE): NOTIFIKASI PENGINGAT HARIAN AUTOMATIS
     function requestReminderPermission() {
       if (!("Notification" in window)) {
         showToast("Browser tidak mendukung notifikasi.", "error");
@@ -1891,7 +1896,7 @@
             localStorage.setItem('mochi_reminder_last_triggered', today);
           }
         }
-      }, 30000); // Cek setiap 30 detik
+      }, 30000);
     }
 
     function renderWallets() {
@@ -1962,6 +1967,7 @@
       openMasterModal('account');
 
       setTimeout(() => {
+        document.getElementById('master-old-name').value = acc.accountName || '';
         document.getElementById('master-name').value = acc.accountName || '';
         document.getElementById('master-account-type').value = acc.accountType || 'Bank Account';
         document.getElementById('master-function-category').value = acc.functionCategory || 'Daily Operations';
@@ -2460,6 +2466,7 @@
 
     function openMasterModal(type) {
       document.getElementById('master-type').value = type;
+      document.getElementById('master-old-name').value = ""; // Reset old name
       const titleEl = document.getElementById('master-title');
       const extraEl = document.getElementById('master-extra-field');
       extraEl.innerHTML = "";
@@ -2571,56 +2578,51 @@
       openModal('modalMaster');
     }
 
+    // POIN 1 FIX: DENGAN MEMBAWA `oldName`, BACKEND AKAN MENGEDIT BARIS LAMA BUKAN MENAMBAH BARIS DUPLIKAT
     async function handleSaveMaster(event) {
       event.preventDefault();
       const type = document.getElementById('master-type').value;
+      const oldName = document.getElementById('master-old-name').value;
       const name = document.getElementById('master-name').value.trim();
 
-      let payload = {};
+      let payload = { oldName: oldName };
 
       if (type === 'account') {
         if (!name) { triggerInputError('master-name', "Nama akun wajib diisi."); return; }
-        payload = {
-          accountName: name,
-          accountType: document.getElementById('master-account-type').value,
-          owner: document.getElementById('master-account-owner').value,
-          functionCategory: document.getElementById('master-function-category').value,
-          initialBalance: Number(document.getElementById('master-initial-balance').value) || 0
-        };
+        payload.accountName = name;
+        payload.accountType = document.getElementById('master-account-type').value;
+        payload.owner = document.getElementById('master-account-owner').value;
+        payload.functionCategory = document.getElementById('master-function-category').value;
+        payload.initialBalance = Number(document.getElementById('master-initial-balance').value) || 0;
       } else if (type === 'category') {
         const mainSel = document.getElementById('master-main-category-select').value;
         const mainCategory = mainSel === '__NEW__' ? document.getElementById('master-main-category-new').value.trim() : mainSel;
         if (!mainCategory) { triggerInputError('master-main-category-new', "Nama kategori utama wajib diisi."); return; }
-        payload = {
-          mainCategory: mainCategory,
-          subCategory: name,
-          categoryName: name || mainCategory,
-          type: document.getElementById('master-category-type').value
-        };
+        payload.mainCategory = mainCategory;
+        payload.subCategory = name;
+        payload.categoryName = name || mainCategory;
+        payload.type = document.getElementById('master-category-type').value;
       } else if (type === 'payable') {
         if (!name) { triggerInputError('master-name', "Nama hutang wajib diisi."); return; }
-        payload = {
-          payableName: name,
-          payableType: document.getElementById('master-payable-type').value,
-          initialAmount: Number(document.getElementById('master-payable-total').value) || 0,
-          notes: document.getElementById('master-payable-notes').value
-        };
+        payload.payableName = name;
+        payload.payableType = document.getElementById('master-payable-type').value;
+        payload.initialAmount = Number(document.getElementById('master-payable-total').value) || 0;
+        payload.notes = document.getElementById('master-payable-notes').value;
       } else if (type === 'receivable') {
         if (!name) { triggerInputError('master-name', "Nama piutang wajib diisi."); return; }
-        payload = {
-          receivableName: name,
-          receivableType: document.getElementById('master-receivable-type').value,
-          initialAmount: Number(document.getElementById('master-receivable-total').value) || 0,
-          notes: document.getElementById('master-receivable-notes').value
-        };
+        payload.receivableName = name;
+        payload.receivableType = document.getElementById('master-receivable-type').value;
+        payload.initialAmount = Number(document.getElementById('master-receivable-total').value) || 0;
+        payload.notes = document.getElementById('master-receivable-notes').value;
       }
 
       let loadingToast = showToast("Menyimpan master data...", "info");
       try {
+        const actionType = oldName ? 'editMasterData' : 'addMasterData';
         const res = await fetch(API_URL, {
           method: 'POST', redirect: 'follow',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'addMasterData', type, payload })
+          body: JSON.stringify({ action: actionType, type, payload })
         });
         const result = await res.json();
         if (result.status === 'error') throw new Error(result.message);
