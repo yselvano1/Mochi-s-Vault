@@ -1,20 +1,37 @@
+<!--
+  ===========================================================================
+  MOCHI'S VAULT — index.html — PART 1 of 3: Foundation, Styling & Shell UI
+  ===========================================================================
+  This is a FRAGMENT (head → header), not a complete HTML file by itself.
+  Combine with Part 2 (<main> → nav/FAB) and Part 3 (modals + <script>) in
+  order to get the full, valid index.html.
+
+  What changed vs. your original file:
+  - <title> and window text fully in English (was mixed ID/EN)
+  - Lucide pinned to a fixed version instead of @latest (matches sw.js —
+    keeps the icon set from silently changing on you between visits)
+  Everything else — every CSS variable, every color, dark mode values,
+  shadows, animations, the splash screen, reward overlay, and header — is
+  reproduced exactly as-is. Nothing here was dead code, so nothing was cut.
+  ===========================================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Mochi's Vault — Keuangan Yosa & Fani</title>
-  
+  <title>Mochi's Vault — Yosa & Fani's Finance</title>
+
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#FAF8F5">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  
+
   <link rel="apple-touch-icon" href="mochi-logo-new.png">
   <link rel="icon" type="image/png" href="mochi-logo-new.png">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = { 
+    tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
@@ -27,7 +44,7 @@
             coffee: {
               darkest: '#181412',
               dark: '#221C19',
-              subtle: '#2D2520'  
+              subtle: '#2D2520'
             },
             obsidian: '#231A15'
           }
@@ -35,28 +52,31 @@
       }
     }
   </script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  
+  <script src="https://unpkg.com/lucide@0.469.0"></script>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
     :root {
-      --bg-app: #FAF8F5; 
+      --bg-app: #FAF8F5;
       --bg-card: #FFFFFF;
       --bg-subtle: #F3ECE4;
       --bg-subtle-2: #EFE6DC;
-      
-      --text-primary: #2D241E;
-      --text-secondary: #80736B; 
-      --text-tertiary: #A89B91;  
-      
-      --border-color: rgba(45, 36, 30, 0.07); 
 
-      /* STRICT 3-COLOR SYSTEM (LIGHT MODE) */
-      --amount-in: #2E6F40;      /* 🟢 Forest Sage Green */
-      --amount-out: #B93838;     /* 🔴 Terracotta Red */
-      --amount-info: #1D63B8;    /* 🔵 Denim Blue */
-      --amount-warn: #B93838;    
+      --text-primary: #2D241E;
+      --text-secondary: #80736B;
+      --text-tertiary: #A89B91;
+
+      --border-color: rgba(45, 36, 30, 0.07);
+
+      /* STRICT 3-COLOR SYSTEM (LIGHT MODE) — do not change: Green = money in
+         (Income, Receive Payable, Receive Receivable), Red = money out
+         (Expense, Pay Installment, External Transfer), Blue = neutral
+         (Internal Transfer, Give Receivable). */
+      --amount-in: #2E6F40;      /* Forest Sage Green */
+      --amount-out: #B93838;     /* Terracotta Red */
+      --amount-info: #1D63B8;    /* Denim Blue */
+      --amount-warn: #B93838;
 
       --chip-in-bg: rgba(46, 111, 64, 0.12);
       --chip-out-bg: rgba(185, 56, 56, 0.12);
@@ -66,7 +86,7 @@
       --glass-bg: rgba(255, 255, 255, 0.85);
       --glass-border: rgba(255, 255, 255, 0.7);
       --glass-modal-bg: rgba(250, 248, 245, 0.92);
-      
+
       --shadow-card: 0 10px 30px -6px rgba(45, 36, 30, 0.05), 0 2px 8px -2px rgba(45, 36, 30, 0.03);
       --shadow-item: 0 2px 10px -2px rgba(45, 36, 30, 0.03);
       --shadow-premium: 0 12px 35px -8px rgba(200, 122, 75, 0.15);
@@ -74,32 +94,33 @@
     }
 
     html.dark {
-      --bg-app: #181412; 
-      --bg-card: #221C19; 
+      --bg-app: #181412;
+      --bg-card: #221C19;
       --bg-subtle: #2D2520;
       --bg-subtle-2: #382F2A;
-      
-      --text-primary: #FAF8F5; 
-      --text-secondary: #A89B91; 
-      --text-tertiary: #786C64;  
-      
-      --border-color: rgba(250, 248, 245, 0.06); 
 
-      /* STRICT 3-COLOR SYSTEM (DARK MODE) */
-      --amount-in: #52B788;      /* 🟢 Soft Mint Green */
-      --amount-out: #E57373;     /* 🔴 Soft Coral Red */
-      --amount-info: #64B5F6;    /* 🔵 Soft Sky Blue */
-      --amount-warn: #E57373;    
+      --text-primary: #FAF8F5;
+      --text-secondary: #A89B91;
+      --text-tertiary: #786C64;
+
+      --border-color: rgba(250, 248, 245, 0.06);
+
+      /* STRICT 3-COLOR SYSTEM (DARK MODE) — same rule as light mode, just
+         softened for a dark background. Do not change the mapping. */
+      --amount-in: #52B788;      /* Soft Mint Green */
+      --amount-out: #E57373;     /* Soft Coral Red */
+      --amount-info: #64B5F6;    /* Soft Sky Blue */
+      --amount-warn: #E57373;
 
       --chip-in-bg: rgba(82, 183, 136, 0.15);
       --chip-out-bg: rgba(229, 115, 115, 0.15);
       --chip-info-bg: rgba(100, 181, 246, 0.15);
       --chip-warn-bg: rgba(229, 115, 115, 0.15);
 
-      --glass-bg: rgba(34, 28, 25, 0.85); 
+      --glass-bg: rgba(34, 28, 25, 0.85);
       --glass-border: rgba(250, 248, 245, 0.08);
       --glass-modal-bg: rgba(24, 20, 18, 0.94);
-      
+
       --shadow-card: 0 10px 30px -6px rgba(0, 0, 0, 0.4);
       --shadow-item: 0 2px 10px -2px rgba(0, 0, 0, 0.25);
       --shadow-premium: 0 12px 35px -8px rgba(0, 0, 0, 0.6);
@@ -113,26 +134,26 @@
       color: var(--text-primary);
       overflow-x: hidden;
       transition: background-color 0.3s ease, color 0.3s ease;
-      padding-bottom: max(6rem, env(safe-area-inset-bottom)); 
+      padding-bottom: max(6rem, env(safe-area-inset-bottom));
     }
 
     .floating-card {
       background-color: var(--bg-card);
       box-shadow: var(--shadow-card);
       border-radius: 1.5rem;
-      border: 1px solid var(--border-color); 
+      border: 1px solid var(--border-color);
     }
-    
+
     .floating-item {
       background-color: var(--bg-card);
       box-shadow: var(--shadow-item);
       border-radius: 1rem;
-      border: 1px solid var(--border-color); 
+      border: 1px solid var(--border-color);
     }
 
     .ios-input {
       background-color: var(--bg-subtle-2);
-      border: 1px solid transparent; 
+      border: 1px solid transparent;
       border-radius: 0.85rem;
       padding: 0.6rem 1rem;
       box-shadow: var(--shadow-inset);
@@ -162,18 +183,18 @@
     .text-main { color: var(--text-primary); }
     .text-muted { color: var(--text-secondary); }
     .text-faint { color: var(--text-tertiary); }
-    
+
     .amount-in { color: var(--amount-in) !important; }
     .amount-out { color: var(--amount-out) !important; }
     .amount-info { color: var(--amount-info) !important; }
     .amount-warn { color: var(--amount-warn) !important; }
-    
+
     .icon-chip {
       width: 36px; height: 36px; border-radius: 11px;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; box-shadow: inset 0 1px 1px rgba(255,255,255,0.05);
     }
-    
+
     .chip-pemasukan { background-color: var(--chip-in-bg); color: var(--amount-in); }
     .chip-pengeluaran { background-color: var(--chip-out-bg); color: var(--amount-out); }
     .chip-info { background-color: var(--chip-info-bg); color: var(--amount-info); }
@@ -283,7 +304,7 @@
 
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- TOP BAR (FOTO 5: ENLARGED AVATAR & SPACING) -->
+  <!-- TOP BAR -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-7 pb-5 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-4">
       <div class="w-14 h-14 rounded-full bg-[var(--bg-subtle-2)] overflow-hidden flex items-center justify-center shadow-md border-2 border-[var(--border-color)] flex-shrink-0">
@@ -294,7 +315,7 @@
         <p class="text-xs md:text-sm font-semibold text-muted mt-1.5">Guarding your wealth, me-ow 🐾</p>
       </div>
     </div>
-    
+
     <div class="flex items-center space-x-2.5">
       <button onclick="toggleDarkMode(); vibrate(30);" class="tap-shrink w-10 h-10 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-[0_2px_10px_rgba(45,36,30,0.05)]" aria-label="Toggle Mode">
         <i data-lucide="sun" id="icon-sun" class="w-4.5 h-4.5 hidden"></i>
@@ -303,17 +324,43 @@
     </div>
   </header>
 
+  <!-- ▼▼▼ LANJUT KE BAGIAN 2: <main> (Dashboard/History/Wallets/AP-R pages) + Bottom Nav + FAB ▼▼▼ -->
+  <!--
+  ===========================================================================
+  MOCHI'S VAULT — index.html — PART 2 of 3: Page Layout & Navigation
+  ===========================================================================
+  Continues directly after Part 1's closing </header>. Ends right before the
+  modals (Part 3 opens with <!-- MODAL 1: TRANSACTION INPUT FORM -->).
+
+  What changed vs. your original file:
+  - Every element id that was Indonesian is now English (riwayat→history,
+    saldo→wallets, hutang→payables, akun→accounts, kategori→category,
+    piutang→receivables, bulan→month, tahun→year, jenis→type,
+    masuk/keluar→income/expense). Full old→new id map is at the bottom of
+    this file as a comment, for cross-checking against Part 3.
+  - The "Type" filter dropdown (History page) now uses the SAME English
+    values Code.js actually stores (Income, Expense, Internal Transfer,
+    Receive Payable, Pay Installment, Give Receivable, Receive Receivable) —
+    previously it used Indonesian values that never matched any real
+    transaction, so this filter effectively never worked. Added
+    "External Transfer" as a new option too.
+  - FAB now calls openNewTransactionForm() (was openFormTransaksiBaru()).
+  Nothing was removed — every page, card, and filter from your original is
+  still here.
+  ===========================================================================
+-->
+
   <!-- MAIN CONTAINER -->
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
 
     <!-- 1. DASHBOARD PAGE -->
     <section id="page-dashboard" class="space-y-4 page-animate">
-      
-      <!-- NET WORTH HERO (FOTO 6: BALANCED DIMENSIONS) -->
+
+      <!-- NET WORTH HERO -->
       <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden group bg-obsidian dark:bg-gradient-to-br dark:from-mochi dark:to-mochi-dark text-white border-none shadow-[0_12px_35px_-8px_rgba(35,26,21,0.3)] dark:shadow-[0_12px_35px_-8px_rgba(217,136,88,0.3)]">
         <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-white/10 dark:bg-white/20 rounded-full mix-blend-overlay filter blur-[20px] group-hover:opacity-70 transition-opacity duration-500"></div>
         <div class="absolute -top-6 -left-6 w-24 h-24 bg-white/5 dark:bg-white/10 rounded-full mix-blend-overlay filter blur-[10px]"></div>
-        
+
         <div class="flex justify-between items-center mb-3 relative z-10">
           <span class="text-[11px] font-black tracking-widest uppercase text-white/70 dark:text-white/80">NET WORTH</span>
           <div class="w-8 h-8 rounded-full bg-white/10 dark:bg-white/20 flex items-center justify-center text-white backdrop-blur-sm border border-white/10 dark:border-white/20">
@@ -322,8 +369,8 @@
         </div>
         <div id="kpi-networth" class="text-3xl md:text-4xl font-black tracking-tight relative z-10 text-white drop-shadow-sm transition-all duration-300 origin-left">-</div>
       </div>
-      
-      <!-- DISPOSABLE INCOME (FOTO 6: BALANCED DIMENSIONS) -->
+
+      <!-- DISPOSABLE INCOME -->
       <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Disposable Income')" class="floating-item p-6 cursor-pointer card-hover flex flex-col justify-center relative overflow-hidden group bg-card">
         <div class="flex justify-between items-center mb-3">
           <span class="text-[11px] font-black tracking-widest uppercase text-muted">DISPOSABLE INCOME</span>
@@ -336,24 +383,24 @@
 
       <!-- SECONDARY GRID -->
       <div class="grid grid-cols-2 gap-3">
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Kas')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-3 h-3 mr-1.5 amount-in"></i> TOTAL CASH</span>
-          <span id="kpi-kas" class="text-sm md:text-base font-extrabold amount-in block truncate w-full">-</span>
+          <span id="kpi-cash" class="text-sm md:text-base font-extrabold amount-in block truncate w-full">-</span>
         </div>
 
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Savings Operasional')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="piggy-bank" class="w-3 h-3 mr-1.5 amount-in"></i> NET SAVINGS</span>
           <span id="kpi-savings" class="text-sm md:text-base font-extrabold amount-in block truncate w-full">-</span>
         </div>
 
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Piutang')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="hand-coins" class="w-3 h-3 mr-1.5 amount-info"></i> RECEIVABLES</span>
-          <span id="kpi-piutang" class="text-sm md:text-base font-extrabold amount-info block truncate w-full">-</span>
+          <span id="kpi-receivables" class="text-sm md:text-base font-extrabold amount-info block truncate w-full">-</span>
         </div>
 
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Hutang')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="credit-card" class="w-3 h-3 mr-1.5 amount-out"></i> PAYABLES</span>
-          <span id="kpi-hutang" class="text-sm md:text-base font-extrabold amount-out block truncate w-full">-</span>
+          <span id="kpi-payables" class="text-sm md:text-base font-extrabold amount-out block truncate w-full">-</span>
         </div>
       </div>
 
@@ -363,21 +410,21 @@
           <h3 class="text-sm font-extrabold text-main">Expense Analysis</h3>
           <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">THIS MONTH</span>
         </div>
-        <div id="dashboard-kategori-analysis" class="space-y-3 relative z-10"></div>
+        <div id="dashboard-category-analysis" class="space-y-3 relative z-10"></div>
       </div>
 
       <!-- RECENT TRANSACTIONS -->
       <div class="floating-card p-5 mt-5 mb-12">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <h3 class="text-sm font-extrabold text-main">Recent Transactions</h3>
-          <button ontouchstart="vibrate(30)" onclick="switchTab('riwayat')" class="text-xs font-bold text-mochi hover:text-mochi-dark dark:text-mochi-light dark:hover:text-white bg-mochi-light/10 dark:bg-[var(--bg-subtle)] px-3 py-1.5 rounded-full transition-colors border border-transparent hover:border-mochi-light/30">See All</button>
+          <button ontouchstart="vibrate(30)" onclick="switchTab('history')" class="text-xs font-bold text-mochi hover:text-mochi-dark dark:text-mochi-light dark:hover:text-white bg-mochi-light/10 dark:bg-[var(--bg-subtle)] px-3 py-1.5 rounded-full transition-colors border border-transparent hover:border-mochi-light/30">See All</button>
         </div>
-        <div id="dashboard-trx-list" class="space-y-2"></div>
+        <div id="dashboard-transaction-list" class="space-y-2"></div>
       </div>
     </section>
 
     <!-- 2. HISTORY PAGE -->
-    <section id="page-riwayat" class="hidden space-y-4 page-animate">
+    <section id="page-history" class="hidden space-y-4 page-animate">
       <div class="floating-card p-5 space-y-4">
         <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 dark:border-[var(--border-color)] pb-4 gap-3">
           <div class="flex items-center space-x-2 text-main">
@@ -391,8 +438,8 @@
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div>
-            <label for="filter-bulan" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Month</label>
-            <select id="filter-bulan" onchange="renderRiwayat()" class="w-full text-xs ios-input cursor-pointer">
+            <label for="filter-month" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Month</label>
+            <select id="filter-month" onchange="renderHistory()" class="w-full text-xs ios-input cursor-pointer">
               <option value="ALL">All Months</option>
               <option value="01">01 - January</option>
               <option value="02">02 - February</option>
@@ -409,27 +456,28 @@
             </select>
           </div>
           <div>
-            <label for="filter-tahun" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Year</label>
-            <select id="filter-tahun" onchange="renderRiwayat()" class="w-full text-xs ios-input cursor-pointer">
+            <label for="filter-year" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Year</label>
+            <select id="filter-year" onchange="renderHistory()" class="w-full text-xs ios-input cursor-pointer">
               <option value="ALL">All Years</option>
             </select>
           </div>
           <div>
-            <label for="filter-jenis" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Type</label>
-            <select id="filter-jenis" onchange="renderRiwayat()" class="w-full text-xs ios-input cursor-pointer">
+            <label for="filter-type" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Type</label>
+            <select id="filter-type" onchange="renderHistory()" class="w-full text-xs ios-input cursor-pointer">
               <option value="ALL">All Types</option>
-              <option value="Pemasukan">Income (+)</option>
-              <option value="Pengeluaran">Expense (-)</option>
-              <option value="Transfer Internal">Internal Transfer</option>
-              <option value="Beri Piutang (Menalangi)">Give Receivables / Reimburse</option>
-              <option value="Terima Piutang">Receive Receivables</option>
-              <option value="Terima Hutang (Pinjam)">Receive Debt</option>
-              <option value="Bayar Hutang/Cicilan">Pay Debt / Installment</option>
+              <option value="Income">Income (+)</option>
+              <option value="Expense">Expense (-)</option>
+              <option value="Internal Transfer">Internal Transfer</option>
+              <option value="External Transfer">External Transfer (-)</option>
+              <option value="Give Receivable">Give Receivable / Reimburse</option>
+              <option value="Receive Receivable">Receive Receivable (+)</option>
+              <option value="Receive Payable">Receive Payable (+)</option>
+              <option value="Pay Installment">Pay Installment (-)</option>
             </select>
           </div>
           <div>
             <label for="filter-user" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">User</label>
-            <select id="filter-user" onchange="renderRiwayat()" class="w-full text-xs ios-input cursor-pointer">
+            <select id="filter-user" onchange="renderHistory()" class="w-full text-xs ios-input cursor-pointer">
               <option value="ALL">All Users</option>
               <option value="Yosa">Yosa</option>
               <option value="Fani">Fani</option>
@@ -440,18 +488,18 @@
         <div class="relative">
           <label for="filter-search" class="sr-only">Search Transaction</label>
           <i data-lucide="search" class="w-4 h-4 text-faint absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-          <input type="text" id="filter-search" oninput="renderRiwayat()" placeholder="Search description..." class="w-full text-sm ios-input pl-10 pr-4 py-2.5">
+          <input type="text" id="filter-search" placeholder="Search description..." class="w-full text-sm ios-input pl-10 pr-4 py-2.5">
         </div>
 
         <!-- SUMMARY -->
         <div id="statement-summary" class="floating-item p-4 mt-3 flex flex-col space-y-3 border border-slate-100 dark:border-[var(--border-color)]">
           <div class="flex justify-between items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
             <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Total Income</span>
-            <span id="sum-masuk" class="font-extrabold amount-in text-[15px]">+Rp 0</span>
+            <span id="sum-income" class="font-extrabold amount-in text-[15px]">+Rp 0</span>
           </div>
           <div class="flex justify-between items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
             <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Total Expense</span>
-            <span id="sum-keluar" class="font-extrabold amount-out text-[15px]">-Rp 0</span>
+            <span id="sum-expense" class="font-extrabold amount-out text-[15px]">-Rp 0</span>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-muted text-[10px] uppercase font-bold tracking-wider">Surplus / Deficit</span>
@@ -460,38 +508,38 @@
         </div>
       </div>
 
-      <div id="riwayat-trx-list" class="space-y-2 pb-8"></div>
+      <div id="history-transaction-list" class="space-y-2 pb-8"></div>
     </section>
 
     <!-- 3. WALLETS PAGE -->
-    <section id="page-saldo" class="hidden space-y-6 page-animate pb-8">
+    <section id="page-wallets" class="hidden space-y-6 page-animate pb-8">
       <div class="floating-card p-5">
         <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted mb-4 flex items-center">
           <i data-lucide="briefcase" class="w-4 h-4 mr-2"></i> Daily Operational
         </h3>
-        <div id="list-akun-operasional" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+        <div id="list-accounts-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
       </div>
       <div class="floating-card p-5">
         <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted mb-4 flex items-center">
           <i data-lucide="piggy-bank" class="w-4 h-4 mr-2"></i> Emergency Fund & Savings
         </h3>
-        <div id="list-akun-tabungan" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+        <div id="list-accounts-savings" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
       </div>
     </section>
 
-    <!-- 4. AP/R PAGE -->
-    <section id="page-hutang" class="hidden space-y-6 page-animate pb-8">
+    <!-- 4. AP/R PAGE (Accounts Payable / Receivable) -->
+    <section id="page-payables" class="hidden space-y-6 page-animate pb-8">
       <div class="floating-card p-5">
         <h3 class="text-xs font-extrabold uppercase tracking-wider amount-out mb-4 flex items-center">
           <i data-lucide="credit-card" class="w-4 h-4 mr-2"></i> Active Payables
         </h3>
-        <div id="list-hutang-aktif" class="space-y-3"></div>
+        <div id="list-payables-active" class="space-y-3"></div>
       </div>
       <div class="floating-card p-5">
         <h3 class="text-xs font-extrabold uppercase tracking-wider amount-info mb-4 flex items-center">
           <i data-lucide="hand-coins" class="w-4 h-4 mr-2"></i> Unpaid Receivables
         </h3>
-        <div id="list-piutang-aktif" class="space-y-3"></div>
+        <div id="list-receivables-active" class="space-y-3"></div>
       </div>
     </section>
   </main>
@@ -504,30 +552,30 @@
         <span class="nav-text text-[12px] font-extrabold tracking-wide whitespace-nowrap">Home</span>
       </button>
 
-      <button ontouchstart="vibrate(30)" onclick="switchTab('riwayat')" id="tab-riwayat" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
+      <button ontouchstart="vibrate(30)" onclick="switchTab('history')" id="tab-history" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="list" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">History</span>
       </button>
 
-      <button ontouchstart="vibrate(30)" onclick="switchTab('saldo')" id="tab-saldo" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
+      <button ontouchstart="vibrate(30)" onclick="switchTab('wallets')" id="tab-wallets" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="wallet" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">Wallets</span>
       </button>
 
-      <button ontouchstart="vibrate(30)" onclick="switchTab('hutang')" id="tab-hutang" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
+      <button ontouchstart="vibrate(30)" onclick="switchTab('payables')" id="tab-payables" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
         <div class="relative flex-shrink-0">
           <i data-lucide="credit-card" class="w-5 h-5"></i>
-          <span id="badge-hutang-nav" class="hidden absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-[var(--amount-out)] ring-2 ring-[var(--glass-bg)]"></span>
+          <span id="badge-payables-nav" class="hidden absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-[var(--amount-out)] ring-2 ring-[var(--glass-bg)]"></span>
         </div>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">AP/R</span>
       </button>
     </div>
   </nav>
 
-  <!-- FAB TAMBAH TRANSAKSI -->
+  <!-- FAB: ADD TRANSACTION -->
   <div class="fixed bottom-[5.5rem] left-0 right-0 z-50 pointer-events-none">
     <div class="max-w-3xl mx-auto px-5 relative h-full">
-      <button ontouchstart="vibrate(35)" onclick="openFormTransaksiBaru()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full text-white shadow-[0_8px_20px_-6px_rgba(200,122,75,0.5)] flex items-center justify-center pointer-events-auto border border-white/20 group">
+      <button ontouchstart="vibrate(35)" onclick="openNewTransactionForm()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full text-white shadow-[0_8px_20px_-6px_rgba(200,122,75,0.5)] flex items-center justify-center pointer-events-auto border border-white/20 group">
         <svg class="w-7 h-7 text-white transform -translate-y-[1px]" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 11.5c-2.8 0-5 2.1-5 4.8 0 2.2 1.8 3.7 5 3.7s5-1.5 5-3.7c0-2.7-2.2-4.8-5-4.8z"/>
           <ellipse cx="6.5" cy="9.5" rx="1.8" ry="2.5"/>
@@ -539,18 +587,80 @@
     </div>
   </div>
 
+  <!-- ▼▼▼ LANJUT KE BAGIAN 3: 6 Modal + <script> JavaScript Engine ▼▼▼ -->
+
+  <!--
+  ID MAP (lama → baru) untuk cross-check dengan Bagian 3:
+  page-riwayat→page-history | page-saldo→page-wallets | page-hutang→page-payables
+  tab-riwayat→tab-history | tab-saldo→tab-wallets | tab-hutang→tab-payables
+  badge-hutang-nav→badge-payables-nav
+  dashboard-kategori-analysis→dashboard-category-analysis
+  dashboard-trx-list→dashboard-transaction-list
+  filter-bulan→filter-month | filter-tahun→filter-year | filter-jenis→filter-type
+  sum-masuk→sum-income | sum-keluar→sum-expense
+  riwayat-trx-list→history-transaction-list
+  list-akun-operasional→list-accounts-operational | list-akun-tabungan→list-accounts-savings
+  list-hutang-aktif→list-payables-active | list-piutang-aktif→list-receivables-active
+  kpi-kas→kpi-cash | kpi-piutang→kpi-receivables | kpi-hutang→kpi-payables
+  openFormTransaksiBaru()→openNewTransactionForm() | renderRiwayat()→renderHistory()
+  -->
+  <!--
+  ===========================================================================
+  MOCHI'S VAULT — index.html — PART 3 of 3: Modals & JavaScript Engine
+  ===========================================================================
+  Continues directly after Part 2's closing FAB </div>, right before </body>.
+
+  Summary of what changed vs. your original file (full detail in chat):
+  - getIconMeta() removed — confirmed dead code (defined once, never called).
+  - New TYPE_META object is now the single source of truth for: amount
+    color/sign, which account/payable/receivable fields to show on the
+    transaction form, and which category type to suggest. This REPLACES
+    getAmountMeta()'s fuzzy keyword matching, handleJenisChange()'s
+    hasSumber/hasTujuan/hasHutang/hasPiutang keyword matching, and
+    isCategoryMatchingType()'s 4-branch bilingual matching — all four used
+    to independently guess the same thing in slightly different (and
+    sometimes contradictory) ways. That inconsistency is exactly why the
+    History summary total and the per-row color used to disagree.
+  - findTypeOption() simplified to a plain equality lookup — the fuzzy
+    ID/EN matching it did before is no longer needed now that there's one
+    canonical English value per type.
+  - renderHistory()'s Total Income/Expense now uses the same TYPE_META
+    direction as every other amount on screen (was the "Total Masuk/Keluar"
+    bug from before).
+  - renderWallets()'s Operational/Savings grouping now checks for
+    "Daily Operations" (matches your real account data) instead of the
+    Indonesian substring "operasional" it was checking before.
+  - hasPayableActive (nav badge) checks "Active" (matches the real formula
+    output) instead of "Aktif".
+  - handleSaveMaster() now builds a payload with only the fields relevant to
+    the selected type, instead of always sending all four name fields.
+  - populateFormDropdowns() no longer rebuilds dropdown HTML on every
+    iteration (was an O(n²) innerHTML += pattern).
+  - Added: escapeHtml() for safely displaying free-text fields (description,
+    notes) so a stray < > & in a note can never break the layout; a
+    lightweight formatDate() so dates read like "9 Aug 2026" instead of the
+    raw "2026-08-09" everywhere; handling for the manifest's "Add
+    Transaction" home-screen shortcut (?action=add).
+  - Every function/variable/id is now English — full old→new map is in
+    Part 2's trailing comment plus the list below.
+  Nothing was removed feature-wise: every modal, every render path, the
+  History/e-Statement filters, dark mode, swipe navigation, the back-button
+  handling for nested detail modals, and the reward animation are all here.
+  ===========================================================================
+-->
+
   <!-- MODAL 1: TRANSACTION INPUT FORM -->
-  <div id="modalInputTrx" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalInputTrx')">
-    <div id="modalInputTrx-content" class="glass-modal-content w-full max-w-lg rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl modal-content-bottom md:modal-content-center">
+  <div id="modalTransactionForm" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalTransactionForm')">
+    <div id="modalTransactionForm-content" class="glass-modal-content w-full max-w-lg rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200 dark:border-[var(--border-color)] pb-4 mb-4">
-        <h3 id="modal-title-trx" class="font-extrabold text-main text-base">Add Transaction</h3>
-        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalInputTrx')" class="tap-shrink text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition-colors border border-[var(--border-color)]">
+        <h3 id="modal-title-transaction" class="font-extrabold text-main text-base">Add Transaction</h3>
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalTransactionForm')" class="tap-shrink text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition-colors border border-[var(--border-color)]">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
-      <form id="formTransaksi" onsubmit="handleSaveTransaksi(event)" class="space-y-3 text-sm">
-        <input type="hidden" id="form-idtrx">
+      <form id="formTransaction" onsubmit="handleSaveTransaction(event)" class="space-y-3 text-sm">
+        <input type="hidden" id="form-transaction-id">
 
         <div class="grid grid-cols-2 gap-3">
           <div>
@@ -561,84 +671,84 @@
             </select>
           </div>
           <div>
-            <label for="form-tgl" class="font-bold text-main block mb-1 text-xs cursor-pointer">Date</label>
-            <input type="date" id="form-tgl" class="w-full ios-input" required>
+            <label for="form-date" class="font-bold text-main block mb-1 text-xs cursor-pointer">Date</label>
+            <input type="date" id="form-date" class="w-full ios-input" required>
           </div>
         </div>
 
         <div>
           <label class="font-bold text-main block mb-1 text-xs">Transaction Type</label>
-          <div ontouchstart="vibrate(30)" onclick="openJenisPicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
-            <div id="form-jenis-display" class="flex items-center space-x-2.5"></div>
+          <div ontouchstart="vibrate(30)" onclick="openTypePicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+            <div id="form-type-display" class="flex items-center space-x-2.5"></div>
             <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
           </div>
-          <input type="hidden" id="form-jenis" value="Pengeluaran">
+          <input type="hidden" id="form-type" value="Expense">
         </div>
 
-        <div id="wrap-akunsumber" class="space-y-1">
+        <div id="wrap-source-account" class="space-y-1">
           <div class="flex justify-between items-center">
-            <label for="form-akunsumber" class="font-bold text-main text-xs cursor-pointer">Source Account</label>
-            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('akun')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
+            <label for="form-source-account" class="font-bold text-main text-xs cursor-pointer">Source Account</label>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
           </div>
-          <select id="form-akunsumber" class="w-full ios-input cursor-pointer"></select>
+          <select id="form-source-account" class="w-full ios-input cursor-pointer"></select>
         </div>
 
-        <div id="wrap-akuntujuan" class="space-y-1 hidden">
+        <div id="wrap-target-account" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label for="form-akuntujuan" class="font-bold text-main text-xs cursor-pointer">Target Account</label>
-            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('akun')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
+            <label for="form-target-account" class="font-bold text-main text-xs cursor-pointer">Target Account</label>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
           </div>
-          <select id="form-akuntujuan" class="w-full ios-input cursor-pointer"></select>
+          <select id="form-target-account" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div class="space-y-1">
           <div class="flex justify-between items-center">
             <label class="font-bold text-main text-xs">Category</label>
-            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('kategori')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Category</button>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('category')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Category</button>
           </div>
-          <div ontouchstart="vibrate(30)" onclick="openKategoriPicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
-            <span id="form-kategori-display" class="font-semibold text-faint truncate">Select Category...</span>
+          <div ontouchstart="vibrate(30)" onclick="openCategoryPicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+            <span id="form-category-display" class="font-semibold text-faint truncate">Select Category...</span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
           </div>
-          <input type="hidden" id="form-kategori">
+          <input type="hidden" id="form-category">
         </div>
 
-        <div id="wrap-hutang" class="space-y-1 hidden">
+        <div id="wrap-payable" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label for="form-hutang" class="font-bold text-main text-xs cursor-pointer">Related Payable</label>
-            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('hutang')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Payable</button>
+            <label for="form-payable" class="font-bold text-main text-xs cursor-pointer">Related Payable</label>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('payable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Payable</button>
           </div>
-          <select id="form-hutang" class="w-full ios-input cursor-pointer"></select>
+          <select id="form-payable" class="w-full ios-input cursor-pointer"></select>
         </div>
 
-        <div id="wrap-piutang" class="space-y-1 hidden">
+        <div id="wrap-receivable" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label for="form-piutang" class="font-bold text-main text-xs cursor-pointer">Related Receivable</label>
-            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('piutang')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Receivable</button>
+            <label for="form-receivable" class="font-bold text-main text-xs cursor-pointer">Related Receivable</label>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('receivable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Receivable</button>
           </div>
-          <select id="form-piutang" class="w-full ios-input cursor-pointer"></select>
+          <select id="form-receivable" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div>
-          <label for="form-jumlah-display" class="font-bold text-main block mb-1 text-xs cursor-pointer">Amount (Rp)</label>
+          <label for="form-amount-display" class="font-bold text-main block mb-1 text-xs cursor-pointer">Amount (Rp)</label>
           <div class="relative">
             <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-sm">Rp</span>
-            <input type="text" inputmode="numeric" id="form-jumlah-display" oninput="formatInputRupiah(this)" placeholder="0" class="w-full ios-input pl-10 text-base font-extrabold text-main" required>
+            <input type="text" inputmode="numeric" id="form-amount-display" oninput="formatInputRupiah(this)" placeholder="0" class="w-full ios-input pl-10 text-base font-extrabold text-main" required>
           </div>
-          <input type="hidden" id="form-jumlah-val">
+          <input type="hidden" id="form-amount-value">
         </div>
 
         <div>
-          <label for="form-deskripsi" class="font-bold text-main block mb-1 text-xs cursor-pointer">Description / Title</label>
-          <input type="text" id="form-deskripsi" placeholder="Example: Groceries Shopping" class="w-full ios-input">
+          <label for="form-description" class="font-bold text-main block mb-1 text-xs cursor-pointer">Description / Title</label>
+          <input type="text" id="form-description" placeholder="Example: Groceries Shopping" class="w-full ios-input">
         </div>
         <div>
-          <label for="form-catatan" class="font-bold text-main block mb-1 text-xs cursor-pointer">Notes (Optional)</label>
-          <textarea id="form-catatan" rows="2" placeholder="Optional notes..." class="w-full ios-input"></textarea>
+          <label for="form-notes" class="font-bold text-main block mb-1 text-xs cursor-pointer">Notes (Optional)</label>
+          <textarea id="form-notes" rows="2" placeholder="Optional notes..." class="w-full ios-input"></textarea>
         </div>
 
         <div class="pt-3 pb-1">
-          <button type="submit" id="btn-submit-trx" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] transition-colors">
+          <button type="submit" id="btn-submit-transaction" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] transition-colors">
             Save Transaction
           </button>
         </div>
@@ -646,7 +756,7 @@
     </div>
   </div>
 
-  <!-- MODAL DETAIL -->
+  <!-- MODAL DETAIL (generic — reused for KPI / transaction / account / payable / receivable detail) -->
   <div id="modalDetail" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDetail')">
     <div id="modalDetail-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto modal-content-center">
       <button ontouchstart="vibrate(30)" onclick="closeModal('modalDetail')" class="tap-shrink absolute top-4 right-4 text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition z-20 border border-[var(--border-color)]">
@@ -656,33 +766,33 @@
     </div>
   </div>
 
-  <!-- MODAL PICKER JENIS TRANSAKSI -->
-  <div id="modalJenisPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[75] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalJenisPicker')">
-    <div id="modalJenisPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
+  <!-- MODAL PICKER: TRANSACTION TYPE -->
+  <div id="modalTypePicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[75] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalTypePicker')">
+    <div id="modalTypePicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
         <h3 class="font-extrabold text-main text-sm">Select Transaction Type</h3>
-        <button ontouchstart="vibrate(30)" onclick="closeModal('modalJenisPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
+        <button ontouchstart="vibrate(30)" onclick="closeModal('modalTypePicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
-      <div id="jenis-picker-list" class="text-xs space-y-2"></div>
+      <div id="type-picker-list" class="text-xs space-y-2"></div>
     </div>
   </div>
 
-  <!-- MODAL PICKER KATEGORI (FOTO 3: CLEAN BORDERLESS HEADER) -->
-  <div id="modalKategoriPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalKategoriPicker')">
-    <div id="modalKategoriPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
+  <!-- MODAL PICKER: CATEGORY -->
+  <div id="modalCategoryPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalCategoryPicker')">
+    <div id="modalCategoryPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center pb-3 mb-3 border-b border-slate-200/50 dark:border-[var(--border-color)]">
         <h3 class="font-extrabold text-main text-base">Select Category</h3>
-        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalKategoriPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalCategoryPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
-      <div id="kategori-picker-list" class="text-xs space-y-2"></div>
+      <div id="category-picker-list" class="text-xs space-y-2"></div>
     </div>
   </div>
 
-  <!-- MODAL MASTER DATA -->
+  <!-- MODAL: MASTER DATA (Account / Category / Payable / Receivable) -->
   <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3">
@@ -691,24 +801,24 @@
       </div>
       <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-3 text-sm">
         <input type="hidden" id="master-type">
-        
-        <div id="master-kategoriutama-wrap" class="hidden">
-          <label for="master-kategoriutama-select" class="font-bold text-main block mb-1 text-xs cursor-pointer">Main Category</label>
-          <select id="master-kategoriutama-select" onchange="handleKategoriUtamaSelectChange()" class="w-full ios-input cursor-pointer"></select>
+
+        <div id="master-main-category-wrap" class="hidden">
+          <label for="master-main-category-select" class="font-bold text-main block mb-1 text-xs cursor-pointer">Main Category</label>
+          <select id="master-main-category-select" onchange="handleMainCategorySelectChange()" class="w-full ios-input cursor-pointer"></select>
         </div>
-        
-        <div id="master-kategoriutama-baru-wrap" class="hidden">
-          <label for="master-kategoriutama-baru" class="font-bold text-main block mb-1 text-xs cursor-pointer">New Main Category Name</label>
-          <input type="text" id="master-kategoriutama-baru" placeholder="Example: Investment" class="w-full ios-input">
+
+        <div id="master-main-category-new-wrap" class="hidden">
+          <label for="master-main-category-new" class="font-bold text-main block mb-1 text-xs cursor-pointer">New Main Category Name</label>
+          <input type="text" id="master-main-category-new" placeholder="Example: Investment" class="w-full ios-input">
         </div>
-        
+
         <div>
-          <label for="master-nama" class="font-bold text-main block mb-1 text-xs cursor-pointer" id="master-nama-label">Name</label>
-          <input type="text" id="master-nama" class="w-full ios-input" required>
+          <label for="master-name" class="font-bold text-main block mb-1 text-xs cursor-pointer" id="master-name-label">Name</label>
+          <input type="text" id="master-name" class="w-full ios-input" required>
         </div>
-        
+
         <div id="master-extra-field" class="space-y-3"></div>
-        
+
         <div class="pt-3">
           <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] transition-colors">Save Master Data</button>
         </div>
@@ -716,7 +826,7 @@
     </div>
   </div>
 
-  <!-- MODAL DELETE CONFIRMATION -->
+  <!-- MODAL: DELETE CONFIRMATION -->
   <div id="modalDelete" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDelete')">
     <div id="modalDelete-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center text-center">
       <div class="w-16 h-16 bg-rose-500/10 amount-out rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-500/20">
@@ -724,7 +834,7 @@
       </div>
       <h3 class="text-lg font-black text-main mb-2 tracking-tight">Delete Transaction?</h3>
       <p class="text-sm font-medium text-muted mb-6 px-2">This action cannot be undone. Data will be permanently removed.</p>
-      
+
       <div class="flex space-x-3">
         <button ontouchstart="vibrate(30)" onclick="closeModal('modalDelete')" class="flex-1 py-3 bg-[var(--bg-subtle-2)] text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-[var(--border-color)]">Cancel</button>
         <button id="btn-confirm-delete" class="flex-1 py-3 bg-rose-500 hover:bg-rose-600 text-white font-extrabold rounded-xl tap-shrink shadow-sm">Yes, Delete</button>
@@ -732,19 +842,21 @@
     </div>
   </div>
 
-  <!-- SCRIPT JAVASCRIPT -->
+  <!-- ============================== SCRIPT ============================== -->
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbx8HzV4KHpr6QAM4bDebEbBTIwSNeg5idIaQZUeBUuPu6OJ3xWMFvby82aOrq1CPYCLHg/exec";
+    // ↑ If you create a NEW deployment (not "New version" on the existing
+    // one) this URL changes — update it here to match.
 
-    let GLOBAL_DATA = {};
+    let GLOBAL_DATA = { kpi: {}, transactions: [], accounts: [], categories: [], payables: [], receivables: [] };
     let currentModalBackFn = null;
-    let trxToDelete = null; 
+    let transactionToDelete = null;
 
-    let activeModals = []; 
+    let activeModals = [];
     history.replaceState({ modal: null }, '');
     window.isNestedModalView = false;
 
-    window.addEventListener('popstate', (e) => {
+    window.addEventListener('popstate', () => {
       if (activeModals.length > 0) {
         const topModal = activeModals[activeModals.length - 1];
         if (topModal === 'modalDetail' && window.isNestedModalView && currentModalBackFn) {
@@ -760,6 +872,9 @@
       }
     });
 
+    // ==========================================
+    // CORE UTILITIES
+    // ==========================================
     function vibrate(ms) {
       if (navigator.vibrate) navigator.vibrate(Math.max(ms, 25));
     }
@@ -769,7 +884,7 @@
     }
 
     function triggerInputError(elementId, message) {
-      vibrate(40); 
+      vibrate(40);
       showToast(message, "error");
       const el = document.getElementById(elementId);
       if (el) {
@@ -778,23 +893,36 @@
       }
     }
 
+    // Escapes free-text (description, notes, names) before it's dropped into
+    // innerHTML, so a stray < > & in someone's note can never break the
+    // layout. Not needed for values already going through Lucide/known enums.
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str ?? '';
+      return div.innerHTML;
+    }
+
+    // For values embedded inside an inline onclick="...('value')" JS string,
+    // where only the quote character itself is dangerous.
+    function escapeAttr(str) { return String(str).replace(/'/g, "\\'"); }
+
     function showToast(message, type = 'success') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
       const isError = type === 'error';
       const isInfo = type === 'info';
-      
+
       let bgClass = isError ? 'bg-rose-500' : (isInfo ? 'bg-slate-600' : 'bg-coffee-darkest dark:bg-white');
       let textClass = (isInfo || isError) ? 'text-white' : 'text-white dark:text-coffee-darkest';
       let icon = isError ? 'alert-circle' : (isInfo ? 'loader' : 'check-circle');
       let iconSpin = isInfo ? 'animate-spin' : '';
 
       toast.className = `flex items-center px-4 py-3 rounded-2xl shadow-xl text-xs font-bold transform transition-all duration-500 translate-y-[-20px] opacity-0 w-full max-w-sm ${bgClass} ${textClass}`;
-      toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 mr-2.5 flex-shrink-0 ${iconSpin}"></i> <span class="flex-1">${message}</span>`;
-      
+      toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 mr-2.5 flex-shrink-0 ${iconSpin}"></i> <span class="flex-1">${escapeHtml(message)}</span>`;
+
       container.appendChild(toast);
       lucide.createIcons();
-      
+
       requestAnimationFrame(() => {
         toast.classList.remove('translate-y-[-20px]', 'opacity-0');
         toast.classList.add('translate-y-0', 'opacity-100');
@@ -807,7 +935,7 @@
           setTimeout(() => toast.remove(), 500);
         }, 3000);
       }
-      return toast; 
+      return toast;
     }
 
     function showRewardAnimation(subtitleText = "Saved") {
@@ -816,12 +944,12 @@
         const bg = document.getElementById('reward-bg');
         const content = document.getElementById('reward-content');
         const subtitleEl = document.getElementById('reward-subtitle');
-        
+
         if (subtitleEl) subtitleEl.innerText = subtitleText;
-        
+
         overlay.classList.remove('hidden');
         overlay.classList.add('flex');
-        
+
         requestAnimationFrame(() => {
           bg.classList.remove('opacity-0');
           bg.classList.add('opacity-100');
@@ -829,13 +957,13 @@
           content.classList.add('scale-100', 'opacity-100');
           vibrate(50);
         });
-        
+
         setTimeout(() => {
           bg.classList.remove('opacity-100');
           bg.classList.add('opacity-0');
           content.classList.remove('scale-100', 'opacity-100');
           content.classList.add('scale-50', 'opacity-0');
-          
+
           setTimeout(() => {
             overlay.classList.add('hidden');
             overlay.classList.remove('flex');
@@ -855,7 +983,7 @@
       modal.classList.remove('hidden');
       requestAnimationFrame(() => {
         modal.classList.add('show');
-        if(content) content.classList.add('show');
+        if (content) content.classList.add('show');
       });
       lucide.createIcons();
     }
@@ -874,14 +1002,14 @@
       const content = document.getElementById(id + '-content');
       if (modal) {
         modal.classList.remove('show');
-        if(content) content.classList.remove('show');
+        if (content) content.classList.remove('show');
         setTimeout(() => modal.classList.add('hidden'), 400);
       }
       activeModals = activeModals.filter(m => m !== id);
     }
 
     let currentTab = 'dashboard';
-    const tabs = ['dashboard', 'riwayat', 'saldo', 'hutang'];
+    const TABS = ['dashboard', 'history', 'wallets', 'payables'];
 
     function switchTab(tabId) {
       currentTab = tabId;
@@ -889,15 +1017,15 @@
         el.classList.remove('bg-mochi-light/20', 'text-mochi', 'dark:text-mochi-light', 'px-4', 'py-2.5', 'rounded-2xl');
         el.classList.add('text-slate-400', 'dark:text-[#A89B91]', 'p-2.5');
         const textSpan = el.querySelector('.nav-text');
-        if(textSpan) textSpan.classList.add('hidden');
+        if (textSpan) textSpan.classList.add('hidden');
       });
 
       const activeBtn = document.getElementById('tab-' + tabId);
-      if(activeBtn) {
+      if (activeBtn) {
         activeBtn.classList.remove('text-slate-400', 'dark:text-[#A89B91]', 'p-2.5');
         activeBtn.classList.add('bg-mochi-light/20', 'text-mochi', 'dark:text-mochi-light', 'px-4', 'py-2.5', 'rounded-2xl');
         const textSpan = activeBtn.querySelector('.nav-text');
-        if(textSpan) textSpan.classList.remove('hidden');
+        if (textSpan) textSpan.classList.remove('hidden');
       }
 
       document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
@@ -909,26 +1037,25 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    let tStartX = 0, tStartY = 0;
+    let touchStartX = 0, touchStartY = 0;
     document.addEventListener('touchstart', e => {
-      tStartX = e.changedTouches[0].screenX;
-      tStartY = e.changedTouches[0].screenY;
-    }, {passive: true});
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
 
     document.addEventListener('touchend', e => {
-      let dx = e.changedTouches[0].screenX - tStartX;
-      let dy = e.changedTouches[0].screenY - tStartY;
+      let dx = e.changedTouches[0].screenX - touchStartX;
+      let dy = e.changedTouches[0].screenY - touchStartY;
       if (Math.abs(dx) > 60 && Math.abs(dy) < 40) {
-        let isEdgeSwipe = (tStartX < 40) || (tStartX > window.innerWidth - 40);
+        let isEdgeSwipe = (touchStartX < 40) || (touchStartX > window.innerWidth - 40);
         if (!isEdgeSwipe && activeModals.length === 0) {
-          let currentIndex = tabs.indexOf(currentTab);
-          if (dx < -60 && currentIndex < tabs.length - 1) { vibrate(30); switchTab(tabs[currentIndex + 1]); }
-          else if (dx > 60 && currentIndex > 0) { vibrate(30); switchTab(tabs[currentIndex - 1]); }
+          let currentIndex = TABS.indexOf(currentTab);
+          if (dx < -60 && currentIndex < TABS.length - 1) { vibrate(30); switchTab(TABS[currentIndex + 1]); }
+          else if (dx > 60 && currentIndex > 0) { vibrate(30); switchTab(TABS[currentIndex - 1]); }
         }
       }
-    }, {passive: true});
+    }, { passive: true });
 
-    /* FOTO 1: ADAPTIF THEME COLOR META */
     function applyDarkModePref() {
       const pref = localStorage.getItem('yf-theme');
       const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -938,7 +1065,7 @@
       const metaTheme = document.querySelector('meta[name="theme-color"]');
       if (metaTheme) metaTheme.setAttribute("content", isDark ? "#181412" : "#FAF8F5");
     }
-    
+
     function toggleDarkMode() {
       const isDark = document.documentElement.classList.toggle('dark');
       localStorage.setItem('yf-theme', isDark ? 'dark' : 'light');
@@ -946,49 +1073,15 @@
       const metaTheme = document.querySelector('meta[name="theme-color"]');
       if (metaTheme) metaTheme.setAttribute("content", isDark ? "#181412" : "#FAF8F5");
     }
-    
+
     function updateDarkModeIcon(isDark) {
       document.getElementById('icon-sun').classList.toggle('hidden', !isDark);
       document.getElementById('icon-moon').classList.toggle('hidden', isDark);
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      applyDarkModePref();
-      lucide.createIcons();
-      document.getElementById('form-tgl').valueAsDate = new Date();
-      loadAppData();
-    });
-
-    async function loadAppData(isSilentReload = false) {
-      try {
-        const res = await fetch(API_URL + "?action=getAppData", { redirect: 'follow' });
-        const result = await res.json();
-        if (result.status === 'error') throw new Error(result.message);
-
-        GLOBAL_DATA = result.data || result;
-        
-        if(!isSilentReload) {
-          const splash = document.getElementById('splash-screen');
-          if(splash) {
-            splash.classList.add('opacity-0');
-            setTimeout(() => splash.classList.add('hidden'), 700);
-          }
-          document.getElementById('main-content').classList.remove('hidden');
-        }
-        
-        populateFormDropdowns();
-        populateYearFilter();
-        renderDashboard();
-        renderKategoriAnalysis();
-        renderRiwayat();
-        renderSaldo();
-        renderHutangPiutang();
-        lucide.createIcons();
-      } catch (err) {
-        showToast("Failed to load data: " + err.message, "error");
-      }
-    }
-
+    // ==========================================
+    // FORMATTING
+    // ==========================================
     function formatRupiah(number) {
       if (number === undefined || number === null) return "Rp 0";
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(number);
@@ -997,12 +1090,22 @@
     function formatInputRupiah(input) {
       let val = input.value.replace(/[^0-9]/g, '');
       let numberVal = Number(val) || 0;
-      document.getElementById('form-jumlah-val').value = numberVal > 0 ? numberVal : "";
+      document.getElementById('form-amount-value').value = numberVal > 0 ? numberVal : "";
       input.value = numberVal > 0 ? new Intl.NumberFormat('id-ID').format(numberVal) : "";
     }
 
+    // Was missing before — dates used to print as raw "2026-08-09" strings.
+    function formatDate(iso) {
+      if (!iso) return '-';
+      const parts = String(iso).split('-');
+      if (parts.length < 3) return String(iso);
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const m = parseInt(parts[1], 10);
+      return `${parseInt(parts[2], 10)} ${months[m - 1] || ''} ${parts[0]}`;
+    }
+
     function updateScalingText(el, value) {
-      if(!el) return;
+      if (!el) return;
       const text = formatRupiah(value);
       el.innerText = text;
       if (text.length > 17) { el.style.fontSize = '1.25rem'; el.style.lineHeight = '1.2'; }
@@ -1011,142 +1114,109 @@
     }
 
     // ==========================================
-// UNIFIED AMOUNT & COLOR META (BILINGUAL FIX)
-// ==========================================
-function getAmountMeta(jenis) {
-  if (!jenis) return { cls: 'amount-out', prefix: '-' };
-  const j = jenis.toLowerCase().trim();
+    // TRANSACTION TYPE META — single source of truth
+    // ==========================================
+    // Replaces the old getAmountMeta() + handleJenisChange() keyword-guessing
+    // + isCategoryMatchingType()'s 4-branch bilingual matching. One object,
+    // one place to update if a type's behavior ever needs to change.
+    // Color mapping is fixed by design: green=in, red=out, blue=neutral —
+    // do not change which types map to which direction.
+    const TYPE_META = {
+      'Income':             { direction: 'in',      cls: 'amount-in',   prefix: '+', showSource: false, showTarget: true,  showPayable: false, showReceivable: false, categoryType: 'Income' },
+      'Expense':            { direction: 'out',     cls: 'amount-out',  prefix: '-', showSource: true,  showTarget: false, showPayable: false, showReceivable: false, categoryType: 'Expense' },
+      'Internal Transfer':  { direction: 'neutral', cls: 'amount-info', prefix: '',  showSource: true,  showTarget: true,  showPayable: false, showReceivable: false, categoryType: null },
+      'External Transfer':  { direction: 'out',     cls: 'amount-out',  prefix: '-', showSource: true,  showTarget: false, showPayable: false, showReceivable: false, categoryType: 'Expense' },
+      'Give Receivable':    { direction: 'neutral', cls: 'amount-info', prefix: '',  showSource: true,  showTarget: false, showPayable: false, showReceivable: true,  categoryType: null },
+      'Receive Receivable': { direction: 'in',      cls: 'amount-in',   prefix: '+', showSource: false, showTarget: true,  showPayable: false, showReceivable: true,  categoryType: 'Income' },
+      'Receive Payable':    { direction: 'in',      cls: 'amount-in',   prefix: '+', showSource: false, showTarget: true,  showPayable: true,  showReceivable: false, categoryType: 'Income' },
+      'Pay Installment':    { direction: 'out',     cls: 'amount-out',  prefix: '-', showSource: true,  showTarget: false, showPayable: true,  showReceivable: false, categoryType: 'Expense' }
+    };
+    function getTypeMeta(type) {
+      return TYPE_META[type] || { direction: 'out', cls: 'amount-out', prefix: '-', showSource: true, showTarget: false, showPayable: false, showReceivable: false, categoryType: null };
+    }
 
-  // 🔵 BLUE: Transfers / Give Receivables / Reimburse
-  if (j.includes('transfer') || j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi')) {
-    return { cls: 'amount-info', prefix: '' };
-  }
+    // ==========================================
+    // ICONS
+    // ==========================================
+    function getCategoryIconMeta(categoryName, type) {
+      const k = (categoryName || '').toLowerCase().trim();
 
-  // 🟢 GREEN: Money In (Income / Receive Receivable / Receive Debt)
-  if (j.includes('masuk') || j.includes('income') || j.includes('terima') || j.includes('receive')) {
-    return { cls: 'amount-in', prefix: '+' };
-  }
+      // Priority 1: type-specific icon for AP/R transaction types
+      if (type === 'Receive Receivable') return { icon: 'hand-coins', chip: 'chip-pemasukan' };
+      if (type === 'Receive Payable') return { icon: 'piggy-bank', chip: 'chip-pemasukan' };
+      if (type === 'Give Receivable') return { icon: 'send', chip: 'chip-info' };
+      if (type === 'Pay Installment') return { icon: 'credit-card', chip: 'chip-pengeluaran' };
+      if (type === 'External Transfer') return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
+      if (type === 'Internal Transfer') return { icon: 'arrow-right-left', chip: 'chip-info' };
 
-  // 🔴 RED: Money Out (Expense / Pay Debt)
-  return { cls: 'amount-out', prefix: '-' };
-}
+      // Priority 2: income categories
+      if (k.includes('salary') || k.includes('gaji')) return { icon: 'banknote', chip: 'chip-pemasukan' };
+      if (k.includes('bonus') || k.includes('tunjangan')) return { icon: 'gift', chip: 'chip-pemasukan' };
+      if (k.includes('freelance') || k.includes('proyek')) return { icon: 'briefcase', chip: 'chip-pemasukan' };
+      if (k.includes('investment') || k.includes('investasi')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
 
-    function getCategoryIconMeta(namaKategori, jenis) {
-  const k = (namaKategori || '').toLowerCase().trim();
-  const j = (jenis || '').toLowerCase().trim();
+      // Daily expense subcategories
+      if (k.includes('checkup') || k.includes('dokter')) return { icon: 'stethoscope', chip: 'chip-pengeluaran' };
+      if (k.includes('medicine') || k.includes('vitamin') || k.includes('obat')) return { icon: 'pill', chip: 'chip-pengeluaran' };
+      if (k.includes('sport') || k.includes('fitness') || k.includes('gym')) return { icon: 'dumbbell', chip: 'chip-pengeluaran' };
+      if (k.includes('fuel') || k.includes('bensin')) return { icon: 'fuel', chip: 'chip-pengeluaran' };
+      if (k.includes('flight') || k.includes('tiket pesawat')) return { icon: 'plane', chip: 'chip-pengeluaran' };
+      if (k.includes('train') || k.includes('kereta')) return { icon: 'train-front', chip: 'chip-pengeluaran' };
+      if (k.includes('grab') || k.includes('gocar') || k.includes('ojek')) return { icon: 'car-front', chip: 'chip-pengeluaran' };
+      if (k.includes('electricity') || k.includes('listrik')) return { icon: 'zap', chip: 'chip-pengeluaran' };
+      if (k.includes('water') || k.includes('air') || k.includes('pdam')) return { icon: 'droplet', chip: 'chip-pengeluaran' };
+      if (k.includes('internet') || k.includes('wifi')) return { icon: 'wifi', chip: 'chip-pengeluaran' };
+      if (k.includes('phone') || k.includes('pulsa')) return { icon: 'smartphone', chip: 'chip-pengeluaran' };
+      if (k.includes('gas')) return { icon: 'flame', chip: 'chip-pengeluaran' };
+      if (k.includes('tax') || k.includes('pajak')) return { icon: 'receipt', chip: 'chip-pengeluaran' };
+      if (k.includes('houseware') || k.includes('perabot')) return { icon: 'armchair', chip: 'chip-pengeluaran' };
+      if (k.includes('home maintenance') || k.includes('servis rumah')) return { icon: 'hammer', chip: 'chip-pengeluaran' };
+      if (k.includes('home services') || k.includes('art')) return { icon: 'brush', chip: 'chip-pengeluaran' };
+      if (k.includes('pet') || k.includes('anabul') || k.includes('kucing')) return { icon: 'paw-print', chip: 'chip-pengeluaran' };
+      if (k.includes('skincare') || k.includes('makeup')) return { icon: 'sparkles', chip: 'chip-pengeluaran' };
+      if (k.includes('treatment') || k.includes('salon')) return { icon: 'scissors', chip: 'chip-pengeluaran' };
+      if (k.includes('snack') || k.includes('drink') || k.includes('minuman')) return { icon: 'cookie', chip: 'chip-pengeluaran' };
+      if (k.includes('groceries') || k.includes('belanja dapur')) return { icon: 'shopping-basket', chip: 'chip-pengeluaran' };
+      if (k.includes('dining') || k.includes('food') || k.includes('makan')) return { icon: 'utensils', chip: 'chip-pengeluaran' };
 
-  // 1. AP/AR & AP-AR TRANSACTIONS (PRIORITAS UTAMA)
-  if (j.includes('terima piutang') || j.includes('receive receivable')) return { icon: 'hand-coins', chip: 'chip-pemasukan' };
-  if (j.includes('terima hutang') || j.includes('receive debt')) return { icon: 'piggy-bank', chip: 'chip-pemasukan' };
-  if (j.includes('beri piutang') || j.includes('give receivable')) return { icon: 'send', chip: 'chip-info' };
-  if (j.includes('bayar hutang') || j.includes('pay debt')) return { icon: 'credit-card', chip: 'chip-pengeluaran' };
-
-  // 2. INCOME CATEGORIES
-  if (k.includes('salary') || k.includes('gaji')) return { icon: 'banknote', chip: 'chip-pemasukan' };
-  if (k.includes('bonus') || k.includes('tunjangan')) return { icon: 'gift', chip: 'chip-pemasukan' };
-  if (k.includes('freelance') || k.includes('proyek')) return { icon: 'briefcase', chip: 'chip-pemasukan' };
-  if (k.includes('investment') || k.includes('investasi')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
-
-  // 3. TRANSFERS
-  if (k.includes('external transfer') || k.includes('transfer keluar')) return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
-  if (k.includes('internal transfer') || k.includes('pindah buku') || k.includes('transfer')) return { icon: 'arrow-right-left', chip: 'chip-info' };
-
-  // 4. EXPENSE CATEGORIES (MAIN & SUB-CATEGORIES)
-  
-  // Food & Groceries
-  if (k.includes('snack') || k.includes('drink') || k.includes('minuman')) return { icon: 'cookie', chip: 'chip-pengeluaran' };
-  if (k.includes('groceries') || k.includes('belanja dapur')) return { icon: 'shopping-basket', chip: 'chip-pengeluaran' };
-  if (k.includes('food') || k.includes('dining') || k.includes('makan')) return { icon: 'utensils', chip: 'chip-pengeluaran' };
-
-  // Transportation
-  if (k.includes('fuel') || k.includes('bensin')) return { icon: 'fuel', chip: 'chip-pengeluaran' };
-  if (k.includes('flight') || k.includes('tiket pesawat')) return { icon: 'plane', chip: 'chip-pengeluaran' };
-  if (k.includes('train') || k.includes('kereta')) return { icon: 'train-front', chip: 'chip-pengeluaran' };
-  if (k.includes('grab') || k.includes('gocar') || k.includes('ojek')) return { icon: 'car-front', chip: 'chip-pengeluaran' };
-  if (k.includes('vehicle maintenance') || k.includes('servis kendaraan')) return { icon: 'wrench', chip: 'chip-pengeluaran' };
-  if (k.includes('transport') || k.includes('transportation')) return { icon: 'car', chip: 'chip-pengeluaran' };
-
-  // Bills & Utilities
-  if (k.includes('electricity') || k.includes('listrik')) return { icon: 'zap', chip: 'chip-pengeluaran' };
-  if (k.includes('water') || k.includes('air') || k.includes('pdam')) return { icon: 'droplet', chip: 'chip-pengeluaran' };
-  if (k.includes('internet') || k.includes('wifi')) return { icon: 'wifi', chip: 'chip-pengeluaran' };
-  if (k.includes('phone') || k.includes('pulsa')) return { icon: 'smartphone', chip: 'chip-pengeluaran' };
-  if (k.includes('gas')) return { icon: 'flame', chip: 'chip-pengeluaran' };
-  if (k.includes('tax') || k.includes('pajak')) return { icon: 'receipt', chip: 'chip-pengeluaran' };
-  if (k.includes('bills') || k.includes('utility') || k.includes('utilities') || k.includes('tagihan')) return { icon: 'file-text', chip: 'chip-pengeluaran' };
-
-  // Healthcare
-  if (k.includes('checkup') || k.includes('dokter')) return { icon: 'stethoscope', chip: 'chip-pengeluaran' };
-  if (k.includes('medicine') || k.includes('vitamin') || k.includes('obat')) return { icon: 'pill', chip: 'chip-pengeluaran' };
-  if (k.includes('sport') || k.includes('fitness') || k.includes('gym')) return { icon: 'dumbbell', chip: 'chip-pengeluaran' };
-  if (k.includes('health') || k.includes('healthcare') || k.includes('kesehatan')) return { icon: 'heart-pulse', chip: 'chip-pengeluaran' };
-
-  // Household
-  if (k.includes('houseware') || k.includes('perabot')) return { icon: 'armchair', chip: 'chip-pengeluaran' };
-  if (k.includes('home maintenance') || k.includes('perbaikan rumah')) return { icon: 'hammer', chip: 'chip-pengeluaran' };
-  if (k.includes('home services') || k.includes('art')) return { icon: 'brush', chip: 'chip-pengeluaran' };
-  if (k.includes('pet') || k.includes('anabul') || k.includes('kucing')) return { icon: 'paw-print', chip: 'chip-pengeluaran' };
-  if (k.includes('household') || k.includes('rumah tangga')) return { icon: 'home', chip: 'chip-pengeluaran' };
-
-  // Education, Entertainment & Gifts
-  if (k.includes('education') || k.includes('pendidikan') || k.includes('sekolah')) return { icon: 'graduation-cap', chip: 'chip-pengeluaran' };
-  if (k.includes('entertainment') || k.includes('hiburan') || k.includes('hobi')) return { icon: 'gamepad-2', chip: 'chip-pengeluaran' };
-  if (k.includes('gift') || k.includes('donation') || k.includes('zakat') || k.includes('sedekah')) return { icon: 'heart', chip: 'chip-pengeluaran' };
-
-  // Personal Care
-  if (k.includes('skincare') || k.includes('makeup')) return { icon: 'sparkles', chip: 'chip-pengeluaran' };
-  if (k.includes('treatment') || k.includes('salon')) return { icon: 'scissors', chip: 'chip-pengeluaran' };
-  if (k.includes('personal care') || k.includes('perawatan')) return { icon: 'sparkles', chip: 'chip-pengeluaran' };
-
-  // 5. GENERAL FALLBACKS
-  if (j.includes('masuk') || j.includes('income') || j.includes('receive')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
-  if (j.includes('transfer') || j.includes('piutang')) return { icon: 'send', chip: 'chip-info' };
-
-  return { icon: 'shopping-bag', chip: 'chip-pengeluaran' };
-}
-
-    function getIconMeta(jenis, kategori = '') {
-      const j = (jenis || '').toLowerCase().trim();
-      if (j.includes('transfer')) return { icon: 'arrow-right-left', chip: 'chip-info' };
-      if (j.includes('beri piutang') || j.includes('give receivable') || j.includes('menalangi') || j.includes('reimburse')) return { icon: 'send', chip: 'chip-info' };
-      if (j.includes('terima piutang') || j.includes('receive receivable')) return { icon: 'hand-coins', chip: 'chip-pemasukan' };
-      if (j.includes('terima hutang') || j.includes('receive debt') || j.includes('pinjam')) return { icon: 'piggy-bank', chip: 'chip-pemasukan' };
-      if (j.includes('masuk') || j.includes('income')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
-      if (j.includes('hutang') || j.includes('debt') || j.includes('bayar') || j.includes('cicilan')) return { icon: 'credit-card', chip: 'chip-pengeluaran' };
+      // Fallback
+      if (type === 'Income') return { icon: 'trending-up', chip: 'chip-pemasukan' };
       return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
     }
 
-    function iconChipHtml(jenis, kategori = '') {
-      const m = getCategoryIconMeta(kategori, jenis);
+    function iconChipHtml(type, category = '') {
+      const m = getCategoryIconMeta(category, type);
       return `<div class="icon-chip ${m.chip}"><i data-lucide="${m.icon}" class="w-4 h-4"></i></div>`;
     }
 
-    const JENIS_OPTIONS = [
-      { value: 'Pengeluaran', label: 'Expense (-)', icon: 'arrow-up-right', chip: 'chip-pengeluaran', badge: '🔴' },
-      { value: 'Pemasukan', label: 'Income (+)', icon: 'trending-up', chip: 'chip-pemasukan', badge: '🟢' },
-      { value: 'Transfer Internal', label: 'Internal Transfer', icon: 'arrow-right-left', chip: 'chip-info', badge: '🔵' },
-      { value: 'Beri Piutang (Menalangi)', label: 'Give Receivables / Reimburse', icon: 'send', chip: 'chip-info', badge: '🔵' },
-      { value: 'Terima Piutang', label: 'Receive Receivables (+)', icon: 'hand-coins', chip: 'chip-pemasukan', badge: '🟢' },
-      { value: 'Terima Hutang (Pinjam)', label: 'Receive Debt (+)', icon: 'piggy-bank', chip: 'chip-pemasukan', badge: '🟢' },
-      { value: 'Bayar Hutang/Cicilan', label: 'Pay Debt / Installment (-)', icon: 'credit-card', chip: 'chip-pengeluaran', badge: '🔴' }
+    // ==========================================
+    // TRANSACTION TYPE PICKER
+    // ==========================================
+    const TRANSACTION_TYPE_OPTIONS = [
+      { value: 'Expense', label: 'Expense (-)', icon: 'arrow-up-right', chip: 'chip-pengeluaran', badge: '🔴' },
+      { value: 'Income', label: 'Income (+)', icon: 'trending-up', chip: 'chip-pemasukan', badge: '🟢' },
+      { value: 'Internal Transfer', label: 'Internal Transfer', icon: 'arrow-right-left', chip: 'chip-info', badge: '🔵' },
+      { value: 'External Transfer', label: 'External Transfer (-)', icon: 'arrow-up-right', chip: 'chip-pengeluaran', badge: '🔴' },
+      { value: 'Give Receivable', label: 'Give Receivable / Reimburse', icon: 'send', chip: 'chip-info', badge: '🔵' },
+      { value: 'Receive Receivable', label: 'Receive Receivable (+)', icon: 'hand-coins', chip: 'chip-pemasukan', badge: '🟢' },
+      { value: 'Receive Payable', label: 'Receive Payable (+)', icon: 'piggy-bank', chip: 'chip-pemasukan', badge: '🟢' },
+      { value: 'Pay Installment', label: 'Pay Installment (-)', icon: 'credit-card', chip: 'chip-pengeluaran', badge: '🔴' }
     ];
 
-    function openJenisPicker() {
-      renderJenisPickerList();
-      openModal('modalJenisPicker');
+    function openTypePicker() {
+      renderTypePickerList();
+      openModal('modalTypePicker');
     }
 
-    function renderJenisPickerList() {
-      const container = document.getElementById('jenis-picker-list');
-      let html = "";
-      const currentVal = document.getElementById('form-jenis').value || 'Pengeluaran';
+    function renderTypePickerList() {
+      const container = document.getElementById('type-picker-list');
+      const currentVal = document.getElementById('form-type').value || 'Expense';
 
-      JENIS_OPTIONS.forEach(opt => {
+      container.innerHTML = TRANSACTION_TYPE_OPTIONS.map(opt => {
         const isSelected = opt.value === currentVal;
         const borderCls = isSelected ? 'border-mochi ring-2 ring-mochi/20' : 'border-slate-100 dark:border-[var(--border-color)]';
-        
-        html += `
-          <div onclick="vibrate(30); selectJenis('${opt.value}')" class="floating-item flex justify-between items-center px-4 py-3 cursor-pointer tap-shrink border ${borderCls} transition-all">
+        return `
+          <div onclick="vibrate(30); selectType('${opt.value}')" class="floating-item flex justify-between items-center px-4 py-3 cursor-pointer tap-shrink border ${borderCls} transition-all">
             <div class="flex items-center space-x-3">
               <div class="icon-chip ${opt.chip}"><i data-lucide="${opt.icon}" class="w-4 h-4"></i></div>
               <span class="font-extrabold text-main text-[13px]">${opt.label}</span>
@@ -1154,47 +1224,34 @@ function getAmountMeta(jenis) {
             <span class="text-xs">${opt.badge}</span>
           </div>
         `;
-      });
-      container.innerHTML = html;
+      }).join('');
       lucide.createIcons();
     }
 
-    function selectJenis(value) {
-      document.getElementById('form-jenis').value = value;
-      updateJenisDisplay(value);
-      handleJenisChange();
-      closeModal('modalJenisPicker');
+    function selectType(value) {
+      document.getElementById('form-type').value = value;
+      updateTypeDisplay(value);
+      handleTypeChange();
+      closeModal('modalTypePicker');
     }
 
-    function findJenisOption(val) {
-  if (!val) return JENIS_OPTIONS[0];
-  const v = val.toLowerCase().trim();
-  
-  return JENIS_OPTIONS.find(o => {
-    const optVal = o.value.toLowerCase();
-    const optLbl = o.label.toLowerCase();
-    return optVal === v || optLbl.includes(v) || v.includes(optVal) ||
-      (v.includes('receive') && v.includes('receivable') && o.value.includes('Terima Piutang')) ||
-      (v.includes('give') && v.includes('receivable') && o.value.includes('Beri Piutang')) ||
-      (v.includes('receive') && v.includes('debt') && o.value.includes('Terima Hutang')) ||
-      (v.includes('pay') && v.includes('debt') && o.value.includes('Bayar Hutang')) ||
-      (v.includes('income') && o.value.includes('Pemasukan')) ||
-      (v.includes('expense') && o.value.includes('Pengeluaran')) ||
-      (v.includes('transfer') && o.value.includes('Transfer Internal'));
-  }) || JENIS_OPTIONS[0];
-}
+    // Simple equality lookup — every value is now a canonical English
+    // string, so the old fuzzy ID/EN keyword matching isn't needed anymore.
+    function findTypeOption(val) {
+      return TRANSACTION_TYPE_OPTIONS.find(o => o.value === val) || TRANSACTION_TYPE_OPTIONS[0];
+    }
 
-function updateJenisDisplay(value) {
-  const opt = findJenisOption(value);
-  const displayEl = document.getElementById('form-jenis-display');
-  if (displayEl) {
-    displayEl.innerHTML = `
-      <div class="icon-chip ${opt.chip} w-6 h-6 rounded-md"><i data-lucide="${opt.icon}" class="w-3.5 h-3.5"></i></div>
-      <span class="font-extrabold text-main text-xs">${opt.label}</span>
-    `;
-    lucide.createIcons();
-  }
-}
+    function updateTypeDisplay(value) {
+      const opt = findTypeOption(value);
+      const displayEl = document.getElementById('form-type-display');
+      if (displayEl) {
+        displayEl.innerHTML = `
+          <div class="icon-chip ${opt.chip} w-6 h-6 rounded-md"><i data-lucide="${opt.icon}" class="w-3.5 h-3.5"></i></div>
+          <span class="font-extrabold text-main text-xs">${opt.label}</span>
+        `;
+        lucide.createIcons();
+      }
+    }
 
     function animateNumber(el, targetValue, duration = 700) {
       const start = 0;
@@ -1203,99 +1260,102 @@ function updateJenisDisplay(value) {
         const progress = Math.min((now - startTime) / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
         const current = Math.round(start + (targetValue - start) * eased);
-        
-        if(el.id === 'kpi-networth' || el.id === 'kpi-disposable') updateScalingText(el, current);
+
+        if (el.id === 'kpi-networth' || el.id === 'kpi-disposable') updateScalingText(el, current);
         else el.innerText = formatRupiah(current);
 
         if (progress < 1) requestAnimationFrame(tick);
         else {
-          if(el.id === 'kpi-networth' || el.id === 'kpi-disposable') updateScalingText(el, targetValue);
+          if (el.id === 'kpi-networth' || el.id === 'kpi-disposable') updateScalingText(el, targetValue);
           else el.innerText = formatRupiah(targetValue);
         }
       }
       requestAnimationFrame(tick);
     }
 
-    function openFormTransaksiBaru() {
-      document.getElementById('formTransaksi').reset();
-      document.getElementById('form-idtrx').value = "";
-      document.getElementById('form-tgl').valueAsDate = new Date();
-      document.getElementById('form-jumlah-val').value = "";
-      
-      const katDisplay = document.getElementById('form-kategori-display');
-      katDisplay.innerText = "Select Category...";
-      katDisplay.classList.add('text-faint');
-      
-      document.getElementById('modal-title-trx').innerText = "Add Transaction";
-      document.getElementById('btn-submit-trx').innerText = "Save Transaction";
-      
-      document.getElementById('form-jenis').value = "Pengeluaran";
-      updateJenisDisplay("Pengeluaran");
-      
-      handleJenisChange();
-      openModal('modalInputTrx');
+    // ==========================================
+    // TRANSACTION FORM
+    // ==========================================
+    function openNewTransactionForm() {
+      document.getElementById('formTransaction').reset();
+      document.getElementById('form-transaction-id').value = "";
+      document.getElementById('form-date').valueAsDate = new Date();
+      document.getElementById('form-amount-value').value = "";
+
+      const catDisplay = document.getElementById('form-category-display');
+      catDisplay.innerText = "Select Category...";
+      catDisplay.classList.add('text-faint');
+
+      document.getElementById('modal-title-transaction').innerText = "Add Transaction";
+      document.getElementById('btn-submit-transaction').innerText = "Save Transaction";
+
+      document.getElementById('form-type').value = "Expense";
+      updateTypeDisplay("Expense");
+
+      handleTypeChange();
+      openModal('modalTransactionForm');
     }
 
-    function handleEditTrx(idTrx) {
+    function handleEditTransaction(transactionId) {
       vibrate(30);
-      const trx = GLOBAL_DATA.transaksi.find(t => t.idTransaksi === idTrx);
-      if(!trx) return;
+      const trx = GLOBAL_DATA.transactions.find(t => t.transactionId === transactionId);
+      if (!trx) return;
 
-      closeModal('modalDetail'); 
+      closeModal('modalDetail');
 
       setTimeout(() => {
-        document.getElementById('form-idtrx').value = trx.idTransaksi;
-        document.getElementById('form-user').value = trx.inputOleh;
-        document.getElementById('form-tgl').value = trx.tanggal;
-        
-        const jenisVal = trx.jenis || "Pengeluaran";
-        document.getElementById('form-jenis').value = jenisVal;
-        updateJenisDisplay(jenisVal);
-        
-        handleJenisChange(); 
-        
-        document.getElementById('form-akunsumber').value = trx.akunSumber || "";
-        document.getElementById('form-akuntujuan').value = trx.akunTujuan || "";
-        document.getElementById('form-hutang').value = trx.terkaitHutang || "";
-        document.getElementById('form-piutang').value = trx.terkaitPiutang || "";
-        
-        document.getElementById('form-kategori').value = trx.kategori || "";
-        const katDisplay = document.getElementById('form-kategori-display');
-        if (trx.kategori) {
-          katDisplay.innerText = trx.kategori;
-          katDisplay.classList.remove('text-faint');
+        document.getElementById('form-transaction-id').value = trx.transactionId;
+        document.getElementById('form-user').value = trx.enteredBy;
+        document.getElementById('form-date').value = trx.date;
+
+        const typeVal = trx.type || "Expense";
+        document.getElementById('form-type').value = typeVal;
+        updateTypeDisplay(typeVal);
+
+        handleTypeChange();
+
+        document.getElementById('form-source-account').value = trx.sourceAccount || "";
+        document.getElementById('form-target-account').value = trx.targetAccount || "";
+        document.getElementById('form-payable').value = trx.relatedPayable || "";
+        document.getElementById('form-receivable').value = trx.relatedReceivable || "";
+
+        document.getElementById('form-category').value = trx.category || "";
+        const catDisplay = document.getElementById('form-category-display');
+        if (trx.category) {
+          catDisplay.innerText = trx.category;
+          catDisplay.classList.remove('text-faint');
         } else {
-          katDisplay.innerText = "Select Category...";
-          katDisplay.classList.add('text-faint');
+          catDisplay.innerText = "Select Category...";
+          catDisplay.classList.add('text-faint');
         }
-        
-        document.getElementById('form-jumlah-val').value = trx.jumlah;
-        document.getElementById('form-jumlah-display').value = new Intl.NumberFormat('id-ID').format(trx.jumlah);
-        
-        document.getElementById('form-deskripsi').value = trx.deskripsi || "";
-        document.getElementById('form-catatan').value = trx.catatan || "";
 
-        document.getElementById('modal-title-trx').innerText = "Edit Transaction";
-        document.getElementById('btn-submit-trx').innerText = "Update Transaction";
+        document.getElementById('form-amount-value').value = trx.amount;
+        document.getElementById('form-amount-display').value = new Intl.NumberFormat('id-ID').format(trx.amount);
 
-        openModal('modalInputTrx');
+        document.getElementById('form-description').value = trx.description || "";
+        document.getElementById('form-notes').value = trx.notes || "";
+
+        document.getElementById('modal-title-transaction').innerText = "Edit Transaction";
+        document.getElementById('btn-submit-transaction').innerText = "Update Transaction";
+
+        openModal('modalTransactionForm');
       }, 400);
     }
 
-    function promptDeleteTrx(idTrx) {
+    function promptDeleteTransaction(transactionId) {
       vibrate(40);
-      trxToDelete = idTrx;
+      transactionToDelete = transactionId;
       closeModal('modalDetail');
       setTimeout(() => openModal('modalDelete'), 400);
     }
 
     document.getElementById('btn-confirm-delete').onclick = async () => {
-      if(!trxToDelete) return;
-      vibrate(30); 
-      await handleDeleteTrx(trxToDelete);
+      if (!transactionToDelete) return;
+      vibrate(30);
+      await handleDeleteTransaction(transactionToDelete);
     };
 
-    async function handleDeleteTrx(idTrx) {
+    async function handleDeleteTransaction(transactionId) {
       closeModal('modalDelete');
       let loadingToast = showToast("Deleting transaction...", "info");
 
@@ -1303,117 +1363,209 @@ function updateJenisDisplay(value) {
         const res = await fetch(API_URL, {
           method: 'POST', redirect: 'follow',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'deleteTransaksi', payload: { idTransaksi: idTrx } })
+          body: JSON.stringify({ action: 'deleteTransaction', payload: { transactionId } })
         });
         const result = await res.json();
         if (result.status === 'error') throw new Error(result.message);
 
-        if(loadingToast && loadingToast.parentNode) loadingToast.remove();
-        
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+
         await showRewardAnimation("Transaction Deleted");
         await loadAppData(true);
       } catch (err) {
-        if(loadingToast && loadingToast.parentNode) loadingToast.remove();
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         showToast("Failed to delete: " + err.message, "error");
       }
     }
 
+    async function handleSaveTransaction(event) {
+      event.preventDefault();
+
+      const type = document.getElementById('form-type').value;
+      const amount = Number(document.getElementById('form-amount-value').value) || 0;
+      const category = document.getElementById('form-category').value;
+
+      if (amount <= 0) { triggerInputError('form-amount-display', "Amount must be greater than 0."); return; }
+      if (!category) { triggerInputError('form-category-display', "Please select a category."); return; }
+
+      const transactionId = document.getElementById('form-transaction-id').value;
+      const isEdit = !!transactionId;
+
+      const payload = {
+        date: document.getElementById('form-date').value,
+        type: type,
+        sourceAccount: document.getElementById('form-source-account').value,
+        targetAccount: document.getElementById('form-target-account').value,
+        category: category,
+        description: document.getElementById('form-description').value,
+        amount: amount,
+        enteredBy: document.getElementById('form-user').value,
+        relatedPayable: document.getElementById('form-payable').value,
+        relatedReceivable: document.getElementById('form-receivable').value,
+        notes: document.getElementById('form-notes').value
+      };
+      if (isEdit) payload.transactionId = transactionId;
+
+      const btn = document.getElementById('btn-submit-transaction');
+      btn.disabled = true;
+      let loadingToast = showToast(isEdit ? "Updating transaction..." : "Saving transaction...", "info");
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST', redirect: 'follow',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: isEdit ? 'updateTransaction' : 'createTransaction', payload })
+        });
+        const result = await res.json();
+        if (result.status === 'error') throw new Error(result.message);
+
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+        closeModal('modalTransactionForm');
+
+        setTimeout(async () => {
+          await showRewardAnimation(isEdit ? "Transaction Updated" : "Saved");
+          await loadAppData(true);
+        }, 300);
+      } catch (err) {
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+        showToast("Failed to save: " + err.message, "error");
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // ==========================================
+    // DATA LOADING
+    // ==========================================
+    async function loadAppData(isSilentReload = false) {
+      try {
+        const res = await fetch(API_URL, { redirect: 'follow' });
+        const result = await res.json();
+        if (result.status === 'error') throw new Error(result.message);
+        GLOBAL_DATA = result.data || result;
+
+        renderDashboard();
+        renderCategoryAnalysis();
+        populateYearFilter();
+        renderHistory();
+        renderWallets();
+        renderPayablesReceivables();
+        populateFormDropdowns();
+        lucide.createIcons();
+
+        if (!isSilentReload) {
+          document.getElementById('splash-screen').style.opacity = '0';
+          setTimeout(() => {
+            document.getElementById('splash-screen').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+          }, 700);
+        }
+      } catch (err) {
+        showToast("Failed to load data: " + err.message, "error");
+        const splashText = document.getElementById('splash-text');
+        if (splashText) splashText.innerText = "Connection failed — pull to retry";
+      }
+    }
+
+    // ==========================================
+    // DASHBOARD
+    // ==========================================
     function renderDashboard() {
       const kpi = GLOBAL_DATA.kpi || {};
       animateNumber(document.getElementById('kpi-networth'), kpi['Net Worth'] || 0);
       animateNumber(document.getElementById('kpi-disposable'), kpi['Disposable Income'] || 0);
-      document.getElementById('kpi-kas').innerText = formatRupiah(kpi['Total Kas']);
-      document.getElementById('kpi-piutang').innerText = formatRupiah(kpi['Total Piutang']);
-      document.getElementById('kpi-hutang').innerText = formatRupiah(kpi['Total Hutang']);
-      document.getElementById('kpi-savings').innerText = formatRupiah(kpi['Net Savings Operasional']);
+      document.getElementById('kpi-cash').innerText = formatRupiah(kpi['Total Cash']);
+      document.getElementById('kpi-receivables').innerText = formatRupiah(kpi['Total Receivables']);
+      document.getElementById('kpi-payables').innerText = formatRupiah(kpi['Total Payables']);
+      document.getElementById('kpi-savings').innerText = formatRupiah(kpi['Net Operating Savings']);
 
-      const hasHutangAktif = (GLOBAL_DATA.hutang || []).some(h => h.status === 'Aktif');
-      document.getElementById('badge-hutang-nav').classList.toggle('hidden', !hasHutangAktif);
+      const hasPayableActive = (GLOBAL_DATA.payables || []).some(p => p.status === 'Active');
+      document.getElementById('badge-payables-nav').classList.toggle('hidden', !hasPayableActive);
 
-      const trxList = GLOBAL_DATA.transaksi || [];
-      const dashListEl = document.getElementById('dashboard-trx-list');
-      dashListEl.innerHTML = "";
+      const trxList = GLOBAL_DATA.transactions || [];
+      const dashListEl = document.getElementById('dashboard-transaction-list');
 
       if (trxList.length === 0) {
         dashListEl.innerHTML = `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
         return;
       }
 
+      dashListEl.innerHTML = "";
       trxList.slice(0, 5).forEach((trx, i) => {
-        const meta = getAmountMeta(trx.jenis);
+        const meta = getTypeMeta(trx.type);
         const div = document.createElement('div');
         div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-2 last:mb-0 select-none";
         div.style.animationDelay = `${i * 0.05}s`;
-        
-        div.onclick = () => { vibrate(30); currentModalBackFn = null; showTrxDetail(trx.idTransaksi); };
+
+        div.onclick = () => { vibrate(30); currentModalBackFn = null; showTransactionDetail(trx.transactionId); };
 
         div.innerHTML = `
           <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
-            ${iconChipHtml(trx.jenis, trx.kategori)}
+            ${iconChipHtml(trx.type, trx.category)}
             <div class="truncate">
-              <p class="text-[13px] font-bold text-main truncate">${trx.deskripsi || trx.kategori}</p>
-              <p class="text-[10px] text-faint font-medium mt-0.5 truncate">${trx.tanggal} • ${trx.inputOleh}</p>
+              <p class="text-[13px] font-bold text-main truncate">${escapeHtml(trx.description || trx.category)}</p>
+              <p class="text-[10px] text-faint font-medium mt-0.5 truncate">${formatDate(trx.date)} • ${escapeHtml(trx.enteredBy)}</p>
             </div>
           </div>
-          <span class="text-[13px] font-extrabold ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.jumlah)}</span>
+          <span class="text-[13px] font-extrabold ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.amount)}</span>
         `;
         dashListEl.appendChild(div);
       });
       lucide.createIcons();
     }
 
-    let kategoriAnalysisExpanded = {};
-    function toggleKategoriAnalysis(utama) {
+    let categoryAnalysisExpanded = {};
+    function toggleCategoryAnalysis(mainCategory) {
       vibrate(30);
-      kategoriAnalysisExpanded[utama] = !kategoriAnalysisExpanded[utama];
-      renderKategoriAnalysis();
+      categoryAnalysisExpanded[mainCategory] = !categoryAnalysisExpanded[mainCategory];
+      renderCategoryAnalysis();
     }
 
-    function renderKategoriAnalysis() {
-      const el = document.getElementById('dashboard-kategori-analysis');
+    function renderCategoryAnalysis() {
+      const el = document.getElementById('dashboard-category-analysis');
       if (!el) return;
 
       const now = new Date();
       const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
 
-      const trxBulanIni = (GLOBAL_DATA.transaksi || []).filter(t =>
-        (t.jenis === 'Pengeluaran' || (t.jenis || '').toLowerCase().includes('expense')) && t.tanggal && t.tanggal.substring(0, 7) === ym
+      const trxThisMonth = (GLOBAL_DATA.transactions || []).filter(t =>
+        t.type === 'Expense' && t.date && t.date.substring(0, 7) === ym
       );
 
-      if (trxBulanIni.length === 0) {
+      if (trxThisMonth.length === 0) {
         el.innerHTML = `<p class="text-xs text-center text-muted py-4 font-semibold">No expense transactions this month.</p>`;
         return;
       }
 
       const groups = {};
       let grandTotal = 0;
-      trxBulanIni.forEach(t => {
-        const utama = t.kategoriUtama || t.kategori || 'Other';
-        const jumlah = Number(t.jumlah) || 0;
-        grandTotal += jumlah;
-        if (!groups[utama]) groups[utama] = { total: 0, subs: {} };
-        groups[utama].total += jumlah;
-        const subKey = t.kategori || utama;
-        groups[utama].subs[subKey] = (groups[utama].subs[subKey] || 0) + jumlah;
+      trxThisMonth.forEach(t => {
+        const main = t.mainCategory || t.category || 'Other';
+        const amount = Number(t.amount) || 0;
+        grandTotal += amount;
+        if (!groups[main]) groups[main] = { total: 0, subs: {} };
+        groups[main].total += amount;
+        const subKey = t.category || main;
+        groups[main].subs[subKey] = (groups[main].subs[subKey] || 0) + amount;
       });
 
-      const sortedUtama = Object.keys(groups).sort((a, b) => groups[b].total - groups[a].total);
+      const sortedMain = Object.keys(groups).sort((a, b) => groups[b].total - groups[a].total);
 
       let html = "";
-      sortedUtama.forEach((utama, index) => {
-        const g = groups[utama];
+      sortedMain.forEach((main, index) => {
+        const g = groups[main];
         const pct = grandTotal > 0 ? (g.total / grandTotal * 100) : 0;
-        const isExpanded = !!kategoriAnalysisExpanded[utama];
+        const isExpanded = !!categoryAnalysisExpanded[main];
         const subKeys = Object.keys(g.subs).sort((a, b) => g.subs[b] - g.subs[a]);
-        const hasMultipleSubs = subKeys.length > 1 || (subKeys.length === 1 && subKeys[0] !== utama);
+        const hasMultipleSubs = subKeys.length > 1 || (subKeys.length === 1 && subKeys[0] !== main);
 
-        html += `<div class="mb-4 last:mb-0 stagger-item" style="animation-delay: ${index*0.05}s">`;
+        html += `<div class="mb-4 last:mb-0 stagger-item" style="animation-delay: ${index * 0.05}s">`;
         html += `
-          <div ${hasMultipleSubs ? `onclick="toggleKategoriAnalysis('${escapeAttr(utama)}')" class="cursor-pointer group"` : ''}>
+          <div ${hasMultipleSubs ? `onclick="toggleCategoryAnalysis('${escapeAttr(main)}')" class="cursor-pointer group"` : ''}>
             <div class="flex justify-between items-end mb-1.5">
               <span class="text-[11px] font-bold text-main flex items-center group-hover:text-mochi dark:group-hover:text-mochi-light transition-colors">
                 ${hasMultipleSubs ? `<i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-3.5 h-3.5 mr-1 text-faint"></i>` : ''}
-                ${utama}
+                ${escapeHtml(main)}
               </span>
               <div class="text-right">
                 <span class="text-xs font-extrabold text-main block leading-none mb-0.5">${formatRupiah(g.total)}</span>
@@ -1430,7 +1582,7 @@ function updateJenisDisplay(value) {
           subKeys.forEach(sub => {
             html += `
               <div class="flex justify-between items-center text-[10px]">
-                <span class="text-muted font-semibold">${sub}</span>
+                <span class="text-muted font-semibold">${escapeHtml(sub)}</span>
                 <span class="font-bold text-main">${formatRupiah(g.subs[sub])}</span>
               </div>`;
           });
@@ -1441,138 +1593,112 @@ function updateJenisDisplay(value) {
 
       el.innerHTML = html;
       lucide.createIcons();
-      
+
       setTimeout(() => {
         el.querySelectorAll('[data-target-width]').forEach(bar => { bar.style.width = bar.getAttribute('data-target-width'); });
       }, 50);
     }
 
-    function renderRiwayat() {
-      const filterBulan = document.getElementById('filter-bulan').value;
-      const filterTahun = document.getElementById('filter-tahun').value;
-      const filterJenis = document.getElementById('filter-jenis').value;
+    // ==========================================
+    // HISTORY
+    // ==========================================
+    function populateYearFilter() {
+      const years = [...new Set((GLOBAL_DATA.transactions || []).map(t => (t.date || '').substring(0, 4)).filter(Boolean))].sort().reverse();
+      const sel = document.getElementById('filter-year');
+      const current = sel.value || 'ALL';
+      sel.innerHTML = `<option value="ALL">All Years</option>` + years.map(y => `<option value="${y}">${y}</option>`).join('');
+      sel.value = years.includes(current) ? current : 'ALL';
+    }
+
+    function renderHistory() {
+      const filterMonth = document.getElementById('filter-month').value;
+      const filterYear = document.getElementById('filter-year').value;
+      const filterType = document.getElementById('filter-type').value;
       const filterUser = document.getElementById('filter-user').value;
-      const filterSearch = (document.getElementById('filter-search').value || '').toLowerCase().trim();
-      const listEl = document.getElementById('riwayat-trx-list');
-      listEl.innerHTML = "";
+      const searchTerm = (document.getElementById('filter-search').value || '').toLowerCase().trim();
 
-      let totalMasuk = 0, totalKeluar = 0;
-
-      const filtered = (GLOBAL_DATA.transaksi || []).filter(trx => {
-        const tgl = trx.tanggal || "";
-        const tTahun = tgl.length >= 4 ? tgl.substring(0, 4) : "";
-        const tBulan = tgl.length >= 7 ? tgl.substring(5, 7) : "";
-
-        const matchBulan = (filterBulan === 'ALL' || tBulan === filterBulan);
-        const matchTahun = (filterTahun === 'ALL' || tTahun === filterTahun);
-        const matchJenis = (filterJenis === 'ALL' || trx.jenis === filterJenis);
-        const matchUser = (filterUser === 'ALL' || trx.inputOleh === filterUser);
-        const matchSearch = !filterSearch ||
-          (trx.deskripsi || '').toLowerCase().includes(filterSearch) ||
-          (trx.kategori || '').toLowerCase().includes(filterSearch);
-
-        return matchBulan && matchTahun && matchJenis && matchUser && matchSearch;
+      const filtered = (GLOBAL_DATA.transactions || []).filter(trx => {
+        const d = trx.date || "";
+        const year = d.length >= 4 ? d.substring(0, 4) : "";
+        const month = d.length >= 7 ? d.substring(5, 7) : "";
+        return (filterMonth === 'ALL' || month === filterMonth) &&
+               (filterYear === 'ALL' || year === filterYear) &&
+               (filterType === 'ALL' || trx.type === filterType) &&
+               (filterUser === 'ALL' || trx.enteredBy === filterUser) &&
+               (!searchTerm || (trx.description || '').toLowerCase().includes(searchTerm) || (trx.category || '').toLowerCase().includes(searchTerm));
       });
 
+      // Same TYPE_META direction used everywhere else on screen — this used
+      // to be computed with different (and looser) keyword matching here,
+      // which is why this total used to disagree with the per-row colors.
+      let totalIncome = 0, totalExpense = 0;
       filtered.forEach(trx => {
-        const val = Number(trx.jumlah) || 0;
-        const j = (trx.jenis || '').toLowerCase();
-        if (j.includes('masuk') || j.includes('income') || j.includes('terima')) totalMasuk += val;
-        else if (j.includes('keluar') || j.includes('expense') || j.includes('bayar')) totalKeluar += val;
+        const direction = getTypeMeta(trx.type).direction;
+        const val = Number(trx.amount) || 0;
+        if (direction === 'in') totalIncome += val;
+        else if (direction === 'out') totalExpense += val;
       });
+      document.getElementById('sum-income').innerText = '+' + formatRupiah(totalIncome);
+      document.getElementById('sum-expense').innerText = '-' + formatRupiah(totalExpense);
+      document.getElementById('sum-net').innerText = formatRupiah(totalIncome - totalExpense);
 
-      document.getElementById('sum-masuk').innerText = "+" + formatRupiah(totalMasuk);
-      document.getElementById('sum-keluar').innerText = "-" + formatRupiah(totalKeluar);
-      const net = totalMasuk - totalKeluar;
-      const elNet = document.getElementById('sum-net');
-      elNet.innerText = (net >= 0 ? '+' : '') + formatRupiah(net);
-      elNet.className = net >= 0 ? "font-extrabold amount-in text-[15px]" : "font-extrabold amount-out text-[15px]";
-
+      const listEl = document.getElementById('history-transaction-list');
       if (filtered.length === 0) {
         listEl.innerHTML = `<p class="text-xs text-center text-muted py-8 font-semibold">No results found for this filter.</p>`;
         return;
       }
 
-      filtered.forEach((trx, i) => {
-        const meta = getAmountMeta(trx.jenis);
-        const div = document.createElement('div');
-        div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-3 select-none";
-        div.style.animationDelay = `${(i%10)*0.05}s`;
-        
-        div.onclick = () => { vibrate(30); currentModalBackFn = null; showTrxDetail(trx.idTransaksi); };
-        
-        div.innerHTML = `
-          <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
-            ${iconChipHtml(trx.jenis, trx.kategori)}
-            <div class="truncate">
-              <p class="text-[13px] font-bold text-main truncate">${trx.deskripsi || trx.kategori}</p>
-              <p class="text-[10px] text-muted font-semibold mt-0.5 truncate">
-                ${trx.akunSumber ? trx.akunSumber : ''}
-                ${trx.akunSumber && trx.akunTujuan ? ' ➝ ' : ''}
-                ${trx.akunTujuan ? trx.akunTujuan : ''}
-              </p>
-              <p class="text-[9px] text-faint mt-1 truncate">${trx.tanggal} • ${trx.inputOleh}</p>
+      listEl.innerHTML = filtered.map((trx, i) => {
+        const meta = getTypeMeta(trx.type);
+        return `
+          <div onclick="vibrate(30); currentModalBackFn = null; showTransactionDetail('${trx.transactionId}')" class="floating-item p-3.5 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item select-none" style="animation-delay:${Math.min(i, 10) * 0.04}s">
+            <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
+              ${iconChipHtml(trx.type, trx.category)}
+              <div class="truncate">
+                <p class="text-[13px] font-bold text-main truncate">${escapeHtml(trx.description || trx.category)}</p>
+                <p class="text-[10px] text-faint font-medium mt-0.5 truncate">${formatDate(trx.date)} • ${escapeHtml(trx.enteredBy)}</p>
+              </div>
             </div>
+            <span class="text-[13px] font-extrabold ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.amount)}</span>
           </div>
-          <span class="text-[13px] font-extrabold ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.jumlah)}</span>
         `;
-        listEl.appendChild(div);
-      });
+      }).join('');
       lucide.createIcons();
     }
 
-    function populateYearFilter() {
-      const yearSelect = document.getElementById('filter-tahun');
-      const years = new Set();
-      const currentYear = new Date().getFullYear().toString();
-      years.add(currentYear);
-
-      (GLOBAL_DATA.transaksi || []).forEach(t => {
-        if (t.tanggal && t.tanggal.length >= 4) years.add(t.tanggal.substring(0, 4));
-      });
-
-      const sortedYears = Array.from(years).sort().reverse();
-      let html = `<option value="ALL">All Years</option>`;
-      sortedYears.forEach(y => { html += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`; });
-      yearSelect.innerHTML = html;
-
-      const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
-      document.getElementById('filter-bulan').value = currentMonth;
-    }
-
     function downloadEStatement() {
-      const filterBulan = document.getElementById('filter-bulan').value;
-      const filterTahun = document.getElementById('filter-tahun').value;
-      const filterJenis = document.getElementById('filter-jenis').value;
+      const filterMonth = document.getElementById('filter-month').value;
+      const filterYear = document.getElementById('filter-year').value;
+      const filterType = document.getElementById('filter-type').value;
       const filterUser = document.getElementById('filter-user').value;
 
-      const filtered = (GLOBAL_DATA.transaksi || []).filter(trx => {
-        const tgl = trx.tanggal || "";
-        const tTahun = tgl.length >= 4 ? tgl.substring(0, 4) : "";
-        const tBulan = tgl.length >= 7 ? tgl.substring(5, 7) : "";
-        return (filterBulan === 'ALL' || tBulan === filterBulan) &&
-               (filterTahun === 'ALL' || tTahun === filterTahun) &&
-               (filterJenis === 'ALL' || trx.jenis === filterJenis) &&
-               (filterUser === 'ALL' || trx.inputOleh === filterUser);
+      const filtered = (GLOBAL_DATA.transactions || []).filter(trx => {
+        const d = trx.date || "";
+        const year = d.length >= 4 ? d.substring(0, 4) : "";
+        const month = d.length >= 7 ? d.substring(5, 7) : "";
+        return (filterMonth === 'ALL' || month === filterMonth) &&
+               (filterYear === 'ALL' || year === filterYear) &&
+               (filterType === 'ALL' || trx.type === filterType) &&
+               (filterUser === 'ALL' || trx.enteredBy === filterUser);
       });
 
       if (filtered.length === 0) {
         showToast("No transaction data for the selected period.", "error");
         return;
       }
-      
+
       showToast("Preparing CSV file...", "info");
 
       let csvContent = "\uFEFFsep=;\r\ne-STATEMENT MUTATION FINANCIAL REPORT — MOCHI'S VAULT\r\n";
-      csvContent += `Period Month: ${filterBulan} | Year: ${filterTahun}\r\n`;
+      csvContent += `Period Month: ${filterMonth} | Year: ${filterYear}\r\n`;
       csvContent += `Downloaded On: ${new Date().toLocaleDateString('en-US')}\r\n\r\n`;
       csvContent += "Transaction ID;Date;User;Type;Category;Source Account;Target Account;Description;Amount (Rp);Notes\r\n";
 
       filtered.forEach(t => {
         const row = [
-          t.idTransaksi || "", t.tanggal || "", t.inputOleh || "", t.jenis || "", t.kategori || "",
-          t.akunSumber || "", t.akunTujuan || "", `"${(t.deskripsi || "").replace(/"/g, '""')}"`,
-          t.jumlah || 0, `"${(t.catatan || "").replace(/"/g, '""')}"`
+          t.transactionId || "", t.date || "", t.enteredBy || "", t.type || "", t.category || "",
+          t.sourceAccount || "", t.targetAccount || "", `"${(t.description || "").replace(/"/g, '""')}"`,
+          t.amount || 0, `"${(t.notes || "").replace(/"/g, '""')}"`
         ];
         csvContent += row.join(";") + "\r\n";
       });
@@ -1581,441 +1707,432 @@ function updateJenisDisplay(value) {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.setAttribute("href", url);
-      link.setAttribute("download", `eStatement_MochiVault_${filterTahun}-${filterBulan}.csv`);
+      link.setAttribute("download", `eStatement_MochiVault_${filterYear}-${filterMonth}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     }
 
-    function renderSaldo() {
-      const operasionalEl = document.getElementById('list-akun-operasional');
-      const tabunganEl = document.getElementById('list-akun-tabungan');
-      operasionalEl.innerHTML = ""; tabunganEl.innerHTML = "";
+    // ==========================================
+    // WALLETS
+    // ==========================================
+    function renderWallets() {
+      const operationalEl = document.getElementById('list-accounts-operational');
+      const savingsEl = document.getElementById('list-accounts-savings');
+      operationalEl.innerHTML = ""; savingsEl.innerHTML = "";
 
-      if (!GLOBAL_DATA.akun || GLOBAL_DATA.akun.length === 0) {
-        operasionalEl.innerHTML = `<p class="text-xs text-muted font-semibold">No accounts available yet.</p>`;
+      if (!GLOBAL_DATA.accounts || GLOBAL_DATA.accounts.length === 0) {
+        operationalEl.innerHTML = `<p class="text-xs text-muted font-semibold">No accounts available yet.</p>`;
         return;
       }
 
-      GLOBAL_DATA.akun.forEach((akun, i) => {
-        const initial = (akun.pemilik || '?').trim().charAt(0).toUpperCase();
+      GLOBAL_DATA.accounts.forEach((acc, i) => {
+        const initial = (acc.owner || '?').trim().charAt(0).toUpperCase();
         const div = document.createElement('div');
         div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item flex flex-col";
-        div.style.animationDelay = `${i*0.05}s`;
-        div.onclick = () => { vibrate(30); showAkunHistory(akun.namaAkun); };
+        div.style.animationDelay = `${i * 0.05}s`;
+        div.onclick = () => { vibrate(30); showAccountHistory(acc.accountName); };
         div.innerHTML = `
           <div class="flex items-center space-x-3 mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
             <div class="w-10 h-10 rounded-full bg-mochi dark:bg-mochi-light text-white dark:text-coffee-darkest flex items-center justify-center text-sm font-black flex-shrink-0 shadow-sm">${initial}</div>
             <div class="flex-1 truncate">
-              <h4 class="text-[13px] font-extrabold text-main leading-tight truncate">${akun.namaAkun}</h4>
-              <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${akun.pemilik} • ${akun.jenisAkun}</p>
+              <h4 class="text-[13px] font-extrabold text-main leading-tight truncate">${escapeHtml(acc.accountName)}</h4>
+              <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${escapeHtml(acc.owner)} • ${escapeHtml(acc.accountType)}</p>
             </div>
           </div>
           <div>
             <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Running Balance</span>
-            <span class="text-[18px] font-black amount-in block leading-none tracking-tight">${formatRupiah(akun.saldoBerjalan)}</span>
+            <span class="text-[18px] font-black amount-in block leading-none tracking-tight">${formatRupiah(acc.runningBalance)}</span>
           </div>
         `;
-        if (akun.kategoriFungsi && akun.kategoriFungsi.toLowerCase().includes('operasional')) operasionalEl.appendChild(div);
-        else tabunganEl.appendChild(div);
+        // "Daily Operations" is the actual value your accounts use — the
+        // previous check looked for the Indonesian substring "operasional",
+        // which never matched, so every account fell into Savings.
+        if ((acc.functionCategory || '').toLowerCase().includes('daily') || (acc.functionCategory || '').toLowerCase().includes('operation')) {
+          operationalEl.appendChild(div);
+        } else {
+          savingsEl.appendChild(div);
+        }
       });
       lucide.createIcons();
     }
 
-  function renderHutangPiutang() {
-  const hutangEl = document.getElementById('list-hutang-aktif');
-  const piutangEl = document.getElementById('list-piutang-aktif');
-  hutangEl.innerHTML = ""; 
-  piutangEl.innerHTML = "";
+    // ==========================================
+    // PAYABLES & RECEIVABLES (AP/R)
+    // ==========================================
+    function renderPayablesReceivables() {
+      const payableEl = document.getElementById('list-payables-active');
+      const receivableEl = document.getElementById('list-receivables-active');
+      payableEl.innerHTML = "";
+      receivableEl.innerHTML = "";
 
-  // 1. FILTER HUTANG (DUKUNGAN BILINGUAL)
-  const hutangAktif = (GLOBAL_DATA.hutang || []).filter(h => {
-    const st = (h.status || '').toLowerCase().trim();
-    return (st === 'aktif' || st === 'active' || st === 'belum lunas' || st === 'unsettled') && Number(h.sisaHutang) > 0;
-  }).sort((a, b) => b.sisaHutang - a.sisaHutang);
+      const activePayables = (GLOBAL_DATA.payables || [])
+        .filter(p => (p.status || '').toLowerCase().trim() === 'active' && Number(p.remainingAmount) > 0)
+        .sort((a, b) => b.remainingAmount - a.remainingAmount);
 
-  if (hutangAktif.length === 0) {
-    hutangEl.innerHTML = `<p class="text-xs text-muted font-semibold">All payables are paid off.</p>`;
-  } else {
-    hutangAktif.forEach((h, i) => {
-      const pct = h.totalHutangAwal > 0 ? Math.min(100, ((h.totalHutangAwal - h.sisaHutang) / h.totalHutangAwal) * 100) : 0;
-      const div = document.createElement('div');
-      div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
-      div.style.animationDelay = `${i*0.05}s`;
-      div.onclick = () => { vibrate(30); showHutangDetail(h); };
-      div.innerHTML = `
-        <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-          <h4 class="text-[13px] font-extrabold text-main leading-tight">${h.namaHutang}</h4>
-          <span class="text-[9px] amount-out bg-[var(--chip-out-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${h.jenisHutang || 'Payable'}</span>
-        </div>
-        <div class="flex flex-col mb-3">
-          <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Remaining Payable</span>
-          <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(h.sisaHutang)}</span>
-        </div>
-        <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
-          <div class="bg-[var(--amount-out)] h-1.5 rounded-full" style="width:${pct}%"></div>
-        </div>
-      `;
-      hutangEl.appendChild(div);
-    });
-  }
+      if (activePayables.length === 0) {
+        payableEl.innerHTML = `<p class="text-xs text-muted font-semibold">All payables are paid off.</p>`;
+      } else {
+        activePayables.forEach((p, i) => {
+          const pct = p.initialAmount > 0 ? Math.min(100, ((p.initialAmount - p.remainingAmount) / p.initialAmount) * 100) : 0;
+          const div = document.createElement('div');
+          div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
+          div.style.animationDelay = `${i * 0.05}s`;
+          div.onclick = () => { vibrate(30); showPayableDetail(p); };
+          div.innerHTML = `
+            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
+              <h4 class="text-[13px] font-extrabold text-main leading-tight">${escapeHtml(p.payableName)}</h4>
+              <span class="text-[9px] amount-out bg-[var(--chip-out-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(p.payableType || 'Payable')}</span>
+            </div>
+            <div class="flex flex-col mb-3">
+              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Remaining Payable</span>
+              <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(p.remainingAmount)}</span>
+              ${p.dueDate ? `<span class="text-[10px] text-faint font-semibold mt-1">Due ${formatDate(p.dueDate)}${p.monthlyInstallment ? ' • ' + formatRupiah(p.monthlyInstallment) + '/mo' : ''}</span>` : ''}
+            </div>
+            <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
+              <div class="bg-[var(--amount-out)] h-1.5 rounded-full" style="width:${pct}%"></div>
+            </div>
+          `;
+          payableEl.appendChild(div);
+        });
+      }
 
-  // 2. FILTER PIUTANG (DUKUNGAN BILINGUAL: UNSETTLED / BELUM LUNAS / AKTIF)
-  const piutangAktif = (GLOBAL_DATA.piutang || []).filter(p => {
-    const st = (p.status || '').toLowerCase().trim();
-    return (st === 'unsettled' || st === 'belum lunas' || st === 'aktif' || st === 'active') && Number(p.sisaPiutang) > 0;
-  });
+      const activeReceivables = (GLOBAL_DATA.receivables || [])
+        .filter(r => (r.status || '').toLowerCase().trim() === 'unsettled' && Number(r.remainingAmount) > 0);
 
-  if (piutangAktif.length === 0) {
-    piutangEl.innerHTML = `<p class="text-xs text-muted font-semibold">All receivables have been collected.</p>`;
-  } else {
-    piutangAktif.forEach((p, i) => {
-      const div = document.createElement('div');
-      div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
-      div.style.animationDelay = `${i*0.05}s`;
-      div.onclick = () => { vibrate(30); showPiutangDetail(p); };
-      div.innerHTML = `
-        <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-          <h4 class="text-[13px] font-extrabold text-main leading-tight">${p.namaPiutang}</h4>
-          <span class="text-[9px] amount-info bg-[var(--chip-info-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${p.jenisPiutang || 'Receivable'}</span>
-        </div>
-        <div>
-          <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Remaining Receivable</span>
-          <span class="text-[18px] font-black amount-info block leading-none tracking-tight">${formatRupiah(p.sisaPiutang)}</span>
-        </div>
-      `;
-      piutangEl.appendChild(div);
-    });
-  }
-}
+      if (activeReceivables.length === 0) {
+        receivableEl.innerHTML = `<p class="text-xs text-muted font-semibold">All receivables have been collected.</p>`;
+      } else {
+        activeReceivables.forEach((r, i) => {
+          const div = document.createElement('div');
+          div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
+          div.style.animationDelay = `${i * 0.05}s`;
+          div.onclick = () => { vibrate(30); showReceivableDetail(r); };
+          div.innerHTML = `
+            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
+              <h4 class="text-[13px] font-extrabold text-main leading-tight">${escapeHtml(r.receivableName)}</h4>
+              <span class="text-[9px] amount-info bg-[var(--chip-info-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(r.receivableType || 'Receivable')}</span>
+            </div>
+            <div>
+              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Remaining Receivable</span>
+              <span class="text-[18px] font-black amount-info block leading-none tracking-tight">${formatRupiah(r.remainingAmount)}</span>
+            </div>
+          `;
+          receivableEl.appendChild(div);
+        });
+      }
+      lucide.createIcons();
+    }
 
+    // ==========================================
+    // FORM DROPDOWNS & CATEGORY PICKER
+    // ==========================================
     function populateFormDropdowns() {
       const fillSelect = (id, items, key) => {
         const sel = document.getElementById(id);
-        sel.innerHTML = `<option value="">-- Select --</option>`;
-        items.forEach(item => { sel.innerHTML += `<option value="${item[key]}">${item[key]}</option>`; });
+        const optionsHtml = items.map(item => `<option value="${escapeAttr(item[key])}">${escapeHtml(item[key])}</option>`).join('');
+        sel.innerHTML = `<option value="">-- Select --</option>` + optionsHtml;
       };
-      fillSelect('form-akunsumber', GLOBAL_DATA.akun, 'namaAkun');
-      fillSelect('form-akuntujuan', GLOBAL_DATA.akun, 'namaAkun');
-      fillSelect('form-hutang', GLOBAL_DATA.hutang, 'namaHutang');
-      fillSelect('form-piutang', GLOBAL_DATA.piutang, 'namaPiutang');
-      resetKategoriPicker();
-      handleJenisChange();
+      fillSelect('form-source-account', GLOBAL_DATA.accounts, 'accountName');
+      fillSelect('form-target-account', GLOBAL_DATA.accounts, 'accountName');
+      fillSelect('form-payable', GLOBAL_DATA.payables, 'payableName');
+      fillSelect('form-receivable', GLOBAL_DATA.receivables, 'receivableName');
+      resetCategoryPicker();
+      handleTypeChange();
     }
 
-    let kategoriPickerExpanded = {};
-    function escapeAttr(str) { return String(str).replace(/'/g, "\\'"); }
+    let categoryPickerExpanded = {};
 
-    function resetKategoriPicker() {
-      document.getElementById('form-kategori').value = "";
-      const displayEl = document.getElementById('form-kategori-display');
+    function resetCategoryPicker() {
+      document.getElementById('form-category').value = "";
+      const displayEl = document.getElementById('form-category-display');
       if (displayEl) {
         displayEl.innerText = "Select Category...";
         displayEl.classList.add('text-faint');
       }
     }
 
-    function isCategoryMatchingType(katObj, jenisTrx) {
-  if (!katObj || !jenisTrx) return true;
-  const kJenis = (katObj.jenis || '').toLowerCase().trim();
-  const tJenis = jenisTrx.toLowerCase().trim();
+    // Simplified from the original 4-branch bilingual version — categoryType
+    // now comes straight from TYPE_META, so this is one comparison instead
+    // of guessing from keywords in two languages.
+    function isCategoryMatchingType(categoryObj, transactionType) {
+      if (!categoryObj || !transactionType) return true;
+      const meta = getTypeMeta(transactionType);
+      if (!meta.categoryType) return true;
+      const catType = (categoryObj.type || '').trim();
+      if (!catType) return true;
+      return catType === meta.categoryType;
+    }
 
-  if (!kJenis) return true;
-
-  // Pelunasan Piutang / Pinjaman Hutang
-  if (tJenis.includes('terima piutang') || tJenis.includes('receive receivable') || tJenis.includes('terima hutang') || tJenis.includes('receive debt')) {
-    return kJenis.includes('income') || kJenis.includes('pemasukan') || kJenis.includes('receivable') || kJenis.includes('payable') || kJenis.includes('piutang') || kJenis.includes('hutang');
-  }
-
-  // Pembayaran Hutang / Penyerahan Piutang
-  if (tJenis.includes('bayar hutang') || tJenis.includes('pay debt') || tJenis.includes('beri piutang') || tJenis.includes('give receivable')) {
-    return kJenis.includes('expense') || kJenis.includes('pengeluaran') || kJenis.includes('receivable') || kJenis.includes('payable') || kJenis.includes('piutang') || kJenis.includes('hutang');
-  }
-
-  // Pemasukan Umum
-  if (tJenis.includes('pemasukan') || tJenis.includes('income')) {
-    return kJenis.includes('pemasukan') || kJenis.includes('income') || kJenis.includes('terima');
-  }
-
-  // Pengeluaran Umum
-  if (tJenis.includes('pengeluaran') || tJenis.includes('expense')) {
-    return kJenis.includes('pengeluaran') || kJenis.includes('expense') || kJenis.includes('bayar');
-  }
-
-  return true;
-}
-
-    function groupKategoriData() {
-      const activeJenisTrx = document.getElementById('form-jenis').value || 'Pengeluaran';
-      const groups = {}; 
+    function groupCategoryData() {
+      const activeType = document.getElementById('form-type').value || 'Expense';
+      const groups = {};
       const order = [];
-      
-      const allKategori = GLOBAL_DATA.kategori || [];
-      let filtered = allKategori.filter(k => isCategoryMatchingType(k, activeJenisTrx));
-      if (filtered.length === 0) filtered = allKategori;
 
-      filtered.forEach(k => {
-        const utama = k.kategoriUtama || k.namaKategori;
-        if (!groups[utama]) { groups[utama] = { jenis: k.jenis, items: [] }; order.push(utama); }
-        groups[utama].items.push(k);
+      const allCategories = GLOBAL_DATA.categories || [];
+      let filtered = allCategories.filter(c => isCategoryMatchingType(c, activeType));
+      if (filtered.length === 0) filtered = allCategories;
+
+      filtered.forEach(c => {
+        const main = c.mainCategory || c.categoryName;
+        if (!groups[main]) { groups[main] = { type: c.type, items: [] }; order.push(main); }
+        groups[main].items.push(c);
       });
       return { groups, order };
     }
 
-    function openKategoriPicker() {
+    function openCategoryPicker() {
       try {
-        renderKategoriPickerList();
-        openModal('modalKategoriPicker');
+        renderCategoryPickerList();
+        openModal('modalCategoryPicker');
       } catch (err) {
         console.error("Error opening category picker:", err);
         showToast("Failed to open category picker", "error");
       }
     }
 
-    /* FOTO 2: SUB-CATEGORY ADAPTIVE COLOR FIX */
-    function renderKategoriPickerList() {
-      const { groups, order } = groupKategoriData();
-      const listEl = document.getElementById('kategori-picker-list');
+    function renderCategoryPickerList() {
+      const { groups, order } = groupCategoryData();
+      const listEl = document.getElementById('category-picker-list');
       if (!listEl) return;
-      
+
       let html = "";
-
-      order.forEach(utama => {
-        const group = groups[utama];
-        const isExpanded = !!kategoriPickerExpanded[utama];
-        const isIncome = (group.jenis || '').toLowerCase().includes('masuk') || (group.jenis || '').toLowerCase().includes('income');
+      order.forEach(main => {
+        const group = groups[main];
+        const isExpanded = !!categoryPickerExpanded[main];
+        const isIncome = (group.type || '').toLowerCase() === 'income';
         const badgeColor = isIncome ? 'amount-in bg-[var(--chip-in-bg)]' : 'amount-out bg-[var(--chip-out-bg)]';
-        const onlyMainItem = group.items.length === 1 && (!group.items[0].subKategori || group.items[0].subKategori === group.items[0].namaKategori);
+        const onlyMainItem = group.items.length === 1 && (!group.items[0].subCategory || group.items[0].subCategory === group.items[0].categoryName);
 
-        const mMain = getCategoryIconMeta(utama, group.jenis);
+        const mMain = getCategoryIconMeta(main, group.type === 'Income' ? 'Income' : 'Expense');
 
         if (onlyMainItem) {
           html += `
-            <div onclick="vibrate(30); selectKategori('${escapeAttr(group.items[0].namaKategori)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-[var(--border-color)] transition-colors">
+            <div onclick="vibrate(30); selectCategory('${escapeAttr(group.items[0].categoryName)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-[var(--border-color)] transition-colors">
               <div class="flex items-center space-x-3">
                 <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
-                <span class="font-extrabold text-main text-[13px]">${utama}</span>
+                <span class="font-extrabold text-main text-[13px]">${escapeHtml(main)}</span>
               </div>
-              <span class="text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badgeColor}">${group.jenis}</span>
+              <span class="text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badgeColor}">${escapeHtml(group.type)}</span>
             </div>`;
         } else {
           html += `
             <div class="mb-2 floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden">
-              <div onclick="vibrate(30); toggleKategoriGroup('${escapeAttr(utama)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
+              <div onclick="vibrate(30); toggleCategoryGroup('${escapeAttr(main)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
                 <div class="flex items-center space-x-3">
                   <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
-                  <span class="font-extrabold text-main text-[13px]">${utama}</span>
+                  <span class="font-extrabold text-main text-[13px]">${escapeHtml(main)}</span>
                 </div>
                 <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-4 h-4 text-faint"></i>
               </div>
               <div class="${isExpanded ? '' : 'hidden'} border-t border-slate-100 dark:border-[var(--border-color)] bg-[var(--bg-card)]">`;
-          
+
           group.items.forEach((item, idx) => {
-            const label = (item.subKategori && item.subKategori !== item.namaKategori) ? item.subKategori : item.namaKategori;
+            const label = (item.subCategory && item.subCategory !== item.categoryName) ? item.subCategory : item.categoryName;
             const borderCls = idx !== group.items.length - 1 ? 'border-b border-slate-100 dark:border-[var(--border-color)]' : '';
-            const mSub = getCategoryIconMeta(label, group.jenis);
-            
+            const mSub = getCategoryIconMeta(label, group.type === 'Income' ? 'Income' : 'Expense');
+
             html += `
-              <div onclick="vibrate(30); selectKategori('${escapeAttr(item.namaKategori)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between ${borderCls}">
+              <div onclick="vibrate(30); selectCategory('${escapeAttr(item.categoryName)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between ${borderCls}">
                 <div class="flex items-center space-x-3">
                   <div class="icon-chip ${mSub.chip} w-7 h-7"><i data-lucide="${mSub.icon}" class="w-3.5 h-3.5"></i></div>
-                  <span class="text-main">${label}</span>
+                  <span class="text-main">${escapeHtml(label)}</span>
                 </div>
               </div>`;
           });
           html += `</div></div>`;
         }
       });
-      
+
       listEl.innerHTML = html;
       lucide.createIcons();
     }
 
-    function toggleKategoriGroup(utama) { 
-      kategoriPickerExpanded[utama] = !kategoriPickerExpanded[utama]; 
-      renderKategoriPickerList(); 
+    function toggleCategoryGroup(main) {
+      categoryPickerExpanded[main] = !categoryPickerExpanded[main];
+      renderCategoryPickerList();
     }
 
-    function selectKategori(namaKategori) {
-      document.getElementById('form-kategori').value = namaKategori;
-      const displayEl = document.getElementById('form-kategori-display');
+    function selectCategory(categoryName) {
+      document.getElementById('form-category').value = categoryName;
+      const displayEl = document.getElementById('form-category-display');
       if (displayEl) {
-        displayEl.innerText = namaKategori;
+        displayEl.innerText = categoryName;
         displayEl.classList.remove('text-faint');
       }
-      closeModal('modalKategoriPicker');
+      closeModal('modalCategoryPicker');
     }
-    
-    function handleJenisChange() {
-      const jenis = document.getElementById('form-jenis').value;
+
+    // Show/hide logic now reads straight from TYPE_META instead of guessing
+    // from keywords — see the note at the top of this file for why that
+    // guessing used to silently break for English-only type values.
+    function handleTypeChange() {
+      const type = document.getElementById('form-type').value;
+      const meta = getTypeMeta(type);
       const show = (id, isShow) => {
         const el = document.getElementById(id);
         if (isShow) el.classList.remove('hidden'); else el.classList.add('hidden');
       };
-      const j = jenis.toLowerCase();
-      const hasSumber = j.includes('pengeluaran') || j.includes('expense') || j.includes('transfer') || j.includes('beri piutang') || j.includes('bayar hutang');
-      const hasTujuan = j.includes('pemasukan') || j.includes('income') || j.includes('transfer') || j.includes('terima piutang') || j.includes('terima hutang');
-      const hasHutang = j.includes('hutang') || j.includes('debt');
-      const hasPiutang = j.includes('piutang') || j.includes('receivable');
+      show('wrap-source-account', meta.showSource);
+      show('wrap-target-account', meta.showTarget);
+      show('wrap-payable', meta.showPayable);
+      show('wrap-receivable', meta.showReceivable);
 
-      show('wrap-akunsumber', hasSumber); 
-      show('wrap-akuntujuan', hasTujuan); 
-      show('wrap-hutang', hasHutang); 
-      show('wrap-piutang', hasPiutang);
-
-      const selectedKatNama = document.getElementById('form-kategori').value;
-      if (selectedKatNama) {
-        const currentKatObj = (GLOBAL_DATA.kategori || []).find(k => k.namaKategori === selectedKatNama);
-        if (currentKatObj && !isCategoryMatchingType(currentKatObj, jenis)) resetKategoriPicker();
+      const selectedCategoryName = document.getElementById('form-category').value;
+      if (selectedCategoryName) {
+        const currentCategoryObj = (GLOBAL_DATA.categories || []).find(c => c.categoryName === selectedCategoryName);
+        if (currentCategoryObj && !isCategoryMatchingType(currentCategoryObj, type)) resetCategoryPicker();
       }
     }
 
+    // ==========================================
+    // DETAIL MODALS
+    // ==========================================
     function showKpiDetail(kpiName) {
       currentModalBackFn = null;
-      let displayTitle = kpiName;
-      if (kpiName === 'Total Kas') displayTitle = 'Total Cash';
-      else if (kpiName === 'Net Savings Operasional') displayTitle = 'Net Savings';
-      else if (kpiName === 'Total Piutang') displayTitle = 'Total Receivables';
-      else if (kpiName === 'Total Hutang') displayTitle = 'Total Payables';
-
       let kpiColor = 'text-main';
-      if (displayTitle === 'Total Cash' || displayTitle === 'Net Savings' || displayTitle === 'Disposable Income') kpiColor = 'amount-in';
-      else if (displayTitle === 'Total Receivables') kpiColor = 'amount-info';
-      else if (displayTitle === 'Total Payables') kpiColor = 'amount-out';
+      if (kpiName === 'Total Cash' || kpiName === 'Net Operating Savings' || kpiName === 'Disposable Income') kpiColor = 'amount-in';
+      else if (kpiName === 'Total Receivables') kpiColor = 'amount-info';
+      else if (kpiName === 'Total Payables') kpiColor = 'amount-out';
 
       let html = `<div class="space-y-4 pt-1">
           <div class="text-center pb-2">
             <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">KPI Details</span>
-            <h3 class="text-lg font-extrabold text-main leading-tight">${displayTitle}</h3>
+            <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(kpiName)}</h3>
             <p class="text-3xl font-black mt-2 ${kpiColor}">${formatRupiah(GLOBAL_DATA.kpi[kpiName])}</p>
           </div>
           <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
       `;
 
-      if (displayTitle === 'Net Worth') {
+      if (kpiName === 'Net Worth') {
         html += `
           <p class="font-extrabold text-main mb-3 text-[13px]">Net Worth Components:</p>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Total Cash & Savings:</span> <span class="font-extrabold amount-in">${formatRupiah(GLOBAL_DATA.kpi['Total Kas'])}</span></div>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Total Receivables:</span> <span class="font-extrabold amount-info">${formatRupiah(GLOBAL_DATA.kpi['Total Piutang'])}</span></div>
-          <div class="flex justify-between amount-out pb-2 mt-2"><span>Total Payables (-):</span> <span class="font-extrabold">${formatRupiah(GLOBAL_DATA.kpi['Total Hutang'])}</span></div>
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Total Cash & Savings:</span> <span class="font-extrabold amount-in">${formatRupiah(GLOBAL_DATA.kpi['Total Cash'])}</span></div>
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Total Receivables:</span> <span class="font-extrabold amount-info">${formatRupiah(GLOBAL_DATA.kpi['Total Receivables'])}</span></div>
+          <div class="flex justify-between amount-out pb-2 mt-2"><span>Total Payables (-):</span> <span class="font-extrabold">${formatRupiah(GLOBAL_DATA.kpi['Total Payables'])}</span></div>
           <div class="flex justify-between font-black text-main pt-3 mt-1 border-t border-slate-200/50 dark:border-[var(--border-color)] text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(GLOBAL_DATA.kpi['Net Worth'])}</span></div>
         `;
-      } else if (displayTitle === 'Disposable Income') {
+      } else if (kpiName === 'Disposable Income') {
         html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">Remaining daily operational cash that is free to use for consumption and savings after deducting monthly commitments.</p>`;
-      } else if (displayTitle === 'Total Cash') {
+      } else if (kpiName === 'Total Cash') {
         html += `<p class="font-extrabold text-main mb-3 text-[13px]">Account Balance Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.akun.forEach(a => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${a.namaAkun} (${a.pemilik}):</span> <span class="font-extrabold amount-in">${formatRupiah(a.saldoBerjalan)}</span></div>`; });
+        (GLOBAL_DATA.accounts || []).forEach(a => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${escapeHtml(a.accountName)} (${escapeHtml(a.owner)}):</span> <span class="font-extrabold amount-in">${formatRupiah(a.runningBalance)}</span></div>`; });
         html += `</div>`;
-      } else if (displayTitle === 'Total Receivables') {
+      } else if (kpiName === 'Total Receivables') {
         html += `<p class="font-extrabold text-main mb-3 text-[13px]">Receivables Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.piutang.forEach(p => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${p.namaPiutang}:</span> <span class="font-extrabold amount-info">${formatRupiah(p.sisaPiutang)}</span></div>`; });
+        (GLOBAL_DATA.receivables || []).forEach(r => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${escapeHtml(r.receivableName)}:</span> <span class="font-extrabold amount-info">${formatRupiah(r.remainingAmount)}</span></div>`; });
         html += `</div>`;
-      } else if (displayTitle === 'Total Payables') {
+      } else if (kpiName === 'Total Payables') {
         html += `<p class="font-extrabold text-main mb-3 text-[13px]">Payables Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        GLOBAL_DATA.hutang.forEach(h => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${h.namaHutang}:</span> <span class="font-extrabold amount-out">${formatRupiah(h.sisaHutang)}</span></div>`; });
+        (GLOBAL_DATA.payables || []).forEach(p => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${escapeHtml(p.payableName)}:</span> <span class="font-extrabold amount-out">${formatRupiah(p.remainingAmount)}</span></div>`; });
         html += `</div>`;
-      } else if (displayTitle === 'Net Savings') {
+      } else if (kpiName === 'Net Operating Savings') {
         html += `<p class="font-extrabold text-main mb-2 text-[13px]">Description:</p><p class="text-muted leading-relaxed font-semibold">Net difference between operational income and operational expenses.</p>`;
       }
-      
+
       html += `</div></div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html; openModal('modalDetail');
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
     }
 
-    function showTrxDetail(idTrx) {
-  const trx = GLOBAL_DATA.transaksi.find(t => t.idTransaksi === idTrx); 
-  if (!trx) return;
-  
-  const meta = getAmountMeta(trx.jenis);
-  // GUNAKAN FUNGSI YANG SAMA DENGAN DAFTAR TRANSAKSI
-  const m = getCategoryIconMeta(trx.kategori, trx.jenis);
+    function showTransactionDetail(transactionId) {
+      const trx = GLOBAL_DATA.transactions.find(t => t.transactionId === transactionId);
+      if (!trx) return;
 
-  let html = `<div class="space-y-4 pt-1">`;
-  if (currentModalBackFn) {
-    window.isNestedModalView = true;
-    html += `<button onclick="vibrate(30); window.isNestedModalView = false; currentModalBackFn()" class="tap-shrink text-xs font-extrabold text-main flex items-center mb-2 transition-colors"><i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back</button>`;
-  } else { window.isNestedModalView = false; }
-  
-  html += `
-    <div class="text-center flex flex-col items-center mb-5 pb-4 border-b border-slate-200/60 dark:border-[var(--border-color)]">
-      <span class="text-[10px] font-mono font-black tracking-wider px-3 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mb-4 shadow-sm border border-[var(--border-color)]">REF: ${trx.idTransaksi}</span>
-      <div class="icon-chip ${m.chip} w-14 h-14 rounded-2xl mb-3 shadow-sm border border-slate-100 dark:border-[var(--border-color)]"><i data-lucide="${m.icon}" class="w-6 h-6"></i></div>
-      <h3 class="text-base font-extrabold text-main leading-snug px-4">${trx.deskripsi || trx.kategori}</h3>
-      <p class="text-3xl font-black mt-1.5 tracking-tight ${meta.cls}">${meta.prefix}${formatRupiah(trx.jumlah)}</p>
-      <span class="text-[10px] font-black px-3.5 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mt-2.5 uppercase tracking-wider shadow-sm border border-[var(--border-color)]">${trx.jenis}</span>
-    </div>
-    
-    <div class="bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-2xl p-4 border border-slate-200/60 dark:border-[var(--border-color)] space-y-2.5 text-xs font-semibold">
-      <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Date</span><span class="font-extrabold text-main">${trx.tanggal}</span></div>
-      <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Category</span><span class="font-extrabold text-main">${trx.kategori}</span></div>
-      ${trx.akunSumber ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Source Account</span><span class="font-extrabold text-main">${trx.akunSumber}</span></div>` : ''}
-      ${trx.akunTujuan ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Target Account</span><span class="font-extrabold text-main">${trx.akunTujuan}</span></div>` : ''}
-      ${trx.terkaitHutang ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Payable</span><span class="font-extrabold text-main">${trx.terkaitHutang}</span></div>` : ''}
-      ${trx.terkaitPiutang ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Receivable</span><span class="font-extrabold text-main">${trx.terkaitPiutang}</span></div>` : ''}
-      <div class="flex justify-between items-center pt-0.5"><span class="text-muted">Input By</span><span class="font-extrabold text-main">${trx.inputOleh}</span></div>
-    </div>
+      const meta = getTypeMeta(trx.type);
+      const m = getCategoryIconMeta(trx.category, trx.type);
 
-    ${trx.catatan ? `<div class="text-xs bg-[var(--chip-info-bg)] p-3.5 rounded-2xl amount-info border border-[var(--border-color)]"><span class="font-bold block mb-0.5">Notes:</span><span class="font-medium leading-relaxed block">${trx.catatan}</span></div>` : ''}
-    
-    <div class="flex space-x-3 pt-3">
-      <button onclick="handleEditTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit</button>
-      <button onclick="promptDeleteTrx('${trx.idTransaksi}')" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
-    </div>
-  </div>`;
+      let html = `<div class="space-y-4 pt-1">`;
+      if (currentModalBackFn) {
+        window.isNestedModalView = true;
+        html += `<button onclick="vibrate(30); window.isNestedModalView = false; currentModalBackFn()" class="tap-shrink text-xs font-extrabold text-main flex items-center mb-2 transition-colors"><i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back</button>`;
+      } else { window.isNestedModalView = false; }
 
-  document.getElementById('modal-detail-inner').innerHTML = html; 
-  openModal('modalDetail');
-  lucide.createIcons();
-}
-    
-    function showAkunHistory(namaAkun) {
-      currentModalBackFn = () => showAkunHistory(namaAkun);
+      html += `
+        <div class="text-center flex flex-col items-center mb-5 pb-4 border-b border-slate-200/60 dark:border-[var(--border-color)]">
+          <span class="text-[10px] font-mono font-black tracking-wider px-3 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mb-4 shadow-sm border border-[var(--border-color)]">REF: ${escapeHtml(trx.transactionId)}</span>
+          <div class="icon-chip ${m.chip} w-14 h-14 rounded-2xl mb-3 shadow-sm border border-slate-100 dark:border-[var(--border-color)]"><i data-lucide="${m.icon}" class="w-6 h-6"></i></div>
+          <h3 class="text-base font-extrabold text-main leading-snug px-4">${escapeHtml(trx.description || trx.category)}</h3>
+          <p class="text-3xl font-black mt-1.5 tracking-tight ${meta.cls}">${meta.prefix}${formatRupiah(trx.amount)}</p>
+          <span class="text-[10px] font-black px-3.5 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mt-2.5 uppercase tracking-wider shadow-sm border border-[var(--border-color)]">${escapeHtml(trx.type)}</span>
+        </div>
+
+        <div class="bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-2xl p-4 border border-slate-200/60 dark:border-[var(--border-color)] space-y-2.5 text-xs font-semibold">
+          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Date</span><span class="font-extrabold text-main">${formatDate(trx.date)}</span></div>
+          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Category</span><span class="font-extrabold text-main">${escapeHtml(trx.category)}</span></div>
+          ${trx.sourceAccount ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Source Account</span><span class="font-extrabold text-main">${escapeHtml(trx.sourceAccount)}</span></div>` : ''}
+          ${trx.targetAccount ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Target Account</span><span class="font-extrabold text-main">${escapeHtml(trx.targetAccount)}</span></div>` : ''}
+          ${trx.relatedPayable ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Payable</span><span class="font-extrabold text-main">${escapeHtml(trx.relatedPayable)}</span></div>` : ''}
+          ${trx.relatedReceivable ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Receivable</span><span class="font-extrabold text-main">${escapeHtml(trx.relatedReceivable)}</span></div>` : ''}
+          <div class="flex justify-between items-center pt-0.5"><span class="text-muted">Entered By</span><span class="font-extrabold text-main">${escapeHtml(trx.enteredBy)}</span></div>
+        </div>
+
+        ${trx.notes ? `<div class="text-xs bg-[var(--chip-info-bg)] p-3.5 rounded-2xl amount-info border border-[var(--border-color)]"><span class="font-bold block mb-0.5">Notes:</span><span class="font-medium leading-relaxed block">${escapeHtml(trx.notes)}</span></div>` : ''}
+
+        <div class="flex space-x-3 pt-3">
+          <button onclick="handleEditTransaction('${trx.transactionId}')" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit</button>
+          <button onclick="promptDeleteTransaction('${trx.transactionId}')" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
+        </div>
+      </div>`;
+
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+      lucide.createIcons();
+    }
+
+    function showAccountHistory(accountName) {
+      currentModalBackFn = () => showAccountHistory(accountName);
       window.isNestedModalView = false;
-      const fullHistory = GLOBAL_DATA.transaksi.filter(t => t.akunSumber === namaAkun || t.akunTujuan === namaAkun);
-      const history = fullHistory.slice(0, 50);
+      const fullHistory = GLOBAL_DATA.transactions.filter(t => t.sourceAccount === accountName || t.targetAccount === accountName);
+      const historyItems = fullHistory.slice(0, 50);
 
       let html = `
         <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 mb-4 pr-6">
           <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-[var(--bg-subtle)] text-muted uppercase tracking-wider mb-2 inline-block">Account History</span>
-          <h3 class="text-lg font-extrabold text-main leading-tight">${namaAkun}</h3>
+          <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(accountName)}</h3>
         </div>
         <div class="space-y-1.5 max-h-[60vh] overflow-y-auto pr-1">
       `;
-      if (history.length === 0) html += `<p class="text-xs text-center text-muted py-4 font-semibold">No mutations for this account yet.</p>`;
+      if (historyItems.length === 0) html += `<p class="text-xs text-center text-muted py-4 font-semibold">No mutations for this account yet.</p>`;
       else {
-        history.forEach(t => {
-          const meta = getAmountMeta(t.jenis);
+        historyItems.forEach(t => {
+          const meta = getTypeMeta(t.type);
           html += `
-            <div onclick="vibrate(30); showTrxDetail('${t.idTransaksi}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
               <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
                 <div class="truncate">
-                  <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
-                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${t.tanggal}</p>
+                  <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
+                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
                 </div>
               </div>
-              <span class="font-black flex-shrink-0 whitespace-nowrap text-[13px] ${meta.cls} pointer-events-none">${meta.prefix}${formatRupiah(t.jumlah)}</span>
+              <span class="font-black flex-shrink-0 whitespace-nowrap text-[13px] ${meta.cls} pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
             </div>
           `;
         });
       }
       html += `</div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html; openModal('modalDetail'); lucide.createIcons();
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+      lucide.createIcons();
     }
 
-    function showHutangDetail(h) {
-      currentModalBackFn = () => showHutangDetail(h);
+    function showPayableDetail(p) {
+      currentModalBackFn = () => showPayableDetail(p);
       window.isNestedModalView = false;
-      const relatedTrx = GLOBAL_DATA.transaksi.filter(t => t.terkaitHutang === h.namaHutang);
+      const relatedTrx = GLOBAL_DATA.transactions.filter(t => t.relatedPayable === p.payableName);
       let html = `
         <div class="space-y-4 pt-1">
           <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
             <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">Active Payables</span>
-            <h3 class="text-lg font-extrabold text-main leading-tight">${h.namaHutang}</h3>
+            <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(p.payableName)}</h3>
           </div>
           <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Payable Type:</span> <span class="font-extrabold text-main">${h.jenisHutang || '-'}</span></div>
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2 items-center"><span>Remaining Payable:</span> <span class="font-black amount-out text-[15px]">${formatRupiah(h.sisaHutang)}</span></div>
-            <div class="flex justify-between mt-2"><span>Status:</span> <span class="font-extrabold text-main">${h.status}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Payable Type:</span> <span class="font-extrabold text-main">${escapeHtml(p.payableType || '-')}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2 items-center"><span>Remaining Payable:</span> <span class="font-black amount-out text-[15px]">${formatRupiah(p.remainingAmount)}</span></div>
+            ${p.monthlyInstallment ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Monthly Installment:</span> <span class="font-extrabold text-main">${formatRupiah(p.monthlyInstallment)}</span></div>` : ''}
+            ${p.dueDate ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Due Date:</span> <span class="font-extrabold text-main">${formatDate(p.dueDate)}</span></div>` : ''}
+            <div class="flex justify-between mt-2"><span>Status:</span> <span class="font-extrabold text-main">${escapeHtml(p.status)}</span></div>
           </div>
           <div>
             <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
@@ -2024,38 +2141,40 @@ function updateJenisDisplay(value) {
       if (relatedTrx.length === 0) html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
       else {
         relatedTrx.forEach(t => {
-          const meta = getAmountMeta(t.jenis);
+          const meta = getTypeMeta(t.type);
           html += `
-            <div onclick="vibrate(30); showTrxDetail('${t.idTransaksi}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
               <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
                 <div class="truncate">
-                  <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
-                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${t.tanggal}</p>
+                  <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
+                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
                 </div>
               </div>
-              <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${meta.prefix}${formatRupiah(t.jumlah)}</span>
+              <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
             </div>
           `;
         });
       }
       html += `</div></div></div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html; openModal('modalDetail'); lucide.createIcons();
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+      lucide.createIcons();
     }
 
-    function showPiutangDetail(p) {
-      currentModalBackFn = () => showPiutangDetail(p);
+    function showReceivableDetail(r) {
+      currentModalBackFn = () => showReceivableDetail(r);
       window.isNestedModalView = false;
-      const relatedTrx = GLOBAL_DATA.transaksi.filter(t => t.terkaitPiutang === p.namaPiutang);
+      const relatedTrx = GLOBAL_DATA.transactions.filter(t => t.relatedReceivable === r.receivableName);
       let html = `
         <div class="space-y-4 pt-1">
           <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
             <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--chip-info-bg)] amount-info uppercase tracking-wider mb-2 inline-block">Unpaid Receivables</span>
-            <h3 class="text-lg font-extrabold text-main leading-tight">${p.namaPiutang}</h3>
+            <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(r.receivableName)}</h3>
           </div>
           <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Receivable Type:</span> <span class="font-extrabold text-main">${p.jenisPiutang || '-'}</span></div>
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2 items-center"><span>Remaining Receivable:</span> <span class="font-black amount-info text-[15px]">${formatRupiah(p.sisaPiutang)}</span></div>
-            <div class="flex justify-between mt-2"><span>Status:</span> <span class="font-extrabold text-main">${p.status}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Receivable Type:</span> <span class="font-extrabold text-main">${escapeHtml(r.receivableType || '-')}</span></div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2 items-center"><span>Remaining Receivable:</span> <span class="font-black amount-info text-[15px]">${formatRupiah(r.remainingAmount)}</span></div>
+            <div class="flex justify-between mt-2"><span>Status:</span> <span class="font-extrabold text-main">${escapeHtml(r.status)}</span></div>
           </div>
           <div>
             <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
@@ -2064,88 +2183,32 @@ function updateJenisDisplay(value) {
       if (relatedTrx.length === 0) html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
       else {
         relatedTrx.forEach(t => {
-          const meta = getAmountMeta(t.jenis);
+          const meta = getTypeMeta(t.type);
           html += `
-            <div onclick="vibrate(30); showTrxDetail('${t.idTransaksi}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
               <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
                 <div class="truncate">
-                  <p class="font-bold text-main truncate">${t.deskripsi || t.kategori}</p>
-                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${t.tanggal}</p>
+                  <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
+                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
                 </div>
               </div>
-              <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${meta.prefix}${formatRupiah(t.jumlah)}</span>
+              <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
             </div>
           `;
         });
       }
       html += `</div></div></div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html; openModal('modalDetail'); lucide.createIcons();
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+      lucide.createIcons();
     }
 
-    async function handleSaveTransaksi(event) {
-      event.preventDefault();
-      
-      const valJumlah = document.getElementById('form-jumlah-val').value;
-      if (!valJumlah || Number(valJumlah) <= 0) {
-        triggerInputError('form-jumlah-display', "Amount cannot be empty.");
-        return;
-      }
-
-      if (!document.getElementById('form-kategori').value) {
-        triggerInputError('form-kategori-display', "Please select a category first.");
-        return;
-      }
-
-      const idTrxLama = document.getElementById('form-idtrx').value;
-
-      const payload = {
-        inputOleh: document.getElementById('form-user').value,
-        tanggal: document.getElementById('form-tgl').value,
-        jenis: document.getElementById('form-jenis').value,
-        akunSumber: document.getElementById('form-akunsumber').value,
-        akunTujuan: document.getElementById('form-akuntujuan').value,
-        kategori: document.getElementById('form-kategori').value,
-        terkaitHutang: document.getElementById('form-hutang').value,
-        terkaitPiutang: document.getElementById('form-piutang').value,
-        jumlah: valJumlah,
-        deskripsi: document.getElementById('form-deskripsi').value,
-        catatan: document.getElementById('form-catatan').value
-      };
-
-      if (idTrxLama) payload.idTransaksi = idTrxLama;
-
-      closeModal('modalInputTrx');
-      
-      setTimeout(async () => {
-        let loadingToast = showToast("Saving transaction...", "info");
-        try {
-          const actionType = idTrxLama ? 'editTransaksi' : 'saveTransaksi';
-          const res = await fetch(API_URL, {
-            method: 'POST', redirect: 'follow',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action: actionType, payload: payload })
-          });
-          const result = await res.json();
-          if (result.status === 'error') throw new Error(result.message);
-
-          if(loadingToast && loadingToast.parentNode) loadingToast.remove();
-          
-          if (!idTrxLama) await showRewardAnimation("Transaction Saved");
-          else await showRewardAnimation("Transaction Updated");
-          
-          await loadAppData(true);
-        } catch (err) {
-          if(loadingToast && loadingToast.parentNode) loadingToast.remove();
-          showToast("Failed to save: " + err.message, "error");
-        }
-      }, 300);
-    }
-
-    function handleKategoriUtamaSelectChange() {
-      const val = document.getElementById('master-kategoriutama-select').value;
-      const baruWrap = document.getElementById('master-kategoriutama-baru-wrap');
-      if (val === '__BARU__') baruWrap.classList.remove('hidden');
-      else baruWrap.classList.add('hidden');
+    // ==========================================
+    // MASTER DATA (Account / Category / Payable / Receivable)
+    // ==========================================
+    function handleMainCategorySelectChange() {
+      const val = document.getElementById('master-main-category-select').value;
+      document.getElementById('master-main-category-new-wrap').classList.toggle('hidden', val !== '__NEW__');
     }
 
     function openMasterModal(type) {
@@ -2154,105 +2217,105 @@ function updateJenisDisplay(value) {
       const extraEl = document.getElementById('master-extra-field');
       extraEl.innerHTML = "";
 
-      const namaLabelEl = document.getElementById('master-nama-label');
-      const namaInputEl = document.getElementById('master-nama');
-      const kategoriUtamaWrap = document.getElementById('master-kategoriutama-wrap');
-      const kategoriUtamaBaruWrap = document.getElementById('master-kategoriutama-baru-wrap');
+      const nameLabelEl = document.getElementById('master-name-label');
+      const nameInputEl = document.getElementById('master-name');
+      const mainCategoryWrap = document.getElementById('master-main-category-wrap');
+      const mainCategoryNewWrap = document.getElementById('master-main-category-new-wrap');
 
-      kategoriUtamaWrap.classList.add('hidden');
-      kategoriUtamaBaruWrap.classList.add('hidden');
-      namaLabelEl.innerText = "Name";
-      namaInputEl.required = true;
-      namaInputEl.placeholder = "";
+      mainCategoryWrap.classList.add('hidden');
+      mainCategoryNewWrap.classList.add('hidden');
+      nameLabelEl.innerText = "Name";
+      nameInputEl.required = true;
+      nameInputEl.placeholder = "";
 
-      if (type === 'kategori') {
-        namaLabelEl.innerText = "Sub-Category Name (optional)";
-        namaInputEl.required = false;
-        namaInputEl.placeholder = "Leave empty if this is main category";
+      if (type === 'category') {
+        nameLabelEl.innerText = "Sub-Category Name (optional)";
+        nameInputEl.required = false;
+        nameInputEl.placeholder = "Leave empty if this is a main category";
 
-        kategoriUtamaWrap.classList.remove('hidden');
-        const { order } = groupKategoriData();
-        let optHtml = `<option value="__BARU__">+ Create New Main Category</option>`;
-        order.forEach(u => { optHtml += `<option value="${u}">${u}</option>`; });
-        const sel = document.getElementById('master-kategoriutama-select');
+        mainCategoryWrap.classList.remove('hidden');
+        const { order } = groupCategoryData();
+        let optHtml = `<option value="__NEW__">+ Create New Main Category</option>`;
+        order.forEach(u => { optHtml += `<option value="${escapeAttr(u)}">${escapeHtml(u)}</option>`; });
+        const sel = document.getElementById('master-main-category-select');
         sel.innerHTML = optHtml;
-        sel.value = "__BARU__";
-        handleKategoriUtamaSelectChange();
+        sel.value = "__NEW__";
+        handleMainCategorySelectChange();
       }
 
-      if (type === 'akun') {
+      if (type === 'account') {
         titleEl.innerText = "Add New Account";
         extraEl.innerHTML = `
           <div>
-            <label for="master-jenisakun" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Type</label>
-            <select id="master-jenisakun" class="w-full ios-input cursor-pointer py-2.5">
-              <option value="Bank">Bank</option>
+            <label for="master-account-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Type</label>
+            <select id="master-account-type" class="w-full ios-input cursor-pointer py-2.5">
+              <option value="Bank Account">Bank</option>
               <option value="E-Wallet">E-Wallet</option>
               <option value="Cash">Cash / Cash on Hand</option>
             </select>
           </div>
           <div>
-            <label for="master-fungsialiran" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Function / Category</label>
-            <select id="master-fungsialiran" class="w-full ios-input cursor-pointer py-2.5">
-              <option value="Operasional Harian">Daily Operational</option>
-              <option value="Dana Darurat & Tabungan">Emergency Fund & Savings</option>
+            <label for="master-function-category" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Function / Category</label>
+            <select id="master-function-category" class="w-full ios-input cursor-pointer py-2.5">
+              <option value="Daily Operations">Daily Operational</option>
+              <option value="Emergency Fund & Savings">Emergency Fund & Savings</option>
             </select>
           </div>
           <div>
-            <label for="master-saldoawal" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Balance (Rp)</label>
-            <input type="number" id="master-saldoawal" class="w-full ios-input py-2.5" value="0">
+            <label for="master-initial-balance" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Balance (Rp)</label>
+            <input type="number" id="master-initial-balance" class="w-full ios-input py-2.5" value="0">
           </div>
         `;
-      } else if (type === 'kategori') {
+      } else if (type === 'category') {
         titleEl.innerText = "Add New Category";
         extraEl.innerHTML = `
           <div>
-            <label for="master-jeniskat" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Category Type</label>
-            <select id="master-jeniskat" class="w-full ios-input cursor-pointer py-2.5">
-              <option value="Pengeluaran">Expense</option>
-              <option value="Pemasukan">Income</option>
+            <label for="master-category-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Category Type</label>
+            <select id="master-category-type" class="w-full ios-input cursor-pointer py-2.5">
+              <option value="Expense">Expense</option>
+              <option value="Income">Income</option>
             </select>
           </div>
         `;
-      } else if (type === 'hutang') {
+      } else if (type === 'payable') {
         titleEl.innerText = "Add New Payable";
         extraEl.innerHTML = `
           <div>
-            <label for="master-jenishutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Payable Type</label>
-            <select id="master-jenishutang" class="w-full ios-input cursor-pointer py-2.5">
-              <option value="Cicilan Kendaraan">Vehicle Installment</option>
-              <option value="KTA / Bank">Bank Loan</option>
-              <option value="Pinjaman Personal">Personal Loan</option>
-              <option value="Lainnya">Other</option>
+            <label for="master-payable-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Payable Type</label>
+            <select id="master-payable-type" class="w-full ios-input cursor-pointer py-2.5">
+              <option value="Vehicle Installment">Vehicle Installment</option>
+              <option value="Bank Loan">Bank Loan</option>
+              <option value="Personal Loan">Personal Loan</option>
+              <option value="Other">Other</option>
             </select>
           </div>
           <div>
-            <label for="master-totalhutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Total Payable (Rp)</label>
-            <input type="number" id="master-totalhutang" class="w-full ios-input py-2.5" value="0" required>
+            <label for="master-payable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Total Payable (Rp)</label>
+            <input type="number" id="master-payable-total" class="w-full ios-input py-2.5" value="0" required>
           </div>
           <div>
-            <label for="master-kethutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Description / Notes</label>
-            <input type="text" id="master-kethutang" class="w-full ios-input py-2.5" placeholder="Installment notes...">
+            <label for="master-payable-notes" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Description / Notes</label>
+            <input type="text" id="master-payable-notes" class="w-full ios-input py-2.5" placeholder="Installment notes...">
           </div>
         `;
-      } else if (type === 'piutang') {
+      } else if (type === 'receivable') {
         titleEl.innerText = "Add New Receivable";
         extraEl.innerHTML = `
           <div>
-            <label for="master-jenispiutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Receivable Type</label>
-            <select id="master-jenispiutang" class="w-full ios-input cursor-pointer py-2.5">
-              <option value="Talangan Belanja">Shopping Reimburse</option>
-              <option value="Pinjaman Teman/Keluarga">Personal Receivable</option>
-              <option value="Lainnya">Other</option>
+            <label for="master-receivable-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Receivable Type</label>
+            <select id="master-receivable-type" class="w-full ios-input cursor-pointer py-2.5">
+              <option value="Shopping Reimbursement">Shopping Reimburse</option>
+              <option value="Personal Loan">Personal Receivable (Friend/Family)</option>
+              <option value="Other">Other</option>
             </select>
           </div>
           <div>
-            <label for="master-totalpiutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Total Receivable (Rp)</label>
-            <input type="number" id="master-totalpiutang" class="w-full ios-input py-2.5" value="0" required>
+            <label for="master-receivable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Total Receivable (Rp)</label>
+            <input type="number" id="master-receivable-total" class="w-full ios-input py-2.5" value="0" required>
           </div>
           <div>
-            <label for="master-ketpiutang" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Description / Notes</label>
-            <textarea id="master-ketpiutang" rows="2" class="w-full ios-input py-2.5" placeholder="Example: Reimburse groceries token, etc."></textarea>
+            <label for="master-receivable-notes" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Description / Notes</label>
+            <textarea id="master-receivable-notes" rows="2" class="w-full ios-input py-2.5" placeholder="Example: Reimburse groceries token, etc."></textarea>
           </div>
         `;
       }
@@ -2262,57 +2325,85 @@ function updateJenisDisplay(value) {
     async function handleSaveMaster(event) {
       event.preventDefault();
       const type = document.getElementById('master-type').value;
-      const nama = document.getElementById('master-nama').value;
-      
-      if (!nama || nama.trim() === '') return triggerInputError('master-nama', 'Name is required.');
+      const name = document.getElementById('master-name').value.trim();
 
-      let payload = { namaAkun: nama, namaKategori: nama, namaHutang: nama, namaPiutang: nama };
+      // Builds a payload with ONLY the fields relevant to the selected type
+      // (previously this always sent namaAkun/namaKategori/namaHutang/
+      // namaPiutang together, regardless of which one was actually needed).
+      let payload = {};
 
-      if (type === 'akun') {
-        payload.jenisAkun = document.getElementById('master-jenisakun').value;
-        payload.kategoriFungsi = document.getElementById('master-fungsialiran').value;
-        payload.saldoAwal = Number(document.getElementById('master-saldoawal').value) || 0;
-      } else if (type === 'kategori') {
-        const selVal = document.getElementById('master-kategoriutama-select').value;
-        const kategoriUtama = selVal === '__BARU__' ? document.getElementById('master-kategoriutama-baru').value.trim() : selVal;
-        
-        if (!kategoriUtama) return triggerInputError('master-kategoriutama-baru', "Main category name is required.");
-        
-        payload.kategoriUtama = kategoriUtama;
-        payload.subKategori = nama.trim();
-        payload.namaKategori = nama.trim() ? nama.trim() : kategoriUtama;
-        payload.jenis = document.getElementById('master-jeniskat').value;
-      } else if (type === 'hutang') {
-        payload.jenisHutang = document.getElementById('master-jenishutang').value;
-        payload.totalHutangAwal = Number(document.getElementById('master-totalhutang').value) || 0;
-        payload.keterangan = document.getElementById('master-kethutang').value;
-      } else if (type === 'piutang') {
-        payload.jenisPiutang = document.getElementById('master-jenispiutang').value;
-        payload.totalPiutangAwal = Number(document.getElementById('master-totalpiutang').value) || 0;
-        payload.keterangan = document.getElementById('master-ketpiutang').value;
+      if (type === 'account') {
+        if (!name) { triggerInputError('master-name', "Account name is required."); return; }
+        payload = {
+          accountName: name,
+          accountType: document.getElementById('master-account-type').value,
+          functionCategory: document.getElementById('master-function-category').value,
+          initialBalance: Number(document.getElementById('master-initial-balance').value) || 0
+        };
+      } else if (type === 'category') {
+        const mainSel = document.getElementById('master-main-category-select').value;
+        const mainCategory = mainSel === '__NEW__' ? document.getElementById('master-main-category-new').value.trim() : mainSel;
+        if (!mainCategory) { triggerInputError('master-main-category-new', "Main category name is required."); return; }
+        payload = {
+          mainCategory: mainCategory,
+          subCategory: name,
+          categoryName: name || mainCategory,
+          type: document.getElementById('master-category-type').value
+        };
+      } else if (type === 'payable') {
+        if (!name) { triggerInputError('master-name', "Payable name is required."); return; }
+        payload = {
+          payableName: name,
+          payableType: document.getElementById('master-payable-type').value,
+          initialAmount: Number(document.getElementById('master-payable-total').value) || 0,
+          notes: document.getElementById('master-payable-notes').value
+        };
+      } else if (type === 'receivable') {
+        if (!name) { triggerInputError('master-name', "Receivable name is required."); return; }
+        payload = {
+          receivableName: name,
+          receivableType: document.getElementById('master-receivable-type').value,
+          initialAmount: Number(document.getElementById('master-receivable-total').value) || 0,
+          notes: document.getElementById('master-receivable-notes').value
+        };
       }
 
-      closeModal('modalMaster');
-      let loadingToast = showToast("Saving master data...", "info");
-
+      let loadingToast = showToast("Saving...", "info");
       try {
         const res = await fetch(API_URL, {
           method: 'POST', redirect: 'follow',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'addMasterData', type: type, payload: payload })
+          body: JSON.stringify({ action: 'addMasterData', type, payload })
         });
         const result = await res.json();
         if (result.status === 'error') throw new Error(result.message);
 
-        if(loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Master data added successfully!", "success");
-        document.getElementById('formMaster').reset();
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+        closeModal('modalMaster');
+        showToast(result.message || "Saved successfully!");
         await loadAppData(true);
       } catch (err) {
-        if(loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Failed: " + err.message, "error");
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+        showToast("Failed to save: " + err.message, "error");
       }
     }
+
+    // ==========================================
+    // INIT
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      applyDarkModePref();
+      lucide.createIcons();
+      document.getElementById('form-date').valueAsDate = new Date();
+
+      loadAppData().then(() => {
+        // Supports the "Add Transaction" home-screen shortcut in manifest.json
+        const params = new URLSearchParams(location.search);
+        if (params.get('action') === 'add') {
+          setTimeout(() => openNewTransactionForm(), 400);
+        }
+      });
+    });
   </script>
 </body>
 </html>
