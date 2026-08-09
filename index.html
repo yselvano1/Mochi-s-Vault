@@ -1997,8 +1997,6 @@ async function loadAppData(isSilentReload = false) {
 
     function promptDeleteAccount(accountName) {
       vibrate(40);
-      const titleEl = documefunction promptDeleteAccount(accountName) {
-      vibrate(40);
       const titleEl = document.getElementById('delete-modal-title');
       const descEl = document.getElementById('delete-modal-desc');
       if (titleEl) titleEl.innerText = `Hapus Akun "${accountName}"?`;
