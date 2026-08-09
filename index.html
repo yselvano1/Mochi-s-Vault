@@ -1620,7 +1620,8 @@
       let html = trendHtml;
       sortedMain.forEach((main, index) => {
         const g = groups[main];
-        const budgetLimit = DEFAULT_CATEGORY_BUDGETS[main] || 0;
+        const customBudgets = getCustomBudgets();
+        const budgetLimit = customBudgets[main] !== undefined ? customBudgets[main] : (DEFAULT_CATEGORY_BUDGETS[main] || 0);
         
         let barColor = "from-mochi-light to-mochi";
         let budgetPct = 0;
