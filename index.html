@@ -261,11 +261,16 @@
         </div>
       </div>
 
-      <!-- 3. EXPENSE ANALYSIS -->
+      <!-- 3. EXPENSE ANALYSIS (DILENGKAPI TOMBOL EDIT BUDGET) -->
       <div class="floating-card p-5 relative overflow-hidden">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <h3 class="text-sm font-extrabold text-main">Expense Analysis</h3>
-          <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">THIS MONTH</span>
+          <div class="flex items-center space-x-2">
+            <button type="button" onclick="vibrate(30); openBudgetEditorModal()" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline flex items-center bg-mochi-light/10 px-2.5 py-1 rounded-full tap-shrink">
+              <i data-lucide="sliders" class="w-3 h-3 mr-1"></i> Set Budget
+            </button>
+            <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">THIS MONTH</span>
+          </div>
         </div>
         <div id="dashboard-category-analysis" class="space-y-3 relative z-10"></div>
       </div>
@@ -609,6 +614,33 @@
       </div>
       <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-3 text-sm">
         <input type="hidden" id="master-type">
+
+        <!-- MODAL: CUSTOM BUDGET EDITOR -->
+  <div id="modalBudgetEditor" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalBudgetEditor')">
+    <div id="modalBudgetEditor-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center max-h-[85vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-4">
+        <h4 class="font-extrabold text-main text-base flex items-center">
+          <i data-lucide="sliders" class="w-4 h-4 mr-2 text-mochi"></i> Set Category Budgets
+        </h4>
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalBudgetEditor')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="formBudgetEditor" onsubmit="handleSaveCustomBudgets(event)" class="space-y-3 text-sm">
+        <p class="text-xs text-muted font-medium mb-3">Atur batas maksimal pengeluaran bulanan untuk setiap kategori utama:</p>
+        <div id="budget-inputs-container" class="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
+          <!-- Input per kategori dirender otomatis via JS -->
+        </div>
+
+        <div class="pt-3">
+          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-md transition-colors">
+            Save Budgets
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
         <!-- 1. CATEGORY TYPE AT TOP -->
         <div id="master-category-type-wrap" class="hidden">
@@ -1477,6 +1509,54 @@
         document.getElementById('form-description').value = bill.title;
         document.getElementById('form-notes').value = "Quick Paid via Recurring Bills Manager ⚡";
       }, 200);
+    }
+
+// ==========================================
+    // CUSTOM BUDGET EDITOR LOGIC
+    // ==========================================
+    function getCustomBudgets() {
+      const saved = localStorage.getItem('mochi_custom_budgets');
+      return saved ? JSON.parse(saved) : { ...DEFAULT_CATEGORY_BUDGETS };
+    }
+
+    function openBudgetEditorModal() {
+      const currentBudgets = getCustomBudgets();
+      const container = document.getElementById('budget-inputs-container');
+      if (!container) return;
+
+      const categories = Object.keys(DEFAULT_CATEGORY_BUDGETS);
+      
+      container.innerHTML = categories.map(cat => {
+        const val = currentBudgets[cat] !== undefined ? currentBudgets[cat] : DEFAULT_CATEGORY_BUDGETS[cat];
+        return `
+          <div>
+            <label class="font-bold text-main block mb-1 text-xs">${escapeHtml(cat)}</label>
+            <div class="relative">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-xs">Rp</span>
+              <input type="text" inputmode="numeric" data-budget-category="${escapeAttr(cat)}" value="${new Intl.NumberFormat('id-ID').format(val)}" oninput="formatInputRupiah(this)" placeholder="0" class="w-full ios-input pl-9 text-xs font-extrabold text-main">
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      openModal('modalBudgetEditor');
+    }
+
+    function handleSaveCustomBudgets(event) {
+      event.preventDefault();
+      const inputs = document.querySelectorAll('[data-budget-category]');
+      const updatedBudgets = {};
+
+      inputs.forEach(input => {
+        const cat = input.getAttribute('data-budget-category');
+        const numVal = Number(input.value.replace(/[^0-9]/g, '')) || 0;
+        updatedBudgets[cat] = numVal;
+      });
+
+      localStorage.setItem('mochi_custom_budgets', JSON.stringify(updatedBudgets));
+      closeModal('modalBudgetEditor');
+      showToast("Category budgets updated!");
+      renderCategoryAnalysis();
     }
     
     function renderCategoryAnalysis() {
