@@ -169,25 +169,19 @@
 
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- TOP BAR -->
-  <header class="clean-topbar sticky top-0 z-40 px-5 pt-7 pb-5 flex items-center justify-between max-w-3xl mx-auto">
-    <div class="flex items-center space-x-4">
-      <div class="w-14 h-14 rounded-full bg-[var(--bg-subtle-2)] overflow-hidden flex items-center justify-center shadow-md border-2 border-[var(--border-color)] flex-shrink-0">
-        <img src="mochi-logo-new.png" alt="Mochi" class="w-full h-full object-cover">
-      </div>
-      <div class="flex flex-col justify-center">
-        <h1 class="text-2xl md:text-3xl font-extrabold text-main leading-none tracking-tight">Hello, Meow</h1>
-        <p class="text-xs md:text-sm font-semibold text-muted mt-1.5">Guarding your wealth, me-ow 🐾</p>
-      </div>
+  <!-- TOP BAR (RAPI & MINIMALIS) -->
+  <header class="clean-topbar sticky top-0 z-40 px-5 pt-7 pb-4 flex items-center justify-between max-w-3xl mx-auto">
+    <div class="flex flex-col justify-center">
+      <h1 class="text-2xl md:text-3xl font-extrabold text-main leading-none tracking-tight">Hello, Meow</h1>
+      <p class="text-xs md:text-sm font-semibold text-muted mt-1.5">Guarding your wealth, me-ow 🐾</p>
     </div>
 
     <div class="flex items-center space-x-2.5">
-      <!-- STREAK BADGE (SISIPKAN DI SINI) -->
-    <div id="mochi-streak-badge" class="flex items-center space-x-1.5 bg-card border border-[var(--border-color)] px-3 py-1.5 rounded-full shadow-sm text-xs font-black text-main">
-      <span class="text-base">🐾</span>
-      <span id="streak-count-num">0</span>
-      <span class="text-[10px] text-muted font-extrabold uppercase">Days</span>
-    </div>
+      <div id="mochi-streak-badge" class="flex items-center space-x-1.5 bg-card border border-[var(--border-color)] px-3 py-1.5 rounded-full shadow-sm text-xs font-black text-main">
+        <span class="text-base">🐾</span>
+        <span id="streak-count-num">0</span>
+        <span class="text-[10px] text-muted font-extrabold uppercase">Days</span>
+      </div>
       <button onclick="toggleDarkMode(); vibrate(30);" class="tap-shrink w-10 h-10 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-[0_2px_10px_rgba(45,36,30,0.05)]" aria-label="Toggle Mode">
         <i data-lucide="sun" id="icon-sun" class="w-4.5 h-4.5 hidden"></i>
         <i data-lucide="moon" id="icon-moon" class="w-4.5 h-4.5"></i>
@@ -198,43 +192,50 @@
   <!-- MAIN CONTAINER -->
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
 
-    <!-- 1. DASHBOARD PAGE -->
-    <section id="page-dashboard" class="space-y-4 page-animate">
-      <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden group bg-obsidian dark:bg-gradient-to-br dark:from-mochi dark:to-mochi-dark text-white border-none shadow-[0_12px_35px_-8px_rgba(35,26,21,0.3)] dark:shadow-[0_12px_35px_-8px_rgba(217,136,88,0.3)]">
-        <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-white/10 dark:bg-white/20 rounded-full mix-blend-overlay filter blur-[20px] group-hover:opacity-70 transition-opacity duration-500"></div>
-        <div class="absolute -top-6 -left-6 w-24 h-24 bg-white/5 dark:bg-white/10 rounded-full mix-blend-overlay filter blur-[10px]"></div>
+   <!-- MOCHI BANK CREDIT CARD (NET WORTH + DISPOSABLE) -->
+      <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden bg-gradient-to-br from-obsidian via-[#2C201A] to-coffee-darkest dark:from-mochi-dark dark:via-[#3E2519] dark:to-obsidian text-white border border-white/10 shadow-xl rounded-[2rem]">
+        <div class="absolute -top-12 -right-12 w-48 h-48 bg-mochi-light/10 rounded-full filter blur-[30px] pointer-events-none"></div>
+        <div class="absolute bottom-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full filter blur-[25px] pointer-events-none"></div>
 
-        <div class="flex justify-between items-center mb-3 relative z-10">
-          <span class="text-[11px] font-black tracking-widest uppercase text-white/70 dark:text-white/80">NET WORTH</span>
-          <div class="w-8 h-8 rounded-full bg-white/10 dark:bg-white/20 flex items-center justify-center text-white backdrop-blur-sm border border-white/10 dark:border-white/20">
-            <i data-lucide="trending-up" class="w-4 h-4"></i>
+        <div class="flex justify-between items-center mb-5 relative z-10">
+          <div class="flex items-center space-x-2.5">
+            <div class="w-9 h-7 rounded-md bg-gradient-to-tr from-amber-200 via-amber-300 to-yellow-500 p-0.5 shadow-sm flex items-center justify-center">
+              <div class="w-full h-full border border-amber-600/40 rounded-[3px]"></div>
+            </div>
+            <span class="text-[10px] font-black tracking-widest uppercase text-white/80">MOCHI BANK • VAULT</span>
+          </div>
+          <i data-lucide="nfc" class="w-5 h-5 text-white/60"></i>
+        </div>
+
+        <div class="mb-5 relative z-10">
+          <span class="text-[9px] font-black tracking-widest uppercase text-white/60 block mb-1">TOTAL NET WORTH</span>
+          <div id="kpi-networth" class="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-md truncate max-w-full">-</div>
+        </div>
+
+        <div ontouchstart="vibrate(30); event.stopPropagation(); showKpiDetail('Disposable Income')" class="relative z-10 bg-white/10 dark:bg-black/30 backdrop-blur-md rounded-2xl p-3.5 border border-white/15 flex items-center justify-between">
+          <div class="min-w-0 flex-1 pr-2">
+            <span class="text-[9px] font-extrabold tracking-widest uppercase text-emerald-300 block mb-0.5">DISPOSABLE INCOME</span>
+            <span id="kpi-disposable" class="text-lg sm:text-xl font-black text-emerald-400 block tracking-tight truncate">-</span>
+          </div>
+          <div class="text-right flex-shrink-0">
+            <span class="text-[8px] font-bold text-white/50 block uppercase tracking-wider">VAULT CARD</span>
+            <span class="text-[10px] font-black text-white/90 tracking-wider">YOSA & FANI</span>
           </div>
         </div>
-        <div id="kpi-networth" class="text-3xl md:text-4xl font-black tracking-tight relative z-10 text-white drop-shadow-sm transition-all duration-300 origin-left">-</div>
       </div>
 
-      <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Disposable Income')" class="floating-item p-6 cursor-pointer card-hover flex flex-col justify-center relative overflow-hidden group bg-card">
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-[11px] font-black tracking-widest uppercase text-muted">DISPOSABLE INCOME</span>
-          <div class="w-8 h-8 rounded-full bg-[var(--chip-in-bg)] flex items-center justify-center amount-in">
-            <i data-lucide="wallet" class="w-4 h-4"></i>
-          </div>
+      <!-- MOCHI LIVE MOOD CARD (NO FLOAT ANIMATION & FULL TEXT) -->
+      <div id="mochi-mood-card" class="floating-card p-4 flex items-center space-x-4 relative overflow-hidden bg-card transition-all duration-300">
+        <div class="relative w-20 h-20 flex-shrink-0 flex items-center justify-center">
+          <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Live Mood" class="w-full h-full object-contain filter drop-shadow-sm transition-all duration-300">
         </div>
-        <div id="kpi-disposable" class="text-3xl md:text-4xl font-black amount-in block tracking-tight transition-all duration-300 origin-left">-</div>
-      </div>
-
-<!-- MOCHI LIVE MOOD CARD (KARTU BARU DISISIPKAN DI SINI) -->
-      <div id="mochi-mood-card" class="floating-card p-5 flex items-center space-x-4 relative overflow-hidden bg-card transition-all duration-500">
-        <div class="relative w-24 h-24 flex-shrink-0 flex items-center justify-center">
-          <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Live Mood" class="w-full h-full object-contain filter drop-shadow-sm animate-float transition-all duration-300">
-        </div>
-        <div class="flex-1 min-w-0">
+        <div class="flex-1 min-w-0 pr-1">
           <div class="flex items-center space-x-2 mb-1">
             <span id="mochi-mood-badge" class="text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-info-bg)] amount-info">Chill Mochi</span>
-            <span class="text-[10px] text-faint font-semibold">• Live Reaction</span>
+            <span class="text-[10px] text-faint font-semibold">• Live Mood</span>
           </div>
-          <h3 id="mochi-mood-title" class="text-sm md:text-base font-extrabold text-main truncate leading-snug">Mochi feels comfy~ 😸</h3>
-          <p id="mochi-mood-desc" class="text-xs font-semibold text-muted mt-1 leading-relaxed line-clamp-2">Cashflow is stable. Mochi is carefully guarding your vault!</p>
+          <h3 id="mochi-mood-title" class="text-sm md:text-base font-extrabold text-main leading-snug">Mochi feels comfy~ 😸</h3>
+          <p id="mochi-mood-desc" class="text-xs font-semibold text-muted mt-1 leading-relaxed">Cashflow is stable. Mochi is carefully guarding your vault!</p>
         </div>
       </div>
       
@@ -1400,19 +1401,22 @@
     function startMochiBlinking() {
       if (mochiBlinkTimeout) clearTimeout(mochiBlinkTimeout);
 
-      const nextBlinkIn = Math.random() * 2500 + 3500;
+      // Melek 1.5 detik, lalu meram santai 2.5 detik
       mochiBlinkTimeout = setTimeout(() => {
         const imgEl = document.getElementById('mochi-mood-img');
         if (imgEl && currentMochiMood) {
           imgEl.src = `mochi-${currentMochiMood}-closed.png`;
+          
           setTimeout(() => {
-            imgEl.src = `mochi-${currentMochiMood}-open.png`;
-            startMochiBlinking();
-          }, 160);
+            if (imgEl && currentMochiMood) {
+              imgEl.src = `mochi-${currentMochiMood}-open.png`;
+              startMochiBlinking();
+            }
+          }, 2500); // Meram 2.5 detik
         }
-      }, nextBlinkIn);
+      }, 1500); // Melek 1.5 detik
     }
-
+    
 // ==========================================
     // GELOMBANG 2: RECURRING BILLS PRESETS
     // ==========================================
