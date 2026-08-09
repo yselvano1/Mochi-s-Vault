@@ -169,24 +169,27 @@
 
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- BOLD EDITORIAL TOP BAR (LARGE AVATAR & PROMINENT GREETING) -->
+  <!-- FOTO 1 REVISI: HEADER TOP BAR WITH CENTER-ALIGNED AVATAR & 1-LINE CAPTION -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-4 min-w-0 flex-1 pr-3">
-      <!-- LARGE MOCHI AVATAR / LIVE MASCOT PROFILE -->
-      <div class="relative w-16 h-16 md:w-20 md:h-20 flex-shrink-0 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-md flex items-center justify-center">
+      <!-- AVATAR CENTER-ALIGNED WITH 3-LINE TEXT HEIGHT -->
+      <div class="relative w-16 h-16 md:w-20 md:h-20 flex-shrink-0 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-md flex items-center justify-center self-center">
         <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Avatar" class="w-full h-full object-contain filter drop-shadow-sm transition-all duration-300">
       </div>
 
-      <!-- BOLD GREETING & DYNAMIC MOOD SUBTEXT -->
+      <!-- 1 LINE CAPTION + 2 LINES SUBCAPTION -->
       <div class="flex flex-col justify-center min-w-0 flex-1">
-        <div class="flex items-center space-x-2 mb-1">
+        <div class="flex items-center space-x-2 mb-0.5">
           <span id="mochi-mood-badge" class="text-[8px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-in-bg)] amount-in">Rich Mochi</span>
           <span class="text-[10px] text-faint font-semibold">• Live Status</span>
         </div>
-        <h1 id="mochi-mood-title" class="text-lg md:text-2xl font-black text-main leading-tight tracking-tight">
-          Mochi is purr-fectly happy!
+        <h1 id="mochi-mood-title" class="text-sm md:text-base font-black text-main leading-tight tracking-tight truncate">
+          Mochi is purr-fectly happy! 💰
         </h1>
-        <p id="mochi-mood-desc" class="text-xs font-semibold text-muted mt-1 leading-snug line-clamp-2">
+        <p id="mochi-mood-desc" class="text-[11px] font-semibold text-muted mt-0.5 leading-snug truncate">
+          Expenses are only at 0% of income!
+        </p>
+        <p id="mochi-mood-subdesc" class="text-[11px] font-semibold text-muted leading-snug truncate">
           Mochi is swimming in gold bars!
         </p>
       </div>
@@ -261,21 +264,23 @@
         </div>
       </div>
 
-      <!-- 3. EXPENSE ANALYSIS (DILENGKAPI TOMBOL EDIT BUDGET) -->
+      <!-- FOTO 2 REVISI: EXPENSE ANALYSIS WITH TWIN BUTTONS -->
       <div class="floating-card p-5 relative overflow-hidden">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <h3 class="text-sm font-extrabold text-main">Expense Analysis</h3>
           <div class="flex items-center space-x-2">
-            <button type="button" onclick="vibrate(30); openBudgetEditorModal()" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline flex items-center bg-mochi-light/10 px-2.5 py-1 rounded-full tap-shrink">
-              <i data-lucide="sliders" class="w-3 h-3 mr-1"></i> Set Budget
+            <button type="button" onclick="vibrate(30); openBudgetEditorModal()" class="tap-shrink text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-mochi-light/20 text-mochi dark:text-mochi-light border border-mochi/20 flex items-center">
+              <i data-lucide="sliders-horizontal" class="w-3 h-3 mr-1"></i> Set Budget
             </button>
-            <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">THIS MONTH</span>
+            <span class="text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-mochi-light/20 text-mochi dark:text-mochi-light border border-mochi/20">
+              THIS MONTH
+            </span>
           </div>
         </div>
         <div id="dashboard-category-analysis" class="space-y-3 relative z-10"></div>
       </div>
 
-      <!-- 4. RECURRING BILLS MANAGER -->
+      <!-- FOTO 3 REVISI: RECURRING BILLS WITH ADD BILL BUTTON -->
       <div class="floating-card p-5 relative overflow-hidden">
         <div class="flex justify-between items-center mb-3 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <div class="flex items-center space-x-2">
@@ -284,7 +289,7 @@
             </div>
             <h3 class="text-sm font-extrabold text-main">Recurring Bills</h3>
           </div>
-          <span class="text-[9px] font-black text-faint uppercase tracking-wider">Quick Pay</span>
+          <button type="button" onclick="vibrate(30); openAddRecurringModal()" class="text-xs font-extrabold text-mochi dark:text-mochi-light hover:underline flex items-center">+ Add Bill</button>
         </div>
         <div id="recurring-bills-list" class="space-y-2.5"></div>
       </div>
@@ -462,6 +467,40 @@
     </div>
   </div>
 
+  <!-- MODAL: ADD RECURRING BILL -->
+  <div id="modalAddRecurring" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalAddRecurring')">
+    <div id="modalAddRecurring-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
+      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-4">
+        <h4 class="font-extrabold text-main text-base flex items-center">
+          <i data-lucide="repeat" class="w-4 h-4 mr-2 text-mochi"></i> Add Recurring Bill
+        </h4>
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalAddRecurring')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition text-main border border-[var(--border-color)]">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="formAddRecurring" onsubmit="handleSaveRecurringBill(event)" class="space-y-3 text-xs font-semibold">
+        <div>
+          <label class="block mb-1 text-main font-bold">Bill Title</label>
+          <input type="text" id="rec-title" class="w-full ios-input" placeholder="Home Internet / WiFi" required>
+        </div>
+        <div>
+          <label class="block mb-1 text-main font-bold">Estimated Amount (Rp)</label>
+          <input type="number" id="rec-amount" class="w-full ios-input" placeholder="350000" required>
+        </div>
+        <div>
+          <label class="block mb-1 text-main font-bold">Category</label>
+          <input type="text" id="rec-category" class="w-full ios-input" placeholder="Internet Bill" required>
+        </div>
+        <div class="pt-2">
+          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-md transition-colors">
+            Save Recurring Bill
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- MODAL 1: TRANSACTION INPUT FORM -->
   <div id="modalTransactionForm" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalTransactionForm')">
     <div id="modalTransactionForm-content" class="glass-modal-content w-full max-w-lg rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl modal-content-bottom md:modal-content-center">
@@ -605,7 +644,7 @@
     </div>
   </div>
 
-  <!-- MODAL: MASTER DATA (PERBAIKAN ALUR MASTER CATEGORY FORM) -->
+  <!-- MODAL: MASTER DATA (PERBAIKAN ALUR MASTER CATEGORY & ACCOUNT FORM WITH CC/PAYLATER) -->
   <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3">
@@ -614,33 +653,6 @@
       </div>
       <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-3 text-sm">
         <input type="hidden" id="master-type">
-
-        <!-- MODAL: CUSTOM BUDGET EDITOR -->
-  <div id="modalBudgetEditor" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalBudgetEditor')">
-    <div id="modalBudgetEditor-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center max-h-[85vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-4">
-        <h4 class="font-extrabold text-main text-base flex items-center">
-          <i data-lucide="sliders" class="w-4 h-4 mr-2 text-mochi"></i> Set Category Budgets
-        </h4>
-        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalBudgetEditor')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <form id="formBudgetEditor" onsubmit="handleSaveCustomBudgets(event)" class="space-y-3 text-sm">
-        <p class="text-xs text-muted font-medium mb-3">Atur batas maksimal pengeluaran bulanan untuk setiap kategori utama:</p>
-        <div id="budget-inputs-container" class="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
-          <!-- Input per kategori dirender otomatis via JS -->
-        </div>
-
-        <div class="pt-3">
-          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-md transition-colors">
-            Save Budgets
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
 
         <!-- 1. CATEGORY TYPE AT TOP -->
         <div id="master-category-type-wrap" class="hidden">
@@ -665,7 +677,7 @@
           <input type="text" id="master-main-category-new" placeholder="Example: Investment" class="w-full ios-input">
         </div>
 
-        <!-- 3. SUB-CATEGORY NAME -->
+        <!-- 3. NAME FIELD -->
         <div>
           <label for="master-name" class="font-bold text-main block mb-1 text-xs cursor-pointer" id="master-name-label">Name</label>
           <input type="text" id="master-name" class="w-full ios-input" required>
@@ -675,6 +687,31 @@
 
         <div class="pt-3">
           <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] transition-colors">Save Master Data</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CUSTOM BUDGET EDITOR -->
+  <div id="modalBudgetEditor" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalBudgetEditor')">
+    <div id="modalBudgetEditor-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center max-h-[85vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-4">
+        <h4 class="font-extrabold text-main text-base flex items-center">
+          <i data-lucide="sliders" class="w-4 h-4 mr-2 text-mochi"></i> Set Category Budgets
+        </h4>
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalBudgetEditor')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="formBudgetEditor" onsubmit="handleSaveCustomBudgets(event)" class="space-y-3 text-sm">
+        <p class="text-xs text-muted font-medium mb-3">Set monthly spending budget per main category:</p>
+        <div id="budget-inputs-container" class="space-y-3 max-h-[50vh] overflow-y-auto pr-1"></div>
+
+        <div class="pt-3">
+          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-md transition-colors">
+            Save Budgets
+          </button>
         </div>
       </form>
     </div>
@@ -695,8 +732,6 @@
       </div>
     </div>
   </div>
-
-  <!-- SCRIPT ENGINE -->
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbx8HzV4KHpr6QAM4bDebEbBTIwSNeg5idIaQZUeBUuPu6OJ3xWMFvby82aOrq1CPYCLHg/exec";
 
@@ -953,9 +988,6 @@
       else { el.style.fontSize = ''; el.style.lineHeight = ''; }
     }
 
-    // ==========================================
-    // STRICT 3-LEVEL TRANSACTION TYPE META
-    // ==========================================
     const TYPE_META = {
       'Income':             { direction: 'in',      cls: 'amount-in',   prefix: '+', showSource: false, showTarget: true,  showPayable: false, showReceivable: false, categoryType: 'Income' },
       'Expense':            { direction: 'out',     cls: 'amount-out',  prefix: '-', showSource: true,  showTarget: false, showPayable: false, showReceivable: false, categoryType: 'Expense' },
@@ -971,9 +1003,6 @@
       return TYPE_META[type] || { direction: 'out', cls: 'amount-out', prefix: '-', showSource: true, showTarget: false, showPayable: false, showReceivable: false, categoryType: null };
     }
 
-    // ==========================================
-    // DEDICATED MAIN & SUB-CATEGORY ICON MAPPER
-    // ==========================================
     function getCategoryIconMeta(categoryName, type) {
       const k = (categoryName || '').toLowerCase().trim();
 
@@ -984,13 +1013,11 @@
       if (type === 'External Transfer') return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
       if (type === 'Internal Transfer') return { icon: 'arrow-right-left', chip: 'chip-info' };
 
-      // Income Categories
       if (k.includes('salary') || k.includes('gaji')) return { icon: 'banknote', chip: 'chip-pemasukan' };
       if (k.includes('bonus') || k.includes('tunjangan')) return { icon: 'gift', chip: 'chip-pemasukan' };
       if (k.includes('freelance') || k.includes('proyek')) return { icon: 'briefcase', chip: 'chip-pemasukan' };
       if (k.includes('investment') || k.includes('investasi')) return { icon: 'trending-up', chip: 'chip-pemasukan' };
 
-      // Expense Main & Sub Categories
       if (k.includes('checkup') || k.includes('dokter')) return { icon: 'stethoscope', chip: 'chip-pengeluaran' };
       if (k.includes('medicine') || k.includes('vitamin') || k.includes('obat')) return { icon: 'pill', chip: 'chip-pengeluaran' };
       if (k.includes('sport') || k.includes('fitness') || k.includes('gym')) return { icon: 'dumbbell', chip: 'chip-pengeluaran' };
@@ -1307,13 +1334,35 @@
       }
     }
 
+    // DASHBOARD & REVISED NET WORTH KPI CALCULATIONS WITH LIABILITY CC/PAYLATER DEDUCTION
     function renderDashboard() {
       const kpi = GLOBAL_DATA.kpi || {};
-      animateNumber(document.getElementById('kpi-networth'), kpi['Net Worth'] || 0);
+      
+      let totalCashAssets = 0;
+      let totalLiabilityBalance = 0;
+
+      (GLOBAL_DATA.accounts || []).forEach(a => {
+        const accType = (a.accountType || '').toLowerCase();
+        const accName = (a.accountName || '').toLowerCase();
+        const isLiability = accType.includes('credit card') || accType.includes('paylater') || accName.includes('paylater') || accName.includes('cc');
+        
+        const bal = Number(a.runningBalance) || 0;
+        if (isLiability) {
+          totalLiabilityBalance += bal;
+        } else {
+          totalCashAssets += bal;
+        }
+      });
+
+      const totalReceivables = Number(kpi['Total Receivables']) || 0;
+      const totalPayablesAP = Number(kpi['Total Payables']) || 0;
+      const calculatedNetWorth = totalCashAssets + totalReceivables - totalLiabilityBalance - totalPayablesAP;
+
+      animateNumber(document.getElementById('kpi-networth'), calculatedNetWorth);
       animateNumber(document.getElementById('kpi-disposable'), kpi['Disposable Income'] || 0);
-      document.getElementById('kpi-cash').innerText = formatRupiah(kpi['Total Cash']);
-      document.getElementById('kpi-receivables').innerText = formatRupiah(kpi['Total Receivables']);
-      document.getElementById('kpi-payables').innerText = formatRupiah(kpi['Total Payables']);
+      document.getElementById('kpi-cash').innerText = formatRupiah(totalCashAssets);
+      document.getElementById('kpi-receivables').innerText = formatRupiah(totalReceivables);
+      document.getElementById('kpi-payables').innerText = formatRupiah(totalPayablesAP + totalLiabilityBalance);
       document.getElementById('kpi-savings').innerText = formatRupiah(kpi['Net Operating Savings']);
 
       const hasPayableActive = (GLOBAL_DATA.payables || []).some(p => (p.status || '').toLowerCase() === 'active' && Number(p.remainingAmount) > 0);
@@ -1358,9 +1407,6 @@
       renderCategoryAnalysis();
     }
 
-    // ==========================================
-    // GELOMBANG 1 CONFIG: DEFAULT CATEGORY BUDGETS
-    // ==========================================
     const DEFAULT_CATEGORY_BUDGETS = {
       'Food & Groceries': 3500000,
       'Transportation': 1500000,
@@ -1374,9 +1420,6 @@
       'Other Expenses': 500000
     };
 
-    // ==========================================
-    // FITUR 1: MOCHI LIVE MOOD & BLINKING ENGINE
-    // ==========================================
     let currentMochiMood = 'chill';
     let mochiBlinkTimeout = null;
 
@@ -1392,7 +1435,7 @@
       let badgeClass = "bg-[var(--chip-info-bg)] amount-info";
 
       const ratio = income > 0 ? (expense / income) : (expense > 0 ? 1 : 0);
-      const displayPct = Math.min(Math.round(ratio * 100), 999); // Cap maks 999% agar tidak jebol
+      const displayPct = Math.min(Math.round(ratio * 100), 999);
 
       if (ratio <= 0.40) {
         mood = 'rich';
@@ -1435,7 +1478,6 @@
     function startMochiBlinking() {
       if (mochiBlinkTimeout) clearTimeout(mochiBlinkTimeout);
 
-      // Melek 1.5 detik, lalu meram santai 2.5 detik
       mochiBlinkTimeout = setTimeout(() => {
         const imgEl = document.getElementById('mochi-mood-img');
         if (imgEl && currentMochiMood) {
@@ -1446,24 +1488,18 @@
               imgEl.src = `mochi-${currentMochiMood}-open.png`;
               startMochiBlinking();
             }
-          }, 2500); // Meram 2.5 detik
+          }, 2500);
         }
-      }, 1500); // Melek 1.5 detik
+      }, 1500);
     }
 
-    // ==========================================
-    // GELOMBANG 2: RECURRING BILLS PRESETS
-    // ==========================================
-    const RECURRING_BILLS_PRESETS = [
+    let RECURRING_BILLS_PRESETS = [
       { id: 'rec-wifi', title: 'Home Internet / WiFi', category: 'Internet Bill', amount: 350000, type: 'Expense' },
       { id: 'rec-electricity', title: 'PLN Electricity Token', category: 'Electricity Bill', amount: 500000, type: 'Expense' },
       { id: 'rec-water', title: 'PDAM Water Bill', category: 'Water Bill', amount: 150000, type: 'Expense' },
       { id: 'rec-phone', title: 'Monthly Mobile Credit / Data', category: 'Phone Bill', amount: 100000, type: 'Expense' }
     ];
 
-    // ==========================================
-    // FITUR 3: RECURRING BILLS RENDER & QUICK-PAY
-    // ==========================================
     function renderRecurringBills() {
       const container = document.getElementById('recurring-bills-list');
       if (!container) return;
@@ -1477,13 +1513,50 @@
               <p class="text-[10px] text-faint font-medium">${formatRupiah(bill.amount)} • ${escapeHtml(bill.category)}</p>
             </div>
           </div>
-          <button onclick="vibrate(30); quickPayBill('${bill.id}')" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-3 py-1.5 rounded-xl text-[11px] font-extrabold shadow-sm transition-colors flex items-center space-x-1 whitespace-nowrap">
-            <i data-lucide="zap" class="w-3 h-3"></i>
-            <span>Pay</span>
-          </button>
+          <div class="flex items-center space-x-1.5 flex-shrink-0">
+            <button onclick="vibrate(30); quickPayBill('${bill.id}')" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-3 py-1.5 rounded-xl text-[11px] font-extrabold shadow-sm transition-colors flex items-center space-x-1 whitespace-nowrap">
+              <i data-lucide="zap" class="w-3 h-3"></i>
+              <span>Pay</span>
+            </button>
+            <button onclick="vibrate(30); deleteRecurringBill('${bill.id}')" class="p-1.5 text-faint hover:text-rose-500 transition-colors">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
         </div>
       `).join('');
       lucide.createIcons();
+    }
+
+    function openAddRecurringModal() { openModal('modalAddRecurring'); }
+
+    function handleSaveRecurringBill(event) {
+      event.preventDefault();
+      const title = document.getElementById('rec-title').value.trim();
+      const amount = Number(document.getElementById('rec-amount').value) || 0;
+      const category = document.getElementById('rec-category').value.trim();
+
+      if (!title || amount <= 0 || !category) {
+        showToast("Please fill all recurring bill fields properly", "error");
+        return;
+      }
+
+      RECURRING_BILLS_PRESETS.push({
+        id: 'rec-' + Date.now(),
+        title: title,
+        category: category,
+        amount: amount,
+        type: 'Expense'
+      });
+
+      closeModal('modalAddRecurring');
+      renderRecurringBills();
+      showToast("Recurring bill added!");
+    }
+
+    function deleteRecurringBill(billId) {
+      RECURRING_BILLS_PRESETS = RECURRING_BILLS_PRESETS.filter(b => b.id !== billId);
+      renderRecurringBills();
+      showToast("Bill removed!");
     }
 
     function quickPayBill(billId) {
@@ -1511,15 +1584,10 @@
       }, 200);
     }
 
-// ==========================================
-    // CUSTOM BUDGET EDITOR (CLOUD SYNCED)
-    // ==========================================
     function getCustomBudgets() {
-      // Prioritas 1: Data dari Google Sheets (GLOBAL_DATA)
       if (GLOBAL_DATA.budgets && Object.keys(GLOBAL_DATA.budgets).length > 0) {
         return GLOBAL_DATA.budgets;
       }
-      // Prioritas 2: Cache Lokal
       const saved = localStorage.getItem('mochi_custom_budgets');
       return saved ? JSON.parse(saved) : { ...DEFAULT_CATEGORY_BUDGETS };
     }
@@ -1569,7 +1637,6 @@
         const result = await res.json();
         if (result.status === 'error') throw new Error(result.message);
 
-        // Update local cache & global state
         GLOBAL_DATA.budgets = updatedBudgets;
         localStorage.setItem('mochi_custom_budgets', JSON.stringify(updatedBudgets));
 
@@ -1704,10 +1771,7 @@
         el.querySelectorAll('[data-target-width]').forEach(bar => { bar.style.width = bar.getAttribute('data-target-width'); });
       }, 50);
     }
-    
-    // ==========================================
-    // HISTORY (DEFAULT MONTH & YEAR FILTER)
-    // ==========================================
+
     function populateYearFilter() {
       const years = [...new Set((GLOBAL_DATA.transactions || []).map(t => (t.date || '').substring(0, 4)).filter(Boolean))].sort().reverse();
       const selYear = document.getElementById('filter-year');
@@ -1828,6 +1892,7 @@
       URL.revokeObjectURL(url);
     }
 
+    // TAB WALLETS RENDER WITH 3 COLORS RULE (LIABILITIES IN RED)
     function renderWallets() {
       const operationalEl = document.getElementById('list-accounts-operational');
       const savingsEl = document.getElementById('list-accounts-savings');
@@ -1840,21 +1905,32 @@
 
       GLOBAL_DATA.accounts.forEach((acc, i) => {
         const initial = (acc.owner || '?').trim().charAt(0).toUpperCase();
+        const accType = (acc.accountType || '').toLowerCase();
+        const accName = (acc.accountName || '').toLowerCase();
+        const isLiability = accType.includes('credit card') || accType.includes('paylater') || accName.includes('paylater') || accName.includes('cc');
+
+        const balanceColorClass = isLiability ? "amount-out" : "amount-in";
+        const badgeBgClass = isLiability ? "bg-[var(--chip-out-bg)] amount-out" : "bg-[var(--chip-in-bg)] amount-in";
+        const statusLabel = isLiability ? "Current Payable" : "Running Balance";
+
         const div = document.createElement('div');
         div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item flex flex-col";
         div.style.animationDelay = `${i * 0.05}s`;
         div.onclick = () => { vibrate(30); showAccountHistory(acc.accountName); };
         div.innerHTML = `
           <div class="flex items-center space-x-3 mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-            <div class="w-10 h-10 rounded-full bg-mochi dark:bg-mochi-light text-white dark:text-coffee-darkest flex items-center justify-center text-sm font-black flex-shrink-0 shadow-sm">${initial}</div>
+            <div class="w-10 h-10 rounded-full ${isLiability ? 'bg-rose-500/20 text-rose-500' : 'bg-mochi dark:bg-mochi-light text-white dark:text-coffee-darkest'} flex items-center justify-center text-sm font-black flex-shrink-0 shadow-sm">${initial}</div>
             <div class="flex-1 truncate">
               <h4 class="text-[13px] font-extrabold text-main leading-tight truncate">${escapeHtml(acc.accountName)}</h4>
-              <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${escapeHtml(acc.owner)} • ${escapeHtml(acc.accountType)}</p>
+              <div class="flex items-center space-x-1.5 mt-0.5">
+                <span class="text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase ${badgeBgClass}">${escapeHtml(acc.accountType)}</span>
+                <span class="text-[10px] text-faint font-semibold truncate">• ${escapeHtml(acc.owner)}</span>
+              </div>
             </div>
           </div>
           <div>
-            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Running Balance</span>
-            <span class="text-[18px] font-black amount-in block leading-none tracking-tight">${formatRupiah(acc.runningBalance)}</span>
+            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">${statusLabel}</span>
+            <span class="text-[18px] font-black ${balanceColorClass} block leading-none tracking-tight">${formatRupiah(acc.runningBalance)}</span>
           </div>
         `;
         if ((acc.functionCategory || '').toLowerCase().includes('daily') || (acc.functionCategory || '').toLowerCase().includes('operation')) {
@@ -1866,9 +1942,6 @@
       lucide.createIcons();
     }
 
-    // ==========================================
-    // PAYABLES & RECEIVABLES
-    // ==========================================
     function renderPayablesReceivables() {
       const payableEl = document.getElementById('list-payables-active');
       const receivableEl = document.getElementById('list-receivables-active');
@@ -1964,9 +2037,6 @@
       }
     }
 
-    // ==========================================
-    // DYNAMIC & EXTENSIBLE CATEGORY MATCHING
-    // ==========================================
     function isCategoryMatchingType(categoryObj, transactionType) {
       if (!categoryObj || !transactionType) return true;
       const meta = getTypeMeta(transactionType);
@@ -2302,15 +2372,12 @@
           `;
         });
       }
-      html += `</div></div></div>`;
+      html += `自在</div></div></div>`;
       document.getElementById('modal-detail-inner').innerHTML = html;
       openModal('modalDetail');
       lucide.createIcons();
     }
 
-    // ==========================================
-    // MASTER DATA
-    // ==========================================
     function handleMainCategorySelectChange() {
       const val = document.getElementById('master-main-category-select').value;
       document.getElementById('master-main-category-new-wrap').classList.toggle('hidden', val !== '__NEW__');
@@ -2377,6 +2444,7 @@
               <option value="Bank Account">Bank</option>
               <option value="E-Wallet">E-Wallet</option>
               <option value="Cash">Cash / Cash on Hand</option>
+              <option value="Credit Card / PayLater">Credit Card / PayLater</option>
             </select>
           </div>
           <div>
@@ -2387,7 +2455,7 @@
             </select>
           </div>
           <div>
-            <label for="master-initial-balance" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Balance (Rp)</label>
+            <label for="master-initial-balance" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Balance / Payable (Rp)</label>
             <input type="number" id="master-initial-balance" class="w-full ios-input py-2.5" value="0">
           </div>
         `;
@@ -2499,7 +2567,6 @@
       }
     }
 
-    // INIT
     window.addEventListener('DOMContentLoaded', () => {
       applyDarkModePref();
       lucide.createIcons();
