@@ -169,7 +169,7 @@
 
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- FOTO 1 REVISI: HEADER TOP BAR WITH CENTER-ALIGNED AVATAR & 1-LINE CAPTION -->
+  <!-- REVISI 2: HEADER TOP BAR WITH CENTER-ALIGNED AVATAR & 1-LINE CAPTION -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-4 min-w-0 flex-1 pr-3">
       <!-- AVATAR CENTER-ALIGNED WITH 3-LINE TEXT HEIGHT -->
@@ -264,34 +264,31 @@
         </div>
       </div>
 
-      <!-- FOTO 2 REVISI: EXPENSE ANALYSIS WITH TWIN BUTTONS -->
+      <!-- 3. EXPENSE ANALYSIS (GRAPHIC ONLY) -->
       <div class="floating-card p-5 relative overflow-hidden">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <h3 class="text-sm font-extrabold text-main">Expense Analysis</h3>
-          <div class="flex items-center space-x-2">
-            <button type="button" onclick="vibrate(30); openBudgetEditorModal()" class="tap-shrink text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-mochi-light/20 text-mochi dark:text-mochi-light border border-mochi/20 flex items-center">
-              <i data-lucide="sliders-horizontal" class="w-3 h-3 mr-1"></i> Set Budget
-            </button>
-            <span class="text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-mochi-light/20 text-mochi dark:text-mochi-light border border-mochi/20">
-              THIS MONTH
-            </span>
-          </div>
+          <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">THIS MONTH</span>
         </div>
         <div id="dashboard-category-analysis" class="space-y-3 relative z-10"></div>
       </div>
 
-      <!-- FOTO 3 REVISI: RECURRING BILLS WITH ADD BILL BUTTON -->
+      <!-- REVISI 2: STANDALONE BUDGET MANAGEMENT CARD (REPLACES RECURRING BILLS POSITION) -->
       <div class="floating-card p-5 relative overflow-hidden">
         <div class="flex justify-between items-center mb-3 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <div class="flex items-center space-x-2">
             <div class="w-7 h-7 rounded-lg bg-[var(--chip-info-bg)] text-mochi dark:text-mochi-light flex items-center justify-center">
-              <i data-lucide="repeat" class="w-4 h-4"></i>
+              <i data-lucide="sliders" class="w-4 h-4"></i>
             </div>
-            <h3 class="text-sm font-extrabold text-main">Recurring Bills</h3>
+            <h3 class="text-sm font-extrabold text-main">Monthly Category Budgets</h3>
           </div>
-          <button type="button" onclick="vibrate(30); openAddRecurringModal()" class="text-xs font-extrabold text-mochi dark:text-mochi-light hover:underline flex items-center">+ Add Bill</button>
+          <button type="button" onclick="vibrate(30); openBudgetEditorModal()" class="tap-shrink text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider bg-mochi-light/20 text-mochi dark:text-mochi-light border border-mochi/20 flex items-center">
+            <i data-lucide="sliders-horizontal" class="w-3 h-3 mr-1"></i> Set Budget
+          </button>
         </div>
-        <div id="recurring-bills-list" class="space-y-2.5"></div>
+        
+        <p class="text-xs text-muted font-medium mb-3">Atur dan atur ulang batas anggaran pengeluaran bulanan per kategori:</p>
+        <div id="dashboard-budget-summary" class="space-y-2"></div>
       </div>
 
       <!-- 5. RECENT TRANSACTIONS -->
@@ -394,9 +391,12 @@
     <!-- 3. WALLETS PAGE -->
     <section id="page-wallets" class="hidden space-y-6 page-animate pb-8">
       <div class="floating-card p-5">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted mb-4 flex items-center">
-          <i data-lucide="briefcase" class="w-4 h-4 mr-2"></i> Daily Operational
-        </h3>
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
+            <i data-lucide="briefcase" class="w-4 h-4 mr-2"></i> Daily Operational
+          </h3>
+          <button type="button" onclick="vibrate(30); openMasterModal('account')" class="text-xs font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New Account</button>
+        </div>
         <div id="list-accounts-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
       </div>
       <div class="floating-card p-5">
@@ -464,40 +464,6 @@
           <ellipse cx="17.5" cy="9.5" rx="1.8" ry="2.5"/>
         </svg>
       </button>
-    </div>
-  </div>
-
-  <!-- MODAL: ADD RECURRING BILL -->
-  <div id="modalAddRecurring" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalAddRecurring')">
-    <div id="modalAddRecurring-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
-      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-4">
-        <h4 class="font-extrabold text-main text-base flex items-center">
-          <i data-lucide="repeat" class="w-4 h-4 mr-2 text-mochi"></i> Add Recurring Bill
-        </h4>
-        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalAddRecurring')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition text-main border border-[var(--border-color)]">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <form id="formAddRecurring" onsubmit="handleSaveRecurringBill(event)" class="space-y-3 text-xs font-semibold">
-        <div>
-          <label class="block mb-1 text-main font-bold">Bill Title</label>
-          <input type="text" id="rec-title" class="w-full ios-input" placeholder="Home Internet / WiFi" required>
-        </div>
-        <div>
-          <label class="block mb-1 text-main font-bold">Estimated Amount (Rp)</label>
-          <input type="number" id="rec-amount" class="w-full ios-input" placeholder="350000" required>
-        </div>
-        <div>
-          <label class="block mb-1 text-main font-bold">Category</label>
-          <input type="text" id="rec-category" class="w-full ios-input" placeholder="Internet Bill" required>
-        </div>
-        <div class="pt-2">
-          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-md transition-colors">
-            Save Recurring Bill
-          </button>
-        </div>
-      </form>
     </div>
   </div>
 
@@ -644,7 +610,7 @@
     </div>
   </div>
 
-  <!-- MODAL: MASTER DATA (PERBAIKAN ALUR MASTER CATEGORY & ACCOUNT FORM WITH CC/PAYLATER) -->
+  <!-- MODAL: MASTER DATA (PERBAIKAN REVISI 5: FIELD OWNER / PEMILIK AKUN) -->
   <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3">
@@ -654,7 +620,6 @@
       <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-3 text-sm">
         <input type="hidden" id="master-type">
 
-        <!-- 1. CATEGORY TYPE AT TOP -->
         <div id="master-category-type-wrap" class="hidden">
           <label for="master-category-type" class="font-extrabold text-main block mb-1 text-xs cursor-pointer">Category Type</label>
           <select id="master-category-type" onchange="handleMasterCategoryTypeChange()" class="w-full ios-input cursor-pointer py-2.5">
@@ -666,7 +631,6 @@
           </select>
         </div>
 
-        <!-- 2. MAIN CATEGORY DROPDOWN BELOW IT -->
         <div id="master-main-category-wrap" class="hidden">
           <label for="master-main-category-select" class="font-bold text-main block mb-1 text-xs cursor-pointer">Main Category</label>
           <select id="master-main-category-select" onchange="handleMainCategorySelectChange()" class="w-full ios-input cursor-pointer"></select>
@@ -677,7 +641,6 @@
           <input type="text" id="master-main-category-new" placeholder="Example: Investment" class="w-full ios-input">
         </div>
 
-        <!-- 3. NAME FIELD -->
         <div>
           <label for="master-name" class="font-bold text-main block mb-1 text-xs cursor-pointer" id="master-name-label">Name</label>
           <input type="text" id="master-name" class="w-full ios-input" required>
@@ -723,12 +686,12 @@
       <div class="w-16 h-16 bg-rose-500/10 amount-out rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-500/20">
         <i data-lucide="trash-2" class="w-8 h-8"></i>
       </div>
-      <h3 class="text-lg font-black text-main mb-2 tracking-tight">Delete Transaction?</h3>
-      <p class="text-sm font-medium text-muted mb-6 px-2">This action cannot be undone. Data will be permanently removed.</p>
+      <h3 id="delete-modal-title" class="text-lg font-black text-main mb-2 tracking-tight">Delete Transaction?</h3>
+      <p id="delete-modal-desc" class="text-sm font-medium text-muted mb-6 px-2">This action cannot be undone. Data will be permanently removed.</p>
 
       <div class="flex space-x-3">
-        <button ontouchstart="vibrate(30)" onclick="closeModal('modalDelete')" class="flex-1 py-3 bg-[var(--bg-subtle-2)] text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-[var(--border-color)]">Cancel</button>
-        <button id="btn-confirm-delete" class="flex-1 py-3 bg-rose-500 hover:bg-rose-600 text-white font-extrabold rounded-xl tap-shrink shadow-sm">Yes, Delete</button>
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalDelete')" class="flex-1 py-3 bg-[var(--bg-subtle-2)] text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-[var(--border-color)]">Cancel</button>
+        <button type="button" id="btn-confirm-delete" class="flex-1 py-3 bg-rose-500 hover:bg-rose-600 text-white font-extrabold rounded-xl tap-shrink shadow-sm">Yes, Delete</button>
       </div>
     </div>
   </div>
@@ -988,6 +951,26 @@
       else { el.style.fontSize = ''; el.style.lineHeight = ''; }
     }
 
+    // REVISI 3: HELPER UNTUK OTOMATISASI ICON & STYLE AKUN DI TAB WALLETS
+    function getAccountIconMeta(accountName, accountType) {
+      const name = (accountName || '').toLowerCase().trim();
+      const type = (accountType || '').toLowerCase().trim();
+
+      if (name.includes('shopee') || name.includes('spaylater') || name.includes('paylater')) {
+        return { icon: 'shopping-bag', bg: 'bg-orange-500/15 text-orange-500 border-orange-500/20', isLiability: true };
+      }
+      if (name.includes('credit') || name.includes('cc') || type.includes('credit card')) {
+        return { icon: 'credit-card', bg: 'bg-purple-500/15 text-purple-500 border-purple-500/20', isLiability: true };
+      }
+      if (type.includes('e-wallet') || name.includes('gopay') || name.includes('ovo') || name.includes('dana')) {
+        return { icon: 'smartphone', bg: 'bg-sky-500/15 text-sky-500 border-sky-500/20', isLiability: false };
+      }
+      if (type.includes('cash') || name.includes('cash') || name.includes('tunai')) {
+        return { icon: 'banknote', bg: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/20', isLiability: false };
+      }
+      return { icon: 'building-2', bg: 'bg-mochi/15 text-mochi border-mochi/20', isLiability: false };
+    }
+
     const TYPE_META = {
       'Income':             { direction: 'in',      cls: 'amount-in',   prefix: '+', showSource: false, showTarget: true,  showPayable: false, showReceivable: false, categoryType: 'Income' },
       'Expense':            { direction: 'out',     cls: 'amount-out',  prefix: '-', showSource: true,  showTarget: false, showPayable: false, showReceivable: false, categoryType: 'Expense' },
@@ -1214,14 +1197,20 @@
       vibrate(40);
       transactionToDelete = transactionId;
       closeModal('modalDetail');
+      
+      const titleEl = document.getElementById('delete-modal-title');
+      const descEl = document.getElementById('delete-modal-desc');
+      if (titleEl) titleEl.innerText = "Delete Transaction?";
+      if (descEl) descEl.innerText = "This action cannot be undone. Data will be permanently removed.";
+
+      document.getElementById('btn-confirm-delete').onclick = async () => {
+        if (!transactionToDelete) return;
+        vibrate(30);
+        await handleDeleteTransaction(transactionToDelete);
+      };
+
       setTimeout(() => openModal('modalDelete'), 400);
     }
-
-    document.getElementById('btn-confirm-delete').onclick = async () => {
-      if (!transactionToDelete) return;
-      vibrate(30);
-      await handleDeleteTransaction(transactionToDelete);
-    };
 
     async function handleDeleteTransaction(transactionId) {
       closeModal('modalDelete');
@@ -1311,7 +1300,7 @@
 
         renderDashboard();
         renderMochiMood();
-        renderRecurringBills();
+        renderBudgetSummaryCard();
         renderCategoryAnalysis();
         populateYearFilter();
         renderHistory();
@@ -1342,12 +1331,9 @@
       let totalLiabilityBalance = 0;
 
       (GLOBAL_DATA.accounts || []).forEach(a => {
-        const accType = (a.accountType || '').toLowerCase();
-        const accName = (a.accountName || '').toLowerCase();
-        const isLiability = accType.includes('credit card') || accType.includes('paylater') || accName.includes('paylater') || accName.includes('cc');
-        
+        const meta = getAccountIconMeta(a.accountName, a.accountType);
         const bal = Number(a.runningBalance) || 0;
-        if (isLiability) {
+        if (meta.isLiability) {
           totalLiabilityBalance += bal;
         } else {
           totalCashAssets += bal;
@@ -1385,12 +1371,17 @@
 
         div.onclick = () => { vibrate(30); currentModalBackFn = null; showTransactionDetail(trx.transactionId); };
 
+        // REVISI 3: ICON UTAMA = KATEGORI, SUB-TEKS = ACCOUNT FLOW
+        let accountFlowText = trx.sourceAccount || '';
+        if (trx.sourceAccount && trx.targetAccount) accountFlowText += ` ➔ ${trx.targetAccount}`;
+        else if (trx.targetAccount) accountFlowText = trx.targetAccount;
+
         div.innerHTML = `
           <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
             ${iconChipHtml(trx.type, trx.category)}
             <div class="truncate">
               <p class="text-[13px] font-bold text-main truncate">${escapeHtml(trx.description || trx.category)}</p>
-              <p class="text-[10px] text-faint font-medium mt-0.5 truncate">${formatDate(trx.date)} • ${escapeHtml(trx.enteredBy)}</p>
+              <p class="text-[10px] text-faint font-medium mt-0.5 truncate">${accountFlowText ? escapeHtml(accountFlowText) + ' • ' : ''}${formatDate(trx.date)}</p>
             </div>
           </div>
           <span class="text-[13px] font-extrabold ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.amount)}</span>
@@ -1493,95 +1484,23 @@
       }, 1500);
     }
 
-    let RECURRING_BILLS_PRESETS = [
-      { id: 'rec-wifi', title: 'Home Internet / WiFi', category: 'Internet Bill', amount: 350000, type: 'Expense' },
-      { id: 'rec-electricity', title: 'PLN Electricity Token', category: 'Electricity Bill', amount: 500000, type: 'Expense' },
-      { id: 'rec-water', title: 'PDAM Water Bill', category: 'Water Bill', amount: 150000, type: 'Expense' },
-      { id: 'rec-phone', title: 'Monthly Mobile Credit / Data', category: 'Phone Bill', amount: 100000, type: 'Expense' }
-    ];
-
-    function renderRecurringBills() {
-      const container = document.getElementById('recurring-bills-list');
+    // REVISI 2: RENDER RINGKASAN BUDGET DI POSISI BARU (BEKAS RECURRING BILLS)
+    function renderBudgetSummaryCard() {
+      const container = document.getElementById('dashboard-budget-summary');
       if (!container) return;
 
-      container.innerHTML = RECURRING_BILLS_PRESETS.map(bill => `
-        <div class="floating-item p-3 flex justify-between items-center bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
-          <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2">
-            ${iconChipHtml(bill.type, bill.category)}
-            <div class="truncate">
-              <p class="text-[12px] font-bold text-main truncate">${escapeHtml(bill.title)}</p>
-              <p class="text-[10px] text-faint font-medium">${formatRupiah(bill.amount)} • ${escapeHtml(bill.category)}</p>
-            </div>
+      const budgets = getCustomBudgets();
+      const categories = Object.keys(budgets).slice(0, 4); // Display 4 sampel utama
+
+      container.innerHTML = categories.map(cat => {
+        const limit = budgets[cat] || 0;
+        return `
+          <div class="floating-item p-3 bg-[var(--bg-subtle-2)] border border-[var(--border-color)] flex justify-between items-center text-xs">
+            <span class="font-extrabold text-main truncate">${escapeHtml(cat)}</span>
+            <span class="font-black text-mochi dark:text-mochi-light whitespace-nowrap">${formatRupiah(limit)} / mo</span>
           </div>
-          <div class="flex items-center space-x-1.5 flex-shrink-0">
-            <button onclick="vibrate(30); quickPayBill('${bill.id}')" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-3 py-1.5 rounded-xl text-[11px] font-extrabold shadow-sm transition-colors flex items-center space-x-1 whitespace-nowrap">
-              <i data-lucide="zap" class="w-3 h-3"></i>
-              <span>Pay</span>
-            </button>
-            <button onclick="vibrate(30); deleteRecurringBill('${bill.id}')" class="p-1.5 text-faint hover:text-rose-500 transition-colors">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            </button>
-          </div>
-        </div>
-      `).join('');
-      lucide.createIcons();
-    }
-
-    function openAddRecurringModal() { openModal('modalAddRecurring'); }
-
-    function handleSaveRecurringBill(event) {
-      event.preventDefault();
-      const title = document.getElementById('rec-title').value.trim();
-      const amount = Number(document.getElementById('rec-amount').value) || 0;
-      const category = document.getElementById('rec-category').value.trim();
-
-      if (!title || amount <= 0 || !category) {
-        showToast("Please fill all recurring bill fields properly", "error");
-        return;
-      }
-
-      RECURRING_BILLS_PRESETS.push({
-        id: 'rec-' + Date.now(),
-        title: title,
-        category: category,
-        amount: amount,
-        type: 'Expense'
-      });
-
-      closeModal('modalAddRecurring');
-      renderRecurringBills();
-      showToast("Recurring bill added!");
-    }
-
-    function deleteRecurringBill(billId) {
-      RECURRING_BILLS_PRESETS = RECURRING_BILLS_PRESETS.filter(b => b.id !== billId);
-      renderRecurringBills();
-      showToast("Bill removed!");
-    }
-
-    function quickPayBill(billId) {
-      const bill = RECURRING_BILLS_PRESETS.find(b => b.id === billId);
-      if (!bill) return;
-
-      openNewTransactionForm();
-
-      setTimeout(() => {
-        document.getElementById('form-type').value = bill.type;
-        updateTypeDisplay(bill.type);
-        handleTypeChange();
-
-        document.getElementById('form-category').value = bill.category;
-        const catDisplay = document.getElementById('form-category-display');
-        if (catDisplay) {
-          catDisplay.innerText = bill.category;
-          catDisplay.classList.remove('text-faint');
-        }
-
-        document.getElementById('form-amount-value').value = bill.amount;
-        document.getElementById('form-amount-display').value = new Intl.NumberFormat('id-ID').format(bill.amount);
-        document.getElementById('form-description').value = bill.title;
-        document.getElementById('form-notes').value = "Quick Paid via Recurring Bills Manager ⚡";
-      }, 200);
+        `;
+      }).join('');
     }
 
     function getCustomBudgets() {
@@ -1644,6 +1563,7 @@
         closeModal('modalBudgetEditor');
         
         await showRewardAnimation("Budgets Updated");
+        renderBudgetSummaryCard();
         renderCategoryAnalysis();
         renderMochiMood();
       } catch (err) {
@@ -1828,13 +1748,18 @@
 
       listEl.innerHTML = filtered.map((trx, i) => {
         const meta = getTypeMeta(trx.type);
+
+        let accountFlowText = trx.sourceAccount || '';
+        if (trx.sourceAccount && trx.targetAccount) accountFlowText += ` ➔ ${trx.targetAccount}`;
+        else if (trx.targetAccount) accountFlowText = trx.targetAccount;
+
         return `
           <div onclick="vibrate(30); currentModalBackFn = null; showTransactionDetail('${trx.transactionId}')" class="floating-item p-3.5 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item select-none" style="animation-delay:${Math.min(i, 10) * 0.04}s">
             <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
               ${iconChipHtml(trx.type, trx.category)}
               <div class="truncate">
                 <p class="text-[13px] font-bold text-main truncate">${escapeHtml(trx.description || trx.category)}</p>
-                <p class="text-[10px] text-faint font-medium mt-0.5 truncate">${formatDate(trx.date)} • ${escapeHtml(trx.enteredBy)}</p>
+                <p class="text-[10px] text-faint font-medium mt-0.5 truncate">${accountFlowText ? escapeHtml(accountFlowText) + ' • ' : ''}${formatDate(trx.date)} • ${escapeHtml(trx.enteredBy)}</p>
               </div>
             </div>
             <span class="text-[13px] font-extrabold ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.amount)}</span>
@@ -1892,7 +1817,7 @@
       URL.revokeObjectURL(url);
     }
 
-    // TAB WALLETS RENDER WITH 3 COLORS RULE (LIABILITIES IN RED)
+    // REVISI 3 & 4: TAB WALLETS WITH EDIT/DELETE BUTTONS, DYNAMIC ICONS & 3-COLORS RULE
     function renderWallets() {
       const operationalEl = document.getElementById('list-accounts-operational');
       const savingsEl = document.getElementById('list-accounts-savings');
@@ -1904,35 +1829,48 @@
       }
 
       GLOBAL_DATA.accounts.forEach((acc, i) => {
-        const initial = (acc.owner || '?').trim().charAt(0).toUpperCase();
-        const accType = (acc.accountType || '').toLowerCase();
-        const accName = (acc.accountName || '').toLowerCase();
-        const isLiability = accType.includes('credit card') || accType.includes('paylater') || accName.includes('paylater') || accName.includes('cc');
-
-        const balanceColorClass = isLiability ? "amount-out" : "amount-in";
-        const badgeBgClass = isLiability ? "bg-[var(--chip-out-bg)] amount-out" : "bg-[var(--chip-in-bg)] amount-in";
-        const statusLabel = isLiability ? "Current Payable" : "Running Balance";
+        const meta = getAccountIconMeta(acc.accountName, acc.accountType);
+        const balanceColorClass = meta.isLiability ? "amount-out" : "amount-in";
+        const badgeBgClass = meta.isLiability ? "bg-[var(--chip-out-bg)] amount-out" : "bg-[var(--chip-in-bg)] amount-in";
+        const statusLabel = meta.isLiability ? "Current Payable" : "Running Balance";
+        const ownerLabel = acc.owner ? escapeHtml(acc.owner) : 'Yosa & Fani';
 
         const div = document.createElement('div');
-        div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item flex flex-col";
+        div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item flex flex-col justify-between";
         div.style.animationDelay = `${i * 0.05}s`;
-        div.onclick = () => { vibrate(30); showAccountHistory(acc.accountName); };
+        
         div.innerHTML = `
-          <div class="flex items-center space-x-3 mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-            <div class="w-10 h-10 rounded-full ${isLiability ? 'bg-rose-500/20 text-rose-500' : 'bg-mochi dark:bg-mochi-light text-white dark:text-coffee-darkest'} flex items-center justify-center text-sm font-black flex-shrink-0 shadow-sm">${initial}</div>
-            <div class="flex-1 truncate">
-              <h4 class="text-[13px] font-extrabold text-main leading-tight truncate">${escapeHtml(acc.accountName)}</h4>
-              <div class="flex items-center space-x-1.5 mt-0.5">
-                <span class="text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase ${badgeBgClass}">${escapeHtml(acc.accountType)}</span>
-                <span class="text-[10px] text-faint font-semibold truncate">• ${escapeHtml(acc.owner)}</span>
+          <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
+            <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2" onclick="vibrate(30); showAccountHistory('${escapeAttr(acc.accountName)}')">
+              <div class="w-9 h-9 rounded-xl ${meta.bg} flex items-center justify-center flex-shrink-0 shadow-sm">
+                <i data-lucide="${meta.icon}" class="w-4.5 h-4.5"></i>
+              </div>
+              <div class="truncate">
+                <h4 class="text-[13px] font-extrabold text-main leading-tight truncate">${escapeHtml(acc.accountName)}</h4>
+                <div class="flex items-center space-x-1.5 mt-0.5">
+                  <span class="text-[8px] font-extrabold px-2 py-0.5 rounded-full uppercase ${badgeBgClass}">${escapeHtml(acc.accountType)}</span>
+                  <span class="text-[10px] text-faint font-semibold truncate">• ${ownerLabel}</span>
+                </div>
               </div>
             </div>
+
+            <!-- REVISI 4: EDIT & DELETE BUTTONS ON ACCOUNT CARD -->
+            <div class="flex items-center space-x-1 flex-shrink-0">
+              <button type="button" onclick="vibrate(30); event.stopPropagation(); openEditAccountModal('${escapeAttr(acc.accountName)}')" class="p-1.5 text-faint hover:text-main transition-colors rounded-lg hover:bg-[var(--bg-subtle-2)]">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+              </button>
+              <button type="button" onclick="vibrate(30); event.stopPropagation(); promptDeleteAccount('${escapeAttr(acc.accountName)}')" class="p-1.5 text-faint hover:text-rose-500 transition-colors rounded-lg hover:bg-[var(--bg-subtle-2)]">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
           </div>
-          <div>
+
+          <div onclick="vibrate(30); showAccountHistory('${escapeAttr(acc.accountName)}')">
             <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">${statusLabel}</span>
             <span class="text-[18px] font-black ${balanceColorClass} block leading-none tracking-tight">${formatRupiah(acc.runningBalance)}</span>
           </div>
         `;
+
         if ((acc.functionCategory || '').toLowerCase().includes('daily') || (acc.functionCategory || '').toLowerCase().includes('operation')) {
           operationalEl.appendChild(div);
         } else {
@@ -1940,6 +1878,55 @@
         }
       });
       lucide.createIcons();
+    }
+
+    // REVISI 4: HANDLERS FOR EDIT & DELETE ACCOUNT IN WALLETS TAB
+    function openEditAccountModal(accountName) {
+      const acc = (GLOBAL_DATA.accounts || []).find(a => a.accountName === accountName);
+      if (!acc) return;
+
+      openMasterModal('account');
+
+      setTimeout(() => {
+        document.getElementById('master-name').value = acc.accountName || '';
+        document.getElementById('master-account-type').value = acc.accountType || 'Bank Account';
+        document.getElementById('master-function-category').value = acc.functionCategory || 'Daily Operations';
+        document.getElementById('master-account-owner').value = acc.owner || 'Yosa & Fani';
+        document.getElementById('master-initial-balance').value = acc.initialBalance || 0;
+      }, 150);
+    }
+
+    function promptDeleteAccount(accountName) {
+      vibrate(40);
+      const titleEl = document.getElementById('delete-modal-title');
+      const descEl = document.getElementById('delete-modal-desc');
+      if (titleEl) titleEl.innerText = `Delete Account "${accountName}"?`;
+      if (descEl) descEl.innerText = "Deleting this account will remove it from Wallets. Transaction history using this account will remain in logs.";
+
+      document.getElementById('btn-confirm-delete').onclick = async () => {
+        vibrate(30);
+        closeModal('modalDelete');
+        let loadingToast = showToast("Deleting account...", "info");
+
+        try {
+          const res = await fetch(API_URL, {
+            method: 'POST', redirect: 'follow',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'deleteMasterData', type: 'account', payload: { accountName } })
+          });
+          const result = await res.json();
+          if (result.status === 'error') throw new Error(result.message);
+
+          if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+          showToast("Account deleted successfully!");
+          await loadAppData(true);
+        } catch (err) {
+          if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+          showToast("Failed to delete account: " + err.message, "error");
+        }
+      };
+
+      openModal('modalDelete');
     }
 
     function renderPayablesReceivables() {
@@ -2372,7 +2359,7 @@
           `;
         });
       }
-      html += `自在</div></div></div>`;
+      html += `</div></div></div>`;
       document.getElementById('modal-detail-inner').innerHTML = html;
       openModal('modalDetail');
       lucide.createIcons();
@@ -2399,6 +2386,7 @@
       handleMainCategorySelectChange();
     }
 
+    // REVISI 5: MASTER ACCOUNT FORM WITH OWNER / PEMILIK SELECTION
     function openMasterModal(type) {
       document.getElementById('master-type').value = type;
       const titleEl = document.getElementById('master-title');
@@ -2445,6 +2433,14 @@
               <option value="E-Wallet">E-Wallet</option>
               <option value="Cash">Cash / Cash on Hand</option>
               <option value="Credit Card / PayLater">Credit Card / PayLater</option>
+            </select>
+          </div>
+          <div>
+            <label for="master-account-owner" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Owner / Pemilik</label>
+            <select id="master-account-owner" class="w-full ios-input cursor-pointer py-2.5">
+              <option value="Yosa">Yosa</option>
+              <option value="Fani">Fani</option>
+              <option value="Yosa & Fani">Yosa & Fani (Joint)</option>
             </select>
           </div>
           <div>
@@ -2516,6 +2512,7 @@
         payload = {
           accountName: name,
           accountType: document.getElementById('master-account-type').value,
+          owner: document.getElementById('master-account-owner').value,
           functionCategory: document.getElementById('master-function-category').value,
           initialBalance: Number(document.getElementById('master-initial-balance').value) || 0
         };
