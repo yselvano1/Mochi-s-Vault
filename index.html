@@ -306,33 +306,7 @@
       </button>
     </div>
   </header>
-
-  <!-- ▼▼▼ LANJUT KE BAGIAN 2: <main> (Dashboard/History/Wallets/AP-R pages) + Bottom Nav + FAB ▼▼▼ -->
-  <!--
-  ===========================================================================
-  MOCHI'S VAULT — index.html — PART 2 of 3: Page Layout & Navigation
-  ===========================================================================
-  Continues directly after Part 1's closing </header>. Ends right before the
-  modals (Part 3 opens with <!-- MODAL 1: TRANSACTION INPUT FORM -->).
-
-  What changed vs. your original file:
-  - Every element id that was Indonesian is now English (riwayat→history,
-    saldo→wallets, hutang→payables, akun→accounts, kategori→category,
-    piutang→receivables, bulan→month, tahun→year, jenis→type,
-    masuk/keluar→income/expense). Full old→new id map is at the bottom of
-    this file as a comment, for cross-checking against Part 3.
-  - The "Type" filter dropdown (History page) now uses the SAME English
-    values Code.js actually stores (Income, Expense, Internal Transfer,
-    Receive Payable, Pay Installment, Give Receivable, Receive Receivable) —
-    previously it used Indonesian values that never matched any real
-    transaction, so this filter effectively never worked. Added
-    "External Transfer" as a new option too.
-  - FAB now calls openNewTransactionForm() (was openFormTransaksiBaru()).
-  Nothing was removed — every page, card, and filter from your original is
-  still here.
-  ===========================================================================
--->
-
+  
   <!-- MAIN CONTAINER -->
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
 
