@@ -85,6 +85,9 @@
       box-shadow: 0 0 0 3px rgba(200, 122, 75, 0.15), var(--shadow-inset); background-color: var(--bg-card);
     }
 
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+    .input-error { animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; border: 1px solid var(--amount-out) !important; box-shadow: 0 0 0 3px var(--chip-out-bg), var(--shadow-inset) !important; background-color: var(--bg-card) !important; }
+
     .text-main { color: var(--text-primary); } .text-muted { color: var(--text-secondary); } .text-faint { color: var(--text-tertiary); }
     .amount-in { color: var(--amount-in) !important; } .amount-out { color: var(--amount-out) !important; }
     .amount-info { color: var(--amount-info) !important; } .amount-warn { color: var(--amount-warn) !important; }
@@ -95,7 +98,7 @@
     .chip-info { background-color: var(--chip-info-bg); color: var(--amount-info); }
     .chip-warn { background-color: var(--chip-warn-bg); color: var(--amount-warn); }
 
-    .clean-topbar { background: linear-gradient(180deg, var(--bg-app) 80%, transparent 100%); backdrop-filter: blur(12px); padding-top: max(2.5rem, env(safe-area-inset-top)); }
+    .clean-topbar { background: linear-gradient(180deg, var(--bg-app) 70%, transparent 100%); backdrop-filter: blur(12px); padding-top: max(2rem, env(safe-area-inset-top)); }
     .nav-bar-bottom { background-color: var(--glass-bg) !important; backdrop-filter: blur(20px); border-top: 1px solid var(--glass-border); padding-bottom: env(safe-area-inset-bottom); }
     .nav-item { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
@@ -119,8 +122,8 @@
 </head>
 <body class="min-h-screen">
 
-  <!-- SPLASH SCREEN -->
-  <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-500">
+  <!-- SPLASH SCREEN DENGAN TRANSISI HALUS -->
+  <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-500 pointer-events-auto">
     <div class="animate-float flex flex-col items-center">
       <div class="w-28 h-28 flex items-center justify-center rounded-full shadow-[0_8px_30px_rgba(200,122,75,0.15)] relative overflow-hidden bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)]">
         <img src="mochi-logo-new.png" alt="Mochi" class="w-full h-full object-cover">
@@ -156,36 +159,35 @@
 
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- REVISI TOP BAR: LEBIH BESAR, BERANI & CLEAN AEN ALA REFERENSI GAMBAR -->
-  <header class="clean-topbar sticky top-0 z-40 px-6 pt-10 pb-6 max-w-3xl mx-auto">
-    <!-- BARIS 1: AVATAR MOCHI STATUS & TOMBOL THEME TOGGLE -->
-    <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center space-x-3">
-        <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-md flex items-center justify-center">
-          <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Avatar" class="w-full h-full object-contain filter drop-shadow-sm transition-all duration-300">
-        </div>
-        <div class="flex flex-col">
-          <span id="mochi-mood-badge" class="text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-in-bg)] amount-in w-max">Rich Mochi</span>
-          <span class="text-[10px] text-faint font-semibold mt-0.5">• Live Status</span>
-        </div>
+  <!-- HEADER BAR (REVERTED TO COMPACT BALANCED HORIZONTAL LAYOUT) -->
+  <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
+    <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-3">
+      <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0 self-center">
+        <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Avatar" class="w-full h-full object-contain filter drop-shadow-sm transition-all duration-300">
       </div>
 
-      <!-- HANYA TERSEDIA DARK / LIGHT MODE TOGGLE (LONCENG DIHAPUS BERSIH) -->
-      <button onclick="toggleDarkMode(); vibrate(30);" class="tap-shrink w-11 h-11 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm flex-shrink-0" aria-label="Toggle Mode">
-        <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
-        <i data-lucide="moon" id="icon-moon" class="w-5 h-5"></i>
-      </button>
+      <div class="flex flex-col justify-center min-w-0 flex-1">
+        <div class="flex items-center space-x-2 mb-0.5">
+          <span id="mochi-mood-badge" class="text-[8px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-in-bg)] amount-in">Rich Mochi</span>
+          <span class="text-[10px] text-faint font-semibold">• Live Status</span>
+        </div>
+        <h1 id="mochi-mood-title" class="text-sm md:text-base font-black text-main leading-tight tracking-tight truncate">
+          Mochi is purr-fectly happy! 💰
+        </h1>
+        <p id="mochi-mood-desc" class="text-[11px] font-semibold text-muted mt-0.5 leading-snug truncate">
+          Expenses are only at 0% of income!
+        </p>
+        <p id="mochi-mood-subdesc" class="text-[11px] font-semibold text-muted leading-snug truncate">
+          Mochi is swimming in gold bars!
+        </p>
+      </div>
     </div>
 
-    <!-- BARIS 2: JUDUL & CAPTION BESAR DAN TEGAS -->
-    <div class="space-y-1">
-      <h1 id="mochi-mood-title" class="text-2xl md:text-3xl font-black text-main leading-tight tracking-tight">
-        Mochi is purr-fectly happy! 💰
-      </h1>
-      <p id="mochi-mood-desc" class="text-xs md:text-sm font-semibold text-muted leading-snug">
-        Expenses are only at 0% of income! Mochi is swimming in gold bars!
-      </p>
-    </div>
+    <!-- TOMBOL THEME TOGGLE -->
+    <button onclick="toggleDarkMode(); vibrate(30);" class="tap-shrink w-11 h-11 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm flex-shrink-0" aria-label="Toggle Mode">
+      <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
+      <i data-lucide="moon" id="icon-moon" class="w-5 h-5"></i>
+    </button>
   </header>
   
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
@@ -1272,17 +1274,28 @@
       }
     }
 
+    // REVISI SPLASH SCREEN: SMOOTH FADE-OUT TANPA BLITZ
+    function dismissSplashScreen() {
+      const splash = document.getElementById('splash-screen');
+      const main = document.getElementById('main-content');
+      if (!splash) return;
+
+      main.classList.remove('hidden');
+      splash.style.opacity = '0';
+      splash.style.pointerEvents = 'none';
+
+      setTimeout(() => {
+        splash.classList.add('hidden');
+      }, 500);
+    }
+
     async function loadAppData(isSilentReload = false) {
       const localCache = localStorage.getItem('mochi_vault_global_data');
       if (localCache && !isSilentReload) {
         try {
           GLOBAL_DATA = JSON.parse(localCache);
           renderAllViews();
-          document.getElementById('splash-screen').style.opacity = '0';
-          setTimeout(() => {
-            document.getElementById('splash-screen').classList.add('hidden');
-            document.getElementById('main-content').classList.remove('hidden');
-          }, 300);
+          setTimeout(() => dismissSplashScreen(), 400); // Tampil sebentar 400ms lalu memudar halus
           isSilentReload = true;
         } catch(e) { console.error("Cache parse error", e); }
       }
@@ -1298,14 +1311,13 @@
         renderAllViews();
 
         if (!isSilentReload) {
-          document.getElementById('splash-screen').style.opacity = '0';
-          setTimeout(() => {
-            document.getElementById('splash-screen').classList.add('hidden');
-            document.getElementById('main-content').classList.remove('hidden');
-          }, 300);
+          setTimeout(() => dismissSplashScreen(), 400);
         }
       } catch (err) {
-        if (!localCache) showToast("Gagal memuat data: " + err.message, "error");
+        if (!localCache) {
+          showToast("Gagal memuat data: " + err.message, "error");
+          dismissSplashScreen();
+        }
       }
     }
 
