@@ -1360,21 +1360,26 @@
       let badgeClass = "bg-[var(--chip-info-bg)] amount-info";
 
       const ratio = income > 0 ? (expense / income) : (expense > 0 ? 1 : 0);
+      const displayPct = Math.min(Math.round(ratio * 100), 999); // Cap maks 999% agar tidak jebol
 
       if (ratio <= 0.40) {
         mood = 'rich';
-        title = "Mochi is purr-fectly happy!";
-        desc = "Mochi is swimming in gold bars!";
+        title = "Mochi is purr-fectly happy! 💰";
+        desc = `Expenses are only at ${displayPct}% of income! Mochi is swimming in gold bars!`;
         badgeText = "Rich Mochi";
         badgeClass = "bg-[var(--chip-in-bg)] amount-in";
       } else if (ratio > 0.80) {
         mood = 'anxious';
-        title = "Mochi is sweating bullets!";
-        desc = `Expenses reached ${(ratio * 100).toFixed(0)}% of income! Hold back non-essential spending!`;
+        title = "Mochi is sweating bullets! 😿";
+        desc = `Expenses reached ${displayPct}% of income! Hold back non-essential spending!`;
         badgeText = "Anxious Mochi";
         badgeClass = "bg-[var(--chip-out-bg)] amount-out";
       } else {
-        desc = `Expenses are at ${(ratio * 100).toFixed(0)}% of income. Mochi keeps everything under control!`;
+        mood = 'chill';
+        title = "Mochi feels comfy~ 😸";
+        desc = `Expenses are at ${displayPct}% of income. Mochi keeps everything under control!`;
+        badgeText = "Chill Mochi";
+        badgeClass = "bg-[var(--chip-info-bg)] amount-info";
       }
 
       currentMochiMood = mood;
@@ -1394,7 +1399,7 @@
 
       startMochiBlinking();
     }
-
+    
     function startMochiBlinking() {
       if (mochiBlinkTimeout) clearTimeout(mochiBlinkTimeout);
 
