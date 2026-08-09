@@ -31,18 +31,15 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    
-    /* SPLASH SCREEN SMOOTH FADE & SCALE */
-#splash-screen {
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
-}
-
-#splash-screen.splash-fade-out {
-  opacity: 0;
-  transform: scale(1.08); /* Efek zoom-out lembut saat menghilang */
-  pointer-events: none;
-}
+    #splash-screen {
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+    #splash-screen.splash-fade-out {
+      opacity: 0;
+      transform: scale(1.08);
+      pointer-events: none;
+    }
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
     :root {
@@ -134,7 +131,7 @@
 </head>
 <body class="min-h-screen">
 
-  <!-- SPLASH SCREEN DENGAN TRANSISI HALUS -->
+  <!-- SPLASH SCREEN -->
   <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-500 pointer-events-auto">
     <div class="animate-float flex flex-col items-center">
       <div class="w-28 h-28 flex items-center justify-center rounded-full shadow-[0_8px_30px_rgba(200,122,75,0.15)] relative overflow-hidden bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)]">
@@ -171,7 +168,7 @@
 
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- HEADER BAR CLEAN 2 BARIS -->
+  <!-- HEADER BAR -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-3">
       <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0 self-center">
@@ -183,13 +180,11 @@
           <span id="mochi-mood-badge" class="text-[8px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-in-bg)] amount-in">Rich Mochi</span>
           <span class="text-[10px] text-faint font-semibold">• Live Status</span>
         </div>
-        <!-- Baris 1: Judul Utama -->
         <h1 id="mochi-mood-title" class="text-sm md:text-base font-black text-main leading-tight tracking-tight leading-snug">
           Mochi is purr-fectly happy! 💰
         </h1>
-        <!-- Baris 2: Subcaption Ringkas 1 Baris -->
         <p id="mochi-mood-desc" class="text-[11px] font-semibold text-muted mt-0.5 leading-snug">
-          Expenses: 0% of income • Swimming in gold bars!
+          Expenses under control • Swimming in gold bars!
         </p>
       </div>
     </div>
