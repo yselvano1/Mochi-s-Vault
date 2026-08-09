@@ -182,6 +182,12 @@
     </div>
 
     <div class="flex items-center space-x-2.5">
+      <!-- STREAK BADGE (SISIPKAN DI SINI) -->
+    <div id="mochi-streak-badge" class="flex items-center space-x-1.5 bg-card border border-[var(--border-color)] px-3 py-1.5 rounded-full shadow-sm text-xs font-black text-main">
+      <span class="text-base">🐾</span>
+      <span id="streak-count-num">0</span>
+      <span class="text-[10px] text-muted font-extrabold uppercase">Days</span>
+    </div>
       <button onclick="toggleDarkMode(); vibrate(30);" class="tap-shrink w-10 h-10 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-[0_2px_10px_rgba(45,36,30,0.05)]" aria-label="Toggle Mode">
         <i data-lucide="sun" id="icon-sun" class="w-4.5 h-4.5 hidden"></i>
         <i data-lucide="moon" id="icon-moon" class="w-4.5 h-4.5"></i>
@@ -217,6 +223,21 @@
         <div id="kpi-disposable" class="text-3xl md:text-4xl font-black amount-in block tracking-tight transition-all duration-300 origin-left">-</div>
       </div>
 
+<!-- MOCHI LIVE MOOD CARD (KARTU BARU DISISIPKAN DI SINI) -->
+      <div id="mochi-mood-card" class="floating-card p-5 flex items-center space-x-4 relative overflow-hidden bg-card transition-all duration-500">
+        <div class="relative w-24 h-24 flex-shrink-0 flex items-center justify-center">
+          <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Live Mood" class="w-full h-full object-contain filter drop-shadow-sm animate-float transition-all duration-300">
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center space-x-2 mb-1">
+            <span id="mochi-mood-badge" class="text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-info-bg)] amount-info">Chill Mochi</span>
+            <span class="text-[10px] text-faint font-semibold">• Live Reaction</span>
+          </div>
+          <h3 id="mochi-mood-title" class="text-sm md:text-base font-extrabold text-main truncate leading-snug">Mochi feels comfy~ 😸</h3>
+          <p id="mochi-mood-desc" class="text-xs font-semibold text-muted mt-1 leading-relaxed line-clamp-2">Cashflow is stable. Mochi is carefully guarding your vault!</p>
+        </div>
+      </div>
+      
       <div class="grid grid-cols-2 gap-3">
         <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-3 h-3 mr-1.5 amount-in"></i> TOTAL CASH</span>
@@ -239,6 +260,23 @@
         </div>
       </div>
 
+<!-- RECURRING BILLS MANAGER (QUICK-PAY) -->
+      <div class="floating-card p-5 mt-5 relative overflow-hidden">
+        <div class="flex justify-between items-center mb-3 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+          <div class="flex items-center space-x-2">
+            <div class="w-7 h-7 rounded-lg bg-[var(--chip-info-bg)] text-mochi dark:text-mochi-light flex items-center justify-center">
+              <i data-lucide="repeat" class="w-4 h-4"></i>
+            </div>
+            <h3 class="text-sm font-extrabold text-main">Recurring Bills</h3>
+          </div>
+          <span class="text-[9px] font-black text-faint uppercase tracking-wider">Quick Pay</span>
+        </div>
+        
+        <div id="recurring-bills-list" class="space-y-2.5">
+          <!-- Item tagihan rutin akan dirender otomatis via JavaScript -->
+        </div>
+      </div>
+      
       <div class="floating-card p-5 mt-5 relative overflow-hidden">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <h3 class="text-sm font-extrabold text-main">Expense Analysis</h3>
@@ -1194,6 +1232,7 @@
         closeModal('modalTransactionForm');
 
         setTimeout(async () => {
+          checkAndUpdateStreak(true);
           await showRewardAnimation(isEdit ? "Transaction Updated" : "Saved");
           await loadAppData(true);
         }, 300);
@@ -1213,7 +1252,10 @@
         GLOBAL_DATA = result.data || result;
 
         renderDashboard();
+        renderMochiMood();
+        renderRecurringBills();
         renderCategoryAnalysis();
+        checkAndUpdateStreak();
         populateYearFilter();
         renderHistory();
         renderWallets();
@@ -1286,19 +1328,230 @@
       renderCategoryAnalysis();
     }
 
+    // ==========================================
+    // GELOMBANG 1 CONFIG: DEFAULT CATEGORY BUDGETS
+    // ==========================================
+    const DEFAULT_CATEGORY_BUDGETS = {
+      'Food & Groceries': 3500000,
+      'Transportation': 1500000,
+      'Bills & Utilities': 2000000,
+      'Healthcare': 1000000,
+      'Household': 1000000,
+      'Personal Care': 800000,
+      'Entertainment': 1000000,
+      'Education': 1000000,
+      'Gifts & Donations': 500000,
+      'Other Expenses': 500000
+    };
+
+    // ==========================================
+    // FITUR 1: MOCHI LIVE MOOD & BLINKING ENGINE
+    // ==========================================
+    let currentMochiMood = 'chill';
+    let mochiBlinkTimeout = null;
+
+    function renderMochiMood() {
+      const kpi = GLOBAL_DATA.kpi || {};
+      const income = Number(kpi["This Month's Income"]) || 0;
+      const expense = Number(kpi["This Month's Consumptive Expense"]) || 0;
+
+      let mood = 'chill';
+      let title = "Mochi feels comfy~ 😸";
+      let desc = "Cashflow is stable. Mochi is carefully guarding your vault!";
+      let badgeText = "Chill Mochi";
+      let badgeClass = "bg-[var(--chip-info-bg)] amount-info";
+
+      const ratio = income > 0 ? (expense / income) : (expense > 0 ? 1 : 0);
+
+      if (ratio <= 0.40) {
+        mood = 'rich';
+        title = "Mochi is purr-fectly happy! 💰";
+        desc = `Expenses are at ${(ratio * 100).toFixed(0)}% of income! Mochi is swimming in gold bars!`;
+        badgeText = "Rich Mochi";
+        badgeClass = "bg-[var(--chip-in-bg)] amount-in";
+      } else if (ratio > 0.80) {
+        mood = 'anxious';
+        title = "Mochi is sweating bullets! 😿";
+        desc = `Expenses reached ${(ratio * 100).toFixed(0)}% of income! Hold back non-essential spending!`;
+        badgeText = "Anxious Mochi";
+        badgeClass = "bg-[var(--chip-out-bg)] amount-out";
+      } else {
+        desc = `Expenses are at ${(ratio * 100).toFixed(0)}% of income. Mochi keeps everything under control!`;
+      }
+
+      currentMochiMood = mood;
+
+      const imgEl = document.getElementById('mochi-mood-img');
+      const titleEl = document.getElementById('mochi-mood-title');
+      const descEl = document.getElementById('mochi-mood-desc');
+      const badgeEl = document.getElementById('mochi-mood-badge');
+
+      if (imgEl) imgEl.src = `mochi-${mood}-open.png`;
+      if (titleEl) titleEl.innerText = title;
+      if (descEl) descEl.innerText = desc;
+      if (badgeEl) {
+        badgeEl.innerText = badgeText;
+        badgeEl.className = `text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${badgeClass}`;
+      }
+
+      startMochiBlinking();
+    }
+
+    function startMochiBlinking() {
+      if (mochiBlinkTimeout) clearTimeout(mochiBlinkTimeout);
+
+      const nextBlinkIn = Math.random() * 2500 + 3500;
+      mochiBlinkTimeout = setTimeout(() => {
+        const imgEl = document.getElementById('mochi-mood-img');
+        if (imgEl && currentMochiMood) {
+          imgEl.src = `mochi-${currentMochiMood}-closed.png`;
+          setTimeout(() => {
+            imgEl.src = `mochi-${currentMochiMood}-open.png`;
+            startMochiBlinking();
+          }, 160);
+        }
+      }, nextBlinkIn);
+    }
+
+// ==========================================
+    // GELOMBANG 2: RECURRING BILLS PRESETS
+    // ==========================================
+    const RECURRING_BILLS_PRESETS = [
+      { id: 'rec-wifi', title: 'Home Internet / WiFi', category: 'Internet Bill', amount: 350000, type: 'Expense' },
+      { id: 'rec-electricity', title: 'PLN Electricity Token', category: 'Electricity Bill', amount: 500000, type: 'Expense' },
+      { id: 'rec-water', title: 'PDAM Water Bill', category: 'Water Bill', amount: 150000, type: 'Expense' },
+      { id: 'rec-phone', title: 'Monthly Mobile Credit / Data', category: 'Phone Bill', amount: 100000, type: 'Expense' }
+    ];
+
+    // ==========================================
+    // FITUR 5: LOGGING STREAK COUNTER
+    // ==========================================
+    function checkAndUpdateStreak(isNewLog = false) {
+      const todayStr = new Date().toISOString().substring(0, 10);
+      let lastLog = localStorage.getItem('mochi_last_log_date');
+      let streak = parseInt(localStorage.getItem('mochi_streak_count') || '0', 10);
+
+      if (isNewLog) {
+        if (lastLog === todayStr) {
+          // Sudah mencatat hari ini, pertahankan streak
+        } else if (lastLog) {
+          const lastDate = new Date(lastLog);
+          const currentDate = new Date(todayStr);
+          const diffDays = Math.round((currentDate - lastDate) / (1000 * 60 * 60 * 24));
+
+          if (diffDays === 1) streak += 1; // Hari berturut-turut
+          else if (diffDays > 1) streak = 1; // Terputus, reset ke 1
+        } else {
+          streak = 1; // Pertama kali mencatat
+        }
+        localStorage.setItem('mochi_last_log_date', todayStr);
+        localStorage.setItem('mochi_streak_count', streak.toString());
+      } else if (lastLog) {
+        // Pengecekan rutin saat aplikasi dibuka
+        const lastDate = new Date(lastLog);
+        const currentDate = new Date(todayStr);
+        const diffDays = Math.round((currentDate - lastDate) / (1000 * 60 * 60 * 24));
+        if (diffDays > 1) {
+          streak = 0; // Streak hangus karena terlewat > 1 hari
+          localStorage.setItem('mochi_streak_count', '0');
+        }
+      }
+
+      const countEl = document.getElementById('streak-count-num');
+      if (countEl) countEl.innerText = streak;
+    }
+
+    // ==========================================
+    // FITUR 3: RECURRING BILLS RENDER & QUICK-PAY
+    // ==========================================
+    function renderRecurringBills() {
+      const container = document.getElementById('recurring-bills-list');
+      if (!container) return;
+
+      container.innerHTML = RECURRING_BILLS_PRESETS.map(bill => `
+        <div class="floating-item p-3 flex justify-between items-center bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
+          <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2">
+            ${iconChipHtml(bill.type, bill.category)}
+            <div class="truncate">
+              <p class="text-[12px] font-bold text-main truncate">${escapeHtml(bill.title)}</p>
+              <p class="text-[10px] text-faint font-medium">${formatRupiah(bill.amount)} • ${escapeHtml(bill.category)}</p>
+            </div>
+          </div>
+          <button onclick="vibrate(30); quickPayBill('${bill.id}')" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-3 py-1.5 rounded-xl text-[11px] font-extrabold shadow-sm transition-colors flex items-center space-x-1 whitespace-nowrap">
+            <i data-lucide="zap" class="w-3 h-3"></i>
+            <span>Pay</span>
+          </button>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function quickPayBill(billId) {
+      const bill = RECURRING_BILLS_PRESETS.find(b => b.id === billId);
+      if (!bill) return;
+
+      openNewTransactionForm();
+
+      setTimeout(() => {
+        document.getElementById('form-type').value = bill.type;
+        updateTypeDisplay(bill.type);
+        handleTypeChange();
+
+        document.getElementById('form-category').value = bill.category;
+        const catDisplay = document.getElementById('form-category-display');
+        if (catDisplay) {
+          catDisplay.innerText = bill.category;
+          catDisplay.classList.remove('text-faint');
+        }
+
+        document.getElementById('form-amount-value').value = bill.amount;
+        document.getElementById('form-amount-display').value = new Intl.NumberFormat('id-ID').format(bill.amount);
+        document.getElementById('form-description').value = bill.title;
+        document.getElementById('form-notes').value = "Quick Paid via Recurring Bills Manager ⚡";
+      }, 200);
+    }
+    
     function renderCategoryAnalysis() {
       const el = document.getElementById('dashboard-category-analysis');
       if (!el) return;
 
       const now = new Date();
-      const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+      const currentYM = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+      
+      const prevDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const prevYM = prevDate.getFullYear() + '-' + String(prevDate.getMonth() + 1).padStart(2, '0');
 
-      const trxThisMonth = (GLOBAL_DATA.transactions || []).filter(t =>
-        t.type === 'Expense' && t.date && t.date.substring(0, 7) === ym
-      );
+      const allTrx = GLOBAL_DATA.transactions || [];
+      const trxThisMonth = allTrx.filter(t => t.type === 'Expense' && t.date && t.date.substring(0, 7) === currentYM);
+      const trxLastMonth = allTrx.filter(t => t.type === 'Expense' && t.date && t.date.substring(0, 7) === prevYM);
+
+      const totalThisMonth = trxThisMonth.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+      const totalLastMonth = trxLastMonth.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+
+      let trendHtml = "";
+      if (totalLastMonth > 0) {
+        const diffPct = ((totalThisMonth - totalLastMonth) / totalLastMonth) * 100;
+        const isHigher = diffPct > 0;
+        const trendColor = isHigher ? "amount-out bg-[var(--chip-out-bg)]" : "amount-in bg-[var(--chip-in-bg)]";
+        const trendIcon = isHigher ? "trending-up" : "trending-down";
+        const trendText = isHigher 
+          ? `${Math.abs(diffPct).toFixed(0)}% higher than last month` 
+          : `${Math.abs(diffPct).toFixed(0)}% lower than last month`;
+
+        trendHtml = `
+          <div class="mb-4 p-3 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-subtle-2)] flex items-center justify-between text-xs">
+            <div class="flex items-center space-x-2">
+              <div class="w-6 h-6 rounded-md flex items-center justify-center ${trendColor}">
+                <i data-lucide="${trendIcon}" class="w-3.5 h-3.5"></i>
+              </div>
+              <span class="font-extrabold text-main">${trendText}</span>
+            </div>
+            <span class="text-[10px] font-bold text-muted">${formatRupiah(totalLastMonth)} prev</span>
+          </div>`;
+      }
 
       if (trxThisMonth.length === 0) {
-        el.innerHTML = `<p class="text-xs text-center text-muted py-4 font-semibold">No expense transactions this month.</p>`;
+        el.innerHTML = trendHtml + `<p class="text-xs text-center text-muted py-4 font-semibold">No expense transactions this month.</p>`;
         return;
       }
 
@@ -1316,10 +1569,26 @@
 
       const sortedMain = Object.keys(groups).sort((a, b) => groups[b].total - groups[a].total);
 
-      let html = "";
+      let html = trendHtml;
       sortedMain.forEach((main, index) => {
         const g = groups[main];
-        const pct = grandTotal > 0 ? (g.total / grandTotal * 100) : 0;
+        const budgetLimit = DEFAULT_CATEGORY_BUDGETS[main] || 0;
+        
+        let barColor = "from-mochi-light to-mochi";
+        let budgetPct = 0;
+        let budgetText = "";
+
+        if (budgetLimit > 0) {
+          budgetPct = Math.min((g.total / budgetLimit) * 100, 100);
+          budgetText = `${formatRupiah(g.total)} / ${formatRupiah(budgetLimit)}`;
+          if (budgetPct >= 90) barColor = "from-rose-400 to-rose-600";
+          else if (budgetPct >= 70) barColor = "from-amber-400 to-amber-500";
+          else barColor = "from-emerald-400 to-emerald-600";
+        } else {
+          budgetPct = grandTotal > 0 ? (g.total / grandTotal * 100) : 0;
+          budgetText = `${formatRupiah(g.total)} (${budgetPct.toFixed(0)}%)`;
+        }
+
         const isExpanded = !!categoryAnalysisExpanded[main];
         const subKeys = Object.keys(g.subs).sort((a, b) => g.subs[b] - g.subs[a]);
         const hasMultipleSubs = subKeys.length > 1 || (subKeys.length === 1 && subKeys[0] !== main);
@@ -1333,12 +1602,12 @@
                 ${escapeHtml(main)}
               </span>
               <div class="text-right">
-                <span class="text-xs font-extrabold text-main block leading-none mb-0.5">${formatRupiah(g.total)}</span>
-                <span class="text-[9px] font-bold text-mochi dark:text-mochi-light">${pct.toFixed(0)}%</span>
+                <span class="text-xs font-extrabold text-main block leading-none mb-0.5">${budgetText}</span>
+                ${budgetLimit > 0 ? `<span class="text-[9px] font-bold ${budgetPct >= 90 ? 'amount-out' : 'text-muted'}">${budgetPct.toFixed(0)}% used</span>` : ''}
               </div>
             </div>
             <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
-              <div class="bg-gradient-to-r from-mochi-light to-mochi h-1.5 rounded-full transition-all duration-1000 ease-out" style="width:0%" data-target-width="${pct}%"></div>
+              <div class="bg-gradient-to-r ${barColor} h-1.5 rounded-full transition-all duration-1000 ease-out" style="width:0%" data-target-width="${budgetPct}%"></div>
             </div>
           </div>`;
 
@@ -1363,7 +1632,7 @@
         el.querySelectorAll('[data-target-width]').forEach(bar => { bar.style.width = bar.getAttribute('data-target-width'); });
       }, 50);
     }
-
+    
     // ==========================================
     // HISTORY (FOTO 3: DEFAULT MONTH & YEAR FILTER)
     // ==========================================
