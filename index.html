@@ -1512,9 +1512,14 @@
     }
 
 // ==========================================
-    // CUSTOM BUDGET EDITOR LOGIC
+    // CUSTOM BUDGET EDITOR (CLOUD SYNCED)
     // ==========================================
     function getCustomBudgets() {
+      // Prioritas 1: Data dari Google Sheets (GLOBAL_DATA)
+      if (GLOBAL_DATA.budgets && Object.keys(GLOBAL_DATA.budgets).length > 0) {
+        return GLOBAL_DATA.budgets;
+      }
+      // Prioritas 2: Cache Lokal
       const saved = localStorage.getItem('mochi_custom_budgets');
       return saved ? JSON.parse(saved) : { ...DEFAULT_CATEGORY_BUDGETS };
     }
@@ -1542,7 +1547,7 @@
       openModal('modalBudgetEditor');
     }
 
-    function handleSaveCustomBudgets(event) {
+    async function handleSaveCustomBudgets(event) {
       event.preventDefault();
       const inputs = document.querySelectorAll('[data-budget-category]');
       const updatedBudgets = {};
@@ -1553,10 +1558,31 @@
         updatedBudgets[cat] = numVal;
       });
 
-      localStorage.setItem('mochi_custom_budgets', JSON.stringify(updatedBudgets));
-      closeModal('modalBudgetEditor');
-      showToast("Category budgets updated!");
-      renderCategoryAnalysis();
+      let loadingToast = showToast("Syncing budgets to Vault...", "info");
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST', redirect: 'follow',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'updateBudgets', payload: updatedBudgets })
+        });
+        const result = await res.json();
+        if (result.status === 'error') throw new Error(result.message);
+
+        // Update local cache & global state
+        GLOBAL_DATA.budgets = updatedBudgets;
+        localStorage.setItem('mochi_custom_budgets', JSON.stringify(updatedBudgets));
+
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+        closeModal('modalBudgetEditor');
+        
+        await showRewardAnimation("Budgets Updated");
+        renderCategoryAnalysis();
+        renderMochiMood();
+      } catch (err) {
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+        showToast("Failed to sync budget: " + err.message, "error");
+      }
     }
     
     function renderCategoryAnalysis() {
