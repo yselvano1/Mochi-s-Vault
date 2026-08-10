@@ -2086,7 +2086,7 @@
           </div>
         </div>
 
-        <!-- SUMMARY CARDS (DASHBOARD STYLE) -->
+        <!-- SUMMARY CARDS -->
         <div style="display: flex; gap: 12px; margin-bottom: 24px;">
           <div style="flex: 1; background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 14px; padding: 12px 16px;">
             <span style="font-size: 9px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Total Income</span>
@@ -2102,7 +2102,7 @@
           </div>
         </div>
 
-        <!-- TRANSACTION LIST (FLOATING CARD DESIGN - ASCENDING 1 TO 31) -->
+        <!-- TRANSACTION LIST -->
         <div style="margin-bottom: 12px;">
           <span style="font-size: 10px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.8px;">Transaction Details (Date 1 - 31)</span>
         </div>
@@ -2153,87 +2153,6 @@
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         showToast("Failed to generate PDF: " + err.message, "error");
       });
-    }
-
-      const opt = {
-        margin:       10,
-        filename:     `Mochi_Financial_Statement_${filterYear}-${filterMonth}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-
-      html2pdf().set(opt).from(printContainer).save().then(() => {
-        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("PDF downloaded successfully!", "success");
-      }).catch(err => {
-        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Failed to generate PDF: " + err.message, "error");
-      });
-    }
-
-    // WALLETS: DENGAN DIVIDER CLEAN PADDING P-5 DAN BEBAS DOUBLE NAME
-    function renderWallets() {
-      const operationalEl = document.getElementById('list-accounts-operational');
-      const savingsEl = document.getElementById('list-accounts-savings');
-      operationalEl.innerHTML = ""; savingsEl.innerHTML = "";
-
-      if (!GLOBAL_DATA.accounts || GLOBAL_DATA.accounts.length === 0) {
-        operationalEl.innerHTML = `<p class="text-xs text-muted font-semibold text-center py-4">No accounts added yet.</p>`;
-        return;
-      }
-
-      GLOBAL_DATA.accounts.forEach((acc, i) => {
-        const meta = getAccountIconMeta(acc.accountName, acc.accountType);
-        const balanceColorClass = meta.isLiability ? "amount-out" : "amount-in";
-        const badgeBgClass = meta.isLiability ? "bg-[var(--chip-out-bg)] amount-out" : "bg-[var(--chip-in-bg)] amount-in";
-        const statusLabel = "RUNNING BALANCE";
-        const ownerLabel = acc.owner ? escapeHtml(acc.owner) : 'Yosa & Fani';
-
-        const nameHasOwner = acc.owner && acc.accountName.toLowerCase().includes(acc.owner.toLowerCase());
-        const badgeText = nameHasOwner ? escapeHtml(acc.accountType) : `${escapeHtml(acc.accountType)} • ${ownerLabel}`;
-
-        const div = document.createElement('div');
-        div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item flex flex-col justify-between";
-        div.style.animationDelay = `${i * 0.05}s`;
-        
-        div.innerHTML = `
-          <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-            <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2" onclick="vibrate(30); showAccountHistory('${escapeAttr(acc.accountName)}')">
-              <div class="w-9 h-9 rounded-xl ${meta.bg} flex items-center justify-center flex-shrink-0 shadow-sm">
-                <i data-lucide="${meta.icon}" class="w-4.5 h-4.5"></i>
-              </div>
-              <div class="truncate">
-                <h4 class="text-[13px] font-extrabold text-main leading-tight truncate pr-1">${escapeHtml(acc.accountName)}</h4>
-                <div class="flex items-center space-x-1.5 mt-1">
-                  <span class="text-[8px] font-extrabold px-2 py-0.5 rounded-full uppercase ${badgeBgClass}">${badgeText}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex items-center space-x-1 flex-shrink-0">
-              <button type="button" onclick="vibrate(30); event.stopPropagation(); openEditAccountModal('${escapeAttr(acc.accountName)}')" class="p-1.5 text-faint hover:text-main transition-colors rounded-lg hover:bg-[var(--bg-subtle-2)]">
-                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-              </button>
-              <button type="button" onclick="vibrate(30); event.stopPropagation(); promptDeleteAccount('${escapeAttr(acc.accountName)}')" class="p-1.5 text-faint hover:text-rose-500 transition-colors rounded-lg hover:bg-[var(--bg-subtle-2)]">
-                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-              </button>
-            </div>
-          </div>
-
-          <div onclick="vibrate(30); showAccountHistory('${escapeAttr(acc.accountName)}')">
-            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">${statusLabel}</span>
-            <span class="text-[18px] font-black ${balanceColorClass} block leading-none tracking-tight">${formatRupiah(acc.runningBalance)}</span>
-          </div>
-        `;
-
-        if ((acc.functionCategory || '').toLowerCase().includes('daily') || (acc.functionCategory || '').toLowerCase().includes('operation')) {
-          operationalEl.appendChild(div);
-        } else {
-          savingsEl.appendChild(div);
-        }
-      });
-      lucide.createIcons();
     }
 
     function openEditAccountModal(accountName) {
