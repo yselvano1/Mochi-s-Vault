@@ -6,10 +6,9 @@
   <title>Mochi's Vault — Keuangan Yosa & Fani</title>
 
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#FAF8F5" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#181412" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" id="meta-theme-color" content="#FAF8F5">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" id="meta-status-bar-style" content="default">
 
   <link rel="apple-touch-icon" href="mochi-logo-new.png">
   <link rel="icon" type="image/png" href="mochi-logo-new.png">
@@ -158,19 +157,6 @@
   <!-- TOP PROGRESS BAR REFRESH INDICATOR -->
   <div id="top-loading-bar" class="opacity-0"></div>
 
-  <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-200 pointer-events-auto">
-    <div class="animate-float flex flex-col items-center">
-      <div class="w-28 h-28 flex items-center justify-center rounded-full shadow-[0_8px_30px_rgba(200,122,75,0.15)] relative overflow-hidden bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)]">
-        <img src="mochi-logo-new.png" alt="Mochi" class="w-full h-full object-cover">
-      </div>
-      <h2 class="mt-6 text-2xl font-black text-main tracking-tight">Mochi's Vault</h2>
-      <div class="mt-3 bg-[var(--bg-subtle-2)] px-4 py-1.5 rounded-full flex items-center space-x-2">
-        <i data-lucide="loader-2" class="w-3.5 h-3.5 text-mochi animate-spin"></i>
-        <span id="splash-text" class="text-xs font-bold text-mochi dark:text-mochi-light">Membangunkan Mochi...</span>
-      </div>
-    </div>
-  </div>
-
   <div id="reward-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center pointer-events-none">
     <div class="absolute inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/80 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="reward-bg"></div>
     <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="reward-content">
@@ -222,7 +208,7 @@
     </button>
   </header>
   
-  <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
+  <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 app-entrance">
     <section id="page-dashboard" class="space-y-6 page-animate pt-2">
       <div onclick="showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden bg-gradient-to-br from-obsidian via-[#2C201A] to-coffee-darkest dark:from-mochi-dark dark:via-[#3E2519] dark:to-obsidian text-white border border-white/10 shadow-xl rounded-[2rem]">
         <div class="flex justify-between items-center mb-6 relative z-10">
@@ -902,8 +888,13 @@
       updateDarkModeIcon(isDark);
       
       const themeColor = isDark ? "#181412" : "#FAF8F5";
+      const statusBarStyle = isDark ? "black-translucent" : "default";
+
       const metaTheme = document.getElementById('meta-theme-color');
       if (metaTheme) metaTheme.setAttribute("content", themeColor);
+
+      const metaStatus = document.getElementById('meta-status-bar-style');
+      if (metaStatus) metaStatus.setAttribute("content", statusBarStyle);
     }
 
     function toggleDarkMode() {
@@ -912,8 +903,13 @@
       updateDarkModeIcon(isDark);
       
       const themeColor = isDark ? "#181412" : "#FAF8F5";
+      const statusBarStyle = isDark ? "black-translucent" : "default";
+
       const metaTheme = document.getElementById('meta-theme-color');
       if (metaTheme) metaTheme.setAttribute("content", themeColor);
+
+      const metaStatus = document.getElementById('meta-status-bar-style');
+      if (metaStatus) metaStatus.setAttribute("content", statusBarStyle);
     }
 
     function updateDarkModeIcon(isDark) {
@@ -1297,21 +1293,6 @@
       }
     }
 
-    // INSTANT SPLASH DISMISSAL WITH ELEGANT SMOOTH ENTRANCE
-    function dismissSplashScreen() {
-      const splash = document.getElementById('splash-screen');
-      const main = document.getElementById('main-content');
-      if (main) {
-        main.classList.remove('hidden');
-        main.classList.add('app-entrance');
-      }
-      if (splash && !splash.classList.contains('hidden')) {
-        splash.style.opacity = '0';
-        splash.style.pointerEvents = 'none';
-        setTimeout(() => splash.classList.add('hidden'), 200);
-      }
-    }
-
     async function loadAppData(isSilentReload = false) {
       const localCache = localStorage.getItem('mochi_vault_global_data');
       const topBar = document.getElementById('top-loading-bar');
@@ -1325,7 +1306,6 @@
         try {
           GLOBAL_DATA = JSON.parse(localCache);
           renderAllViews();
-          dismissSplashScreen();
           isSilentReload = true;
         } catch(e) { console.error("Cache parse error", e); }
       }
@@ -1352,7 +1332,6 @@
             setTimeout(() => topBar.style.width = '0%', 300);
           }, 200);
         }
-        dismissSplashScreen();
       }
     }
 
@@ -2081,7 +2060,7 @@
           </div>
         </div>
 
-        <div style="background-color: #F3ECE4; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; font-size: 11px;">
+        <div style="background-color: #F3ECE4; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: flex; justify-between: space-between; font-size: 11px;">
           <div><span>Total Pemasukan:</span> <strong style="color: #2E6F40; display: block; font-size: 13px;">+${formatRupiah(totalIn)}</strong></div>
           <div><span>Total Pengeluaran:</span> <strong style="color: #B93838; display: block; font-size: 13px;">-${formatRupiah(totalOut)}</strong></div>
           <div><span>Surplus / Defisit:</span> <strong style="color: #181412; display: block; font-size: 13px;">${formatRupiah(totalIn - totalOut)}</strong></div>
