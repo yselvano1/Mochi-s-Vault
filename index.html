@@ -2468,11 +2468,37 @@
       else if (kpiName === 'Total Receivables') kpiColor = 'amount-info';
       else if (kpiName === 'Total Payables') kpiColor = 'amount-out';
 
+      // Hitung nilai display secara dinamis agar sinkron dengan rincian di bawahnya
+      let displayValue = GLOBAL_DATA.kpi[kpiName] || 0;
+
+      if (kpiName === 'Total Payables') {
+        let totalLiabilities = 0;
+        (GLOBAL_DATA.accounts || []).forEach(a => {
+          const meta = getAccountIconMeta(a.accountName, a.accountType);
+          const bal = Math.abs(Number(a.runningBalance) || 0);
+          if (meta.isLiability && bal > 0) totalLiabilities += bal;
+        });
+        (GLOBAL_DATA.payables || []).forEach(p => {
+          const st = (p.status || '').toLowerCase().trim();
+          const rem = Math.abs(Number(p.remainingAmount) || 0);
+          if ((st === 'active' || st === 'aktif') && rem > 0) totalLiabilities += rem;
+        });
+        displayValue = totalLiabilities;
+      } else if (kpiName === 'Total Cash') {
+        let totalCash = 0;
+        (GLOBAL_DATA.accounts || []).forEach(a => {
+          const meta = getAccountIconMeta(a.accountName, a.accountType);
+          const bal = Number(a.runningBalance) || 0;
+          if (!meta.isLiability) totalCash += bal;
+        });
+        displayValue = totalCash;
+      }
+
       let html = `<div class="space-y-4 pt-1">
           <div class="text-center pb-2">
             <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">Rincian KPI</span>
             <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(kpiName)}</h3>
-            <p class="text-3xl font-black mt-2 ${kpiColor}">${formatRupiah(GLOBAL_DATA.kpi[kpiName])}</p>
+            <p class="text-3xl font-black mt-2 ${kpiColor}">${formatRupiah(displayValue)}</p>
           </div>
           <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
       `;
@@ -2500,7 +2526,6 @@
         
         let hasPayables = false;
 
-        // 1. Rincian Tagihan Berjalan dari Credit Card & PayLater
         (GLOBAL_DATA.accounts || []).forEach(a => {
           const meta = getAccountIconMeta(a.accountName, a.accountType);
           const rawBal = Number(a.runningBalance) || 0;
@@ -2515,7 +2540,6 @@
           }
         });
 
-        // 2. Rincian Hutang Terstruktur (AP / Cicilan)
         (GLOBAL_DATA.payables || []).forEach(p => {
           const st = (p.status || '').toLowerCase().trim();
           const rem = Math.abs(Number(p.remainingAmount) || 0);
