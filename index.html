@@ -188,20 +188,14 @@
     <div class="skeleton-block h-32 w-full"></div>
   </div>
 
-  <!-- REWARD OVERLAY -->
+<!-- REWARD OVERLAY -->
   <div id="reward-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center pointer-events-none">
     <div class="absolute inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/80 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="reward-bg"></div>
     <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="reward-content">
       <div class="relative">
         <div class="absolute inset-0 bg-mochi-light rounded-full animate-ping opacity-75"></div>
-        <div class="w-24 h-24 bg-gradient-to-tr from-mochi to-mochi-light rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(200,122,75,0.6)] relative z-10 border-4 border-white dark:border-coffee-darkest">
-          <svg class="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 11.5c-2.8 0-5 2.1-5 4.8 0 2.2 1.8 3.7 5 3.7s5-1.5 5-3.7c0-2.7-2.2-4.8-5-4.8z"/>
-            <ellipse cx="6.5" cy="9.5" rx="1.8" ry="2.5"/>
-            <ellipse cx="10.2" cy="6.8" rx="1.8" ry="2.5"/>
-            <ellipse cx="13.8" cy="6.8" rx="1.8" ry="2.5"/>
-            <ellipse cx="17.5" cy="9.5" rx="1.8" ry="2.5"/>
-          </svg>
+        <div class="w-24 h-24 bg-gradient-to-tr from-mochi to-mochi-light rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(200,122,75,0.6)] relative z-10 border-4 border-white dark:border-coffee-darkest p-3.5">
+          <img src="assets/cat-paw-3d.png" alt="Purrfect Paw" class="w-full h-full object-contain filter drop-shadow-md">
         </div>
       </div>
       <h2 class="text-white text-3xl font-black mt-6 drop-shadow-lg tracking-tight">Purr-fect! 🐾</h2>
@@ -209,7 +203,7 @@
     </div>
   </div>
 
-  <div id="toast-container" class="fixed left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4" style="top: max(1.25rem, env(safe-area-inset-top))"></div>
+  <div id="toast-container" class="fixed left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4" style="top: max(1.25rem, env(safe-area-inset-top))"></div>>
 
   <!-- HEADER BAR -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
@@ -488,14 +482,8 @@
   <!-- FAB -->
   <div class="fixed bottom-[5.5rem] left-0 right-0 z-50 pointer-events-none">
     <div class="max-w-3xl mx-auto px-5 relative h-full">
-      <button ontouchstart="vibrate(35)" onclick="openNewTransactionForm()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full text-white shadow-[0_8px_20px_-6px_rgba(200,122,75,0.5)] flex items-center justify-center pointer-events-auto border border-white/20 group">
-        <svg class="w-7 h-7 text-white transform -translate-y-[1px]" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 11.5c-2.8 0-5 2.1-5 4.8 0 2.2 1.8 3.7 5 3.7s5-1.5 5-3.7c0-2.7-2.2-4.8-5-4.8z"/>
-          <ellipse cx="6.5" cy="9.5" rx="1.8" ry="2.5"/>
-          <ellipse cx="10.2" cy="6.8" rx="1.8" ry="2.5"/>
-          <ellipse cx="13.8" cy="6.8" rx="1.8" ry="2.5"/>
-          <ellipse cx="17.5" cy="9.5" rx="1.8" ry="2.5"/>
-        </svg>
+      <button ontouchstart="vibrate(35)" onclick="openNewTransactionForm()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full text-white shadow-[0_8px_20px_-6px_rgba(200,122,75,0.5)] flex items-center justify-center pointer-events-auto border border-white/20 group p-2.5">
+        <img src="assets/cat-paw-3d.png" alt="Add Transaction" class="w-full h-full object-contain filter drop-shadow-sm transition-transform group-active:scale-90">
       </button>
     </div>
   </div>
