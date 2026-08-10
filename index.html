@@ -1807,112 +1807,118 @@ async function loadAppData(isSilentReload = false) {
     }
 
     function exportPDFStatement() {
-      const filterMonth = document.getElementById('filter-month').value;
-      const filterYear = document.getElementById('filter-year').value;
-      const filterType = document.getElementById('filter-type').value;
-      const filterUser = document.getElementById('filter-user').value;
+  const filterMonth = document.getElementById('filter-month').value;
+  const filterYear = document.getElementById('filter-year').value;
+  const filterType = document.getElementById('filter-type').value;
+  const filterUser = document.getElementById('filter-user').value;
 
-      const filtered = (GLOBAL_DATA.transactions || []).filter(trx => {
-        const d = trx.date || "";
-        const year = d.length >= 4 ? d.substring(0, 4) : "";
-        const month = d.length >= 7 ? d.substring(5, 7) : "";
-        return (filterMonth === 'ALL' || month === filterMonth) &&
-               (filterYear === 'ALL' || year === filterYear) &&
-               (filterType === 'ALL' || trx.type === filterType) &&
-               (filterUser === 'ALL' || trx.enteredBy === filterUser);
-      });
+  const filtered = (GLOBAL_DATA.transactions || []).filter(trx => {
+    const d = trx.date || "";
+    const year = d.length >= 4 ? d.substring(0, 4) : "";
+    const month = d.length >= 7 ? d.substring(5, 7) : "";
+    return (filterMonth === 'ALL' || month === filterMonth) &&
+           (filterYear === 'ALL' || year === filterYear) &&
+           (filterType === 'ALL' || trx.type === filterType) &&
+           (filterUser === 'ALL' || trx.enteredBy === filterUser);
+  });
 
-      if (filtered.length === 0) {
-        showToast("Tidak ada data transaksi untuk dicetak.", "error");
-        return;
-      }
+  if (filtered.length === 0) {
+    showToast("Tidak ada data transaksi untuk dicetak.", "error");
+    return;
+  }
 
-      let loadingToast = showToast("Menyiapkan dokumen PDF...", "info");
+  let loadingToast = showToast("Menyiapkan dokumen PDF...", "info");
 
-      let totalIn = 0, totalOut = 0;
-      filtered.forEach(t => {
-        const dir = getTypeMeta(t.type).direction;
-        if (dir === 'in') totalIn += Number(t.amount) || 0;
-        else if (dir === 'out') totalOut += Number(t.amount) || 0;
-      });
+  let totalIn = 0, totalOut = 0;
+  filtered.forEach(t => {
+    const dir = getTypeMeta(t.type).direction;
+    if (dir === 'in') totalIn += Number(t.amount) || 0;
+    else if (dir === 'out') totalOut += Number(t.amount) || 0;
+  });
 
-      const printContainer = document.createElement('div');
-      printContainer.style.padding = '20px';
-      printContainer.style.fontFamily = 'Arial, sans-serif';
-      printContainer.style.color = '#181412';
+  const printContainer = document.createElement('div');
+  printContainer.style.position = 'fixed';
+  printContainer.style.left = '-9999px';
+  printContainer.style.padding = '20px';
+  printContainer.style.fontFamily = 'Arial, sans-serif';
+  printContainer.style.color = '#181412';
 
-      printContainer.innerHTML = `
-        <div style="border-bottom: 2px solid #C87A4B; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-between: space-between; align-items: center;">
-          <div>
-            <h1 style="font-size: 20px; font-weight: 900; margin: 0; color: #C87A4B;">MOCHI'S VAULT</h1>
-            <p style="font-size: 11px; color: #80736B; margin: 4px 0 0 0;">Laporan Keuangan & Statement Mutasi Resmi — Yosa & Fani</p>
-          </div>
-          <div style="text-align: right; font-size: 10px; color: #80736B;">
-            <p style="margin:0;">Periode: <strong>${filterMonth === 'ALL' ? 'Semua Bulan' : filterMonth} / ${filterYear}</strong></p>
-            <p style="margin:2px 0 0 0;">Dicetak: ${new Date().toLocaleDateString('id-ID')}</p>
-          </div>
-        </div>
+  printContainer.innerHTML = `
+    <div style="border-bottom: 2px solid #C87A4B; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h1 style="font-size: 20px; font-weight: 900; margin: 0; color: #C87A4B;">MOCHI'S VAULT</h1>
+        <p style="font-size: 11px; color: #80736B; margin: 4px 0 0 0;">Laporan Keuangan & Statement Mutasi Resmi — Yosa & Fani</p>
+      </div>
+      <div style="text-align: right; font-size: 10px; color: #80736B;">
+        <p style="margin:0;">Periode: <strong>${filterMonth === 'ALL' ? 'Semua Bulan' : filterMonth} / ${filterYear}</strong></p>
+        <p style="margin:2px 0 0 0;">Dicetak: ${new Date().toLocaleDateString('id-ID')}</p>
+      </div>
+    </div>
 
-        <div style="background-color: #F3ECE4; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; font-size: 11px;">
-          <div><span>Total Pemasukan:</span> <strong style="color: #2E6F40; display: block; font-size: 13px;">+${formatRupiah(totalIn)}</strong></div>
-          <div><span>Total Pengeluaran:</span> <strong style="color: #B93838; display: block; font-size: 13px;">-${formatRupiah(totalOut)}</strong></div>
-          <div><span>Surplus / Defisit:</span> <strong style="color: #181412; display: block; font-size: 13px;">${formatRupiah(totalIn - totalOut)}</strong></div>
-        </div>
+    <div style="background-color: #F3ECE4; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; font-size: 11px;">
+      <div><span>Total Pemasukan:</span> <strong style="color: #2E6F40; display: block; font-size: 13px;">+${formatRupiah(totalIn)}</strong></div>
+      <div><span>Total Pengeluaran:</span> <strong style="color: #B93838; display: block; font-size: 13px;">-${formatRupiah(totalOut)}</strong></div>
+      <div><span>Surplus / Defisit:</span> <strong style="color: #181412; display: block; font-size: 13px;">${formatRupiah(totalIn - totalOut)}</strong></div>
+    </div>
 
-        <table style="width: 100%; border-collapse: collapse; font-size: 10px; text-align: left;">
-          <thead>
-            <tr style="background-color: #221C19; color: #FAF8F5;">
-              <th style="padding: 8px; border: 1px solid #ddd;">Tanggal</th>
-              <th style="padding: 8px; border: 1px solid #ddd;">Oleh</th>
-              <th style="padding: 8px; border: 1px solid #ddd;">Kategori / Deskripsi</th>
-              <th style="padding: 8px; border: 1px solid #ddd;">Alat Bayar</th>
-              <th style="padding: 8px; border: 1px solid #ddd; text-align: right;">Jumlah</th>
+    <table style="width: 100%; border-collapse: collapse; font-size: 10px; text-align: left;">
+      <thead>
+        <tr style="background-color: #221C19; color: #FAF8F5;">
+          <th style="padding: 8px; border: 1px solid #ddd;">Tanggal</th>
+          <th style="padding: 8px; border: 1px solid #ddd;">Oleh</th>
+          <th style="padding: 8px; border: 1px solid #ddd;">Kategori / Deskripsi</th>
+          <th style="padding: 8px; border: 1px solid #ddd;">Alat Bayar</th>
+          <th style="padding: 8px; border: 1px solid #ddd; text-align: right;">Jumlah</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filtered.map((t, idx) => {
+          const meta = getTypeMeta(t.type);
+          const bg = idx % 2 === 0 ? '#FFFFFF' : '#FAF8F5';
+          let acc = t.sourceAccount || '';
+          if (t.sourceAccount && t.targetAccount) acc += ` -> ${t.targetAccount}`;
+          else if (t.targetAccount) acc = t.targetAccount;
+
+          return `
+            <tr style="background-color: ${bg};">
+              <td style="padding: 6px 8px; border: 1px solid #eee;">${formatDate(t.date)}</td>
+              <td style="padding: 6px 8px; border: 1px solid #eee;">${escapeHtml(t.enteredBy)}</td>
+              <td style="padding: 6px 8px; border: 1px solid #eee;">
+                <strong>${escapeHtml(t.description || t.category)}</strong>
+                <div style="font-size: 8px; color: #80736B;">${escapeHtml(t.category)}</div>
+              </td>
+              <td style="padding: 6px 8px; border: 1px solid #eee;">${escapeHtml(acc || '-')}</td>
+              <td style="padding: 6px 8px; border: 1px solid #eee; text-align: right; font-weight: bold; color: ${meta.direction === 'in' ? '#2E6F40' : (meta.direction === 'out' ? '#B93838' : '#181412')};">
+                ${meta.prefix}${formatRupiah(t.amount)}
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            ${filtered.map((t, idx) => {
-              const meta = getTypeMeta(t.type);
-              const bg = idx % 2 === 0 ? '#FFFFFF' : '#FAF8F5';
-              let acc = t.sourceAccount || '';
-              if (t.sourceAccount && t.targetAccount) acc += ` -> ${t.targetAccount}`;
-              else if (t.targetAccount) acc = t.targetAccount;
+          `;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
 
-              return `
-                <tr style="background-color: ${bg};">
-                  <td style="padding: 6px 8px; border: 1px solid #eee;">${formatDate(t.date)}</td>
-                  <td style="padding: 6px 8px; border: 1px solid #eee;">${escapeHtml(t.enteredBy)}</td>
-                  <td style="padding: 6px 8px; border: 1px solid #eee;">
-                    <strong>${escapeHtml(t.description || t.category)}</strong>
-                    <div style="font-size: 8px; color: #80736B;">${escapeHtml(t.category)}</div>
-                  </td>
-                  <td style="padding: 6px 8px; border: 1px solid #eee;">${escapeHtml(acc || '-')}</td>
-                  <td style="padding: 6px 8px; border: 1px solid #eee; text-align: right; font-weight: bold; color: ${meta.direction === 'in' ? '#2E6F40' : (meta.direction === 'out' ? '#B93838' : '#181412')};">
-                    ${meta.prefix}${formatRupiah(t.amount)}
-                  </td>
-                </tr>
-              `;
-            }).join('')}
-          </tbody>
-        </table>
-      `;
+  document.body.appendChild(printContainer);
 
-      const opt = {
-        margin:       10,
-        filename:     `Laporan_Keuangan_Mochi_${filterYear}-${filterMonth}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
+  const opt = {
+    margin:       10,
+    filename:     `Laporan_Keuangan_Mochi_${filterYear}-${filterMonth}.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2 },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
 
-      html2pdf().set(opt).from(printContainer).save().then(() => {
-        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("PDF berhasil diunduh!", "success");
-      }).catch(err => {
-        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Gagal membuat PDF: " + err.message, "error");
-      });
-    }
-
+  html2pdf().set(opt).from(printContainer).save().then(() => {
+    if (document.body.contains(printContainer)) document.body.removeChild(printContainer);
+    if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+    showToast("PDF berhasil diunduh!", "success");
+  }).catch(err => {
+    if (document.body.contains(printContainer)) document.body.removeChild(printContainer);
+    if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+    showToast("Gagal membuat PDF: " + err.message, "error");
+  });
+}
+    
     function renderWallets() {
       const operationalEl = document.getElementById('list-accounts-operational');
       const savingsEl = document.getElementById('list-accounts-savings');
@@ -1991,46 +1997,63 @@ async function loadAppData(isSilentReload = false) {
     }
 
     function promptDeleteAccount(accountName) {
-      vibrate(40);
-      const titleEl = document.getElementById('delete-modal-title');
-      const descEl = document.getElementById('delete-modal-desc');
-      if (titleEl) titleEl.innerText = `Hapus Akun "${accountName}"?`;
-      if (descEl) descEl.innerText = "Menghapus akun ini akan menghapusnya dari daftar Wallets secara permanen.";
+  vibrate(40);
 
-      document.getElementById('btn-confirm-delete').onclick = async () => {
-        vibrate(30);
-        closeModal('modalDelete');
-        let loadingToast = showToast("Menghapus akun...", "info");
+  const acc = (GLOBAL_DATA.accounts || []).find(a => a.accountName === accountName);
+  const balance = acc ? Number(acc.runningBalance) || 0 : 0;
+  let confirmedNonZero = false;
 
-        // 1. Hapus akun dari memori HP & cache lokal seketika
-        if (GLOBAL_DATA.accounts) {
-          GLOBAL_DATA.accounts = GLOBAL_DATA.accounts.filter(a => a.accountName.trim().toLowerCase() !== accountName.trim().toLowerCase());
-          localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
-          renderWallets(); // Render ulang tampilan Wallets secara instan 0 detik
-        }
+  if (balance !== 0) {
+    const proceed = confirm(
+      `Akun "${accountName}" masih memiliki saldo berjalan ${formatRupiah(balance)}.\n\n` +
+      `Menghapus akun TIDAK menghapus riwayat transaksinya, tetapi saldo ini tidak akan tercatat ke akun mana pun lagi.\n\n` +
+      `Tetap hapus akun ini?`
+    );
+    if (!proceed) return;
+    confirmedNonZero = true;
+  }
 
-        // 2. Kirim perintah hapus ke Google Sheets
-        try {
-          const res = await fetch(API_URL, {
-            method: 'POST', redirect: 'follow',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action: 'deleteMasterData', type: 'account', payload: { accountName } })
-          });
-          const result = await res.json();
-          if (result.status === 'error') throw new Error(result.message);
+  const titleEl = document.getElementById('delete-modal-title');
+  const descEl = document.getElementById('delete-modal-desc');
+  if (titleEl) titleEl.innerText = `Hapus Akun "${accountName}"?`;
+  if (descEl) descEl.innerText = "Menghapus akun ini akan menghapusnya dari daftar Wallets secara permanen.";
 
-          if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-          showToast("Akun berhasil dihapus!");
-          await loadAppData(true);
-        } catch (err) {
-          if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-          showToast("Gagal menghapus akun: " + err.message, "error");
-          await loadAppData(true); // Revert jika jaringan gagal
-        }
-      };
+  document.getElementById('btn-confirm-delete').onclick = async () => {
+    vibrate(30);
+    closeModal('modalDelete');
+    let loadingToast = showToast("Menghapus akun...", "info");
 
-      openModal('modalDelete');
+    if (GLOBAL_DATA.accounts) {
+      GLOBAL_DATA.accounts = GLOBAL_DATA.accounts.filter(a => a.accountName.trim().toLowerCase() !== accountName.trim().toLowerCase());
+      localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+      renderWallets();
     }
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST', redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'deleteMasterData',
+          type: 'account',
+          payload: { accountName, confirmNonZeroBalance: confirmedNonZero }
+        })
+      });
+      const result = await res.json();
+      if (result.status === 'error') throw new Error(result.message);
+
+      if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+      showToast("Akun berhasil dihapus!");
+      await loadAppData(true);
+    } catch (err) {
+      if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+      showToast("Gagal menghapus akun: " + err.message, "error");
+      await loadAppData(true);
+    }
+  };
+
+  openModal('modalDelete');
+}
       
     function renderPayablesReceivables() {
       const payableEl = document.getElementById('list-payables-active');
