@@ -2161,10 +2161,12 @@
 
       const printContainer = document.createElement('div');
       printContainer.id = 'mochi-pdf-export-root';
-      // NOTE: must be position:absolute (not fixed) — html2canvas fails to
-      // capture position:fixed elements reliably during its cloning step,
-      // which previously resulted in a blank/white PDF body.
-      printContainer.style.cssText = 'position:absolute; top:0; left:0; width:750px; background:#FAF8F5; padding:0; z-index:-1;';
+      // Render at natural (0,0) position — html2canvas fails to correctly
+      // capture elements placed off-screen (position:fixed or large negative
+      // offsets) since they can fall outside its internal render bounds,
+      // which previously produced a blank PDF. Instead we render normally
+      // and hide it from the user with a full-screen overlay underneath it.
+      printContainer.style.cssText = 'position:absolute; top:0; left:0; width:750px; background:#FAF8F5; padding:0; z-index:2147483646;';
 
       printContainer.innerHTML = `
         <style>
@@ -2261,7 +2263,16 @@
         </div>
       `;
 
+      const pdfOverlay = document.createElement('div');
+      pdfOverlay.id = 'mochi-pdf-loading-overlay';
+      pdfOverlay.style.cssText = 'position:fixed; inset:0; background:#FAF8F5; z-index:2147483647;';
+      document.body.appendChild(pdfOverlay);
       document.body.appendChild(printContainer);
+
+      function cleanupPdfExportDom() {
+        if (printContainer.parentNode) printContainer.parentNode.removeChild(printContainer);
+        if (pdfOverlay.parentNode) pdfOverlay.parentNode.removeChild(pdfOverlay);
+      }
 
       const opt = {
         margin:       [10, 8, 14, 8],
@@ -2300,11 +2311,11 @@
           pdf.text(`Page ${i} of ${totalPages}`, pageWidth - 8, pageHeight - 4, { align: 'right' });
         }
       }).save().then(() => {
-        if (printContainer.parentNode) printContainer.parentNode.removeChild(printContainer);
+        cleanupPdfExportDom();
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         showToast("PDF downloaded successfully!", "success");
       }).catch(err => {
-        if (printContainer.parentNode) printContainer.parentNode.removeChild(printContainer);
+        cleanupPdfExportDom();
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         showToast("Failed to generate PDF: " + err.message, "error");
       });
