@@ -193,12 +193,11 @@
     <div class="absolute inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/80 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="reward-bg"></div>
     <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="reward-content">
       <div class="relative">
-        <div class="absolute inset-0 bg-mochi-light rounded-full animate-ping opacity-75"></div>
-        <div class="w-24 h-24 bg-gradient-to-tr from-mochi to-mochi-light rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(200,122,75,0.6)] relative z-10 border-4 border-white dark:border-coffee-darkest p-3.5">
-          <img src="assets/cat-paw-3d.png" alt="Purrfect Paw" class="w-full h-full object-contain filter drop-shadow-md">
-        </div>
+        <div class="absolute inset-0 bg-mochi-light/50 rounded-full animate-ping opacity-75 blur-md"></div>
+        <!-- Gambar mengawang besar (w-28 h-28) dengan bayangan glow 3D -->
+        <img src="assets/cat-paw-3d.png" alt="Purrfect Paw" class="w-28 h-28 object-contain relative z-10 filter drop-shadow-[0_12px_25px_rgba(200,122,75,0.6)]">
       </div>
-      <h2 class="text-white text-3xl font-black mt-6 drop-shadow-lg tracking-tight">Purr-fect! 🐾</h2>
+      <h2 class="text-white text-3xl font-black mt-4 drop-shadow-lg tracking-tight">Purr-fect! 🐾</h2>
       <p id="reward-subtitle" class="text-mochi-light font-bold mt-1.5 drop-shadow-md text-sm bg-coffee-dark/50 px-4 py-1 rounded-full">Saved</p>
     </div>
   </div>
@@ -482,8 +481,9 @@
   <!-- FAB -->
   <div class="fixed bottom-[5.5rem] left-0 right-0 z-50 pointer-events-none">
     <div class="max-w-3xl mx-auto px-5 relative h-full">
-      <button ontouchstart="vibrate(35)" onclick="openNewTransactionForm()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full text-white shadow-[0_8px_20px_-6px_rgba(200,122,75,0.5)] flex items-center justify-center pointer-events-auto border border-white/20 group p-2.5">
-        <img src="assets/cat-paw-3d.png" alt="Add Transaction" class="w-full h-full object-contain filter drop-shadow-sm transition-transform group-active:scale-90">
+      <!-- Tombol dibuat mengawang dengan drop shadow alami -->
+      <button ontouchstart="vibrate(35)" onclick="openNewTransactionForm()" class="paw-fab tap-shrink absolute right-4 bottom-0 w-16 h-16 pointer-events-auto group focus:outline-none">
+        <img src="assets/cat-paw-3d.png" alt="Add Transaction" class="w-full h-full object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.35)] transition-transform group-active:scale-90">
       </button>
     </div>
   </div>
