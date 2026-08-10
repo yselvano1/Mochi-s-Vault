@@ -2107,218 +2107,262 @@
         return;
       }
 
+      const JsPDFCtor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+      if (!JsPDFCtor) {
+        showToast("PDF library failed to load. Please refresh and try again.", "error");
+        return;
+      }
+
       let loadingToast = showToast("Preparing PDF statement...", "info");
 
-      // Sort chronologically ascending (1 -> 31)
-      const sorted = filtered.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+      try {
+        // Sort chronologically ascending (1 -> 31)
+        const sorted = filtered.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
 
-      let totalIn = 0, totalOut = 0;
-      sorted.forEach(t => {
-        const dir = getTypeMeta(t.type).direction;
-        if (dir === 'in') totalIn += Number(t.amount) || 0;
-        else if (dir === 'out') totalOut += Number(t.amount) || 0;
-      });
-      const netSurplus = totalIn - totalOut;
+        let totalIn = 0, totalOut = 0;
+        sorted.forEach(t => {
+          const dir = getTypeMeta(t.type).direction;
+          if (dir === 'in') totalIn += Number(t.amount) || 0;
+          else if (dir === 'out') totalOut += Number(t.amount) || 0;
+        });
+        const netSurplus = totalIn - totalOut;
 
-      // Category breakdown (expenses only)
-      const categories = GLOBAL_DATA.categories || [];
-      const catBreakdown = {};
-      sorted.forEach(t => {
-        if (getTypeMeta(t.type).direction !== 'out') return;
-        const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
-        const main = (catMatch && (catMatch.mainCategory || catMatch.categoryName)) || t.category || 'Lainnya';
-        catBreakdown[main] = (catBreakdown[main] || 0) + (Number(t.amount) || 0);
-      });
-      const catArray = Object.entries(catBreakdown).sort((a, b) => b[1] - a[1]).slice(0, 5);
-      const maxCatVal = catArray.length ? catArray[0][1] : 1;
+        // Category breakdown (expenses only)
+        const categories = GLOBAL_DATA.categories || [];
+        const catBreakdown = {};
+        sorted.forEach(t => {
+          if (getTypeMeta(t.type).direction !== 'out') return;
+          const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
+          const main = (catMatch && (catMatch.mainCategory || catMatch.categoryName)) || t.category || 'Lainnya';
+          catBreakdown[main] = (catBreakdown[main] || 0) + (Number(t.amount) || 0);
+        });
+        const catArray = Object.entries(catBreakdown).sort((a, b) => b[1] - a[1]).slice(0, 5);
+        const maxCatVal = catArray.length ? catArray[0][1] : 1;
 
-      // Mochi mood status
-      const ratio = totalIn > 0 ? (totalOut / totalIn) : (totalOut > 0 ? 999 : 0);
-      const pctSpent = totalIn > 0 ? Math.round(ratio * 100) : 0;
-      let moodEmoji, moodTitle, moodText;
-      if (totalIn <= 0 && totalOut <= 0) {
-        moodEmoji = '🍡'; moodTitle = 'Mochi is resting~';
-        moodText = 'No transactions recorded for this period.';
-      } else if (ratio <= 0.5) {
-        moodEmoji = '😌'; moodTitle = 'Mochi feels comfy~';
-        moodText = `Pengeluaran bulan ini terjaga di ${pctSpent}% dari pemasukan.`;
-      } else if (ratio <= 0.8) {
-        moodEmoji = '🙂'; moodTitle = 'Mochi is doing okay~';
-        moodText = `Pengeluaran sudah mencapai ${pctSpent}% dari pemasukan. Tetap dipantau ya~`;
-      } else if (ratio <= 1.0) {
-        moodEmoji = '😟'; moodTitle = 'Mochi getting worried~';
-        moodText = `Pengeluaran hampir menyentuh ${pctSpent}% dari pemasukan bulan ini.`;
-      } else {
-        moodEmoji = '😰'; moodTitle = 'Mochi is worried!';
-        moodText = `Pengeluaran melebihi pemasukan sebesar ${formatRupiah(totalOut - totalIn)}.`;
-      }
-
-      const periodLabel = (filterMonth === 'ALL' ? 'All Months' : (MOCHI_PDF_MONTHS[parseInt(filterMonth, 10) - 1] || filterMonth)) +
-                           ' / ' + (filterYear === 'ALL' ? 'All Years' : filterYear);
-      const exportedAt = new Date();
-      const exportedLabel = exportedAt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) +
-                             ' — ' + exportedAt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-
-      const printContainer = document.createElement('div');
-      printContainer.id = 'mochi-pdf-export-root';
-      // Render at natural (0,0) position — html2canvas fails to correctly
-      // capture elements placed off-screen (position:fixed or large negative
-      // offsets) since they can fall outside its internal render bounds,
-      // which previously produced a blank PDF. Instead we render normally
-      // and hide it from the user with a full-screen overlay underneath it.
-      printContainer.style.cssText = 'position:absolute; top:0; left:0; width:750px; background:#FAF8F5; padding:0; z-index:2147483646;';
-
-      printContainer.innerHTML = `
-        <style>
-          #mochi-pdf-export-root, #mochi-pdf-export-root * { font-family: 'Plus Jakarta Sans', Arial, sans-serif; box-sizing: border-box; }
-          #mochi-pdf-export-root .mochi-card { page-break-inside: avoid; break-inside: avoid; }
-          #mochi-pdf-export-root .mochi-section { page-break-inside: avoid; break-inside: avoid; }
-        </style>
-
-        <div style="padding: 28px 30px 30px 30px;">
-
-          <!-- HEADER -->
-          <div class="mochi-section" style="background:#FAF8F5; border:1px solid rgba(45,36,30,0.08); border-left:5px solid #C87A4B; border-radius:14px; padding:18px 22px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between;">
-            <div>
-              <div style="font-size:21px; font-weight:900; letter-spacing:0.5px; color:#2D241E; margin:0;">MOCHI<span style="color:#C87A4B;">'</span>S VAULT</div>
-              <div style="font-size:10.5px; font-weight:600; color:#80736B; margin-top:3px; letter-spacing:0.3px;">Official Financial Statement &middot; Yosa &amp; Fani</div>
-            </div>
-            <div style="text-align:right;">
-              <span style="display:inline-block; background:#EFE6DC; color:#A45D33; font-size:10.5px; font-weight:800; padding:6px 14px; border-radius:999px; letter-spacing:0.2px;">Period: ${escapeHtml(periodLabel)}</span>
-              <div style="font-size:9px; color:#A89B91; margin-top:6px; font-weight:600;">Exported ${exportedLabel}</div>
-            </div>
-          </div>
-
-          <!-- MOOD STATUS BOX -->
-          <div class="mochi-section" style="background:#FFFFFF; border:1px solid rgba(45,36,30,0.08); border-radius:14px; padding:14px 18px; margin-bottom:16px; display:flex; align-items:center; gap:12px;">
-            <div style="font-size:26px; line-height:1; flex-shrink:0;">${moodEmoji}</div>
-            <div>
-              <div style="font-size:12px; font-weight:800; color:#2D241E;">${escapeHtml(moodTitle)}</div>
-              <div style="font-size:10.5px; color:#80736B; font-weight:500; margin-top:2px;">${escapeHtml(moodText)}</div>
-            </div>
-          </div>
-
-          <!-- KPI 3-COLUMN -->
-          <div class="mochi-section" style="display:flex; gap:12px; margin-bottom:16px;">
-            <div style="flex:1; background:#FFFFFF; border:1px solid rgba(45,36,30,0.08); border-radius:14px; padding:14px 16px;">
-              <div style="font-size:9px; font-weight:700; color:#80736B; text-transform:uppercase; letter-spacing:0.4px;">Total Income</div>
-              <div style="font-size:15px; font-weight:900; color:#2E6F40; margin-top:6px;">+${formatRupiah(totalIn)}</div>
-            </div>
-            <div style="flex:1; background:#FFFFFF; border:1px solid rgba(45,36,30,0.08); border-radius:14px; padding:14px 16px;">
-              <div style="font-size:9px; font-weight:700; color:#80736B; text-transform:uppercase; letter-spacing:0.4px;">Total Expenses</div>
-              <div style="font-size:15px; font-weight:900; color:#B93838; margin-top:6px;">-${formatRupiah(totalOut)}</div>
-            </div>
-            <div style="flex:1; background:#FFFFFF; border:1px solid rgba(45,36,30,0.08); border-radius:14px; padding:14px 16px;">
-              <div style="font-size:9px; font-weight:700; color:#80736B; text-transform:uppercase; letter-spacing:0.4px;">Net Surplus / Deficit</div>
-              <div style="font-size:15px; font-weight:900; color:${netSurplus >= 0 ? '#1D63B8' : '#B93838'}; margin-top:6px;">${netSurplus >= 0 ? '' : '-'}${formatRupiah(Math.abs(netSurplus))}</div>
-            </div>
-          </div>
-
-          ${catArray.length ? `
-          <!-- CATEGORY BREAKDOWN -->
-          <div class="mochi-section" style="background:#FFFFFF; border:1px solid rgba(45,36,30,0.08); border-radius:14px; padding:16px 18px; margin-bottom:18px;">
-            <div style="font-size:10.5px; font-weight:800; color:#2D241E; margin-bottom:12px; letter-spacing:0.2px;">TOP SPENDING CATEGORIES</div>
-            ${catArray.map(([name, val]) => `
-              <div style="margin-bottom:9px;">
-                <div style="display:flex; justify-content:space-between; font-size:10px; margin-bottom:4px;">
-                  <span style="font-weight:700; color:#2D241E;">${escapeHtml(name)}</span>
-                  <span style="font-weight:800; color:#B93838;">${formatRupiah(val)}</span>
-                </div>
-                <div style="background:#EFE6DC; border-radius:6px; height:6px; width:100%; overflow:hidden;">
-                  <div style="background:#C87A4B; height:6px; border-radius:6px; width:${Math.max(4, Math.round((val / maxCatVal) * 100))}%;"></div>
-                </div>
-              </div>
-            `).join('')}
-          </div>` : ''}
-
-          <!-- TRANSACTION DETAIL -->
-          <div style="font-size:11px; font-weight:800; color:#2D241E; margin-bottom:10px; letter-spacing:0.3px;">TRANSACTION DETAILS &middot; ${sorted.length} entries</div>
-
-          ${sorted.map(t => {
-            const meta = getTypeMeta(t.type);
-            const amountColor = meta.direction === 'in' ? '#2E6F40' : (meta.direction === 'out' ? '#B93838' : '#1D63B8');
-            let accountHtml;
-            if (t.sourceAccount && t.targetAccount) {
-              accountHtml = `${escapeHtml(t.sourceAccount)} <span style="color:#C87A4B; font-weight:800;">&#10148;</span> ${escapeHtml(t.targetAccount)}`;
-            } else if (t.targetAccount) {
-              accountHtml = escapeHtml(t.targetAccount);
-            } else if (t.sourceAccount) {
-              accountHtml = escapeHtml(t.sourceAccount);
-            } else {
-              accountHtml = '-';
-            }
-
-            return `
-              <div class="mochi-card" style="background:#FFFFFF; border:1px solid rgba(45,36,30,0.08); border-radius:12px; padding:12px 16px; margin-bottom:8px; display:flex; align-items:center; gap:12px;">
-                <div style="flex-shrink:0; background:#EFE6DC; color:#A45D33; font-size:9px; font-weight:800; padding:5px 9px; border-radius:8px; text-align:center; min-width:52px;">${formatDate(t.date)}</div>
-                <div style="flex:1; min-width:0;">
-                  <div style="font-size:11px; font-weight:700; color:#2D241E; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(t.description || t.category || t.type)}</div>
-                  <div style="font-size:9px; color:#80736B; font-weight:500; margin-top:2px;">${escapeHtml(t.category || meta.categoryType || '')} &middot; ${accountHtml} &middot; <span style="color:#A89B91;">By ${escapeHtml(t.enteredBy || '-')}</span></div>
-                </div>
-                <div style="flex-shrink:0; font-size:12px; font-weight:800; color:${amountColor}; text-align:right; white-space:nowrap;">${meta.prefix}${formatRupiah(t.amount)}</div>
-              </div>
-            `;
-          }).join('')}
-
-        </div>
-      `;
-
-      const pdfOverlay = document.createElement('div');
-      pdfOverlay.id = 'mochi-pdf-loading-overlay';
-      pdfOverlay.style.cssText = 'position:fixed; inset:0; background:#FAF8F5; z-index:2147483647;';
-      document.body.appendChild(pdfOverlay);
-      document.body.appendChild(printContainer);
-
-      function cleanupPdfExportDom() {
-        if (printContainer.parentNode) printContainer.parentNode.removeChild(printContainer);
-        if (pdfOverlay.parentNode) pdfOverlay.parentNode.removeChild(pdfOverlay);
-      }
-
-      const opt = {
-        margin:       [10, 8, 14, 8],
-        filename:     `Mochi_Financial_Statement_${filterYear}-${filterMonth}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: '#FAF8F5',
-          scrollX: 0,
-          scrollY: 0,
-          windowWidth: printContainer.scrollWidth,
-          windowHeight: printContainer.scrollHeight
-        },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak:    { mode: ['css', 'avoid-all'], avoid: ['.mochi-card', '.mochi-section'] }
-      };
-
-      html2pdf().set(opt).from(printContainer).toPdf().get('pdf').then(pdf => {
-        const totalPages = pdf.internal.getNumberOfPages();
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        for (let i = 1; i <= totalPages; i++) {
-          pdf.setPage(i);
-          pdf.setDrawColor(200, 122, 75);
-          pdf.setLineWidth(0.2);
-          pdf.line(8, pageHeight - 11, pageWidth - 8, pageHeight - 11);
-          pdf.setFont(undefined, 'bold');
-          pdf.setFontSize(7.5);
-          pdf.setTextColor(45, 36, 30);
-          pdf.text("MOCHI'S VAULT — Official Digital Statement", 8, pageHeight - 7);
-          pdf.setFont(undefined, 'normal');
-          pdf.setFontSize(7);
-          pdf.setTextColor(128, 115, 107);
-          pdf.text(`Exported ${exportedLabel}`, 8, pageHeight - 4);
-          pdf.text(`Page ${i} of ${totalPages}`, pageWidth - 8, pageHeight - 4, { align: 'right' });
+        // Mochi mood status
+        const ratio = totalIn > 0 ? (totalOut / totalIn) : (totalOut > 0 ? 999 : 0);
+        const pctSpent = totalIn > 0 ? Math.round(ratio * 100) : 0;
+        let moodTitle, moodText, moodColor;
+        if (totalIn <= 0 && totalOut <= 0) {
+          moodTitle = 'Mochi is resting~';
+          moodText = 'No transactions recorded for this period.';
+          moodColor = [168, 155, 145];
+        } else if (ratio <= 0.5) {
+          moodTitle = 'Mochi feels comfy~';
+          moodText = `Pengeluaran bulan ini terjaga di ${pctSpent}% dari pemasukan.`;
+          moodColor = [46, 111, 64];
+        } else if (ratio <= 0.8) {
+          moodTitle = 'Mochi is doing okay~';
+          moodText = `Pengeluaran sudah mencapai ${pctSpent}% dari pemasukan. Tetap dipantau ya~`;
+          moodColor = [200, 122, 75];
+        } else if (ratio <= 1.0) {
+          moodTitle = 'Mochi getting worried~';
+          moodText = `Pengeluaran hampir menyentuh ${pctSpent}% dari pemasukan bulan ini.`;
+          moodColor = [200, 122, 75];
+        } else {
+          moodTitle = 'Mochi is worried!';
+          moodText = `Pengeluaran melebihi pemasukan sebesar ${formatRupiah(totalOut - totalIn)}.`;
+          moodColor = [185, 56, 56];
         }
-      }).save().then(() => {
-        cleanupPdfExportDom();
+
+        const periodLabel = (filterMonth === 'ALL' ? 'All Months' : (MOCHI_PDF_MONTHS[parseInt(filterMonth, 10) - 1] || filterMonth)) +
+                             ' / ' + (filterYear === 'ALL' ? 'All Years' : filterYear);
+        const exportedAt = new Date();
+        const exportedLabel = exportedAt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) +
+                               ' - ' + exportedAt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+        // ---- Colors ----
+        const COL_TEXT_PRIMARY   = [45, 36, 30];
+        const COL_TEXT_SECONDARY = [128, 115, 107];
+        const COL_TEXT_TERTIARY  = [168, 155, 145];
+        const COL_CREAM          = [250, 248, 245];
+        const COL_SUBTLE_2       = [239, 230, 220];
+        const COL_MOCHI          = [200, 122, 75];
+        const COL_MOCHI_DARK     = [164, 93, 51];
+        const COL_BORDER         = [232, 226, 220];
+        const COL_WHITE          = [255, 255, 255];
+        const COL_INCOME         = [46, 111, 64];
+        const COL_EXPENSE        = [185, 56, 56];
+        const COL_INFO           = [29, 99, 184];
+
+        // ---- Layout constants (mm, A4) ----
+        const PAGE_W = 210, PAGE_H = 297, MARGIN = 12;
+        const CONTENT_W = PAGE_W - MARGIN * 2;
+        const FOOTER_ZONE = 14;
+        const CONTENT_BOTTOM = PAGE_H - FOOTER_ZONE;
+
+        const doc = new JsPDFCtor({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+        doc.setFont('helvetica', 'normal');
+
+        let y = MARGIN;
+
+        function ensureSpace(neededHeight) {
+          if (y + neededHeight > CONTENT_BOTTOM) {
+            doc.addPage();
+            y = MARGIN;
+          }
+        }
+
+        // ---- Header card ----
+        const headerH = 22;
+        doc.setDrawColor(...COL_BORDER); doc.setLineWidth(0.25);
+        doc.setFillColor(...COL_CREAM);
+        doc.roundedRect(MARGIN, y, CONTENT_W, headerH, 3, 3, 'FD');
+        doc.setFillColor(...COL_MOCHI);
+        doc.rect(MARGIN, y + 0.5, 1.6, headerH - 1, 'F');
+
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.setTextColor(...COL_TEXT_PRIMARY);
+        doc.text("MOCHI'S VAULT", MARGIN + 7, y + 9.5);
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(8.3); doc.setTextColor(...COL_TEXT_SECONDARY);
+        doc.text("Official Financial Statement - Yosa & Fani", MARGIN + 7, y + 15.5);
+
+        const periodText = `Period: ${periodLabel}`;
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(8.3);
+        const periodTextW = doc.getTextWidth(periodText);
+        const badgeW = periodTextW + 8, badgeH = 6.5;
+        const badgeX = MARGIN + CONTENT_W - badgeW - 3, badgeY = y + 4;
+        doc.setFillColor(...COL_SUBTLE_2);
+        doc.roundedRect(badgeX, badgeY, badgeW, badgeH, 3.2, 3.2, 'F');
+        doc.setTextColor(...COL_MOCHI_DARK);
+        doc.text(periodText, badgeX + 4, badgeY + 4.4);
+
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(6.8); doc.setTextColor(...COL_TEXT_TERTIARY);
+        doc.text(`Exported ${exportedLabel}`, MARGIN + CONTENT_W - 3, y + headerH - 2.5, { align: 'right' });
+
+        y += headerH + 5;
+
+        // ---- Mood status box ----
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(8.3);
+        const moodLines = doc.splitTextToSize(moodText, CONTENT_W - 20);
+        const moodH = Math.max(16, 8 + moodLines.length * 3.6);
+        doc.setDrawColor(...COL_BORDER); doc.setFillColor(...COL_WHITE);
+        doc.roundedRect(MARGIN, y, CONTENT_W, moodH, 3, 3, 'FD');
+        doc.setFillColor(...moodColor);
+        doc.circle(MARGIN + 8, y + moodH / 2, 2.4, 'F');
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(...COL_TEXT_PRIMARY);
+        doc.text(moodTitle, MARGIN + 15, y + 6.5);
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(8.3); doc.setTextColor(...COL_TEXT_SECONDARY);
+        doc.text(moodLines, MARGIN + 15, y + 11.3);
+
+        y += moodH + 5;
+
+        // ---- KPI 3-column ----
+        const kpiGap = 4, kpiW = (CONTENT_W - kpiGap * 2) / 3, kpiH = 18;
+        function drawKpiCard(x, label, valueText, color) {
+          doc.setDrawColor(...COL_BORDER); doc.setFillColor(...COL_WHITE);
+          doc.roundedRect(x, y, kpiW, kpiH, 3, 3, 'FD');
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(6.6); doc.setTextColor(...COL_TEXT_SECONDARY);
+          doc.text(label.toUpperCase(), x + 4, y + 6.2);
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(...color);
+          doc.text(valueText, x + 4, y + 13.5);
+        }
+        drawKpiCard(MARGIN, 'Total Income', '+' + formatRupiah(totalIn), COL_INCOME);
+        drawKpiCard(MARGIN + kpiW + kpiGap, 'Total Expenses', '-' + formatRupiah(totalOut), COL_EXPENSE);
+        drawKpiCard(MARGIN + 2 * (kpiW + kpiGap), 'Net Surplus/Deficit', (netSurplus >= 0 ? '' : '-') + formatRupiah(Math.abs(netSurplus)), netSurplus >= 0 ? COL_INFO : COL_EXPENSE);
+
+        y += kpiH + 5;
+
+        // ---- Category breakdown ----
+        if (catArray.length) {
+          const catRowH = 7.2, catHeaderH = 8, catPad = 4;
+          const catBoxH = catHeaderH + catArray.length * catRowH + catPad;
+          ensureSpace(catBoxH + 6);
+          doc.setDrawColor(...COL_BORDER); doc.setFillColor(...COL_WHITE);
+          doc.roundedRect(MARGIN, y, CONTENT_W, catBoxH, 3, 3, 'FD');
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(8.3); doc.setTextColor(...COL_TEXT_PRIMARY);
+          doc.text('TOP SPENDING CATEGORIES', MARGIN + 5, y + 6);
+          let cy = y + catHeaderH + 2.5;
+          catArray.forEach(([name, val]) => {
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(7.8); doc.setTextColor(...COL_TEXT_PRIMARY);
+            doc.text(String(name), MARGIN + 5, cy);
+            doc.setTextColor(...COL_EXPENSE);
+            doc.text(formatRupiah(val), MARGIN + CONTENT_W - 5, cy, { align: 'right' });
+            const barY = cy + 1.4, barMaxW = CONTENT_W - 10;
+            doc.setFillColor(...COL_SUBTLE_2);
+            doc.roundedRect(MARGIN + 5, barY, barMaxW, 2, 1, 1, 'F');
+            const barW = Math.max(3, (val / maxCatVal) * barMaxW);
+            doc.setFillColor(...COL_MOCHI);
+            doc.roundedRect(MARGIN + 5, barY, barW, 2, 1, 1, 'F');
+            cy += catRowH;
+          });
+          y += catBoxH + 6;
+        }
+
+        // ---- Transaction detail section title ----
+        ensureSpace(10);
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(...COL_TEXT_PRIMARY);
+        doc.text(`TRANSACTION DETAILS - ${sorted.length} entries`, MARGIN, y + 4);
+        y += 9;
+
+        // ---- Transaction cards ----
+        const dateBadgeW = 17, rowGap = 2.2;
+        sorted.forEach(t => {
+          const meta = getTypeMeta(t.type);
+          let accountText;
+          if (t.sourceAccount && t.targetAccount) accountText = `${t.sourceAccount} -> ${t.targetAccount}`;
+          else if (t.targetAccount) accountText = t.targetAccount;
+          else if (t.sourceAccount) accountText = t.sourceAccount;
+          else accountText = '-';
+
+          const descText = t.description || t.category || t.type || '-';
+          const metaLineText = `${t.category || meta.categoryType || ''} - ${accountText} - By ${t.enteredBy || '-'}`;
+
+          const textX = MARGIN + 4 + dateBadgeW + 4;
+          const amountColW = 34;
+          const textMaxW = CONTENT_W - (dateBadgeW + 4) - amountColW - 12;
+
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(8.4);
+          const descLines = doc.splitTextToSize(descText, textMaxW).slice(0, 2);
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(7);
+          const metaLines = doc.splitTextToSize(metaLineText, textMaxW).slice(0, 2);
+
+          const rowH = Math.max(15, 5 + descLines.length * 3.6 + metaLines.length * 3.1 + 2);
+
+          ensureSpace(rowH + rowGap);
+
+          doc.setDrawColor(...COL_BORDER); doc.setFillColor(...COL_WHITE);
+          doc.roundedRect(MARGIN, y, CONTENT_W, rowH, 2.5, 2.5, 'FD');
+
+          doc.setFillColor(...COL_SUBTLE_2);
+          doc.roundedRect(MARGIN + 3, y + (rowH - 8) / 2, dateBadgeW, 8, 2, 2, 'F');
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(6.6); doc.setTextColor(...COL_MOCHI_DARK);
+          doc.text(formatDate(t.date), MARGIN + 3 + dateBadgeW / 2, y + rowH / 2 + 1.1, { align: 'center' });
+
+          let ty = y + 5.3;
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(8.4); doc.setTextColor(...COL_TEXT_PRIMARY);
+          doc.text(descLines, textX, ty);
+          ty += descLines.length * 3.6 + 1.3;
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(...COL_TEXT_SECONDARY);
+          doc.text(metaLines, textX, ty);
+
+          const amtColor = meta.direction === 'in' ? COL_INCOME : (meta.direction === 'out' ? COL_EXPENSE : COL_INFO);
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(8.8); doc.setTextColor(...amtColor);
+          doc.text(`${meta.prefix}${formatRupiah(t.amount)}`, MARGIN + CONTENT_W - 4, y + rowH / 2 + 1.3, { align: 'right' });
+
+          y += rowH + rowGap;
+        });
+
+        // ---- Footer stamp on every page ----
+        const totalPages = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= totalPages; i++) {
+          doc.setPage(i);
+          doc.setDrawColor(...COL_MOCHI); doc.setLineWidth(0.25);
+          doc.line(MARGIN, PAGE_H - 11, PAGE_W - MARGIN, PAGE_H - 11);
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.setTextColor(...COL_TEXT_PRIMARY);
+          doc.text("MOCHI'S VAULT - Official Digital Statement", MARGIN, PAGE_H - 7);
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(6.4); doc.setTextColor(...COL_TEXT_SECONDARY);
+          doc.text(`Exported ${exportedLabel}`, MARGIN, PAGE_H - 4);
+          doc.text(`Page ${i} of ${totalPages}`, PAGE_W - MARGIN, PAGE_H - 4, { align: 'right' });
+        }
+
+        doc.save(`Mochi_Financial_Statement_${filterYear}-${filterMonth}.pdf`);
+
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         showToast("PDF downloaded successfully!", "success");
-      }).catch(err => {
-        cleanupPdfExportDom();
+      } catch (err) {
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         showToast("Failed to generate PDF: " + err.message, "error");
-      });
+      }
     }
 
     // WALLETS: DENGAN DIVIDER CLEAN PADDING P-5 DAN BEBAS DOUBLE NAME
