@@ -2307,20 +2307,22 @@
       lucide.createIcons();
     }
 
-    // 2. MODAL DETAIL ACTIVE PAYABLE (KEMBAR DENGAN RECEIVABLE MODAL)
+    // MODAL DETAIL ACTIVE PAYABLE (FULL ENGLISH & SUPPORT CC/PAYLATER + CICILAN)
     function showPayableDetail(item, isAccount = false) {
+      if (!item) return;
       const name = isAccount ? item.accountName : item.payableName;
       currentModalBackFn = () => showPayableDetail(item, isAccount);
       window.isNestedModalView = false;
 
       const type = isAccount ? item.accountType : (item.payableType || 'Payable');
-      const amount = Math.abs(Number(isAccount ? item.runningBalance : item.remainingAmount) || 0);
+      const rawAmt = isAccount ? item.runningBalance : item.remainingAmount;
+      const amount = Math.abs(Number(rawAmt) || 0);
       const status = isAccount ? 'Active' : (item.status || 'Active');
 
-      // Riwayat Transaksi Terkait
+      // Filter Transaksi Terkait
       const relatedTrx = isAccount 
-        ? GLOBAL_DATA.transactions.filter(t => t.sourceAccount === name || t.targetAccount === name)
-        : GLOBAL_DATA.transactions.filter(t => t.relatedPayable === name);
+        ? (GLOBAL_DATA.transactions || []).filter(t => t.sourceAccount === name || t.targetAccount === name)
+        : (GLOBAL_DATA.transactions || []).filter(t => t.relatedPayable === name);
 
       let html = `
         <div class="space-y-4 pt-1">
@@ -2329,7 +2331,7 @@
             <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(name)}</h3>
           </div>
 
-          <!-- SUMMARY CARD KEMBAR (RED THEME) -->
+          <!-- SUMMARY CARD (RED THEME) -->
           <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
             <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
               <span>Payable Type:</span> 
@@ -2345,7 +2347,7 @@
             </div>
           </div>
 
-          <!-- RIWAYAT TRANSAKSI TERKAIT DENGAN 3-COLOR RULES -->
+          <!-- RIWAYAT TRANSAKSI TERKAIT -->
           <div>
             <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
             <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
@@ -2375,7 +2377,7 @@
       openModal('modalDetail');
       lucide.createIcons();
     }
-
+    
     // 3. MODAL DETAIL UNPAID RECEIVABLE
     function showReceivableDetail(r) {
       currentModalBackFn = () => showReceivableDetail(r);
