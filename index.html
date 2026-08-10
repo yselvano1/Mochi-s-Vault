@@ -82,7 +82,7 @@
 
     .ios-input {
       background-color: var(--bg-subtle-2); border: 1px solid transparent; border-radius: 0.85rem;
-      padding: 0.6rem 1rem; box-shadow: var(--shadow-inset); font-weight: 600; color: var(--text-primary);
+      padding: 0.65rem 1rem; box-shadow: var(--shadow-inset); font-weight: 600; color: var(--text-primary);
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .ios-input:focus {
@@ -227,26 +227,26 @@
         </div>
       </div>
 
-      <!-- KPI GRID -->
+      <!-- KPI GRID DENGAN PADDING AMAN TANPA POTONGAN CORNER -->
       <div class="grid grid-cols-2 gap-3">
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-3.5 h-3.5 mr-1.5 amount-in"></i> TOTAL CASH</span>
-          <span id="kpi-cash" class="text-sm md:text-base font-extrabold amount-in block truncate w-full">-</span>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-3.5 h-3.5 mr-1.5 amount-in flex-shrink-0"></i> TOTAL CASH</span>
+          <span id="kpi-cash" class="text-sm sm:text-base font-extrabold amount-in block truncate w-full">-</span>
         </div>
 
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="piggy-bank" class="w-3.5 h-3.5 mr-1.5 amount-in"></i> NET SAVINGS</span>
-          <span id="kpi-savings" class="text-sm md:text-base font-extrabold amount-in block truncate w-full">-</span>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="piggy-bank" class="w-3.5 h-3.5 mr-1.5 amount-in flex-shrink-0"></i> NET SAVINGS</span>
+          <span id="kpi-savings" class="text-sm sm:text-base font-extrabold amount-in block truncate w-full">-</span>
         </div>
 
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="hand-coins" class="w-3.5 h-3.5 mr-1.5 amount-info"></i> RECEIVABLES</span>
-          <span id="kpi-receivables" class="text-sm md:text-base font-extrabold amount-info block truncate w-full">-</span>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="hand-coins" class="w-3.5 h-3.5 mr-1.5 amount-info flex-shrink-0"></i> RECEIVABLES</span>
+          <span id="kpi-receivables" class="text-sm sm:text-base font-extrabold amount-info block truncate w-full">-</span>
         </div>
 
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="credit-card" class="w-3.5 h-3.5 mr-1.5 amount-out"></i> PAYABLES</span>
-          <span id="kpi-payables" class="text-sm md:text-base font-extrabold amount-out block truncate w-full">-</span>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="credit-card" class="w-3.5 h-3.5 mr-1.5 amount-out flex-shrink-0"></i> PAYABLES</span>
+          <span id="kpi-payables" class="text-sm sm:text-base font-extrabold amount-out block truncate w-full">-</span>
         </div>
       </div>
 
@@ -1375,7 +1375,6 @@
       document.getElementById('kpi-cash').innerText = formatRupiah(totalCashAssets);
       document.getElementById('kpi-receivables').innerText = formatRupiah(totalReceivables);
       
-      // Bersih tanpa minus ganda pada kartu Payables
       document.getElementById('kpi-payables').innerText = formatRupiah(Math.abs(totalPayablesAP + totalLiabilityBalance));
       document.getElementById('kpi-savings').innerText = formatRupiah(kpi['Net Operating Savings']);
 
@@ -1504,7 +1503,7 @@
       }, 1500);
     }
 
-    // KARTU BUDGET DENGAN PADDING AMAN TANPA TEKS BERKADALUARSA
+    // OPSI A: SOFT BACKGROUND TANPA INNER GARIS BORDER BERLAPIS
     function renderBudgetSummaryCard() {
       const container = document.getElementById('dashboard-budget-summary');
       if (!container) return;
@@ -1555,27 +1554,27 @@
           : `Left ${formatRupiah(remaining)}`;
 
         return `
-          <div onclick="vibrate(30); showBudgetDetail('${escapeAttr(cat)}')" class="floating-item p-4.5 bg-card border border-[var(--border-color)] cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3 select-none">
-            <div class="flex justify-between items-center px-0.5">
+          <div onclick="vibrate(30); showBudgetDetail('${escapeAttr(cat)}')" class="floating-item p-4.5 bg-[var(--bg-subtle-2)] cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3 select-none">
+            <div class="flex justify-between items-center">
               <span class="text-sm font-extrabold text-main truncate pr-2">${escapeHtml(cat)}</span>
               <span class="text-[10px] font-black px-2.5 py-1 rounded-full border ${badgeClass} shadow-sm whitespace-nowrap">
                 ${remainingBadge}
               </span>
             </div>
 
-            <div class="flex justify-between items-baseline pt-0.5 px-0.5">
+            <div class="flex justify-between items-baseline pt-0.5">
               <div>
                 <span class="text-[10px] font-bold text-muted uppercase tracking-wider block mb-0.5">SPENT</span>
                 <span class="text-base font-black text-main leading-tight">${formatRupiah(spent)}</span>
               </div>
-              <div class="text-right pr-1">
+              <div class="text-right">
                 <span class="text-[10px] font-bold text-faint uppercase tracking-wider block mb-0.5">LIMIT</span>
                 <span class="text-xs font-extrabold text-muted">${formatRupiah(limit)}</span>
               </div>
             </div>
 
-            <div class="space-y-1.5 px-0.5">
-              <div class="w-full bg-slate-100 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden">
+            <div class="space-y-1.5">
+              <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden">
                 <div class="bg-gradient-to-r ${barColor} h-2 rounded-full transition-all duration-1000 ease-out" style="width: ${pct}%"></div>
               </div>
               <div class="flex justify-between items-center text-[10px] font-semibold text-faint pt-0.5">
@@ -2085,7 +2084,7 @@
       });
     }
 
-    // WALLETS: DENGAN PEMBERSIHAN DUA NAMA PEMILIK BERULANG
+    // WALLETS: DIVIDER CLEAN TANPA BORDER LINTAS
     function renderWallets() {
       const operationalEl = document.getElementById('list-accounts-operational');
       const savingsEl = document.getElementById('list-accounts-savings');
@@ -2100,10 +2099,9 @@
         const meta = getAccountIconMeta(acc.accountName, acc.accountType);
         const balanceColorClass = meta.isLiability ? "amount-out" : "amount-in";
         const badgeBgClass = meta.isLiability ? "bg-[var(--chip-out-bg)] amount-out" : "bg-[var(--chip-in-bg)] amount-in";
-        const statusLabel = meta.isLiability ? "RUNNING BALANCE" : "RUNNING BALANCE";
+        const statusLabel = "RUNNING BALANCE";
         const ownerLabel = acc.owner ? escapeHtml(acc.owner) : 'Yosa & Fani';
 
-        // Hanya sertakan tag owner jika nama akun belum memuat nama pemilik
         const nameHasOwner = acc.owner && acc.accountName.toLowerCase().includes(acc.owner.toLowerCase());
         const badgeText = nameHasOwner ? escapeHtml(acc.accountType) : `${escapeHtml(acc.accountType)} • ${ownerLabel}`;
 
