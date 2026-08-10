@@ -1351,22 +1351,14 @@
     }
 
     function dismissSplashScreen(delay = 0) {
-      setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        const skeleton = document.getElementById('skeleton-screen');
-        const main = document.getElementById('main-content');
-        if (!splash) return;
+  setTimeout(() => {
+    const skeleton = document.getElementById('skeleton-screen');
+    const main = document.getElementById('main-content');
 
-        main.classList.remove('hidden');
-        splash.style.opacity = '0';
-        splash.style.pointerEvents = 'none';
-
-        setTimeout(() => {
-          splash.classList.add('hidden');
-          if (skeleton) skeleton.classList.add('hidden');
-        }, 500);
-      }, delay);
-    }
+    if (main) main.classList.remove('hidden');
+    if (skeleton) skeleton.classList.add('hidden');
+  }, delay);
+}
 
     function showSyncIndicator(show) {
       const el = document.getElementById('top-progress-bar');
