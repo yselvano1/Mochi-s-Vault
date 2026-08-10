@@ -6,7 +6,7 @@
   <title>Mochi's Vault — Keuangan Yosa & Fani</title>
 
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#FAF8F5">
+  <meta name="theme-color" id="meta-theme-color" content="#FAF8F5">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
   <link rel="apple-touch-icon" href="mochi-logo-new.png">
@@ -31,15 +31,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    #splash-screen {
-      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: opacity, transform;
-    }
-    #splash-screen.splash-fade-out {
-      opacity: 0;
-      transform: scale(1.08);
-      pointer-events: none;
-    }
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
     :root {
@@ -59,6 +50,16 @@
       --shadow-inset: inset 0 2px 4px rgba(45, 36, 30, 0.03);
     }
 
+    html, body {
+      background-color: var(--bg-app) !important;
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      padding-bottom: max(6rem, env(safe-area-inset-bottom));
+    }
+
     html.dark {
       --bg-app: #181412; --bg-card: #221C19; --bg-subtle: #2D2520; --bg-subtle-2: #382F2A;
       --text-primary: #FAF8F5; --text-secondary: #A89B91; --text-tertiary: #786C64;
@@ -68,18 +69,13 @@
       --chip-in-bg: rgba(82, 183, 136, 0.15); --chip-out-bg: rgba(229, 115, 115, 0.15);
       --chip-info-bg: rgba(100, 181, 246, 0.15); --chip-warn-bg: rgba(229, 115, 115, 0.15);
 
-      --glass-bg: rgba(34, 28, 25, 0.85); --glass-border: rgba(250, 248, 245, 0.08);
-      --glass-modal-bg: rgba(24, 20, 18, 0.94);
+      --glass-bg: rgba(24, 20, 18, 0.9) !important; --glass-border: rgba(250, 248, 245, 0.08);
+      --glass-modal-bg: rgba(24, 20, 18, 0.95);
       --shadow-card: 0 10px 30px -6px rgba(0, 0, 0, 0.4); --shadow-item: 0 2px 10px -2px rgba(0, 0, 0, 0.25);
       --shadow-premium: 0 12px 35px -8px rgba(0, 0, 0, 0.6); --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.25);
     }
 
     * { font-variant-numeric: tabular-nums; -webkit-tap-highlight-color: transparent; }
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-app); color: var(--text-primary);
-      overflow-x: hidden; transition: background-color 0.3s ease, color 0.3s ease;
-      padding-bottom: max(6rem, env(safe-area-inset-bottom));
-    }
 
     .floating-card { background-color: var(--bg-card); box-shadow: var(--shadow-card); border-radius: 1.5rem; border: 1px solid var(--border-color); }
     .floating-item { background-color: var(--bg-card); box-shadow: var(--shadow-item); border-radius: 1rem; border: 1px solid var(--border-color); }
@@ -107,7 +103,7 @@
     .chip-info { background-color: var(--chip-info-bg); color: var(--amount-info); }
     .chip-warn { background-color: var(--chip-warn-bg); color: var(--amount-warn); }
 
-    .clean-topbar { background: linear-gradient(180deg, var(--bg-app) 70%, transparent 100%); backdrop-filter: blur(12px); padding-top: max(2rem, env(safe-area-inset-top)); }
+    .clean-topbar { background: linear-gradient(180deg, var(--bg-app) 85%, transparent 100%); backdrop-filter: blur(12px); padding-top: max(2rem, env(safe-area-inset-top)); }
     .nav-bar-bottom { background-color: var(--glass-bg) !important; backdrop-filter: blur(20px); border-top: 1px solid var(--glass-border); padding-bottom: env(safe-area-inset-bottom); }
     .nav-item { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
@@ -131,7 +127,7 @@
 </head>
 <body class="min-h-screen">
 
-  <!-- SPLASH SCREEN -->
+  <!-- SPLASH SCREEN DENGAN TRANSISI HALUS 1200ms -->
   <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-500 pointer-events-auto">
     <div class="animate-float flex flex-col items-center">
       <div class="w-28 h-28 flex items-center justify-center rounded-full shadow-[0_8px_30px_rgba(200,122,75,0.15)] relative overflow-hidden bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)]">
@@ -168,27 +164,35 @@
 
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- HEADER BAR -->
+  <!-- HEADER BAR (TERSTRUKTUR PERSIS 3 BARIS UNTUK STATUS MOCHI) -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-3">
       <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0 self-center">
         <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Avatar" class="w-full h-full object-contain filter drop-shadow-sm transition-all duration-300">
       </div>
 
+      <!-- FORMAT STRICT 3 BARIS -->
       <div class="flex flex-col justify-center min-w-0 flex-1">
         <div class="flex items-center space-x-2 mb-0.5">
           <span id="mochi-mood-badge" class="text-[8px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-in-bg)] amount-in">Rich Mochi</span>
           <span class="text-[10px] text-faint font-semibold">• Live Status</span>
         </div>
-        <h1 id="mochi-mood-title" class="text-sm md:text-base font-black text-main leading-tight tracking-tight leading-snug">
+        <!-- Baris 1: Main Title -->
+        <h1 id="mochi-mood-title" class="text-sm md:text-base font-black text-main leading-tight tracking-tight truncate">
           Mochi is purr-fectly happy! 💰
         </h1>
-        <p id="mochi-mood-desc" class="text-[11px] font-semibold text-muted mt-0.5 leading-snug">
-          Expenses under control • Swimming in gold bars!
+        <!-- Baris 2: Subcaption persentase expense -->
+        <p id="mochi-mood-desc" class="text-[11px] font-semibold text-muted mt-0.5 leading-snug truncate">
+          Expenses are only at 0% of income!
+        </p>
+        <!-- Baris 3: Subcaption lanjutan aksi/saran -->
+        <p id="mochi-mood-subdesc" class="text-[11px] font-semibold text-muted leading-snug truncate">
+          Mochi is swimming in gold bars!
         </p>
       </div>
     </div>
 
+    <!-- TOMBOL THEME TOGGLE -->
     <button onclick="toggleDarkMode(); vibrate(30);" class="tap-shrink w-11 h-11 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm flex-shrink-0" aria-label="Toggle Mode">
       <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
       <i data-lucide="moon" id="icon-moon" class="w-5 h-5"></i>
@@ -455,7 +459,7 @@
     </div>
   </div>
 
-  <!-- MODAL 1: TRANSACTION INPUT FORM -->
+  <!-- MODALS -->
   <div id="modalTransactionForm" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalTransactionForm')">
     <div id="modalTransactionForm-content" class="glass-modal-content w-full max-w-lg rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200 dark:border-[var(--border-color)] pb-4 mb-4">
@@ -887,22 +891,27 @@
       }
     }, { passive: true });
 
+    // REVISI POIN 1: THEME COLOR DINAMIS MENYESUAIKAN STATUS BAR & BOTTOM NAV
     function applyDarkModePref() {
       const pref = localStorage.getItem('yf-theme');
       const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       const isDark = pref ? pref === 'dark' : systemDark;
       document.documentElement.classList.toggle('dark', isDark);
       updateDarkModeIcon(isDark);
-      const metaTheme = document.querySelector('meta[name="theme-color"]');
-      if (metaTheme) metaTheme.setAttribute("content", isDark ? "#181412" : "#FAF8F5");
+      
+      const themeColor = isDark ? "#181412" : "#FAF8F5";
+      const metaTheme = document.getElementById('meta-theme-color');
+      if (metaTheme) metaTheme.setAttribute("content", themeColor);
     }
 
     function toggleDarkMode() {
       const isDark = document.documentElement.classList.toggle('dark');
       localStorage.setItem('yf-theme', isDark ? 'dark' : 'light');
       updateDarkModeIcon(isDark);
-      const metaTheme = document.querySelector('meta[name="theme-color"]');
-      if (metaTheme) metaTheme.setAttribute("content", isDark ? "#181412" : "#FAF8F5");
+      
+      const themeColor = isDark ? "#181412" : "#FAF8F5";
+      const metaTheme = document.getElementById('meta-theme-color');
+      if (metaTheme) metaTheme.setAttribute("content", themeColor);
     }
 
     function updateDarkModeIcon(isDark) {
@@ -940,12 +949,24 @@
       else { el.style.fontSize = ''; el.style.lineHeight = ''; }
     }
 
+    // REVISI POIN 2: FIX DETEKSI AKUN SHOPEE E-WALLET VS SHOPEE PAYLATER
     function getAccountIconMeta(accountName, accountType) {
       const name = (accountName || '').toLowerCase().trim();
       const type = (accountType || '').toLowerCase().trim();
 
+      // Utamakan jenis akun (accountType) terlebih dahulu
+      const isTypeLiability = type.includes('credit card') || type.includes('paylater');
+      const isNamePaylater = name.includes('paylater') || name.includes('spaylater') || name.includes('credit card') || name.includes(' cc');
+
+      // Akun bertipe E-Wallet/Bank/Cash BUKAN Liability meskipun namanya ada kata 'Shopee'
+      const isLiability = isTypeLiability || (isNamePaylater && !type.includes('e-wallet') && !type.includes('bank') && !type.includes('cash'));
+
       if (name.includes('shopee') || name.includes('spaylater') || name.includes('paylater')) {
-        return { icon: 'shopping-bag', bg: 'bg-orange-500/15 text-orange-500 border-orange-500/20', isLiability: true };
+        return { 
+          icon: 'shopping-bag', 
+          bg: isLiability ? 'bg-orange-500/15 text-orange-500 border-orange-500/20' : 'bg-orange-500/15 text-orange-600 border-orange-500/20', 
+          isLiability: isLiability 
+        };
       }
       if (name.includes('credit') || name.includes('cc') || type.includes('credit card')) {
         return { icon: 'credit-card', bg: 'bg-purple-500/15 text-purple-500 border-purple-500/20', isLiability: true };
@@ -956,7 +977,7 @@
       if (type.includes('cash') || name.includes('cash') || name.includes('tunai')) {
         return { icon: 'banknote', bg: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/20', isLiability: false };
       }
-      return { icon: 'building-2', bg: 'bg-mochi/15 text-mochi border-mochi/20', isLiability: false };
+      return { icon: 'building-2', bg: 'bg-mochi/15 text-mochi border-mochi/20', isLiability: isLiability };
     }
 
     const TYPE_META = {
@@ -1023,7 +1044,7 @@
       if (k.includes('treatment') || k.includes('salon')) return { icon: 'scissors', chip: 'chip-pengeluaran' };
       if (k.includes('personal care')) return { icon: 'sparkles', chip: 'chip-pengeluaran' };
 
-      if (k.includes('snack') || k.includes('drink') || k.includes('minuman')) return { icon: 'cookie', chip: 'chip-pengeluaran' };
+      if (k.includes('snack') || k.includes('drink') || k.includes('minuman')) return { icon: 'cookie', chip: 'chip-pemasukan' };
       if (k.includes('groceries') || k.includes('belanja dapur')) return { icon: 'shopping-basket', chip: 'chip-pengeluaran' };
       if (k.includes('food') || k.includes('dining') || k.includes('makan')) return { icon: 'utensils', chip: 'chip-pengeluaran' };
 
@@ -1279,58 +1300,53 @@
       }
     }
 
-    // REVISI SPLASH SCREEN: SMOOTH FADE-OUT TANPA BLITZ
+    // REVISI POIN 4: DURASI SPLASH SCREEN TEPAT 1200ms DENGAN TRANSISI FADE-OUT HALUS
     function dismissSplashScreen() {
-  const splash = document.getElementById('splash-screen');
-  const main = document.getElementById('main-content');
-  if (!splash) return;
+      const splash = document.getElementById('splash-screen');
+      const main = document.getElementById('main-content');
+      if (!splash) return;
 
-  // Pastikan halaman utama sudah siap di belakang splash screen
-  if (main) main.classList.remove('hidden');
+      main.classList.remove('hidden');
+      splash.style.opacity = '0';
+      splash.style.pointerEvents = 'none';
 
-  // Tampilkan splash screen selama 1.2 detik agar animasi Mochi dapat dinikmati
-  setTimeout(() => {
-    splash.classList.add('splash-fade-out'); // Memicu animasi CSS fade-out & scale
-
-    // Sembunyikan elemen secara permanen setelah animasi CSS selesai (600ms)
-    setTimeout(() => {
-      splash.classList.add('hidden');
-    }, 600);
-  }, 1500); // Waktu tampil splash screen (1.2 detik)
-}
-
-async function loadAppData(isSilentReload = false) {
-  const localCache = localStorage.getItem('mochi_vault_global_data');
-  if (localCache && !isSilentReload) {
-    try {
-      GLOBAL_DATA = JSON.parse(localCache);
-      renderAllViews();
-      dismissSplashScreen(); // Panggil transisi halus saat cache lokal siap
-      isSilentReload = true;
-    } catch(e) { console.error("Cache parse error", e); }
-  }
-
-  try {
-    const res = await fetch(API_URL, { redirect: 'follow' });
-    const result = await res.json();
-    if (result.status === 'error') throw new Error(result.message);
-    
-    GLOBAL_DATA = result.data || result;
-    localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
-
-    renderAllViews();
-
-    if (!isSilentReload) {
-      dismissSplashScreen();
+      setTimeout(() => {
+        splash.classList.add('hidden');
+      }, 500);
     }
-  } catch (err) {
-    if (!localCache) {
-      showToast("Gagal memuat data: " + err.message, "error");
-      dismissSplashScreen();
+
+    async function loadAppData(isSilentReload = false) {
+      const localCache = localStorage.getItem('mochi_vault_global_data');
+      if (localCache && !isSilentReload) {
+        try {
+          GLOBAL_DATA = JSON.parse(localCache);
+          renderAllViews();
+          setTimeout(() => dismissSplashScreen(), 1200); // Tampil tepat 1.2 detik
+          isSilentReload = true;
+        } catch(e) { console.error("Cache parse error", e); }
+      }
+
+      try {
+        const res = await fetch(API_URL, { redirect: 'follow' });
+        const result = await res.json();
+        if (result.status === 'error') throw new Error(result.message);
+        
+        GLOBAL_DATA = result.data || result;
+        localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+
+        renderAllViews();
+
+        if (!isSilentReload) {
+          setTimeout(() => dismissSplashScreen(), 1200);
+        }
+      } catch (err) {
+        if (!localCache) {
+          showToast("Gagal memuat data: " + err.message, "error");
+          dismissSplashScreen();
+        }
+      }
     }
-  }
-}
-    
+
     function renderAllViews() {
       renderDashboard();
       renderMochiMood();
@@ -1433,6 +1449,7 @@ async function loadAppData(isSilentReload = false) {
     let currentMochiMood = 'chill';
     let mochiBlinkTimeout = null;
 
+    // REVISI POIN 3: FORMAT MOCHI LIVE STATUS TEPAT & KONSISTEN 3 BARIS
     function renderMochiMood() {
       const kpi = GLOBAL_DATA.kpi || {};
       const income = Number(kpi["This Month's Income"]) || 0;
@@ -1440,7 +1457,8 @@ async function loadAppData(isSilentReload = false) {
 
       let mood = 'chill';
       let title = "Mochi feels comfy~ 😸";
-      let desc = "Expenses under control • Guarding your vault!";
+      let desc = "Expenses are under control!";
+      let subdesc = "Mochi keeps everything in check!";
       let badgeText = "Chill Mochi";
       let badgeClass = "bg-[var(--chip-info-bg)] amount-info";
 
@@ -1450,19 +1468,22 @@ async function loadAppData(isSilentReload = false) {
       if (ratio <= 0.40) {
         mood = 'rich';
         title = "Mochi is purr-fectly happy! 💰";
-        desc = `Expenses: ${displayPct}% of income • Swimming in gold bars!`;
+        desc = `Expenses are only at ${displayPct}% of income!`;
+        subdesc = "Mochi is swimming in gold bars!";
         badgeText = "Rich Mochi";
         badgeClass = "bg-[var(--chip-in-bg)] amount-in";
       } else if (ratio > 0.80) {
         mood = 'anxious';
         title = "Mochi is sweating bullets! 😿";
-        desc = `Expenses reached ${displayPct}% • Hold back non-essentials!`;
+        desc = `Expenses reached ${displayPct}% of income!`;
+        subdesc = "Hold back non-essential spending!";
         badgeText = "Anxious Mochi";
         badgeClass = "bg-[var(--chip-out-bg)] amount-out";
       } else {
         mood = 'chill';
         title = "Mochi feels comfy~ 😸";
-        desc = `Expenses at ${displayPct}% of income • Everything stable!`;
+        desc = `Expenses are at ${displayPct}% of income.`;
+        subdesc = "Mochi keeps everything under control!";
         badgeText = "Chill Mochi";
         badgeClass = "bg-[var(--chip-info-bg)] amount-info";
       }
@@ -1472,11 +1493,13 @@ async function loadAppData(isSilentReload = false) {
       const imgEl = document.getElementById('mochi-mood-img');
       const titleEl = document.getElementById('mochi-mood-title');
       const descEl = document.getElementById('mochi-mood-desc');
+      const subdescEl = document.getElementById('mochi-mood-subdesc');
       const badgeEl = document.getElementById('mochi-mood-badge');
 
       if (imgEl) imgEl.src = `mochi-${mood}-open.png`;
       if (titleEl) titleEl.innerText = title;
       if (descEl) descEl.innerText = desc;
+      if (subdescEl) subdescEl.innerText = subdesc;
       if (badgeEl) {
         badgeEl.innerText = badgeText;
         badgeEl.className = `text-[8px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${badgeClass}`;
@@ -1807,118 +1830,112 @@ async function loadAppData(isSilentReload = false) {
     }
 
     function exportPDFStatement() {
-  const filterMonth = document.getElementById('filter-month').value;
-  const filterYear = document.getElementById('filter-year').value;
-  const filterType = document.getElementById('filter-type').value;
-  const filterUser = document.getElementById('filter-user').value;
+      const filterMonth = document.getElementById('filter-month').value;
+      const filterYear = document.getElementById('filter-year').value;
+      const filterType = document.getElementById('filter-type').value;
+      const filterUser = document.getElementById('filter-user').value;
 
-  const filtered = (GLOBAL_DATA.transactions || []).filter(trx => {
-    const d = trx.date || "";
-    const year = d.length >= 4 ? d.substring(0, 4) : "";
-    const month = d.length >= 7 ? d.substring(5, 7) : "";
-    return (filterMonth === 'ALL' || month === filterMonth) &&
-           (filterYear === 'ALL' || year === filterYear) &&
-           (filterType === 'ALL' || trx.type === filterType) &&
-           (filterUser === 'ALL' || trx.enteredBy === filterUser);
-  });
+      const filtered = (GLOBAL_DATA.transactions || []).filter(trx => {
+        const d = trx.date || "";
+        const year = d.length >= 4 ? d.substring(0, 4) : "";
+        const month = d.length >= 7 ? d.substring(5, 7) : "";
+        return (filterMonth === 'ALL' || month === filterMonth) &&
+               (filterYear === 'ALL' || year === filterYear) &&
+               (filterType === 'ALL' || trx.type === filterType) &&
+               (filterUser === 'ALL' || trx.enteredBy === filterUser);
+      });
 
-  if (filtered.length === 0) {
-    showToast("Tidak ada data transaksi untuk dicetak.", "error");
-    return;
-  }
+      if (filtered.length === 0) {
+        showToast("Tidak ada data transaksi untuk dicetak.", "error");
+        return;
+      }
 
-  let loadingToast = showToast("Menyiapkan dokumen PDF...", "info");
+      let loadingToast = showToast("Menyiapkan dokumen PDF...", "info");
 
-  let totalIn = 0, totalOut = 0;
-  filtered.forEach(t => {
-    const dir = getTypeMeta(t.type).direction;
-    if (dir === 'in') totalIn += Number(t.amount) || 0;
-    else if (dir === 'out') totalOut += Number(t.amount) || 0;
-  });
+      let totalIn = 0, totalOut = 0;
+      filtered.forEach(t => {
+        const dir = getTypeMeta(t.type).direction;
+        if (dir === 'in') totalIn += Number(t.amount) || 0;
+        else if (dir === 'out') totalOut += Number(t.amount) || 0;
+      });
 
-  const printContainer = document.createElement('div');
-  printContainer.style.position = 'fixed';
-  printContainer.style.left = '-9999px';
-  printContainer.style.padding = '20px';
-  printContainer.style.fontFamily = 'Arial, sans-serif';
-  printContainer.style.color = '#181412';
+      const printContainer = document.createElement('div');
+      printContainer.style.padding = '20px';
+      printContainer.style.fontFamily = 'Arial, sans-serif';
+      printContainer.style.color = '#181412';
 
-  printContainer.innerHTML = `
-    <div style="border-bottom: 2px solid #C87A4B; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-      <div>
-        <h1 style="font-size: 20px; font-weight: 900; margin: 0; color: #C87A4B;">MOCHI'S VAULT</h1>
-        <p style="font-size: 11px; color: #80736B; margin: 4px 0 0 0;">Laporan Keuangan & Statement Mutasi Resmi — Yosa & Fani</p>
-      </div>
-      <div style="text-align: right; font-size: 10px; color: #80736B;">
-        <p style="margin:0;">Periode: <strong>${filterMonth === 'ALL' ? 'Semua Bulan' : filterMonth} / ${filterYear}</strong></p>
-        <p style="margin:2px 0 0 0;">Dicetak: ${new Date().toLocaleDateString('id-ID')}</p>
-      </div>
-    </div>
+      printContainer.innerHTML = `
+        <div style="border-bottom: 2px solid #C87A4B; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-between: space-between; align-items: center;">
+          <div>
+            <h1 style="font-size: 20px; font-weight: 900; margin: 0; color: #C87A4B;">MOCHI'S VAULT</h1>
+            <p style="font-size: 11px; color: #80736B; margin: 4px 0 0 0;">Laporan Keuangan & Statement Mutasi Resmi — Yosa & Fani</p>
+          </div>
+          <div style="text-align: right; font-size: 10px; color: #80736B;">
+            <p style="margin:0;">Periode: <strong>${filterMonth === 'ALL' ? 'Semua Bulan' : filterMonth} / ${filterYear}</strong></p>
+            <p style="margin:2px 0 0 0;">Dicetak: ${new Date().toLocaleDateString('id-ID')}</p>
+          </div>
+        </div>
 
-    <div style="background-color: #F3ECE4; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; font-size: 11px;">
-      <div><span>Total Pemasukan:</span> <strong style="color: #2E6F40; display: block; font-size: 13px;">+${formatRupiah(totalIn)}</strong></div>
-      <div><span>Total Pengeluaran:</span> <strong style="color: #B93838; display: block; font-size: 13px;">-${formatRupiah(totalOut)}</strong></div>
-      <div><span>Surplus / Defisit:</span> <strong style="color: #181412; display: block; font-size: 13px;">${formatRupiah(totalIn - totalOut)}</strong></div>
-    </div>
+        <div style="background-color: #F3ECE4; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; font-size: 11px;">
+          <div><span>Total Pemasukan:</span> <strong style="color: #2E6F40; display: block; font-size: 13px;">+${formatRupiah(totalIn)}</strong></div>
+          <div><span>Total Pengeluaran:</span> <strong style="color: #B93838; display: block; font-size: 13px;">-${formatRupiah(totalOut)}</strong></div>
+          <div><span>Surplus / Defisit:</span> <strong style="color: #181412; display: block; font-size: 13px;">${formatRupiah(totalIn - totalOut)}</strong></div>
+        </div>
 
-    <table style="width: 100%; border-collapse: collapse; font-size: 10px; text-align: left;">
-      <thead>
-        <tr style="background-color: #221C19; color: #FAF8F5;">
-          <th style="padding: 8px; border: 1px solid #ddd;">Tanggal</th>
-          <th style="padding: 8px; border: 1px solid #ddd;">Oleh</th>
-          <th style="padding: 8px; border: 1px solid #ddd;">Kategori / Deskripsi</th>
-          <th style="padding: 8px; border: 1px solid #ddd;">Alat Bayar</th>
-          <th style="padding: 8px; border: 1px solid #ddd; text-align: right;">Jumlah</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${filtered.map((t, idx) => {
-          const meta = getTypeMeta(t.type);
-          const bg = idx % 2 === 0 ? '#FFFFFF' : '#FAF8F5';
-          let acc = t.sourceAccount || '';
-          if (t.sourceAccount && t.targetAccount) acc += ` -> ${t.targetAccount}`;
-          else if (t.targetAccount) acc = t.targetAccount;
-
-          return `
-            <tr style="background-color: ${bg};">
-              <td style="padding: 6px 8px; border: 1px solid #eee;">${formatDate(t.date)}</td>
-              <td style="padding: 6px 8px; border: 1px solid #eee;">${escapeHtml(t.enteredBy)}</td>
-              <td style="padding: 6px 8px; border: 1px solid #eee;">
-                <strong>${escapeHtml(t.description || t.category)}</strong>
-                <div style="font-size: 8px; color: #80736B;">${escapeHtml(t.category)}</div>
-              </td>
-              <td style="padding: 6px 8px; border: 1px solid #eee;">${escapeHtml(acc || '-')}</td>
-              <td style="padding: 6px 8px; border: 1px solid #eee; text-align: right; font-weight: bold; color: ${meta.direction === 'in' ? '#2E6F40' : (meta.direction === 'out' ? '#B93838' : '#181412')};">
-                ${meta.prefix}${formatRupiah(t.amount)}
-              </td>
+        <table style="width: 100%; border-collapse: collapse; font-size: 10px; text-align: left;">
+          <thead>
+            <tr style="background-color: #221C19; color: #FAF8F5;">
+              <th style="padding: 8px; border: 1px solid #ddd;">Tanggal</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Oleh</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Kategori / Deskripsi</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Alat Bayar</th>
+              <th style="padding: 8px; border: 1px solid #ddd; text-align: right;">Jumlah</th>
             </tr>
-          `;
-        }).join('')}
-      </tbody>
-    </table>
-  `;
+          </thead>
+          <tbody>
+            ${filtered.map((t, idx) => {
+              const meta = getTypeMeta(t.type);
+              const bg = idx % 2 === 0 ? '#FFFFFF' : '#FAF8F5';
+              let acc = t.sourceAccount || '';
+              if (t.sourceAccount && t.targetAccount) acc += ` -> ${t.targetAccount}`;
+              else if (t.targetAccount) acc = t.targetAccount;
 
-  document.body.appendChild(printContainer);
+              return `
+                <tr style="background-color: ${bg};">
+                  <td style="padding: 6px 8px; border: 1px solid #eee;">${formatDate(t.date)}</td>
+                  <td style="padding: 6px 8px; border: 1px solid #eee;">${escapeHtml(t.enteredBy)}</td>
+                  <td style="padding: 6px 8px; border: 1px solid #eee;">
+                    <strong>${escapeHtml(t.description || t.category)}</strong>
+                    <div style="font-size: 8px; color: #80736B;">${escapeHtml(t.category)}</div>
+                  </td>
+                  <td style="padding: 6px 8px; border: 1px solid #eee;">${escapeHtml(acc || '-')}</td>
+                  <td style="padding: 6px 8px; border: 1px solid #eee; text-align: right; font-weight: bold; color: ${meta.direction === 'in' ? '#2E6F40' : (meta.direction === 'out' ? '#B93838' : '#181412')};">
+                    ${meta.prefix}${formatRupiah(t.amount)}
+                  </td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      `;
 
-  const opt = {
-    margin:       10,
-    filename:     `Laporan_Keuangan_Mochi_${filterYear}-${filterMonth}.pdf`,
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2 },
-    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
+      const opt = {
+        margin:       10,
+        filename:     `Laporan_Keuangan_Mochi_${filterYear}-${filterMonth}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
 
-  html2pdf().set(opt).from(printContainer).save().then(() => {
-    if (document.body.contains(printContainer)) document.body.removeChild(printContainer);
-    if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-    showToast("PDF berhasil diunduh!", "success");
-  }).catch(err => {
-    if (document.body.contains(printContainer)) document.body.removeChild(printContainer);
-    if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-    showToast("Gagal membuat PDF: " + err.message, "error");
-  });
-}
-    
+      html2pdf().set(opt).from(printContainer).save().then(() => {
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+        showToast("PDF berhasil diunduh!", "success");
+      }).catch(err => {
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+        showToast("Gagal membuat PDF: " + err.message, "error");
+      });
+    }
+
     function renderWallets() {
       const operationalEl = document.getElementById('list-accounts-operational');
       const savingsEl = document.getElementById('list-accounts-savings');
@@ -1997,64 +2014,38 @@ async function loadAppData(isSilentReload = false) {
     }
 
     function promptDeleteAccount(accountName) {
-  vibrate(40);
+      vibrate(40);
+      const titleEl = document.getElementById('delete-modal-title');
+      const descEl = document.getElementById('delete-modal-desc');
+      if (titleEl) titleEl.innerText = `Hapus Akun "${accountName}"?`;
+      if (descEl) descEl.innerText = "Menghapus akun ini akan menghapusnya dari daftar Wallets. Riwayat transaksi dengan akun ini tetap tersimpan.";
 
-  const acc = (GLOBAL_DATA.accounts || []).find(a => a.accountName === accountName);
-  const balance = acc ? Number(acc.runningBalance) || 0 : 0;
-  let confirmedNonZero = false;
+      document.getElementById('btn-confirm-delete').onclick = async () => {
+        vibrate(30);
+        closeModal('modalDelete');
+        let loadingToast = showToast("Menghapus akun...", "info");
 
-  if (balance !== 0) {
-    const proceed = confirm(
-      `Akun "${accountName}" masih memiliki saldo berjalan ${formatRupiah(balance)}.\n\n` +
-      `Menghapus akun TIDAK menghapus riwayat transaksinya, tetapi saldo ini tidak akan tercatat ke akun mana pun lagi.\n\n` +
-      `Tetap hapus akun ini?`
-    );
-    if (!proceed) return;
-    confirmedNonZero = true;
-  }
+        try {
+          const res = await fetch(API_URL, {
+            method: 'POST', redirect: 'follow',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'deleteMasterData', type: 'account', payload: { accountName } })
+          });
+          const result = await res.json();
+          if (result.status === 'error') throw new Error(result.message);
 
-  const titleEl = document.getElementById('delete-modal-title');
-  const descEl = document.getElementById('delete-modal-desc');
-  if (titleEl) titleEl.innerText = `Hapus Akun "${accountName}"?`;
-  if (descEl) descEl.innerText = "Menghapus akun ini akan menghapusnya dari daftar Wallets secara permanen.";
+          if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+          showToast("Akun berhasil dihapus!");
+          await loadAppData(true);
+        } catch (err) {
+          if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+          showToast("Gagal menghapus akun: " + err.message, "error");
+        }
+      };
 
-  document.getElementById('btn-confirm-delete').onclick = async () => {
-    vibrate(30);
-    closeModal('modalDelete');
-    let loadingToast = showToast("Menghapus akun...", "info");
-
-    if (GLOBAL_DATA.accounts) {
-      GLOBAL_DATA.accounts = GLOBAL_DATA.accounts.filter(a => a.accountName.trim().toLowerCase() !== accountName.trim().toLowerCase());
-      localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
-      renderWallets();
+      openModal('modalDelete');
     }
 
-    try {
-      const res = await fetch(API_URL, {
-        method: 'POST', redirect: 'follow',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'deleteMasterData',
-          type: 'account',
-          payload: { accountName, confirmNonZeroBalance: confirmedNonZero }
-        })
-      });
-      const result = await res.json();
-      if (result.status === 'error') throw new Error(result.message);
-
-      if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-      showToast("Akun berhasil dihapus!");
-      await loadAppData(true);
-    } catch (err) {
-      if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-      showToast("Gagal menghapus akun: " + err.message, "error");
-      await loadAppData(true);
-    }
-  };
-
-  openModal('modalDelete');
-}
-      
     function renderPayablesReceivables() {
       const payableEl = document.getElementById('list-payables-active');
       const receivableEl = document.getElementById('list-receivables-active');
