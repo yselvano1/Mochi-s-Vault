@@ -2523,10 +2523,12 @@
         
         let hasPayables = false;
 
-        // 1. Rincian Tagihan Berjalan dari Credit Card & PayLater
+        // 1. Rincian Tagihan Berjalan dari Credit Card & PayLater (Menggunakan Math.abs agar minus tetap terbaca)
         (GLOBAL_DATA.accounts || []).forEach(a => {
           const meta = getAccountIconMeta(a.accountName, a.accountType);
-          const bal = Number(a.runningBalance) || 0;
+          const rawBal = Number(a.runningBalance) || 0;
+          const bal = Math.abs(rawBal); // Konversi nilai minus menjadi positif
+
           if (meta.isLiability && bal > 0) {
             hasPayables = true;
             html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
@@ -2539,7 +2541,7 @@
         // 2. Rincian Hutang Terstruktur (AP / Cicilan)
         (GLOBAL_DATA.payables || []).forEach(p => {
           const st = (p.status || '').toLowerCase().trim();
-          const rem = Number(p.remainingAmount) || 0;
+          const rem = Math.abs(Number(p.remainingAmount) || 0);
           if ((st === 'active' || st === 'aktif') && rem > 0) {
             hasPayables = true;
             html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
@@ -2555,11 +2557,6 @@
 
         html += `</div>`;
       }
-
-      html += `</div></div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html;
-      openModal('modalDetail');
-    }
 
     function showTransactionDetail(transactionId) {
       const trx = GLOBAL_DATA.transactions.find(t => t.transactionId === transactionId);
