@@ -1823,9 +1823,22 @@
       let grandTotal = 0;
 
       trxThisMonth.forEach(t => {
-        const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
-        const main = t.mainCategory || (catMatch ? catMatch.mainCategory : null) || t.category || 'Lainnya';
-        const subKey = t.category || main;
+        const catName = (t.category || '').trim();
+        const catMatch = categories.find(c => 
+          c.categoryName.toLowerCase() === catName.toLowerCase() || 
+          (c.subCategory && c.subCategory.toLowerCase() === catName.toLowerCase())
+        );
+
+        // Tarik ke Main Category dari master data
+        let main = (catMatch && catMatch.mainCategory) ? catMatch.mainCategory : (t.mainCategory || catName || 'Lainnya');
+
+        // FALLBACK AUTO-GROUP: Memastikan variasi kategori makanan otomatis masuk ke Food & Groceries
+        const lowerCat = catName.toLowerCase();
+        if (lowerCat.includes('dining') || lowerCat.includes('groceries') || lowerCat.includes('snack') || lowerCat.includes('makan')) {
+          main = 'Food & Groceries';
+        }
+
+        const subKey = catName || main;
         const amount = Number(t.amount) || 0;
 
         grandTotal += amount;
