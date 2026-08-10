@@ -1503,7 +1503,7 @@
       }, 1500);
     }
 
-    // KARTU BUDGET: TEMA WARM MOCHI DENGAN STRUCTURAL LAYOUT TASK CARD
+    // KARTU BUDGET: POLOS TRANSPARAN DENGAN GARIS PEMISAH TIPIS HALUS
     function renderBudgetSummaryCard() {
       const container = document.getElementById('dashboard-budget-summary');
       if (!container) return;
@@ -1513,7 +1513,7 @@
 
       if (activeBudgets.length === 0) {
         container.innerHTML = `
-          <div class="text-center py-6 px-4 bg-[var(--bg-subtle-2)] rounded-2xl border border-[var(--border-color)]">
+          <div class="text-center py-6 px-4 bg-transparent rounded-2xl border border-[var(--border-color)]">
             <p class="text-xs text-muted font-bold">No budgets configured yet.</p>
             <p class="text-[10px] text-faint mt-1">Tap 'Set Budget' to define monthly limits.</p>
           </div>
@@ -1543,14 +1543,11 @@
 
         const catMeta = getCategoryIconMeta(cat, 'Expense');
         
-        // Background Kartu Tetap Konsisten Tema Warm Mochi Vault
-        const cardBg = "bg-[var(--bg-subtle-2)]";
-        
-        // Aksen Warna Hanya pada Indikator Status & Progress Bar
+        // Status & Color Rules
         let barColor = "from-emerald-400 to-emerald-600";
         let dotColor = "bg-emerald-500";
         let statusText = "On Track";
-        let badgeBg = "bg-emerald-500/12 dark:bg-emerald-500/20";
+        let badgeBg = "bg-emerald-500/10 dark:bg-emerald-500/20";
         let badgeText = "text-emerald-700 dark:text-emerald-400";
         let badgeBorder = "border-emerald-500/20";
 
@@ -1558,14 +1555,14 @@
           barColor = "from-rose-400 to-rose-600";
           dotColor = "bg-rose-500";
           statusText = isOver ? "Over Budget" : "Near Limit";
-          badgeBg = "bg-rose-500/12 dark:bg-rose-500/20";
+          badgeBg = "bg-rose-500/10 dark:bg-rose-500/20";
           badgeText = "text-rose-600 dark:text-rose-400";
           badgeBorder = "border-rose-500/20";
         } else if (pct >= 70) {
           barColor = "from-amber-400 to-amber-500";
           dotColor = "bg-amber-500";
           statusText = "Caution";
-          badgeBg = "bg-amber-500/12 dark:bg-amber-500/20";
+          badgeBg = "bg-amber-500/10 dark:bg-amber-500/20";
           badgeText = "text-amber-700 dark:text-amber-400";
           badgeBorder = "border-amber-500/20";
         }
@@ -1575,45 +1572,46 @@
           : `Left ${formatRupiah(remaining)}`;
 
         return `
-          <div onclick="vibrate(30); showBudgetDetail('${escapeAttr(cat)}')" class="p-5 ${cardBg} rounded-[1.75rem] border border-[var(--border-color)] cursor-pointer card-hover transition tap-shrink space-y-4 mb-3.5 select-none">
-            <!-- Header: Icon Box + Category Name + Edit Action Button -->
-            <div class="flex justify-between items-center">
+          <div onclick="vibrate(30); showBudgetDetail('${escapeAttr(cat)}')" class="p-5 bg-transparent rounded-2xl border border-[var(--border-color)] cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3.5 select-none">
+            <!-- 1. Header: Icon + Name + Edit Action Button (Top Divider) -->
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
               <div class="flex items-center space-x-3 min-w-0 pr-2">
-                <div class="w-10 h-10 rounded-2xl bg-card shadow-sm flex items-center justify-center flex-shrink-0 border border-[var(--border-color)]">
-                  <i data-lucide="${catMeta.icon}" class="w-5 h-5 text-mochi dark:text-mochi-light"></i>
+                <div class="w-9 h-9 rounded-xl bg-[var(--bg-subtle-2)] flex items-center justify-center flex-shrink-0 border border-[var(--border-color)]">
+                  <i data-lucide="${catMeta.icon}" class="w-4.5 h-4.5 text-mochi dark:text-mochi-light"></i>
                 </div>
-                <span class="text-base font-black text-main truncate">${escapeHtml(cat)}</span>
+                <span class="text-sm font-extrabold text-main truncate">${escapeHtml(cat)}</span>
               </div>
-              <button type="button" onclick="vibrate(30); event.stopPropagation(); openBudgetEditorModal();" class="w-9 h-9 rounded-full bg-card shadow-sm flex items-center justify-center text-muted hover:text-main transition border border-[var(--border-color)] flex-shrink-0 tap-shrink">
-                <i data-lucide="pencil" class="w-4 h-4"></i>
+              <button type="button" onclick="vibrate(30); event.stopPropagation(); openBudgetEditorModal();" class="w-8 h-8 rounded-full bg-[var(--bg-subtle-2)] flex items-center justify-center text-muted hover:text-main transition border border-[var(--border-color)] flex-shrink-0 tap-shrink">
+                <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
               </button>
             </div>
 
-            <!-- Badges Row: Status Dot Pill + Remaining Badge -->
+            <!-- 2. Badges Row: Status Dot + Remaining Badge -->
             <div class="flex items-center space-x-2 text-[11px] font-extrabold">
-              <span class="px-3 py-1 rounded-full bg-card shadow-sm text-main flex items-center border border-[var(--border-color)]">
-                <span class="w-2 h-2 rounded-full ${dotColor} mr-2 animate-pulse"></span>
+              <span class="px-2.5 py-0.5 rounded-full bg-[var(--bg-subtle-2)] text-main flex items-center border border-[var(--border-color)]">
+                <span class="w-2 h-2 rounded-full ${dotColor} mr-1.5 animate-pulse"></span>
                 ${statusText}
               </span>
-              <span class="px-3 py-1 rounded-full ${badgeBg} ${badgeText} shadow-sm border ${badgeBorder} whitespace-nowrap">
+              <span class="px-2.5 py-0.5 rounded-full ${badgeBg} ${badgeText} border ${badgeBorder} whitespace-nowrap">
                 ${remainingBadge}
               </span>
             </div>
 
-            <!-- Thick Progress Bar -->
+            <!-- 3. Progress Bar -->
             <div class="space-y-1">
-              <div class="w-full bg-card/80 dark:bg-black/30 rounded-full h-3 p-0.5 shadow-inner border border-[var(--border-color)]">
+              <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2.5 overflow-hidden">
                 <div class="bg-gradient-to-r ${barColor} h-full rounded-full transition-all duration-1000 ease-out" style="width: ${pct}%"></div>
               </div>
             </div>
 
-            <!-- Footer Stats: Spent & Limit Chips + Details CTA -->
-            <div class="flex justify-between items-center text-xs font-bold pt-0.5">
-              <div class="flex items-center space-x-2 text-muted">
-                <span class="px-2.5 py-1 rounded-xl bg-card/70 dark:bg-black/20 text-[11px] border border-[var(--border-color)]">
+            <!-- 4. Footer Row: Spent & Limit + Details CTA (Bottom Divider) -->
+            <div class="flex justify-between items-center text-xs font-bold pt-3 border-t border-slate-100 dark:border-[var(--border-color)]">
+              <div class="flex items-center space-x-3 text-muted">
+                <span class="text-[11px]">
                   Spent: <strong class="text-main font-black">${formatRupiah(spent)}</strong>
                 </span>
-                <span class="px-2.5 py-1 rounded-xl bg-card/70 dark:bg-black/20 text-[11px] border border-[var(--border-color)]">
+                <span class="text-[11px] text-faint">|</span>
+                <span class="text-[11px]">
                   Limit: <strong class="text-main font-black">${formatRupiah(limit)}</strong>
                 </span>
               </div>
@@ -1627,7 +1625,7 @@
 
       lucide.createIcons();
     }
-
+    
     function showBudgetDetail(catName) {
       currentModalBackFn = null;
       window.isNestedModalView = false;
