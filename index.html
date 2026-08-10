@@ -2204,6 +2204,7 @@
       openModal('modalDelete');
     }
 
+    // 1. TAMPILAN KARTU LIST AP & AR KEMBAR IDENTIK
     function renderPayablesReceivables() {
       const payableEl = document.getElementById('list-payables-active');
       const receivableEl = document.getElementById('list-receivables-active');
@@ -2212,7 +2213,7 @@
 
       let hasActivePayables = false;
 
-      // 1. TAMPILKAN KARTU TAGIHAN CC & PAYLATER BERJALAN (> 0)
+      // A. ACTIVE PAYABLES: CC / PAYLATER BERJALAN (> 0)
       (GLOBAL_DATA.accounts || []).forEach((acc, i) => {
         const meta = getAccountIconMeta(acc.accountName, acc.accountType);
         const rawBal = Number(acc.runningBalance) || 0;
@@ -2221,20 +2222,19 @@
         if (meta.isLiability && bal > 0) {
           hasActivePayables = true;
           const ownerLabel = acc.owner ? escapeHtml(acc.owner) : 'Yosa & Fani';
+          const typeBadge = `${escapeHtml(acc.accountType)} • ${ownerLabel}`;
+
           const div = document.createElement('div');
           div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
           div.style.animationDelay = `${i * 0.05}s`;
-          div.onclick = () => { vibrate(30); showAccountHistory(acc.accountName); };
+          div.onclick = () => { vibrate(30); showPayableDetail(acc, true); };
           div.innerHTML = `
-            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)] flex justify-between items-center">
-              <div>
-                <h4 class="text-[13px] font-extrabold text-main leading-tight">${escapeHtml(acc.accountName)}</h4>
-                <span class="text-[9px] amount-out bg-[var(--chip-out-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-1.5 inline-block">${escapeHtml(acc.accountType)} • ${ownerLabel}</span>
-              </div>
-              <i data-lucide="chevron-right" class="w-4 h-4 text-faint"></i>
+            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
+              <h4 class="text-[13px] font-extrabold text-main leading-tight">${escapeHtml(acc.accountName)}</h4>
+              <span class="text-[9px] amount-out bg-[var(--chip-out-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${typeBadge}</span>
             </div>
-            <div class="flex flex-col">
-              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Tagihan Berjalan Bulan Ini</span>
+            <div>
+              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING PAYABLE</span>
               <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(bal)}</span>
             </div>
           `;
@@ -2242,7 +2242,7 @@
         }
       });
 
-      // 2. TAMPILKAN KARTU HUTANG TERSTRUKTUR (AP / CICILAN)
+      // B. ACTIVE PAYABLES: HUTANG TERSTRUKTUR (AP / CICILAN)
       const activePayables = (GLOBAL_DATA.payables || [])
         .filter(p => {
           const st = (p.status || '').toLowerCase().trim();
@@ -2252,22 +2252,20 @@
 
       activePayables.forEach((p, i) => {
         hasActivePayables = true;
-        const pct = p.initialAmount > 0 ? Math.min(100, ((p.initialAmount - p.remainingAmount) / p.initialAmount) * 100) : 0;
+        const rem = Math.abs(Number(p.remainingAmount) || 0);
+
         const div = document.createElement('div');
         div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
         div.style.animationDelay = `${i * 0.05}s`;
-        div.onclick = () => { vibrate(30); showPayableDetail(p); };
+        div.onclick = () => { vibrate(30); showPayableDetail(p, false); };
         div.innerHTML = `
           <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
             <h4 class="text-[13px] font-extrabold text-main leading-tight">${escapeHtml(p.payableName)}</h4>
-            <span class="text-[9px] amount-out bg-[var(--chip-out-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(p.payableType || 'Payable')}</span>
+            <span class="text-[9px] amount-out bg-[var(--chip-out-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(p.payableType || 'PAYABLE')}</span>
           </div>
-          <div class="flex flex-col mb-3">
-            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Sisa Hutang Terstruktur</span>
-            <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(p.remainingAmount)}</span>
-          </div>
-          <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
-            <div class="bg-[var(--amount-out)] h-1.5 rounded-full" style="width:${pct}%"></div>
+          <div>
+            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING PAYABLE</span>
+            <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(rem)}</span>
           </div>
         `;
         payableEl.appendChild(div);
@@ -2277,7 +2275,7 @@
         payableEl.innerHTML = `<p class="text-xs text-muted font-semibold text-center py-4">All payables and credit card bills are clear!</p>`;
       }
 
-      // 3. TAMPILKAN PIUTANG (RECEIVABLES)
+      // C. UNPAID RECEIVABLES (PIUTANG)
       const activeReceivables = (GLOBAL_DATA.receivables || [])
         .filter(r => {
           const st = (r.status || '').toLowerCase().trim();
@@ -2288,6 +2286,7 @@
         receivableEl.innerHTML = `<p class="text-xs text-muted font-semibold text-center py-4">All receivables have been collected.</p>`;
       } else {
         activeReceivables.forEach((r, i) => {
+          const rem = Math.abs(Number(r.remainingAmount) || 0);
           const div = document.createElement('div');
           div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
           div.style.animationDelay = `${i * 0.05}s`;
@@ -2295,16 +2294,151 @@
           div.innerHTML = `
             <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
               <h4 class="text-[13px] font-extrabold text-main leading-tight">${escapeHtml(r.receivableName)}</h4>
-              <span class="text-[9px] amount-info bg-[var(--chip-info-bg)] px-2 py-0.5 rounded-full uppercase tracking-wider mt-2 inline-block">${escapeHtml(r.receivableType || 'Receivable')}</span>
+              <span class="text-[9px] amount-info bg-[var(--chip-info-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(r.receivableType || 'RECEIVABLE')}</span>
             </div>
             <div>
-              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Remaining Receivable</span>
-              <span class="text-[18px] font-black amount-info block leading-none tracking-tight">${formatRupiah(r.remainingAmount)}</span>
+              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING RECEIVABLE</span>
+              <span class="text-[18px] font-black amount-info block leading-none tracking-tight">${formatRupiah(rem)}</span>
             </div>
           `;
           receivableEl.appendChild(div);
         });
       }
+      lucide.createIcons();
+    }
+
+    // 2. MODAL DETAIL ACTIVE PAYABLE (KEMBAR DENGAN RECEIVABLE MODAL)
+    function showPayableDetail(item, isAccount = false) {
+      const name = isAccount ? item.accountName : item.payableName;
+      currentModalBackFn = () => showPayableDetail(item, isAccount);
+      window.isNestedModalView = false;
+
+      const type = isAccount ? item.accountType : (item.payableType || 'Payable');
+      const amount = Math.abs(Number(isAccount ? item.runningBalance : item.remainingAmount) || 0);
+      const status = isAccount ? 'Active' : (item.status || 'Active');
+
+      // Riwayat Transaksi Terkait
+      const relatedTrx = isAccount 
+        ? GLOBAL_DATA.transactions.filter(t => t.sourceAccount === name || t.targetAccount === name)
+        : GLOBAL_DATA.transactions.filter(t => t.relatedPayable === name);
+
+      let html = `
+        <div class="space-y-4 pt-1">
+          <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
+            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">Active Payable</span>
+            <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(name)}</h3>
+          </div>
+
+          <!-- SUMMARY CARD KEMBAR (RED THEME) -->
+          <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+              <span>Payable Type:</span> 
+              <span class="font-extrabold text-main">${escapeHtml(type)}</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2 items-center">
+              <span>Remaining Payable:</span> 
+              <span class="font-black amount-out text-[15px]">${formatRupiah(amount)}</span>
+            </div>
+            <div class="flex justify-between mt-2">
+              <span>Status:</span> 
+              <span class="font-extrabold text-main">${escapeHtml(status)}</span>
+            </div>
+          </div>
+
+          <!-- RIWAYAT TRANSAKSI TERKAIT DENGAN 3-COLOR RULES -->
+          <div>
+            <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
+            <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+      `;
+
+      if (relatedTrx.length === 0) {
+        html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
+      } else {
+        relatedTrx.forEach(t => {
+          const meta = getTypeMeta(t.type);
+          html += `
+            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+              <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
+                <div class="truncate">
+                  <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
+                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
+                </div>
+              </div>
+              <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
+            </div>
+          `;
+        });
+      }
+
+      html += `</div></div></div>`;
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+      lucide.createIcons();
+    }
+
+    // 3. MODAL DETAIL UNPAID RECEIVABLE
+    function showReceivableDetail(r) {
+      currentModalBackFn = () => showReceivableDetail(r);
+      window.isNestedModalView = false;
+
+      const name = r.receivableName;
+      const type = r.receivableType || 'Receivable';
+      const amount = Math.abs(Number(r.remainingAmount) || 0);
+      const status = r.status || 'Active';
+
+      const relatedTrx = GLOBAL_DATA.transactions.filter(t => t.relatedReceivable === name);
+
+      let html = `
+        <div class="space-y-4 pt-1">
+          <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
+            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--chip-info-bg)] amount-info uppercase tracking-wider mb-2 inline-block">Unpaid Receivable</span>
+            <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(name)}</h3>
+          </div>
+
+          <!-- SUMMARY CARD KEMBAR (BLUE THEME) -->
+          <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+              <span>Receivable Type:</span> 
+              <span class="font-extrabold text-main">${escapeHtml(type)}</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2 items-center">
+              <span>Remaining Receivable:</span> 
+              <span class="font-black amount-info text-[15px]">${formatRupiah(amount)}</span>
+            </div>
+            <div class="flex justify-between mt-2">
+              <span>Status:</span> 
+              <span class="font-extrabold text-main">${escapeHtml(status)}</span>
+            </div>
+          </div>
+
+          <!-- RIWAYAT TRANSAKSI TERKAIT DENGAN 3-COLOR RULES -->
+          <div>
+            <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
+            <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+      `;
+
+      if (relatedTrx.length === 0) {
+        html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
+      } else {
+        relatedTrx.forEach(t => {
+          const meta = getTypeMeta(t.type);
+          html += `
+            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+              <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
+                <div class="truncate">
+                  <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
+                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
+                </div>
+              </div>
+              <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
+            </div>
+          `;
+        });
+      }
+
+      html += `</div></div></div>`;
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
       lucide.createIcons();
     }
 
