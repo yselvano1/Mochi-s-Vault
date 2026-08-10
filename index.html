@@ -2105,109 +2105,154 @@
         return;
       }
 
-      const sortedTransactions = [...filtered].sort((a, b) => new Date(a.date) - new Date(b.date));
       let loadingToast = showToast("Preparing PDF statement...", "info");
 
       let totalIn = 0, totalOut = 0;
-      const categorySpentMap = {};
-      const categories = GLOBAL_DATA.categories || [];
-
-      sortedTransactions.forEach(t => {
-        const meta = getTypeMeta(t.type) || {};
-        const amt = Number(t.amount) || 0;
-        if (meta.direction === 'in') {
-          totalIn += amt;
-        } else if (meta.direction === 'out') {
-          totalOut += amt;
-          const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
-          const mainCat = t.mainCategory || (catMatch ? catMatch.mainCategory : null) || t.category || 'Lainnya';
-          categorySpentMap[mainCat] = (categorySpentMap[mainCat] || 0) + amt;
-        }
+      filtered.forEach(t => {
+        const dir = getTypeMeta(t.type).direction;
+        if (dir === 'in') totalIn += Number(t.amount) || 0;
+        else if (dir === 'out') totalOut += Number(t.amount) || 0;
       });
 
-      const netBalance = totalIn - totalOut;
-      const ratio = totalIn > 0 ? (totalOut / totalIn) : (totalOut > 0 ? 1 : 0);
-      const displayPct = Math.min(Math.round(ratio * 100), 999);
-      
-      let moodText = "Mochi feels comfy~ Expenses are well under control!";
-      let moodBadge = "Chill Mochi";
-      let moodBg = "#EFE6DC";
-      let moodColor = "#1D63B8";
-
-      if (ratio <= 0.40) {
-        moodText = "Mochi is purr-fectly happy! Expenses are only at " + displayPct + "% of income.";
-        moodBadge = "Rich Mochi";
-        moodBg = "rgba(46, 111, 64, 0.12)";
-        moodColor = "#2E6F40";
-      } else if (ratio > 0.80) {
-        moodText = "Mochi is sweating! Expenses reached " + displayPct + "% of income.";
-        moodBadge = "Anxious Mochi";
-        moodBg = "rgba(185, 56, 56, 0.12)";
-        moodColor = "#B93838";
-      }
-
-      const topCategories = Object.entries(categorySpentMap)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 3);
-
-      let topCategoriesHtml = "";
-      if (topCategories.length > 0) {
-        const catBarsHtml = topCategories.map(([cat, amt]) => {
-          const pct = totalOut > 0 ? Math.round((amt / totalOut) * 100) : 0;
-          return '<div style="flex: 1;"><div style="display: flex; justify-content: space-between; font-size: 9px; font-weight: 700; margin-bottom: 3px;"><span style="color: #2D241E;">' + escapeHtml(cat) + '</span><span style="color: #80736B;">' + pct + '%</span></div><div style="background: #EFE6DC; height: 5px; border-radius: 4px; overflow: hidden;"><div style="background: #C87A4B; height: 100%; width: ' + pct + '%;"></div></div></div>';
-        }).join('');
-
-        topCategoriesHtml = '<div style="background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 12px; padding: 10px 14px; margin-bottom: 20px;"><span style="font-size: 8px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 8px;">Top Expense Categories</span><div style="display: flex; gap: 12px;">' + catBarsHtml + '</div></div>';
-      }
-
-      const transactionsHtml = sortedTransactions.map(t => {
-        const meta = getTypeMeta(t.type) || {};
-        let acc = t.sourceAccount || '';
-        if (t.sourceAccount && t.targetAccount) acc += ' ➔ ' + t.targetAccount;
-        else if (t.targetAccount) acc = t.targetAccount;
-
-        let amtColor = meta.direction === 'in' ? '#2E6F40' : (meta.direction === 'out' ? '#B93838' : '#1D63B8');
-
-        return '<div class="pdf-card" style="background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 10px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;"><div style="display: flex; align-items: center; gap: 10px;"><div style="background: #EFE6DC; border-radius: 6px; padding: 4px 8px; font-size: 9px; font-weight: 800; color: #2D241E; text-align: center; white-space: nowrap;">' + formatDate(t.date) + '</div><div><div style="font-size: 11px; font-weight: 800; color: #2D241E; line-height: 1.2;">' + escapeHtml(t.description || t.category) + '</div><div style="font-size: 8px; font-weight: 600; color: #80736B; margin-top: 2px;">' + escapeHtml(t.category) + (acc ? ' • ' + escapeHtml(acc) : '') + ' • By ' + escapeHtml(t.enteredBy) + '</div></div></div><div style="font-size: 11px; font-weight: 900; color: ' + amtColor + '; text-align: right; white-space: nowrap;">' + (meta.prefix || '') + formatRupiah(t.amount) + '</div></div>';
-      }).join('');
-
       const printContainer = document.createElement('div');
-      printContainer.style.position = 'fixed';
-      printContainer.style.top = '0';
-      printContainer.style.left = '0';
-      printContainer.style.zIndex = '-9999';
-      printContainer.style.opacity = '1';
-      printContainer.style.pointerEvents = 'none';
-      printContainer.style.width = '780px';
-      printContainer.style.padding = '28px';
-      printContainer.style.backgroundColor = '#FAF8F5';
-      printContainer.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
-      printContainer.style.color = '#2D241E';
+      printContainer.style.padding = '20px';
+      printContainer.style.fontFamily = 'Arial, sans-serif';
+      printContainer.style.color = '#181412';
 
-      printContainer.innerHTML = '<style>@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap"); * { box-sizing: border-box; font-family: "Plus Jakarta Sans", sans-serif; } .pdf-card { page-break-inside: avoid; break-inside: avoid; }</style><div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #C87A4B; padding-bottom: 16px; margin-bottom: 16px;"><div style="display: flex; align-items: center; gap: 12px;"><div style="width: 44px; height: 44px; background: #EFE6DC; border-radius: 12px; display: flex; align-items: center; justify-content: center;"><img src="assets/cat-paw-3d.png" style="width: 28px; height: 28px; object-fit: contain;"></div><div><h1 style="font-size: 20px; font-weight: 900; margin: 0; color: #C87A4B; letter-spacing: -0.5px;">MOCHI\'S VAULT</h1><p style="font-size: 10px; color: #80736B; margin: 2px 0 0 0; font-weight: 600;">Official Financial Statement — Yosa & Fani</p></div></div><div style="text-align: right;"><span style="background-color: #EFE6DC; color: #80736B; font-size: 9px; font-weight: 800; padding: 5px 12px; border-radius: 20px; display: inline-block; text-transform: uppercase;">Period: ' + (filterMonth === 'ALL' ? 'All Months' : filterMonth) + ' / ' + filterYear + '</span><p style="font-size: 8px; color: #A89B91; margin: 4px 0 0 0; font-weight: 600;">Exported: ' + new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) + '</p></div></div><div style="background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;"><span style="font-size: 10px; font-weight: 700; color: #80736B;">' + moodText + '</span><span style="background: ' + moodBg + '; color: ' + moodColor + '; font-size: 8px; font-weight: 900; padding: 3px 10px; border-radius: 12px; text-transform: uppercase;">' + moodBadge + '</span></div><div style="display: flex; gap: 10px; margin-bottom: 16px;"><div style="flex: 1; background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 14px; padding: 12px 14px;"><span style="font-size: 8px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Total Income</span><strong style="font-size: 13px; font-weight: 900; color: #2E6F40;">+' + formatRupiah(totalIn) + '</strong></div><div style="flex: 1; background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 14px; padding: 12px 14px;"><span style="font-size: 8px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Total Expenses</span><strong style="font-size: 13px; font-weight: 900; color: #B93838;">-' + formatRupiah(totalOut) + '</strong></div><div style="flex: 1; background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 14px; padding: 12px 14px;"><span style="font-size: 8px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Net Surplus / Deficit</span><strong style="font-size: 13px; font-weight: 900; color: #2D241E;">' + formatRupiah(netBalance) + '</strong></div></div>' + topCategoriesHtml + '<div style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;"><span style="font-size: 9px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.8px;">Transaction Details (Date 1 - 31)</span><span style="font-size: 8px; font-weight: 700; color: #A89B91;">' + sortedTransactions.length + ' Items</span></div><div style="display: flex; flex-direction: column; gap: 6px;">' + transactionsHtml + '</div><div style="margin-top: 24px; border-top: 1px solid rgba(45, 36, 30, 0.08); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 8px; color: #A89B91; font-weight: 600;"><div>Verified Digital Statement • Mochi\'s Vault Security Stamp</div><div>Page Generated Automatically</div></div>';
+      printContainer.innerHTML = `
+        <div style="border-bottom: 2px solid #C87A4B; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-between: space-between; align-items: center;">
+          <div>
+            <h1 style="font-size: 20px; font-weight: 900; margin: 0; color: #C87A4B;">MOCHI'S VAULT</h1>
+            <p style="font-size: 11px; color: #80736B; margin: 4px 0 0 0;">Official Financial Statement — Yosa & Fani</p>
+          </div>
+          <div style="text-align: right; font-size: 10px; color: #80736B;">
+            <p style="margin:0;">Period: <strong>${filterMonth === 'ALL' ? 'All Months' : filterMonth} / ${filterYear}</strong></p>
+            <p style="margin:2px 0 0 0;">Exported: ${new Date().toLocaleDateString('en-US')}</p>
+          </div>
+        </div>
 
-      document.body.appendChild(printContainer);
+        <div style="background-color: #F3ECE4; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; font-size: 11px;">
+          <div><span>Total Income:</span> <strong style="color: #2E6F40; display: block; font-size: 13px;">+${formatRupiah(totalIn)}</strong></div>
+          <div><span>Total Expenses:</span> <strong style="color: #B93838; display: block; font-size: 13px;">-${formatRupiah(totalOut)}</strong></div>
+          <div><span>Net Surplus / Deficit:</span> <strong style="color: #181412; display: block; font-size: 13px;">${formatRupiah(totalIn - totalOut)}</strong></div>
+        </div>
 
-      setTimeout(() => {
-        const opt = {
-          margin:       [8, 8, 8, 8],
-          filename:     `Mochi_Statement_${filterYear}-${filterMonth}.pdf`,
-          image:        { type: 'jpeg', quality: 0.98 },
-          html2canvas:  { scale: 2, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0 },
-          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-          pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
-        };
+        <table style="width: 100%; border-collapse: collapse; font-size: 10px; text-align: left;">
+          <thead>
+            <tr style="background-color: #221C19; color: #FAF8F5;">
+              <th style="padding: 8px; border: 1px solid #ddd;">Date</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">By</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Category / Description</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Account</th>
+              <th style="padding: 8px; border: 1px solid #ddd; text-align: right;">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filtered.map((t, idx) => {
+              const meta = getTypeMeta(t.type);
+              const bg = idx % 2 === 0 ? '#FFFFFF' : '#FAF8F5';
+              let acc = t.sourceAccount || '';
+              if (t.sourceAccount && t.targetAccount) acc += ` -> ${t.targetAccount}`;
+              else if (t.targetAccount) acc = t.targetAccount;
 
-        html2pdf().set(opt).from(printContainer).save().then(() => {
-          if (document.body.contains(printContainer)) document.body.removeChild(printContainer);
-          if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-          showToast("PDF downloaded successfully!", "success");
-        }).catch(err => {
-          if (document.body.contains(printContainer)) document.body.removeChild(printContainer);
-          if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-          showToast("Failed to generate PDF: " + err.message, "error");
-        });
-      }, 300);
+              return `
+                <tr style="background-color: ${bg};">
+                  <td style="padding: 6px 8px; border: 1px solid #eee;">${formatDate(t.date)}</td>
+                  <td style="padding: 6px 8px; border: 1px solid #eee;">${escapeHtml(t.enteredBy)}</td>
+                  <td style="padding: 6px 8px; border: 1px solid #eee;">
+                    <strong>${escapeHtml(t.description || t.category)}</strong>
+                    <div style="font-size: 8px; color: #80736B;">${escapeHtml(t.category)}</div>
+                  </td>
+                  <td style="padding: 6px 8px; border: 1px solid #eee;">${escapeHtml(acc || '-')}</td>
+                  <td style="padding: 6px 8px; border: 1px solid #eee; text-align: right; font-weight: bold; color: ${meta.direction === 'in' ? '#2E6F40' : (meta.direction === 'out' ? '#B93838' : '#181412')};">
+                    ${meta.prefix}${formatRupiah(t.amount)}
+                  </td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      `;
+
+      const opt = {
+        margin:       10,
+        filename:     `Mochi_Financial_Statement_${filterYear}-${filterMonth}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(printContainer).save().then(() => {
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+        showToast("PDF downloaded successfully!", "success");
+      }).catch(err => {
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+        showToast("Failed to generate PDF: " + err.message, "error");
+      });
+    }
+
+    // WALLETS: DENGAN DIVIDER CLEAN PADDING P-5 DAN BEBAS DOUBLE NAME
+    function renderWallets() {
+      const operationalEl = document.getElementById('list-accounts-operational');
+      const savingsEl = document.getElementById('list-accounts-savings');
+      operationalEl.innerHTML = ""; savingsEl.innerHTML = "";
+
+      if (!GLOBAL_DATA.accounts || GLOBAL_DATA.accounts.length === 0) {
+        operationalEl.innerHTML = `<p class="text-xs text-muted font-semibold text-center py-4">No accounts added yet.</p>`;
+        return;
+      }
+
+      GLOBAL_DATA.accounts.forEach((acc, i) => {
+        const meta = getAccountIconMeta(acc.accountName, acc.accountType);
+        const balanceColorClass = meta.isLiability ? "amount-out" : "amount-in";
+        const badgeBgClass = meta.isLiability ? "bg-[var(--chip-out-bg)] amount-out" : "bg-[var(--chip-in-bg)] amount-in";
+        const statusLabel = "RUNNING BALANCE";
+        const ownerLabel = acc.owner ? escapeHtml(acc.owner) : 'Yosa & Fani';
+
+        const nameHasOwner = acc.owner && acc.accountName.toLowerCase().includes(acc.owner.toLowerCase());
+        const badgeText = nameHasOwner ? escapeHtml(acc.accountType) : `${escapeHtml(acc.accountType)} • ${ownerLabel}`;
+
+        const div = document.createElement('div');
+        div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item flex flex-col justify-between";
+        div.style.animationDelay = `${i * 0.05}s`;
+        
+        div.innerHTML = `
+          <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
+            <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2" onclick="vibrate(30); showAccountHistory('${escapeAttr(acc.accountName)}')">
+              <div class="w-9 h-9 rounded-xl ${meta.bg} flex items-center justify-center flex-shrink-0 shadow-sm">
+                <i data-lucide="${meta.icon}" class="w-4.5 h-4.5"></i>
+              </div>
+              <div class="truncate">
+                <h4 class="text-[13px] font-extrabold text-main leading-tight truncate pr-1">${escapeHtml(acc.accountName)}</h4>
+                <div class="flex items-center space-x-1.5 mt-1">
+                  <span class="text-[8px] font-extrabold px-2 py-0.5 rounded-full uppercase ${badgeBgClass}">${badgeText}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-1 flex-shrink-0">
+              <button type="button" onclick="vibrate(30); event.stopPropagation(); openEditAccountModal('${escapeAttr(acc.accountName)}')" class="p-1.5 text-faint hover:text-main transition-colors rounded-lg hover:bg-[var(--bg-subtle-2)]">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+              </button>
+              <button type="button" onclick="vibrate(30); event.stopPropagation(); promptDeleteAccount('${escapeAttr(acc.accountName)}')" class="p-1.5 text-faint hover:text-rose-500 transition-colors rounded-lg hover:bg-[var(--bg-subtle-2)]">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <div onclick="vibrate(30); showAccountHistory('${escapeAttr(acc.accountName)}')">
+            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">${statusLabel}</span>
+            <span class="text-[18px] font-black ${balanceColorClass} block leading-none tracking-tight">${formatRupiah(acc.runningBalance)}</span>
+          </div>
+        `;
+
+        if ((acc.functionCategory || '').toLowerCase().includes('daily') || (acc.functionCategory || '').toLowerCase().includes('operation')) {
+          operationalEl.appendChild(div);
+        } else {
+          savingsEl.appendChild(div);
+        }
+      });
+      lucide.createIcons();
     }
 
     function openEditAccountModal(accountName) {
