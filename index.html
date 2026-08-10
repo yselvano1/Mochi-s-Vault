@@ -2236,6 +2236,38 @@
       payableEl.innerHTML = "";
       receivableEl.innerHTML = "";
 
+      let hasActivePayables = false;
+
+      // 1. TAMPILKAN KARTU TAGIHAN CC & PAYLATER BERJALAN (> 0)
+      (GLOBAL_DATA.accounts || []).forEach((acc, i) => {
+        const meta = getAccountIconMeta(acc.accountName, acc.accountType);
+        const bal = Number(acc.runningBalance) || 0;
+
+        if (meta.isLiability && bal > 0) {
+          hasActivePayables = true;
+          const ownerLabel = acc.owner ? escapeHtml(acc.owner) : 'Yosa & Fani';
+          const div = document.createElement('div');
+          div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
+          div.style.animationDelay = `${i * 0.05}s`;
+          div.onclick = () => { vibrate(30); showAccountHistory(acc.accountName); };
+          div.innerHTML = `
+            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)] flex justify-between items-center">
+              <div>
+                <h4 class="text-[13px] font-extrabold text-main leading-tight">${escapeHtml(acc.accountName)}</h4>
+                <span class="text-[9px] amount-out bg-[var(--chip-out-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-1.5 inline-block">${escapeHtml(acc.accountType)} • ${ownerLabel}</span>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-faint"></i>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Tagihan Berjalan Bulan Ini</span>
+              <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(bal)}</span>
+            </div>
+          `;
+          payableEl.appendChild(div);
+        }
+      });
+
+      // 2. TAMPILKAN KARTU HUTANG TERSTRUKTUR (AP / CICILAN)
       const activePayables = (GLOBAL_DATA.payables || [])
         .filter(p => {
           const st = (p.status || '').toLowerCase().trim();
@@ -2243,32 +2275,34 @@
         })
         .sort((a, b) => b.remainingAmount - a.remainingAmount);
 
-      if (activePayables.length === 0) {
-        payableEl.innerHTML = `<p class="text-xs text-muted font-semibold">Semua hutang sudah lunas.</p>`;
-      } else {
-        activePayables.forEach((p, i) => {
-          const pct = p.initialAmount > 0 ? Math.min(100, ((p.initialAmount - p.remainingAmount) / p.initialAmount) * 100) : 0;
-          const div = document.createElement('div');
-          div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
-          div.style.animationDelay = `${i * 0.05}s`;
-          div.onclick = () => { vibrate(30); showPayableDetail(p); };
-          div.innerHTML = `
-            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-              <h4 class="text-[13px] font-extrabold text-main leading-tight">${escapeHtml(p.payableName)}</h4>
-              <span class="text-[9px] amount-out bg-[var(--chip-out-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(p.payableType || 'Hutang')}</span>
-            </div>
-            <div class="flex flex-col mb-3">
-              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Sisa Hutang</span>
-              <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(p.remainingAmount)}</span>
-            </div>
-            <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
-              <div class="bg-[var(--amount-out)] h-1.5 rounded-full" style="width:${pct}%"></div>
-            </div>
-          `;
-          payableEl.appendChild(div);
-        });
+      activePayables.forEach((p, i) => {
+        hasActivePayables = true;
+        const pct = p.initialAmount > 0 ? Math.min(100, ((p.initialAmount - p.remainingAmount) / p.initialAmount) * 100) : 0;
+        const div = document.createElement('div');
+        div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
+        div.style.animationDelay = `${i * 0.05}s`;
+        div.onclick = () => { vibrate(30); showPayableDetail(p); };
+        div.innerHTML = `
+          <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
+            <h4 class="text-[13px] font-extrabold text-main leading-tight">${escapeHtml(p.payableName)}</h4>
+            <span class="text-[9px] amount-out bg-[var(--chip-out-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(p.payableType || 'Payable')}</span>
+          </div>
+          <div class="flex flex-col mb-3">
+            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Sisa Hutang Terstruktur</span>
+            <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(p.remainingAmount)}</span>
+          </div>
+          <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
+            <div class="bg-[var(--amount-out)] h-1.5 rounded-full" style="width:${pct}%"></div>
+          </div>
+        `;
+        payableEl.appendChild(div);
+      });
+
+      if (!hasActivePayables) {
+        payableEl.innerHTML = `<p class="text-xs text-muted font-semibold text-center py-4">All payables and credit card bills are clear!</p>`;
       }
 
+      // 3. TAMPILKAN PIUTANG (RECEIVABLES)
       const activeReceivables = (GLOBAL_DATA.receivables || [])
         .filter(r => {
           const st = (r.status || '').toLowerCase().trim();
@@ -2276,7 +2310,7 @@
         });
 
       if (activeReceivables.length === 0) {
-        receivableEl.innerHTML = `<p class="text-xs text-muted font-semibold">Semua piutang telah diterima.</p>`;
+        receivableEl.innerHTML = `<p class="text-xs text-muted font-semibold text-center py-4">All receivables have been collected.</p>`;
       } else {
         activeReceivables.forEach((r, i) => {
           const div = document.createElement('div');
@@ -2286,10 +2320,10 @@
           div.innerHTML = `
             <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
               <h4 class="text-[13px] font-extrabold text-main leading-tight">${escapeHtml(r.receivableName)}</h4>
-              <span class="text-[9px] amount-info bg-[var(--chip-info-bg)] px-2 py-0.5 rounded-full uppercase tracking-wider mt-2 inline-block">${escapeHtml(r.receivableType || 'Piutang')}</span>
+              <span class="text-[9px] amount-info bg-[var(--chip-info-bg)] px-2 py-0.5 rounded-full uppercase tracking-wider mt-2 inline-block">${escapeHtml(r.receivableType || 'Receivable')}</span>
             </div>
             <div>
-              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Sisa Piutang</span>
+              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">Remaining Receivable</span>
               <span class="text-[18px] font-black amount-info block leading-none tracking-tight">${formatRupiah(r.remainingAmount)}</span>
             </div>
           `;
@@ -2485,11 +2519,41 @@
         (GLOBAL_DATA.receivables || []).forEach(r => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${escapeHtml(r.receivableName)}:</span> <span class="font-extrabold amount-info">${formatRupiah(r.remainingAmount)}</span></div>`; });
         html += `</div>`;
       } else if (kpiName === 'Total Payables') {
-        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Rincian Hutang:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        (GLOBAL_DATA.payables || []).forEach(p => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${escapeHtml(p.payableName)}:</span> <span class="font-extrabold amount-out">${formatRupiah(p.remainingAmount)}</span></div>`; });
+        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Rincian Tagihan CC/PayLater & Hutang:</p><div class="space-y-3 max-h-56 overflow-y-auto pr-1">`;
+        
+        let hasPayables = false;
+
+        // 1. Rincian Tagihan Berjalan dari Credit Card & PayLater
+        (GLOBAL_DATA.accounts || []).forEach(a => {
+          const meta = getAccountIconMeta(a.accountName, a.accountType);
+          const bal = Number(a.runningBalance) || 0;
+          if (meta.isLiability && bal > 0) {
+            hasPayables = true;
+            html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+              <span>${escapeHtml(a.accountName)} (${escapeHtml(a.owner || 'PayLater')}):</span> 
+              <span class="font-extrabold amount-out">${formatRupiah(bal)}</span>
+            </div>`;
+          }
+        });
+
+        // 2. Rincian Hutang Terstruktur (AP / Cicilan)
+        (GLOBAL_DATA.payables || []).forEach(p => {
+          const st = (p.status || '').toLowerCase().trim();
+          const rem = Number(p.remainingAmount) || 0;
+          if ((st === 'active' || st === 'aktif') && rem > 0) {
+            hasPayables = true;
+            html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+              <span>${escapeHtml(p.payableName)} (Cicilan/KTA):</span> 
+              <span class="font-extrabold amount-out">${formatRupiah(rem)}</span>
+            </div>`;
+          }
+        });
+
+        if (!hasPayables) {
+          html += `<p class="text-xs text-faint italic py-2 text-center">Tidak ada tagihan atau hutang aktif.</p>`;
+        }
+
         html += `</div>`;
-      } else if (kpiName === 'Net Operating Savings') {
-        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Keterangan:</p><p class="text-muted leading-relaxed font-semibold">Selisih antara total pemasukan operasional dan total pengeluaran operasional.</p>`;
       }
 
       html += `</div></div>`;
