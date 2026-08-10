@@ -123,6 +123,37 @@
     .modal-content-bottom.show { transform: translateY(0); }
     .modal-content-center { transform: scale(0.9) translateY(20px); opacity: 0; transition: all 0.3s; }
     .modal-content-center.show { transform: scale(1) translateY(0); opacity: 1; }
+
+    /* ===== SMOOTH ENTRY ANIMATIONS ===== */
+    @keyframes floatIdle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    .animate-float { animation: floatIdle 3s ease-in-out infinite; }
+
+    @keyframes cardEnter { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    .page-animate > * { animation: cardEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .page-animate > *:nth-child(1) { animation-delay: 0ms; }
+    .page-animate > *:nth-child(2) { animation-delay: 50ms; }
+    .page-animate > *:nth-child(3) { animation-delay: 100ms; }
+    .page-animate > *:nth-child(4) { animation-delay: 150ms; }
+    .page-animate > *:nth-child(5) { animation-delay: 200ms; }
+    .page-animate > *:nth-child(6) { animation-delay: 250ms; }
+    .page-animate > *:nth-child(n+7) { animation-delay: 300ms; }
+
+    /* ===== SKELETON SHIMMER (shown only on true first load, no cache) ===== */
+    @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+    .skeleton-block {
+      border-radius: 1.25rem;
+      background: linear-gradient(90deg, var(--bg-subtle) 0px, var(--bg-subtle-2) 40px, var(--bg-subtle) 80px);
+      background-size: 800px 100%;
+      animation: shimmer 1.4s linear infinite;
+    }
+
+    /* ===== SYNC INDICATOR (silent background refresh) ===== */
+    #sync-indicator {
+      opacity: 0; transform: translateY(-6px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+    #sync-indicator.show { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body class="min-h-screen">
@@ -139,6 +170,19 @@
         <span id="splash-text" class="text-xs font-bold text-mochi dark:text-mochi-light">Waking up Mochi...</span>
       </div>
     </div>
+  </div>
+
+  <!-- SKELETON (only shown briefly on a true first-load with no cache) -->
+  <div id="skeleton-screen" class="fixed inset-0 z-[140] hidden bg-[var(--bg-app)] px-5 pt-16 max-w-3xl mx-auto">
+    <div class="skeleton-block h-24 w-full mb-5"></div>
+    <div class="skeleton-block h-40 w-full mb-4 rounded-[2rem]"></div>
+    <div class="grid grid-cols-2 gap-3 mb-5">
+      <div class="skeleton-block h-20"></div>
+      <div class="skeleton-block h-20"></div>
+      <div class="skeleton-block h-20"></div>
+      <div class="skeleton-block h-20"></div>
+    </div>
+    <div class="skeleton-block h-32 w-full"></div>
   </div>
 
   <!-- REWARD OVERLAY -->
@@ -188,10 +232,16 @@
       </div>
     </div>
 
-    <button onclick="toggleDarkMode(); vibrate(30);" class="tap-shrink w-11 h-11 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm flex-shrink-0" aria-label="Toggle Mode">
-      <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
-      <i data-lucide="moon" id="icon-moon" class="w-5 h-5"></i>
-    </button>
+    <div class="flex items-center space-x-2 flex-shrink-0">
+      <div id="sync-indicator" class="flex items-center space-x-1.5 bg-[var(--bg-subtle-2)] px-2.5 py-1 rounded-full">
+        <i data-lucide="refresh-cw" class="w-3 h-3 text-mochi animate-spin"></i>
+        <span class="text-[9px] font-bold text-mochi dark:text-mochi-light">Syncing</span>
+      </div>
+      <button onclick="toggleDarkMode(); vibrate(30);" class="tap-shrink w-11 h-11 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm flex-shrink-0" aria-label="Toggle Mode">
+        <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
+        <i data-lucide="moon" id="icon-moon" class="w-5 h-5"></i>
+      </button>
+    </div>
   </header>
   
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
@@ -1291,46 +1341,77 @@
       }
     }
 
-    function dismissSplashScreen() {
-      const splash = document.getElementById('splash-screen');
-      const main = document.getElementById('main-content');
-      if (!splash) return;
-
-      main.classList.remove('hidden');
-      splash.style.opacity = '0';
-      splash.style.pointerEvents = 'none';
-
+    function dismissSplashScreen(delay = 0) {
       setTimeout(() => {
-        splash.classList.add('hidden');
-      }, 500);
+        const splash = document.getElementById('splash-screen');
+        const skeleton = document.getElementById('skeleton-screen');
+        const main = document.getElementById('main-content');
+        if (!splash) return;
+
+        main.classList.remove('hidden');
+        splash.style.opacity = '0';
+        splash.style.pointerEvents = 'none';
+
+        setTimeout(() => {
+          splash.classList.add('hidden');
+          if (skeleton) skeleton.classList.add('hidden');
+        }, 500);
+      }, delay);
+    }
+
+    function showSyncIndicator(show) {
+      const el = document.getElementById('sync-indicator');
+      if (!el) return;
+      el.classList.toggle('show', show);
     }
 
     async function loadAppData(isSilentReload = false) {
       const localCache = localStorage.getItem('mochi_vault_global_data');
+      const hadCache = !!localCache;
+
       if (localCache && !isSilentReload) {
+        // Cache HIT: render instan, splash dismiss cepat (guard kecil biar gak flicker)
         try {
           GLOBAL_DATA = JSON.parse(localCache);
           renderAllViews();
-          setTimeout(() => dismissSplashScreen(), 1200);
-          isSilentReload = true;
+          dismissSplashScreen(150);
+          isSilentReload = true; // fetch di bawah jadi silent background refresh
         } catch(e) { console.error("Cache parse error", e); }
+      } else if (!localCache) {
+        // Cache MISS (first ever open): tampilkan skeleton, bukan spinner kosong
+        const skeleton = document.getElementById('skeleton-screen');
+        const splash = document.getElementById('splash-screen');
+        if (skeleton && splash) {
+          splash.classList.add('hidden');
+          skeleton.classList.remove('hidden');
+        }
       }
+
+      if (isSilentReload && hadCache) showSyncIndicator(true);
+      const fetchStart = performance.now();
 
       try {
         const res = await fetch(API_URL, { redirect: 'follow' });
         const result = await res.json();
         if (result.status === 'error') throw new Error(result.message);
-        
+
         GLOBAL_DATA = result.data || result;
         localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
 
         renderAllViews();
 
         if (!isSilentReload) {
-          setTimeout(() => dismissSplashScreen(), 1200);
+          // Gak ada cache sama sekali: kasih minimum tampil skeleton biar gak "kedip"
+          // kalau fetch-nya ternyata cepat banget
+          const elapsed = performance.now() - fetchStart;
+          const minShow = Math.max(0, 300 - elapsed);
+          dismissSplashScreen(minShow);
+        } else if (hadCache) {
+          showSyncIndicator(false);
         }
       } catch (err) {
-        if (!localCache) {
+        showSyncIndicator(false);
+        if (!hadCache) {
           showToast("Failed to load data: " + err.message, "error");
           dismissSplashScreen();
         }
