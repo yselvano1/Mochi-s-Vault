@@ -1643,6 +1643,8 @@
       const prevYM = prevDate.getFullYear() + '-' + String(prevDate.getMonth() + 1).padStart(2, '0');
 
       const allTrx = GLOBAL_DATA.transactions || [];
+      const categories = GLOBAL_DATA.categories || [];
+
       const trxThisMonth = allTrx.filter(t => t.type === 'Expense' && t.date && t.date.substring(0, 7) === currentYM);
       const trxLastMonth = allTrx.filter(t => t.type === 'Expense' && t.date && t.date.substring(0, 7) === prevYM);
 
@@ -1678,13 +1680,17 @@
 
       const groups = {};
       let grandTotal = 0;
+
       trxThisMonth.forEach(t => {
-        const main = t.mainCategory || t.category || 'Lainnya';
+        // MATCHING DARI MASTER CATEGORY: Memastikan Sub-Kategori selalu ditarik ke Kategori Utama Induknya
+        const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
+        const main = t.mainCategory || (catMatch ? catMatch.mainCategory : null) || t.category || 'Lainnya';
+        const subKey = t.category || main;
         const amount = Number(t.amount) || 0;
+
         grandTotal += amount;
         if (!groups[main]) groups[main] = { total: 0, subs: {} };
         groups[main].total += amount;
-        const subKey = t.category || main;
         groups[main].subs[subKey] = (groups[main].subs[subKey] || 0) + amount;
       });
 
