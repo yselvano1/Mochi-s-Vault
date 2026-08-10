@@ -1,11 +1,11 @@
-const APP_VERSION = "v18.8.3"; // Versi dinaikkan agar HP memperbarui cache index.html
+const APP_VERSION = "v19"; // Bump versi ini setiap kali index.html berubah agar HP memperbarui cache
 const CACHE_NAME = "mochis-vault-" + APP_VERSION;
 
-const ASSETS = [
+// Aset same-origin: HARUS berhasil semua, ini yang bikin app tetap jalan offline.
+const LOCAL_ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./assets/cat-paw-3d.png", // <--- Gunakan jalur folder assets/
   "./mochi-logo-new.png",
   "./mochi-rich-open.png",
   "./mochi-rich-closed.png",
@@ -13,15 +13,29 @@ const ASSETS = [
   "./mochi-chill-closed.png",
   "./mochi-anxious-open.png",
   "./mochi-anxious-closed.png",
+  "./assets/cat-paw-3d.png"
+];
+
+// Aset pihak ketiga (CDN): dicoba tapi tidak boleh menggagalkan seluruh
+// instalasi kalau salah satu gagal (mis. offline saat install pertama, atau
+// respons tanpa header CORS yang bikin cache.addAll() melempar error).
+const CDN_ASSETS = [
   "https://cdn.tailwindcss.com",
-  "https://unpkg.com/lucide@0.469.0"
+  "https://unpkg.com/lucide@0.469.0",
+  "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js",
+  "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
 ];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(ASSETS))
-      .catch((err) => console.error("Failed to precache initial assets:", err))
+    caches.open(CACHE_NAME).then(async (cache) => {
+      await cache.addAll(LOCAL_ASSETS);
+      await Promise.all(
+        CDN_ASSETS.map((url) =>
+          cache.add(url).catch((err) => console.warn("Precache CDN gagal (akan dicoba lagi saat online):", url, err))
+        )
+      );
+    })
   );
   self.skipWaiting();
 });
@@ -38,7 +52,7 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   // Never cache responses from the Apps Script backend — financial data must
   // always be fresh, never served stale from cache.
-  if (event.request.url.includes('script.google.com')) {
+  if (e.request.url.includes('script.google.com')) {
     return; // Request API Google Apps Script jangan pernah dicache!
   }
 
