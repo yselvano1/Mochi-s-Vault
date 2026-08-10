@@ -105,10 +105,15 @@
 
     .clean-topbar { background: linear-gradient(180deg, var(--bg-app) 85%, transparent 100%); backdrop-filter: blur(12px); padding-top: max(2rem, env(safe-area-inset-top)); }
     .nav-bar-bottom { background-color: var(--glass-bg) !important; backdrop-filter: blur(20px); border-top: 1px solid var(--glass-border); padding-bottom: env(safe-area-inset-bottom); }
-    .nav-item { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .nav-item { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); min-width: 44px; min-height: 44px; }
+    .nav-text {
+      max-width: 0; opacity: 0; overflow: hidden; white-space: nowrap;
+      transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, margin-left 0.3s ease;
+    }
+    .nav-text.nav-text-active { max-width: 80px; opacity: 1; margin-left: 0.35rem; }
 
     @keyframes pawPulse { 0% { box-shadow: 0 0 0 0 rgba(200, 122, 75, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(200, 122, 75, 0); } 100% { box-shadow: 0 0 0 0 rgba(200, 122, 75, 0); } }
-    .paw-fab { animation: pawPulse 2.5s infinite; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .paw-fab { animation: pawPulse 2.5s ease-out 3; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .paw-fab:active { transform: scale(0.9); }
 
     .glass-modal-content { background-color: var(--glass-modal-bg) !important; backdrop-filter: blur(25px); box-shadow: var(--shadow-premium); border: 1px solid var(--glass-border); }
@@ -218,7 +223,7 @@
     </div>
   </div>
 
-  <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
+  <div id="toast-container" class="fixed left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4" style="top: max(1.25rem, env(safe-area-inset-top))"></div>
 
   <!-- HEADER BAR -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
@@ -471,17 +476,17 @@
     <div class="flex justify-between items-center w-full max-w-md mx-auto px-6 py-3 relative">
       <button ontouchstart="vibrate(30)" onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-item bg-mochi-light/20 text-mochi dark:text-mochi-light px-4 py-2.5 rounded-2xl flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="layout-dashboard" class="w-5 h-5 flex-shrink-0"></i>
-        <span class="nav-text text-[12px] font-extrabold tracking-wide whitespace-nowrap">Home</span>
+        <span class="nav-text nav-text-active text-[12px] font-extrabold tracking-wide">Home</span>
       </button>
 
       <button ontouchstart="vibrate(30)" onclick="switchTab('history')" id="tab-history" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="list" class="w-5 h-5 flex-shrink-0"></i>
-        <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">History</span>
+        <span class="nav-text text-[12px] font-extrabold tracking-wide">History</span>
       </button>
 
       <button ontouchstart="vibrate(30)" onclick="switchTab('wallets')" id="tab-wallets" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="wallet" class="w-5 h-5 flex-shrink-0"></i>
-        <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">Wallets</span>
+        <span class="nav-text text-[12px] font-extrabold tracking-wide">Wallets</span>
       </button>
 
       <button ontouchstart="vibrate(30)" onclick="switchTab('payables')" id="tab-payables" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
@@ -489,7 +494,7 @@
           <i data-lucide="credit-card" class="w-5 h-5"></i>
           <span id="badge-payables-nav" class="hidden absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-[var(--amount-out)] ring-2 ring-[var(--glass-bg)]"></span>
         </div>
-        <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">AP/R</span>
+        <span class="nav-text text-[12px] font-extrabold tracking-wide">AP/R</span>
       </button>
     </div>
   </nav>
@@ -790,6 +795,18 @@
       return div.innerHTML;
     }
 
+    function emptyStateHtml(icon, title, subtitle) {
+      return `
+        <div class="flex flex-col items-center justify-center text-center py-10 px-6">
+          <div class="w-16 h-16 rounded-full bg-[var(--bg-subtle-2)] flex items-center justify-center mb-4">
+            <i data-lucide="${icon}" class="w-7 h-7 text-mochi"></i>
+          </div>
+          <p class="text-sm font-extrabold text-main mb-1">${title}</p>
+          <p class="text-xs font-semibold text-muted max-w-[220px]">${subtitle}</p>
+        </div>
+      `;
+    }
+
     function escapeAttr(str) { return String(str).replace(/'/g, "\\'"); }
 
     function showToast(message, type = 'success') {
@@ -855,7 +872,7 @@
             overlay.classList.remove('flex');
             resolve();
           }, 500);
-        }, 1800);
+        }, 1000);
       });
     }
 
@@ -903,7 +920,7 @@
         el.classList.remove('bg-mochi-light/20', 'text-mochi', 'dark:text-mochi-light', 'px-4', 'py-2.5', 'rounded-2xl');
         el.classList.add('text-slate-400', 'dark:text-[#A89B91]', 'p-2.5');
         const textSpan = el.querySelector('.nav-text');
-        if (textSpan) textSpan.classList.add('hidden');
+        if (textSpan) textSpan.classList.remove('nav-text-active');
       });
 
       const activeBtn = document.getElementById('tab-' + tabId);
@@ -911,7 +928,7 @@
         activeBtn.classList.remove('text-slate-400', 'dark:text-[#A89B91]', 'p-2.5');
         activeBtn.classList.add('bg-mochi-light/20', 'text-mochi', 'dark:text-mochi-light', 'px-4', 'py-2.5', 'rounded-2xl');
         const textSpan = activeBtn.querySelector('.nav-text');
-        if (textSpan) textSpan.classList.remove('hidden');
+        if (textSpan) textSpan.classList.add('nav-text-active');
       }
 
       document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
@@ -2074,7 +2091,8 @@
 
       const listEl = document.getElementById('history-transaction-list');
       if (filtered.length === 0) {
-        listEl.innerHTML = `<p class="text-xs text-center text-muted py-8 font-semibold">No transactions match the selected filter.</p>`;
+        listEl.innerHTML = emptyStateHtml('search-x', 'No matches found', 'Try adjusting the filter to see more of Mochi\'s records.');
+        lucide.createIcons();
         return;
       }
 
@@ -2819,7 +2837,7 @@
       `;
 
       if (relatedTrx.length === 0) {
-        html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
+        html += `<p class="text-xs text-center text-muted py-6 font-semibold flex flex-col items-center"><i data-lucide="inbox" class="w-5 h-5 mb-2 text-faint"></i>No linked transactions yet.</p>`;
       } else {
         relatedTrx.forEach(t => {
           const meta = getTypeMeta(t.type);
@@ -2884,7 +2902,7 @@
       `;
 
       if (relatedTrx.length === 0) {
-        html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
+        html += `<p class="text-xs text-center text-muted py-6 font-semibold flex flex-col items-center"><i data-lucide="inbox" class="w-5 h-5 mb-2 text-faint"></i>No linked transactions yet.</p>`;
       } else {
         relatedTrx.forEach(t => {
           const meta = getTypeMeta(t.type);
