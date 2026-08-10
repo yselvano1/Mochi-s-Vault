@@ -1,10 +1,11 @@
-const APP_VERSION = "v18.6.4.2"; // Versi dinaikkan agar HP memperbarui cache index.html
+const APP_VERSION = "v18.6.5"; // Versi dinaikkan agar HP memperbarui cache index.html
 const CACHE_NAME = "mochis-vault-" + APP_VERSION;
 
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
+  "./assets/cat-paw-3d.png", // <--- Gunakan jalur folder assets/
   "./mochi-logo-new.png",
   "./mochi-rich-open.png",
   "./mochi-rich-closed.png",
