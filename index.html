@@ -2161,7 +2161,10 @@
 
       const printContainer = document.createElement('div');
       printContainer.id = 'mochi-pdf-export-root';
-      printContainer.style.cssText = 'position:fixed; top:0; left:-9999px; width:750px; background:#FAF8F5; padding:0;';
+      // NOTE: must be position:absolute (not fixed) — html2canvas fails to
+      // capture position:fixed elements reliably during its cloning step,
+      // which previously resulted in a blank/white PDF body.
+      printContainer.style.cssText = 'position:absolute; top:0; left:0; width:750px; background:#FAF8F5; padding:0; z-index:-1;';
 
       printContainer.innerHTML = `
         <style>
@@ -2264,7 +2267,15 @@
         margin:       [10, 8, 14, 8],
         filename:     `Mochi_Financial_Statement_${filterYear}-${filterMonth}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#FAF8F5' },
+        html2canvas:  {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#FAF8F5',
+          scrollX: 0,
+          scrollY: 0,
+          windowWidth: printContainer.scrollWidth,
+          windowHeight: printContainer.scrollHeight
+        },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
         pagebreak:    { mode: ['css', 'avoid-all'], avoid: ['.mochi-card', '.mochi-section'] }
       };
