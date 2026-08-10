@@ -2107,10 +2107,9 @@
 
       // 1. SORTING KRONOLOGIS (TANGGAL 1 SAMPAI 31)
       const sortedTransactions = [...filtered].sort((a, b) => new Date(a.date) - new Date(b.date));
-
       let loadingToast = showToast("Preparing PDF statement...", "info");
 
-      // 2. KALKULASI REKAPITULASI & KATEGORI
+      // 2. KALKULASI REKAPITULASI
       let totalIn = 0, totalOut = 0;
       const categorySpentMap = {};
       const categories = GLOBAL_DATA.categories || [];
@@ -2128,7 +2127,6 @@
         }
       });
 
-      // 3. KALKULASI MOCHI MOOD STATUS UNTUK PDF
       const netBalance = totalIn - totalOut;
       const ratio = totalIn > 0 ? (totalOut / totalIn) : (totalOut > 0 ? 1 : 0);
       const displayPct = Math.min(Math.round(ratio * 100), 999);
@@ -2139,23 +2137,74 @@
       let moodColor = "#1D63B8";
 
       if (ratio <= 0.40) {
-        moodText = `Mochi is purr-fectly happy! Expenses are only at ${displayPct}% of income.`;
+        moodText = "Mochi is purr-fectly happy! Expenses are only at " + displayPct + "% of income.";
         moodBadge = "Rich Mochi";
         moodBg = "rgba(46, 111, 64, 0.12)";
         moodColor = "#2E6F40";
       } else if (ratio > 0.80) {
-        moodText = `Mochi is sweating! Expenses reached ${displayPct}% of income.`;
+        moodText = "Mochi is sweating! Expenses reached " + displayPct + "% of income.";
         moodBadge = "Anxious Mochi";
         moodBg = "rgba(185, 56, 56, 0.12)";
         moodColor = "#B93838";
       }
 
-      // Top 3 Expense Categories
       const topCategories = Object.entries(categorySpentMap)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 3);
 
-      // 4. KONTAINER DOKUMEN (FIX: DITARUH DI BELAKANG LAYAR, BUKAN KOORDINAT MINUS)
+      // 3. RENDER KATEGORI TERATAS
+      let topCategoriesHtml = "";
+      if (topCategories.length > 0) {
+        const catBarsHtml = topCategories.map(([cat, amt]) => {
+          const pct = totalOut > 0 ? Math.round((amt / totalOut) * 100) : 0;
+          return `
+            <div style="flex: 1;">
+              <div style="display: flex; justify-content: space-between; font-size: 9px; font-weight: 700; margin-bottom: 3px;">
+                <span style="color: #2D241E;">` + escapeHtml(cat) + `</span>
+                <span style="color: #80736B;">` + pct + `%</span>
+              </div>
+              <div style="background: #EFE6DC; height: 5px; border-radius: 4px; overflow: hidden;">
+                <div style="background: #C87A4B; height: 100%; width: ` + pct + `%;"></div>
+              </div>
+            </div>`;
+        }).join('');
+
+        topCategoriesHtml = `
+          <div style="background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 12px; padding: 10px 14px; margin-bottom: 20px;">
+            <span style="font-size: 8px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 8px;">Top Expense Categories</span>
+            <div style="display: flex; gap: 12px;">` + catBarsHtml + `</div>
+          </div>`;
+      }
+
+      // 4. RENDER DAFTAR TRANSAKSI
+      const transactionsHtml = sortedTransactions.map(t => {
+        const meta = getTypeMeta(t.type) || {};
+        let acc = t.sourceAccount || '';
+        if (t.sourceAccount && t.targetAccount) acc += ' ➔ ' + t.targetAccount;
+        else if (t.targetAccount) acc = t.targetAccount;
+
+        let amtColor = meta.direction === 'in' ? '#2E6F40' : (meta.direction === 'out' ? '#B93838' : '#1D63B8');
+
+        return `
+          <div class="pdf-card" style="background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 10px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="background: #EFE6DC; border-radius: 6px; padding: 4px 8px; font-size: 9px; font-weight: 800; color: #2D241E; text-align: center; white-space: nowrap;">
+                ` + formatDate(t.date) + `
+              </div>
+              <div>
+                <div style="font-size: 11px; font-weight: 800; color: #2D241E; line-height: 1.2;">` + escapeHtml(t.description || t.category) + `</div>
+                <div style="font-size: 8px; font-weight: 600; color: #80736B; margin-top: 2px;">
+                  ` + escapeHtml(t.category) + (acc ? ' • ' + escapeHtml(acc) : '') + ` • By ` + escapeHtml(t.enteredBy) + `
+                </div>
+              </div>
+            </div>
+            <div style="font-size: 11px; font-weight: 900; color: ` + amtColor + `; text-align: right; white-space: nowrap;">
+              ` + (meta.prefix || '') + formatRupiah(t.amount) + `
+            </div>
+          </div>`;
+      }).join('');
+
+      // 5. WADAH DOKUMEN CETAK
       const printContainer = document.createElement('div');
       printContainer.style.position = 'fixed';
       printContainer.style.top = '0';
@@ -2176,7 +2225,6 @@
           .pdf-card { page-break-inside: avoid; break-inside: avoid; }
         </style>
 
-        <!-- BRAND HEADER BANNER -->
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #C87A4B; padding-bottom: 16px; margin-bottom: 16px;">
           <div style="display: flex; align-items: center; gap: 12px;">
             <div style="width: 44px; height: 44px; background: #EFE6DC; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
@@ -2189,94 +2237,43 @@
           </div>
           <div style="text-align: right;">
             <span style="background-color: #EFE6DC; color: #80736B; font-size: 9px; font-weight: 800; padding: 5px 12px; border-radius: 20px; display: inline-block; text-transform: uppercase;">
-              Period: ${filterMonth === 'ALL' ? 'All Months' : filterMonth} / ${filterYear}
+              Period: ` + (filterMonth === 'ALL' ? 'All Months' : filterMonth) + ` / ` + filterYear + `
             </span>
-            <p style="font-size: 8px; color: #A89B91; margin: 4px 0 0 0; font-weight: 600;">Exported: ${new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+            <p style="font-size: 8px; color: #A89B91; margin: 4px 0 0 0; font-weight: 600;">Exported: ` + new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) + `</p>
           </div>
         </div>
 
-        <!-- MOCHI MOOD STATUS BOX -->
         <div style="background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 10px; font-weight: 700; color: #80736B;">${moodText}</span>
-          <span style="background: ${moodBg}; color: ${moodColor}; font-size: 8px; font-weight: 900; padding: 3px 10px; border-radius: 12px; text-transform: uppercase;">${moodBadge}</span>
+          <span style="font-size: 10px; font-weight: 700; color: #80736B;">` + moodText + `</span>
+          <span style="background: ` + moodBg + `; color: ` + moodColor + `; font-size: 8px; font-weight: 900; padding: 3px 10px; border-radius: 12px; text-transform: uppercase;">` + moodBadge + `</span>
         </div>
 
-        <!-- SUMMARY CARDS -->
         <div style="display: flex; gap: 10px; margin-bottom: 16px;">
           <div style="flex: 1; background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 14px; padding: 12px 14px;">
             <span style="font-size: 8px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Total Income</span>
-            <strong style="font-size: 13px; font-weight: 900; color: #2E6F40;">+${formatRupiah(totalIn)}</strong>
+            <strong style="font-size: 13px; font-weight: 900; color: #2E6F40;">+` + formatRupiah(totalIn) + `</strong>
           </div>
           <div style="flex: 1; background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 14px; padding: 12px 14px;">
             <span style="font-size: 8px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Total Expenses</span>
-            <strong style="font-size: 13px; font-weight: 900; color: #B93838;">-${formatRupiah(totalOut)}</strong>
+            <strong style="font-size: 13px; font-weight: 900; color: #B93838;">-` + formatRupiah(totalOut) + `</strong>
           </div>
           <div style="flex: 1; background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 14px; padding: 12px 14px;">
             <span style="font-size: 8px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Net Surplus / Deficit</span>
-            <strong style="font-size: 13px; font-weight: 900; color: #2D241E;">${formatRupiah(netBalance)}</strong>
+            <strong style="font-size: 13px; font-weight: 900; color: #2D241E;">` + formatRupiah(netBalance) + `</strong>
           </div>
         </div>
 
-        <!-- CATEGORY EXPENSE BREAKDOWN BAR -->
-        ${topCategories.length > 0 ? `
-          <div style="background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 12px; padding: 10px 14px; margin-bottom: 20px;">
-            <span style="font-size: 8px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 8px;">Top Expense Categories</span>
-            <div style="display: flex; gap: 12px;">
-              ${topCategories.map(([cat, amt]) => {
-                const pct = totalOut > 0 ? Math.round((amt / totalOut) * 100) : 0;
-                return `
-                  <div style="flex: 1;">
-                    <div style="display: flex; justify-content: space-between; font-size: 9px; font-weight: 700; margin-bottom: 3px;">
-                      <span style="color: #2D241E;">${escapeHtml(cat)}</span>
-                      <span style="color: #80736B;">${pct}%</span>
-                    </div>
-                    <div style="background: #EFE6DC; height: 5px; border-radius: 4px; overflow: hidden;">
-                      <div style="background: #C87A4B; height: 100%; width: ${pct}%;"></div>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-        ` : ''}
+        ` + topCategoriesHtml + `
 
-        <!-- FLOATING TRANSACTION CARDS (DATE 1 - 31) -->
         <div style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
           <span style="font-size: 9px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.8px;">Transaction Details (Date 1 - 31)</span>
-          <span style="font-size: 8px; font-weight: 700; color: #A89B91;">${sortedTransactions.length} Items</span>
+          <span style="font-size: 8px; font-weight: 700; color: #A89B91;">` + sortedTransactions.length + ` Items</span>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 6px;">
-          ${sortedTransactions.map((t) => {
-            const meta = getTypeMeta(t.type) || {};
-            let acc = t.sourceAccount || '';
-            if (t.sourceAccount && t.targetAccount) acc += ` ➔ ${t.targetAccount}`;
-            else if (t.targetAccount) acc = t.targetAccount;
-
-            let amtColor = meta.direction === 'in' ? '#2E6F40' : (meta.direction === 'out' ? '#B93838' : '#1D63B8');
-
-            return `
-              <div class="pdf-card" style="background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 10px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="background: #EFE6DC; border-radius: 6px; padding: 4px 8px; font-size: 9px; font-weight: 800; color: #2D241E; text-align: center; white-space: nowrap;">
-                    ${formatDate(t.date)}
-                  </div>
-                  <div>
-                    <div style="font-size: 11px; font-weight: 800; color: #2D241E; line-height: 1.2;">${escapeHtml(t.description || t.category)}</div>
-                    <div style="font-size: 8px; font-weight: 600; color: #80736B; margin-top: 2px;">
-                      ${escapeHtml(t.category)} ${acc ? '• ' + escapeHtml(acc) : ''} • By ${escapeHtml(t.enteredBy)}
-                    </div>
-                  </div>
-                </div>
-                <div style="font-size: 11px; font-weight: 900; color: ${amtColor}; text-align: right; white-space: nowrap;">
-                  ${meta.prefix || ''}${formatRupiah(t.amount)}
-                </div>
-              </div>
-            `;
-          }).join('')}
+          ` + transactionsHtml + `
         </div>
 
-        <!-- FOOTER STAMP & TIMESTAMP -->
         <div style="margin-top: 24px; border-top: 1px solid rgba(45, 36, 30, 0.08); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 8px; color: #A89B91; font-weight: 600;">
           <div>Verified Digital Statement • Mochi's Vault Security Stamp</div>
           <div>Page Generated Automatically</div>
@@ -2285,7 +2282,6 @@
 
       document.body.appendChild(printContainer);
 
-      // JEDA 300ms AGAR BROWSER MENYELESAIKAN RENDER KANVAS
       setTimeout(() => {
         const opt = {
           margin:       [8, 8, 8, 8],
