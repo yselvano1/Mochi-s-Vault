@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -7,8 +7,7 @@
 
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" id="meta-theme-color" content="#FAF8F5">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" id="meta-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
   <link rel="apple-touch-icon" href="mochi-logo-new.png">
   <link rel="icon" type="image/png" href="mochi-logo-new.png">
@@ -44,28 +43,23 @@
       --chip-info-bg: rgba(29, 99, 184, 0.12); --chip-warn-bg: rgba(185, 56, 56, 0.12);
 
       --glass-bg: rgba(255, 255, 255, 0.85); --glass-border: rgba(255, 255, 255, 0.7);
-      --glass-modal-bg: rgba(250, 248, 245, 0.94);
-      --shadow-card: 0 10px 30px -6px rgba(45, 36, 30, 0.04), 0 2px 8px -2px rgba(45, 36, 30, 0.02);
+      --glass-modal-bg: rgba(250, 248, 245, 0.92);
+      --shadow-card: 0 10px 30px -6px rgba(45, 36, 30, 0.05), 0 2px 8px -2px rgba(45, 36, 30, 0.03);
       --shadow-item: 0 2px 10px -2px rgba(45, 36, 30, 0.03);
-      --shadow-premium: 0 16px 40px -10px rgba(200, 122, 75, 0.18);
+      --shadow-premium: 0 12px 35px -8px rgba(200, 122, 75, 0.15);
       --shadow-inset: inset 0 2px 4px rgba(45, 36, 30, 0.03);
     }
 
-    html {
-      background-color: var(--bg-app) !important;
-    }
-
-    body {
+    html, body {
       background-color: var(--bg-app) !important;
       color: var(--text-primary);
       min-height: 100vh;
-      min-height: -webkit-fill-available;
       overflow-x: hidden;
       font-family: 'Plus Jakarta Sans', sans-serif;
       transition: background-color 0.3s ease, color 0.3s ease;
-      padding-bottom: max(6.5rem, env(safe-area-inset-bottom));
+      padding-bottom: max(6rem, env(safe-area-inset-bottom));
     }
-    
+
     html.dark {
       --bg-app: #181412; --bg-card: #221C19; --bg-subtle: #2D2520; --bg-subtle-2: #382F2A;
       --text-primary: #FAF8F5; --text-secondary: #A89B91; --text-tertiary: #786C64;
@@ -78,38 +72,17 @@
       --glass-bg: rgba(24, 20, 18, 0.9) !important; --glass-border: rgba(250, 248, 245, 0.08);
       --glass-modal-bg: rgba(24, 20, 18, 0.95);
       --shadow-card: 0 10px 30px -6px rgba(0, 0, 0, 0.4); --shadow-item: 0 2px 10px -2px rgba(0, 0, 0, 0.25);
-      --shadow-premium: 0 16px 40px -10px rgba(0, 0, 0, 0.6); --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.25);
+      --shadow-premium: 0 12px 35px -8px rgba(0, 0, 0, 0.6); --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.25);
     }
 
     * { font-variant-numeric: tabular-nums; -webkit-tap-highlight-color: transparent; }
 
-    /* ELEGANT ENTRANCE ANIMATION */
-    @keyframes appEntrance {
-      from { opacity: 0; transform: translateY(8px) scale(0.99); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .app-entrance {
-      animation: appEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    #top-loading-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 2.5px;
-      width: 0%;
-      background: linear-gradient(90deg, var(--mochi-light), var(--mochi));
-      z-index: 9999;
-      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-    }
-
-    /* UNIFIED NESTED BORDER RADIUS */
-    .floating-card { background-color: var(--bg-card); box-shadow: var(--shadow-card); border-radius: 1.5rem; border: 1px solid var(--border-color); }
-    .floating-item { background-color: var(--bg-card); box-shadow: var(--shadow-item); border-radius: 1rem; border: 1px solid var(--border-color); }
+    .floating-card { background-color: var(--bg-card); box-shadow: var(--shadow-card); border-radius: 1.5rem; border: 1px solid var(--border-color); overflow: hidden; }
+    .floating-item { background-color: var(--bg-card); box-shadow: var(--shadow-item); border-radius: 1.25rem; border: 1px solid var(--border-color); overflow: hidden; }
 
     .ios-input {
       background-color: var(--bg-subtle-2); border: 1px solid transparent; border-radius: 0.85rem;
-      padding: 0.75rem 1rem; box-shadow: var(--shadow-inset); font-weight: 600; color: var(--text-primary);
+      padding: 0.6rem 1rem; box-shadow: var(--shadow-inset); font-weight: 600; color: var(--text-primary);
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .ios-input:focus {
@@ -124,41 +97,51 @@
     .amount-in { color: var(--amount-in) !important; } .amount-out { color: var(--amount-out) !important; }
     .amount-info { color: var(--amount-info) !important; } .amount-warn { color: var(--amount-warn) !important; }
 
-    .icon-chip { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .icon-chip { width: 36px; height: 36px; border-radius: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .chip-pemasukan { background-color: var(--chip-in-bg); color: var(--amount-in); }
     .chip-pengeluaran { background-color: var(--chip-out-bg); color: var(--amount-out); }
     .chip-info { background-color: var(--chip-info-bg); color: var(--amount-info); }
     .chip-warn { background-color: var(--chip-warn-bg); color: var(--amount-warn); }
 
-    .clean-topbar { background: linear-gradient(180deg, var(--bg-app) 85%, transparent 100%); backdrop-filter: blur(12px); padding-top: max(2.2rem, env(safe-area-inset-top)); }
+    .clean-topbar { background: linear-gradient(180deg, var(--bg-app) 85%, transparent 100%); backdrop-filter: blur(12px); padding-top: max(2rem, env(safe-area-inset-top)); }
     .nav-bar-bottom { background-color: var(--glass-bg) !important; backdrop-filter: blur(20px); border-top: 1px solid var(--glass-border); padding-bottom: env(safe-area-inset-bottom); }
-    .nav-item { transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1); }
+    .nav-item { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
     @keyframes pawPulse { 0% { box-shadow: 0 0 0 0 rgba(200, 122, 75, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(200, 122, 75, 0); } 100% { box-shadow: 0 0 0 0 rgba(200, 122, 75, 0); } }
-    .paw-fab { animation: pawPulse 2.5s infinite; transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1); }
-    .paw-fab:active { transform: scale(0.95); }
+    .paw-fab { animation: pawPulse 2.5s infinite; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .paw-fab:active { transform: scale(0.9); }
 
     .glass-modal-content { background-color: var(--glass-modal-bg) !important; backdrop-filter: blur(25px); box-shadow: var(--shadow-premium); border: 1px solid var(--glass-border); }
-    .card-hover { transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.25s; }
+    .card-hover { transition: transform 0.3s, box-shadow 0.3s; }
     .card-hover:hover { transform: translateY(-2px); box-shadow: var(--shadow-premium); }
-    
-    /* REFINED TACTILE PRESS (iOS STYLE) */
-    .tap-shrink { transition: transform 0.15s cubic-bezier(0.32, 0.72, 0, 1); }
-    .tap-shrink:active { transform: scale(0.97); }
+    .tap-shrink { transition: transform 0.2s; }
+    .tap-shrink:active { transform: scale(0.92); }
 
-    /* iOS SPRING CURVE MODALS */
     .modal-backdrop { transition: opacity 0.3s ease; opacity: 0; backdrop-filter: blur(0px); }
-    .modal-backdrop.show { opacity: 1; backdrop-filter: blur(4px); }
-    .modal-content-bottom { transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1); }
+    .modal-backdrop.show { opacity: 1; backdrop-filter: blur(3px); }
+    .modal-content-bottom { transform: translateY(100%); transition: transform 0.4s; }
     .modal-content-bottom.show { transform: translateY(0); }
-    .modal-content-center { transform: scale(0.95) translateY(12px); opacity: 0; transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1); }
+    .modal-content-center { transform: scale(0.9) translateY(20px); opacity: 0; transition: all 0.3s; }
     .modal-content-center.show { transform: scale(1) translateY(0); opacity: 1; }
   </style>
 </head>
 <body class="min-h-screen">
 
-  <div id="top-loading-bar" class="opacity-0"></div>
+  <!-- SPLASH SCREEN -->
+  <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-500 pointer-events-auto">
+    <div class="animate-float flex flex-col items-center">
+      <div class="w-28 h-28 flex items-center justify-center rounded-full shadow-[0_8px_30px_rgba(200,122,75,0.15)] relative overflow-hidden bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)]">
+        <img src="mochi-logo-new.png" alt="Mochi" class="w-full h-full object-cover">
+      </div>
+      <h2 class="mt-6 text-2xl font-black text-main tracking-tight">Mochi's Vault</h2>
+      <div class="mt-3 bg-[var(--bg-subtle-2)] px-4 py-1.5 rounded-full flex items-center space-x-2">
+        <i data-lucide="loader-2" class="w-3.5 h-3.5 text-mochi animate-spin"></i>
+        <span id="splash-text" class="text-xs font-bold text-mochi dark:text-mochi-light">Waking up Mochi...</span>
+      </div>
+    </div>
+  </div>
 
+  <!-- REWARD OVERLAY -->
   <div id="reward-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center pointer-events-none">
     <div class="absolute inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/80 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="reward-bg"></div>
     <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="reward-content">
@@ -175,12 +158,13 @@
         </div>
       </div>
       <h2 class="text-white text-3xl font-black mt-6 drop-shadow-lg tracking-tight">Purr-fect! 🐾</h2>
-      <p id="reward-subtitle" class="text-mochi-light font-bold mt-1.5 drop-shadow-md text-sm bg-coffee-dark/50 px-4 py-1 rounded-full">Tersimpan</p>
+      <p id="reward-subtitle" class="text-mochi-light font-bold mt-1.5 drop-shadow-md text-sm bg-coffee-dark/50 px-4 py-1 rounded-full">Saved</p>
     </div>
   </div>
 
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
+  <!-- HEADER BAR -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-3">
       <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0 self-center">
@@ -188,170 +172,177 @@
       </div>
 
       <div class="flex flex-col justify-center min-w-0 flex-1">
-        <div class="flex items-center space-x-2 mb-1">
-          <span id="mochi-mood-badge" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-md uppercase tracking-wider bg-[var(--chip-in-bg)] amount-in">Rich Mochi</span>
-          <span class="text-xs text-faint font-medium">• Live Status</span>
+        <div class="flex items-center space-x-2 mb-0.5">
+          <span id="mochi-mood-badge" class="text-[8px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-in-bg)] amount-in">Rich Mochi</span>
+          <span class="text-[10px] text-faint font-semibold">• Live Status</span>
         </div>
-        <h1 id="mochi-mood-title" class="text-base font-extrabold text-main leading-tight tracking-tight truncate">
+        <h1 id="mochi-mood-title" class="text-sm md:text-base font-black text-main leading-tight tracking-tight truncate">
           Mochi is purr-fectly happy! 💰
         </h1>
-        <p id="mochi-mood-desc" class="text-xs font-semibold text-muted mt-0.5 leading-snug truncate">
+        <p id="mochi-mood-desc" class="text-[11px] font-semibold text-muted mt-0.5 leading-snug truncate">
           Expenses are only at 0% of income!
         </p>
-        <p id="mochi-mood-subdesc" class="text-xs font-semibold text-muted leading-snug truncate">
+        <p id="mochi-mood-subdesc" class="text-[11px] font-semibold text-muted leading-snug truncate">
           Mochi is swimming in gold bars!
         </p>
       </div>
     </div>
 
-    <button onclick="toggleDarkMode();" class="tap-shrink w-11 h-11 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm flex-shrink-0" aria-label="Toggle Mode">
+    <button onclick="toggleDarkMode(); vibrate(30);" class="tap-shrink w-11 h-11 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm flex-shrink-0" aria-label="Toggle Mode">
       <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
       <i data-lucide="moon" id="icon-moon" class="w-5 h-5"></i>
     </button>
   </header>
   
-  <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 app-entrance">
+  <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
+    <!-- DASHBOARD PAGE -->
     <section id="page-dashboard" class="space-y-6 page-animate pt-2">
-      <div onclick="showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden bg-gradient-to-br from-obsidian via-[#2C201A] to-coffee-darkest dark:from-mochi-dark dark:via-[#3E2519] dark:to-obsidian text-white border border-white/10 shadow-xl rounded-3xl">
+      
+      <!-- NET WORTH CARD -->
+      <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden bg-gradient-to-br from-obsidian via-[#2C201A] to-coffee-darkest dark:from-mochi-dark dark:via-[#3E2519] dark:to-obsidian text-white border border-white/10 shadow-xl rounded-[2rem]">
         <div class="flex justify-between items-center mb-6 relative z-10">
           <div class="flex items-center space-x-2.5">
             <div class="w-9 h-7 rounded-md bg-gradient-to-tr from-amber-200 via-amber-300 to-yellow-500 p-0.5 shadow-sm flex items-center justify-center">
               <div class="w-full h-full border border-amber-600/40 rounded-[3px]"></div>
             </div>
-            <span class="text-[11px] font-extrabold tracking-widest uppercase text-white/80">MOCHI BANK • VAULT</span>
+            <span class="text-[10px] font-black tracking-widest uppercase text-white/80">MOCHI BANK • VAULT</span>
           </div>
           <i data-lucide="nfc" class="w-5 h-5 text-white/60"></i>
         </div>
 
         <div class="mb-6 relative z-10">
-          <span class="text-[11px] font-extrabold tracking-widest uppercase text-white/60 block mb-1">TOTAL NET WORTH</span>
+          <span class="text-[9px] font-black tracking-widest uppercase text-white/60 block mb-1">TOTAL NET WORTH</span>
           <div id="kpi-networth" class="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-md truncate max-w-full">-</div>
         </div>
 
-        <div onclick="event.stopPropagation(); showKpiDetail('Disposable Income')" class="relative z-10 bg-white/10 dark:bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/15 flex items-center justify-between">
+        <div ontouchstart="vibrate(30); event.stopPropagation(); showKpiDetail('Disposable Income')" class="relative z-10 bg-white/10 dark:bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/15 flex items-center justify-between">
           <div class="min-w-0 flex-1 pr-2">
-            <span class="text-[11px] font-extrabold tracking-widest uppercase text-amber-200/90 block mb-0.5">DISPOSABLE INCOME</span>
+            <span class="text-[9px] font-extrabold tracking-widest uppercase text-amber-200/90 block mb-0.5">DISPOSABLE INCOME</span>
             <span id="kpi-disposable" class="text-lg sm:text-xl font-black text-amber-100 block tracking-tight truncate">-</span>
           </div>
           <div class="text-right flex-shrink-0">
-            <span class="text-[10px] font-bold text-white/50 block uppercase tracking-wider">VAULT CARD</span>
-            <span class="text-xs font-extrabold text-white/90 tracking-wider">YOSA & FANI</span>
+            <span class="text-[8px] font-bold text-white/50 block uppercase tracking-wider">VAULT CARD</span>
+            <span class="text-[10px] font-black text-white/90 tracking-wider">YOSA & FANI</span>
           </div>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-3.5">
-        <div onclick="showKpiDetail('Total Cash')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-xs text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-4 h-4 mr-1.5 amount-in"></i> TOTAL CASH</span>
-          <span id="kpi-cash" class="text-base font-black amount-in block truncate w-full">-</span>
+      <!-- KPI GRID -->
+      <div class="grid grid-cols-2 gap-3">
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-3.5 h-3.5 mr-1.5 amount-in"></i> TOTAL CASH</span>
+          <span id="kpi-cash" class="text-sm md:text-base font-extrabold amount-in block truncate w-full">-</span>
         </div>
 
-        <div onclick="showKpiDetail('Net Operating Savings')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-xs text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="piggy-bank" class="w-4 h-4 mr-1.5 amount-in"></i> NET SAVINGS</span>
-          <span id="kpi-savings" class="text-base font-black amount-in block truncate w-full">-</span>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="piggy-bank" class="w-3.5 h-3.5 mr-1.5 amount-in"></i> NET SAVINGS</span>
+          <span id="kpi-savings" class="text-sm md:text-base font-extrabold amount-in block truncate w-full">-</span>
         </div>
 
-        <div onclick="showKpiDetail('Total Receivables')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-xs text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="hand-coins" class="w-4 h-4 mr-1.5 amount-info"></i> RECEIVABLES</span>
-          <span id="kpi-receivables" class="text-base font-black amount-info block truncate w-full">-</span>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="hand-coins" class="w-3.5 h-3.5 mr-1.5 amount-info"></i> RECEIVABLES</span>
+          <span id="kpi-receivables" class="text-sm md:text-base font-extrabold amount-info block truncate w-full">-</span>
         </div>
 
-        <div onclick="showKpiDetail('Total Payables')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
-          <span class="text-xs text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="credit-card" class="w-4 h-4 mr-1.5 amount-out"></i> PAYABLES</span>
-          <span id="kpi-payables" class="text-base font-black amount-out block truncate w-full">-</span>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card">
+          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="credit-card" class="w-3.5 h-3.5 mr-1.5 amount-out"></i> PAYABLES</span>
+          <span id="kpi-payables" class="text-sm md:text-base font-extrabold amount-out block truncate w-full">-</span>
         </div>
       </div>
 
-      <div class="floating-card p-6 relative overflow-hidden">
-        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3.5">
-          <h3 class="text-base font-extrabold text-main">Expense Analysis</h3>
-          <span class="text-[11px] font-extrabold bg-mochi-light/20 text-mochi dark:text-mochi-light px-3 py-1 rounded-lg uppercase tracking-wider">THIS MONTH</span>
+      <!-- EXPENSE ANALYSIS -->
+      <div class="floating-card p-5 relative overflow-hidden">
+        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+          <h3 class="text-sm font-extrabold text-main">Expense Analysis</h3>
+          <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">THIS MONTH</span>
         </div>
-        <div id="dashboard-category-analysis" class="space-y-3.5 relative z-10"></div>
+        <div id="dashboard-category-analysis" class="space-y-3 relative z-10"></div>
       </div>
 
-      <div class="floating-card p-6 relative overflow-hidden">
-        <div class="flex justify-between items-center mb-3.5 border-b border-slate-100 dark:border-[var(--border-color)] pb-3.5">
-          <div class="flex items-center space-x-2.5">
-            <div class="w-8 h-8 rounded-xl bg-[var(--chip-info-bg)] text-mochi dark:text-mochi-light flex items-center justify-center">
+      <!-- BUDGET MANAGEMENT CARD -->
+      <div class="floating-card p-5 relative overflow-hidden">
+        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+          <div class="flex items-center space-x-2">
+            <div class="w-7 h-7 rounded-lg bg-[var(--chip-info-bg)] text-mochi dark:text-mochi-light flex items-center justify-center">
               <i data-lucide="sliders" class="w-4 h-4"></i>
             </div>
-            <h3 class="text-base font-extrabold text-main">Monthly Category Budgets</h3>
+            <h3 class="text-sm font-extrabold text-main">Monthly Category Budgets</h3>
           </div>
-          <button type="button" onclick="openBudgetEditorModal()" class="tap-shrink text-xs font-extrabold px-3.5 py-1.5 rounded-xl uppercase tracking-wider bg-mochi-light/20 text-mochi dark:text-mochi-light border border-mochi/20 flex items-center">
-            <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 mr-1"></i> Set Budget
+          <button type="button" onclick="vibrate(30); openBudgetEditorModal()" class="tap-shrink text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider bg-mochi-light/20 text-mochi dark:text-mochi-light border border-mochi/20 flex items-center">
+            <i data-lucide="sliders-horizontal" class="w-3 h-3 mr-1"></i> Set Budget
           </button>
         </div>
         
-        <p class="text-xs text-muted font-semibold mb-4">Anggaran bulanan aktif per kategori pengeluaran:</p>
-        <div id="dashboard-budget-summary" class="space-y-2.5"></div>
+        <div id="dashboard-budget-summary" class="space-y-3"></div>
       </div>
 
-      <div class="floating-card p-6 mb-12">
-        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3.5">
-          <h3 class="text-base font-extrabold text-main">Recent Transactions</h3>
-          <button onclick="switchTab('history')" class="text-xs font-extrabold text-mochi hover:text-mochi-dark dark:text-mochi-light bg-mochi-light/10 px-3.5 py-1.5 rounded-xl transition-colors">See All</button>
+      <!-- RECENT TRANSACTIONS -->
+      <div class="floating-card p-5 mb-12">
+        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+          <h3 class="text-sm font-extrabold text-main">Recent Transactions</h3>
+          <button ontouchstart="vibrate(30)" onclick="switchTab('history')" class="text-xs font-bold text-mochi hover:text-mochi-dark dark:text-mochi-light bg-mochi-light/10 px-3 py-1.5 rounded-full transition-colors">See All</button>
         </div>
-        <div id="dashboard-transaction-list" class="space-y-2.5"></div>
+        <div id="dashboard-transaction-list" class="space-y-2"></div>
       </div>
     </section>
 
+    <!-- 2. HISTORY PAGE -->
     <section id="page-history" class="hidden space-y-4 page-animate">
-      <div class="floating-card p-6 space-y-4">
+      <div class="floating-card p-5 space-y-4">
         <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 dark:border-[var(--border-color)] pb-4 gap-3">
-          <div class="flex items-center space-x-2.5 text-main">
-            <div class="w-9 h-9 rounded-xl bg-mochi-light/20 dark:bg-mochi-light/10 flex items-center justify-center text-mochi dark:text-mochi-light"><i data-lucide="file-text" class="w-4 h-4"></i></div>
-            <span class="text-base font-extrabold uppercase tracking-wider">e-Statement & Mutasi</span>
+          <div class="flex items-center space-x-2 text-main">
+            <div class="w-8 h-8 rounded-full bg-mochi-light/20 dark:bg-mochi-light/10 flex items-center justify-center text-mochi dark:text-mochi-light"><i data-lucide="file-text" class="w-4 h-4"></i></div>
+            <span class="text-sm font-extrabold uppercase tracking-wider">e-Statement & Mutasi</span>
           </div>
           
-          <button onclick="exportPDFStatement()" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-4 py-2.5 rounded-xl text-xs font-extrabold flex items-center shadow-md justify-center transition-colors">
-            <i data-lucide="printer" class="w-4 h-4 mr-2"></i> Export PDF Laporan
+          <button ontouchstart="vibrate(30)" onclick="exportPDFStatement()" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-4 py-2 rounded-full text-xs font-bold flex items-center shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] justify-center transition-colors">
+            <i data-lucide="printer" class="w-3.5 h-3.5 mr-1.5"></i> Export PDF Report
           </button>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div>
-            <label for="filter-month" class="block text-xs font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Bulan</label>
+            <label for="filter-month" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Month</label>
             <select id="filter-month" onchange="renderHistory()" class="w-full text-xs ios-input cursor-pointer">
-              <option value="ALL">Semua Bulan</option>
-              <option value="01">01 - Januari</option>
-              <option value="02">02 - Februari</option>
-              <option value="03">03 - Maret</option>
+              <option value="ALL">All Months</option>
+              <option value="01">01 - January</option>
+              <option value="02">02 - February</option>
+              <option value="03">03 - March</option>
               <option value="04">04 - April</option>
-              <option value="05">05 - Mei</option>
-              <option value="06">06 - Juni</option>
-              <option value="07">07 - Juli</option>
-              <option value="08">08 - Agustus</option>
+              <option value="05">05 - May</option>
+              <option value="06">06 - June</option>
+              <option value="07">07 - July</option>
+              <option value="08">08 - August</option>
               <option value="09">09 - September</option>
-              <option value="10">10 - Oktober</option>
+              <option value="10">10 - October</option>
               <option value="11">11 - November</option>
-              <option value="12">12 - Desember</option>
+              <option value="12">12 - December</option>
             </select>
           </div>
           <div>
-            <label for="filter-year" class="block text-xs font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Tahun</label>
+            <label for="filter-year" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Year</label>
             <select id="filter-year" onchange="renderHistory()" class="w-full text-xs ios-input cursor-pointer">
-              <option value="ALL">Semua Tahun</option>
+              <option value="ALL">All Years</option>
             </select>
           </div>
           <div>
-            <label for="filter-type" class="block text-xs font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Jenis Transaksi</label>
+            <label for="filter-type" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Transaction Type</label>
             <select id="filter-type" onchange="renderHistory()" class="w-full text-xs ios-input cursor-pointer">
-              <option value="ALL">Semua Jenis</option>
-              <option value="Income">Pemasukan (+)</option>
-              <option value="Expense">Pengeluaran (-)</option>
-              <option value="Internal Transfer">Transfer Internal</option>
-              <option value="External Transfer">Transfer Eksternal (-)</option>
-              <option value="Give Receivable">Beri Piutang</option>
-              <option value="Receive Receivable">Terima Piutang (+)</option>
-              <option value="Receive Payable">Terima Hutang (+)</option>
-              <option value="Pay Installment">Bayar Hutang/Cicilan (-)</option>
+              <option value="ALL">All Types</option>
+              <option value="Income">Income (+)</option>
+              <option value="Expense">Expense (-)</option>
+              <option value="Internal Transfer">Internal Transfer</option>
+              <option value="External Transfer">External Transfer (-)</option>
+              <option value="Give Receivable">Give Receivable</option>
+              <option value="Receive Receivable">Receive Receivable (+)</option>
+              <option value="Receive Payable">Receive Payable (+)</option>
+              <option value="Pay Installment">Pay Installment (-)</option>
             </select>
           </div>
           <div>
-            <label for="filter-user" class="block text-xs font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">User</label>
+            <label for="filter-user" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">User</label>
             <select id="filter-user" onchange="renderHistory()" class="w-full text-xs ios-input cursor-pointer">
-              <option value="ALL">Semua User</option>
+              <option value="ALL">All Users</option>
               <option value="Yosa">Yosa</option>
               <option value="Fani">Fani</option>
             </select>
@@ -359,94 +350,98 @@
         </div>
 
         <div class="relative">
-          <label for="filter-search" class="sr-only">Cari Transaksi</label>
+          <label for="filter-search" class="sr-only">Search Transactions</label>
           <i data-lucide="search" class="w-4 h-4 text-faint absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-          <input type="text" id="filter-search" oninput="renderHistory()" placeholder="Cari deskripsi transaksi..." class="w-full text-sm ios-input pl-10 pr-4 py-3">
+          <input type="text" id="filter-search" oninput="renderHistory()" placeholder="Search description..." class="w-full text-sm ios-input pl-10 pr-4 py-2.5">
         </div>
 
-        <div id="statement-summary" class="floating-item p-4.5 mt-3 flex flex-col space-y-3 border border-slate-100 dark:border-[var(--border-color)]">
+        <div id="statement-summary" class="floating-item p-4.5 pb-5 mt-3 flex flex-col space-y-3.5 border border-slate-100 dark:border-[var(--border-color)]">
           <div class="flex justify-between items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
-            <span class="text-muted text-xs uppercase font-bold tracking-wider">Total Pemasukan</span>
-            <span id="sum-income" class="font-black amount-in text-base">+Rp 0</span>
+            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">TOTAL INCOME</span>
+            <span id="sum-income" class="font-extrabold amount-in text-[15px]">+Rp 0</span>
           </div>
           <div class="flex justify-between items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
-            <span class="text-muted text-xs uppercase font-bold tracking-wider">Total Pengeluaran</span>
-            <span id="sum-expense" class="font-black amount-out text-base">-Rp 0</span>
+            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">TOTAL EXPENSES</span>
+            <span id="sum-expense" class="font-extrabold amount-out text-[15px]">-Rp 0</span>
           </div>
-          <div class="flex justify-between items-center">
-            <span class="text-muted text-xs uppercase font-bold tracking-wider">Surplus / Defisit</span>
-            <span id="sum-net" class="font-black text-main text-lg">Rp 0</span>
+          <div class="flex justify-between items-center pt-1">
+            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">NET SURPLUS / DEFICIT</span>
+            <span id="sum-net" class="font-black text-main text-[16px]">Rp 0</span>
           </div>
         </div>
       </div>
 
-      <div id="history-transaction-list" class="space-y-2.5 pb-8"></div>
+      <div id="history-transaction-list" class="space-y-2 pb-8"></div>
     </section>
     
+    <!-- 3. WALLETS PAGE -->
     <section id="page-wallets" class="hidden space-y-6 page-animate pb-8">
-      <div class="floating-card p-6">
-        <div class="flex justify-between items-center mb-4">
+      <div class="floating-card p-5">
+        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
-            <i data-lucide="briefcase" class="w-4 h-4 mr-2"></i> Operasional Harian
+            <i data-lucide="briefcase" class="w-4 h-4 mr-2"></i> Operational Accounts
           </h3>
-          <button type="button" onclick="openMasterModal('account')" class="text-xs font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ Akun Baru</button>
+          <button type="button" onclick="vibrate(30); openMasterModal('account')" class="text-xs font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New Account</button>
         </div>
-        <div id="list-accounts-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
+        <div id="list-accounts-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
       </div>
-      <div class="floating-card p-6">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center mb-4">
-          <i data-lucide="piggy-bank" class="w-4 h-4 mr-2"></i> Dana Darurat & Tabungan
+      <div class="floating-card p-5">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+          <i data-lucide="piggy-bank" class="w-4 h-4 mr-2"></i> Emergency & Savings
         </h3>
-        <div id="list-accounts-savings" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
+        <div id="list-accounts-savings" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
       </div>
     </section>
 
+    <!-- 4. AP/R PAGE -->
     <section id="page-payables" class="hidden space-y-6 page-animate pb-8">
-      <div class="floating-card p-6">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider amount-out mb-4 flex items-center">
+      <div class="floating-card p-5">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider amount-out mb-4 flex items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <i data-lucide="credit-card" class="w-4 h-4 mr-2"></i> Active Payables
         </h3>
-        <div id="list-payables-active" class="space-y-3.5"></div>
+        <div id="list-payables-active" class="space-y-3"></div>
       </div>
-      <div class="floating-card p-6">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider amount-info mb-4 flex items-center">
+      <div class="floating-card p-5">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider amount-info mb-4 flex items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <i data-lucide="hand-coins" class="w-4 h-4 mr-2"></i> Unpaid Receivables
         </h3>
-        <div id="list-receivables-active" class="space-y-3.5"></div>
+        <div id="list-receivables-active" class="space-y-3"></div>
       </div>
     </section>
   </main>
 
+  <!-- BOTTOM NAVIGATION -->
   <nav class="fixed bottom-0 left-0 right-0 nav-bar-bottom z-40 rounded-t-3xl border-t border-slate-200/50 dark:border-[var(--border-color)]">
-    <div class="flex justify-between items-center w-full max-w-md mx-auto px-6 py-3.5 relative">
-      <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-item bg-mochi-light/20 text-mochi dark:text-mochi-light px-4 py-2.5 rounded-2xl flex items-center justify-center space-x-2 tap-shrink">
+    <div class="flex justify-between items-center w-full max-w-md mx-auto px-6 py-3 relative">
+      <button ontouchstart="vibrate(30)" onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-item bg-mochi-light/20 text-mochi dark:text-mochi-light px-4 py-2.5 rounded-2xl flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="layout-dashboard" class="w-5 h-5 flex-shrink-0"></i>
-        <span class="nav-text text-xs font-extrabold tracking-wide whitespace-nowrap">Home</span>
+        <span class="nav-text text-[12px] font-extrabold tracking-wide whitespace-nowrap">Home</span>
       </button>
 
-      <button onclick="switchTab('history')" id="tab-history" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
+      <button ontouchstart="vibrate(30)" onclick="switchTab('history')" id="tab-history" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="list" class="w-5 h-5 flex-shrink-0"></i>
-        <span class="nav-text hidden text-xs font-extrabold tracking-wide whitespace-nowrap">History</span>
+        <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">History</span>
       </button>
 
-      <button onclick="switchTab('wallets')" id="tab-wallets" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
+      <button ontouchstart="vibrate(30)" onclick="switchTab('wallets')" id="tab-wallets" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="wallet" class="w-5 h-5 flex-shrink-0"></i>
-        <span class="nav-text hidden text-xs font-extrabold tracking-wide whitespace-nowrap">Wallets</span>
+        <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">Wallets</span>
       </button>
 
-      <button onclick="switchTab('payables')" id="tab-payables" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
+      <button ontouchstart="vibrate(30)" onclick="switchTab('payables')" id="tab-payables" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
         <div class="relative flex-shrink-0">
           <i data-lucide="credit-card" class="w-5 h-5"></i>
           <span id="badge-payables-nav" class="hidden absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-[var(--amount-out)] ring-2 ring-[var(--glass-bg)]"></span>
         </div>
-        <span class="nav-text hidden text-xs font-extrabold tracking-wide whitespace-nowrap">AP/R</span>
+        <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">AP/R</span>
       </button>
     </div>
   </nav>
 
+  <!-- FAB -->
   <div class="fixed bottom-[5.5rem] left-0 right-0 z-50 pointer-events-none">
     <div class="max-w-3xl mx-auto px-5 relative h-full">
-      <button onclick="openNewTransactionForm()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full text-white shadow-[0_8px_20px_-6px_rgba(200,122,75,0.5)] flex items-center justify-center pointer-events-auto border border-white/20 group">
+      <button ontouchstart="vibrate(35)" onclick="openNewTransactionForm()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full text-white shadow-[0_8px_20px_-6px_rgba(200,122,75,0.5)] flex items-center justify-center pointer-events-auto border border-white/20 group">
         <svg class="w-7 h-7 text-white transform -translate-y-[1px]" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 11.5c-2.8 0-5 2.1-5 4.8 0 2.2 1.8 3.7 5 3.7s5-1.5 5-3.7c0-2.7-2.2-4.8-5-4.8z"/>
           <ellipse cx="6.5" cy="9.5" rx="1.8" ry="2.5"/>
@@ -458,35 +453,36 @@
     </div>
   </div>
 
+  <!-- MODALS -->
   <div id="modalTransactionForm" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalTransactionForm')">
-    <div id="modalTransactionForm-content" class="glass-modal-content w-full max-w-lg rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-6 shadow-2xl modal-content-bottom md:modal-content-center">
+    <div id="modalTransactionForm-content" class="glass-modal-content w-full max-w-lg rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200 dark:border-[var(--border-color)] pb-4 mb-4">
-        <h3 id="modal-title-transaction" class="font-extrabold text-main text-base">Tambah Transaksi</h3>
-        <button type="button" onclick="closeModal('modalTransactionForm')" class="tap-shrink text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition-colors border border-[var(--border-color)]">
+        <h3 id="modal-title-transaction" class="font-extrabold text-main text-base">New Transaction</h3>
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalTransactionForm')" class="tap-shrink text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition-colors border border-[var(--border-color)]">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
-      <form id="formTransaction" onsubmit="handleSaveTransaction(event)" class="space-y-4 text-sm">
+      <form id="formTransaction" onsubmit="handleSaveTransaction(event)" class="space-y-3 text-sm">
         <input type="hidden" id="form-transaction-id">
 
-        <div class="grid grid-cols-2 gap-3.5">
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <label for="form-user" class="font-bold text-main block mb-1 text-xs cursor-pointer">Oleh</label>
+            <label for="form-user" class="font-bold text-main block mb-1 text-xs cursor-pointer">By</label>
             <select id="form-user" class="w-full ios-input cursor-pointer">
               <option value="Yosa">Yosa</option>
               <option value="Fani">Fani</option>
             </select>
           </div>
           <div>
-            <label for="form-date" class="font-bold text-main block mb-1 text-xs cursor-pointer">Tanggal</label>
+            <label for="form-date" class="font-bold text-main block mb-1 text-xs cursor-pointer">Date</label>
             <input type="date" id="form-date" class="w-full ios-input" required>
           </div>
         </div>
 
         <div>
-          <label class="font-bold text-main block mb-1 text-xs">Jenis Transaksi</label>
-          <div onclick="openTypePicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+          <label class="font-bold text-main block mb-1 text-xs">Transaction Type</label>
+          <div ontouchstart="vibrate(30)" onclick="openTypePicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
             <div id="form-type-display" class="flex items-center space-x-2.5"></div>
             <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
           </div>
@@ -495,27 +491,27 @@
 
         <div id="wrap-source-account" class="space-y-1">
           <div class="flex justify-between items-center">
-            <label for="form-source-account" class="font-bold text-main text-xs cursor-pointer">Akun Sumber</label>
-            <button type="button" onclick="openMasterModal('account')" class="text-xs text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Akun Baru</button>
+            <label for="form-source-account" class="font-bold text-main text-xs cursor-pointer">Source Account</label>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
           </div>
           <select id="form-source-account" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div id="wrap-target-account" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label for="form-target-account" class="font-bold text-main text-xs cursor-pointer">Akun Tujuan</label>
-            <button type="button" onclick="openMasterModal('account')" class="text-xs text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Akun Baru</button>
+            <label for="form-target-account" class="font-bold text-main text-xs cursor-pointer">Target Account</label>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
           </div>
           <select id="form-target-account" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div class="space-y-1">
           <div class="flex justify-between items-center">
-            <label class="font-bold text-main text-xs">Kategori</label>
-            <button type="button" onclick="openMasterModal('category')" class="text-xs text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Kategori Baru</button>
+            <label class="font-bold text-main text-xs">Category</label>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('category')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Category</button>
           </div>
-          <div onclick="openCategoryPicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
-            <span id="form-category-display" class="font-semibold text-faint truncate">Pilih Kategori...</span>
+          <div ontouchstart="vibrate(30)" onclick="openCategoryPicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+            <span id="form-category-display" class="font-semibold text-faint truncate">Select Category...</span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
           </div>
           <input type="hidden" id="form-category">
@@ -523,61 +519,63 @@
 
         <div id="wrap-payable" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label for="form-payable" class="font-bold text-main text-xs cursor-pointer">Terkait Hutang</label>
-            <button type="button" onclick="openMasterModal('payable')" class="text-xs text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Hutang Baru</button>
+            <label for="form-payable" class="font-bold text-main text-xs cursor-pointer">Related Payable</label>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('payable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Payable</button>
           </div>
           <select id="form-payable" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div id="wrap-receivable" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label for="form-receivable" class="font-bold text-main text-xs cursor-pointer">Terkait Piutang</label>
-            <button type="button" onclick="openMasterModal('receivable')" class="text-xs text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Piutang Baru</button>
+            <label for="form-receivable" class="font-bold text-main text-xs cursor-pointer">Related Receivable</label>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('receivable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Receivable</button>
           </div>
           <select id="form-receivable" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div>
-          <label for="form-amount-display" class="font-bold text-main block mb-1 text-xs cursor-pointer">Jumlah (Rp)</label>
+          <label for="form-amount-display" class="font-bold text-main block mb-1 text-xs cursor-pointer">Amount (Rp)</label>
           <div class="relative">
             <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-sm">Rp</span>
-            <input type="text" inputmode="numeric" id="form-amount-display" oninput="formatInputRupiah(this)" placeholder="0" class="w-full ios-input pl-10 text-base font-black text-main" required>
+            <input type="text" inputmode="numeric" id="form-amount-display" oninput="formatInputRupiah(this)" placeholder="0" class="w-full ios-input pl-10 text-base font-extrabold text-main" required>
           </div>
           <input type="hidden" id="form-amount-value">
         </div>
 
         <div>
-          <label for="form-description" class="font-bold text-main block mb-1 text-xs cursor-pointer">Deskripsi / Judul Transaksi</label>
-          <input type="text" id="form-description" placeholder="Contoh: Belanja Bulanan" class="w-full ios-input">
+          <label for="form-description" class="font-bold text-main block mb-1 text-xs cursor-pointer">Description</label>
+          <input type="text" id="form-description" placeholder="e.g. Monthly Groceries" class="w-full ios-input">
         </div>
         <div>
-          <label for="form-notes" class="font-bold text-main block mb-1 text-xs cursor-pointer">Catatan Tambahan (Opsional)</label>
-          <textarea id="form-notes" rows="2" placeholder="Catatan opsional..." class="w-full ios-input"></textarea>
+          <label for="form-notes" class="font-bold text-main block mb-1 text-xs cursor-pointer">Notes (Optional)</label>
+          <textarea id="form-notes" rows="2" placeholder="Optional notes..." class="w-full ios-input"></textarea>
         </div>
 
         <div class="pt-3 pb-1">
-          <button type="submit" id="btn-submit-transaction" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3.5 rounded-2xl shadow-md transition-colors">
-            Simpan Transaksi
+          <button type="submit" id="btn-submit-transaction" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] transition-colors">
+            Save Transaction
           </button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- MODAL DETAIL -->
   <div id="modalDetail" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDetail')">
     <div id="modalDetail-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto modal-content-center">
-      <button onclick="closeModal('modalDetail')" class="tap-shrink absolute top-4 right-4 text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition z-20 border border-[var(--border-color)]">
+      <button ontouchstart="vibrate(30)" onclick="closeModal('modalDetail')" class="tap-shrink absolute top-4 right-4 text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition z-20 border border-[var(--border-color)]">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
       <div id="modal-detail-inner" class="relative mt-2"></div>
     </div>
   </div>
 
+  <!-- MODAL PICKER: TRANSACTION TYPE -->
   <div id="modalTypePicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[75] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalTypePicker')">
     <div id="modalTypePicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
-        <h3 class="font-extrabold text-main text-sm">Pilih Jenis Transaksi</h3>
-        <button onclick="closeModal('modalTypePicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
+        <h3 class="font-extrabold text-main text-sm">Select Transaction Type</h3>
+        <button ontouchstart="vibrate(30)" onclick="closeModal('modalTypePicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
@@ -585,11 +583,12 @@
     </div>
   </div>
 
+  <!-- MODAL PICKER: CATEGORY -->
   <div id="modalCategoryPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalCategoryPicker')">
     <div id="modalCategoryPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center pb-3 mb-3 border-b border-slate-200/50 dark:border-[var(--border-color)]">
-        <h3 class="font-extrabold text-main text-base">Pilih Kategori</h3>
-        <button type="button" onclick="closeModal('modalCategoryPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
+        <h3 class="font-extrabold text-main text-base">Select Category</h3>
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalCategoryPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
@@ -597,86 +596,89 @@
     </div>
   </div>
 
+  <!-- MODAL: MASTER DATA -->
   <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3">
-        <h4 id="master-title" class="font-extrabold text-main text-base">Tambah Master Data</h4>
-        <button type="button" onclick="closeModal('modalMaster')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]"><i data-lucide="x" class="w-4 h-4"></i></button>
+        <h4 id="master-title" class="font-extrabold text-main text-base">Add Master Data</h4>
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalMaster')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
-      <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-3.5 text-sm">
+      <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-3 text-sm">
         <input type="hidden" id="master-type">
         <input type="hidden" id="master-old-name">
 
         <div id="master-category-type-wrap" class="hidden">
-          <label for="master-category-type" class="font-extrabold text-main block mb-1 text-xs cursor-pointer">Jenis Kategori</label>
+          <label for="master-category-type" class="font-extrabold text-main block mb-1 text-xs cursor-pointer">Category Type</label>
           <select id="master-category-type" onchange="handleMasterCategoryTypeChange()" class="w-full ios-input cursor-pointer py-2.5">
-            <option value="Expense">Pengeluaran</option>
-            <option value="Income">Pemasukan</option>
+            <option value="Expense">Expense</option>
+            <option value="Income">Income</option>
             <option value="Transfer">Transfer</option>
-            <option value="Payable">Hutang</option>
-            <option value="Receivable">Piutang</option>
+            <option value="Payable">Payable</option>
+            <option value="Receivable">Receivable</option>
           </select>
         </div>
 
         <div id="master-main-category-wrap" class="hidden">
-          <label for="master-main-category-select" class="font-bold text-main block mb-1 text-xs cursor-pointer">Kategori Utama</label>
+          <label for="master-main-category-select" class="font-bold text-main block mb-1 text-xs cursor-pointer">Main Category</label>
           <select id="master-main-category-select" onchange="handleMainCategorySelectChange()" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div id="master-main-category-new-wrap" class="hidden">
-          <label for="master-main-category-new" class="font-bold text-main block mb-1 text-xs cursor-pointer">Nama Kategori Utama Baru</label>
-          <input type="text" id="master-main-category-new" placeholder="Contoh: Investasi" class="w-full ios-input">
+          <label for="master-main-category-new" class="font-bold text-main block mb-1 text-xs cursor-pointer">New Main Category Name</label>
+          <input type="text" id="master-main-category-new" placeholder="e.g. Investment" class="w-full ios-input">
         </div>
 
         <div>
-          <label for="master-name" class="font-bold text-main block mb-1 text-xs cursor-pointer" id="master-name-label">Nama</label>
+          <label for="master-name" class="font-bold text-main block mb-1 text-xs cursor-pointer" id="master-name-label">Name</label>
           <input type="text" id="master-name" class="w-full ios-input" required>
         </div>
 
         <div id="master-extra-field" class="space-y-3"></div>
 
         <div class="pt-3">
-          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3.5 rounded-2xl shadow-md transition-colors">Simpan Master Data</button>
+          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] transition-colors">Save Master Data</button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- MODAL: CUSTOM BUDGET EDITOR -->
   <div id="modalBudgetEditor" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalBudgetEditor')">
     <div id="modalBudgetEditor-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center max-h-[85vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-4">
         <h4 class="font-extrabold text-main text-base flex items-center">
           <i data-lucide="sliders" class="w-4 h-4 mr-2 text-mochi"></i> Set Category Budgets
         </h4>
-        <button type="button" onclick="closeModal('modalBudgetEditor')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalBudgetEditor')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
       <form id="formBudgetEditor" onsubmit="handleSaveCustomBudgets(event)" class="space-y-3 text-sm">
-        <p class="text-xs text-muted font-medium mb-3">Atur batas anggaran pengeluaran bulanan per kategori:</p>
+        <p class="text-xs text-muted font-medium mb-3">Define monthly spending limits per main category:</p>
         <div id="budget-inputs-container" class="space-y-3 max-h-[50vh] overflow-y-auto pr-1"></div>
 
         <div class="pt-3">
-          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3.5 rounded-2xl shadow-md transition-colors">
-            Simpan Anggaran
+          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-md transition-colors">
+            Save Budgets
           </button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- MODAL: DELETE CONFIRMATION -->
   <div id="modalDelete" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDelete')">
     <div id="modalDelete-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center text-center">
       <div class="w-16 h-16 bg-rose-500/10 amount-out rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-500/20">
         <i data-lucide="trash-2" class="w-8 h-8"></i>
       </div>
-      <h3 id="delete-modal-title" class="text-lg font-black text-main mb-2 tracking-tight">Hapus Transaksi?</h3>
-      <p id="delete-modal-desc" class="text-sm font-medium text-muted mb-6 px-2">Tindakan ini tidak dapat dibatalkan. Data akan dihapus permanen.</p>
+      <h3 id="delete-modal-title" class="text-lg font-black text-main mb-2 tracking-tight">Delete Item?</h3>
+      <p id="delete-modal-desc" class="text-sm font-medium text-muted mb-6 px-2">This action cannot be undone. Data will be permanently removed.</p>
 
       <div class="flex space-x-3">
-        <button type="button" onclick="closeModal('modalDelete')" class="flex-1 py-3 bg-[var(--bg-subtle-2)] text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-[var(--border-color)]">Batal</button>
-        <button type="button" id="btn-confirm-delete" class="flex-1 py-3 bg-rose-500 hover:bg-rose-600 text-white font-extrabold rounded-xl tap-shrink shadow-sm">Ya, Hapus</button>
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalDelete')" class="flex-1 py-3 bg-[var(--bg-subtle-2)] text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-[var(--border-color)]">Cancel</button>
+        <button type="button" id="btn-confirm-delete" class="flex-1 py-3 bg-rose-500 hover:bg-rose-600 text-white font-extrabold rounded-xl tap-shrink shadow-sm">Delete</button>
       </div>
     </div>
   </div>
@@ -708,11 +710,16 @@
       }
     });
 
+    function vibrate(ms) {
+      if (navigator.vibrate) navigator.vibrate(Math.max(ms, 25));
+    }
+
     function handleBackdropClick(event, modalId) {
       if (event.target.id === modalId) closeModal(modalId);
     }
 
     function triggerInputError(elementId, message) {
+      vibrate(40);
       showToast(message, "error");
       const el = document.getElementById(elementId);
       if (el) {
@@ -744,7 +751,7 @@
       toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 mr-2.5 flex-shrink-0 ${iconSpin}"></i> <span class="flex-1">${escapeHtml(message)}</span>`;
 
       container.appendChild(toast);
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
 
       requestAnimationFrame(() => {
         toast.classList.remove('translate-y-[-20px]', 'opacity-0');
@@ -761,7 +768,7 @@
       return toast;
     }
 
-    function showRewardAnimation(subtitleText = "Tersimpan") {
+    function showRewardAnimation(subtitleText = "Saved") {
       return new Promise(resolve => {
         const overlay = document.getElementById('reward-overlay');
         const bg = document.getElementById('reward-bg');
@@ -778,6 +785,7 @@
           bg.classList.add('opacity-100');
           content.classList.remove('scale-50', 'opacity-0');
           content.classList.add('scale-100', 'opacity-100');
+          vibrate(50);
         });
 
         setTimeout(() => {
@@ -790,8 +798,8 @@
             overlay.classList.add('hidden');
             overlay.classList.remove('flex');
             resolve();
-          }, 300);
-        }, 1200);
+          }, 500);
+        }, 1800);
       });
     }
 
@@ -807,7 +815,7 @@
         modal.classList.add('show');
         if (content) content.classList.add('show');
       });
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
     }
 
     function closeModal(id) {
@@ -835,8 +843,6 @@
 
     function switchTab(tabId) {
       currentTab = tabId;
-      localStorage.setItem('mochi_active_tab', tabId);
-
       document.querySelectorAll('.nav-item').forEach(el => {
         el.classList.remove('bg-mochi-light/20', 'text-mochi', 'dark:text-mochi-light', 'px-4', 'py-2.5', 'rounded-2xl');
         el.classList.add('text-slate-400', 'dark:text-[#A89B91]', 'p-2.5');
@@ -854,12 +860,10 @@
 
       document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
       const activeSection = document.getElementById('page-' + tabId);
-      if (activeSection) {
-        activeSection.classList.remove('hidden');
-        activeSection.classList.remove('page-animate');
-        void activeSection.offsetWidth;
-        activeSection.classList.add('page-animate');
-      }
+      activeSection.classList.remove('hidden');
+      activeSection.classList.remove('page-animate');
+      void activeSection.offsetWidth;
+      activeSection.classList.add('page-animate');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -876,8 +880,8 @@
         let isEdgeSwipe = (touchStartX < 40) || (touchStartX > window.innerWidth - 40);
         if (!isEdgeSwipe && activeModals.length === 0) {
           let currentIndex = TABS.indexOf(currentTab);
-          if (dx < -60 && currentIndex < TABS.length - 1) { switchTab(TABS[currentIndex + 1]); }
-          else if (dx > 60 && currentIndex > 0) { switchTab(TABS[currentIndex - 1]); }
+          if (dx < -60 && currentIndex < TABS.length - 1) { vibrate(30); switchTab(TABS[currentIndex + 1]); }
+          else if (dx > 60 && currentIndex > 0) { vibrate(30); switchTab(TABS[currentIndex - 1]); }
         }
       }
     }, { passive: true });
@@ -890,13 +894,8 @@
       updateDarkModeIcon(isDark);
       
       const themeColor = isDark ? "#181412" : "#FAF8F5";
-      const statusBarStyle = isDark ? "black-translucent" : "default";
-
       const metaTheme = document.getElementById('meta-theme-color');
       if (metaTheme) metaTheme.setAttribute("content", themeColor);
-
-      const metaStatus = document.getElementById('meta-status-bar-style');
-      if (metaStatus) metaStatus.setAttribute("content", statusBarStyle);
     }
 
     function toggleDarkMode() {
@@ -905,20 +904,13 @@
       updateDarkModeIcon(isDark);
       
       const themeColor = isDark ? "#181412" : "#FAF8F5";
-      const statusBarStyle = isDark ? "black-translucent" : "default";
-
       const metaTheme = document.getElementById('meta-theme-color');
       if (metaTheme) metaTheme.setAttribute("content", themeColor);
-
-      const metaStatus = document.getElementById('meta-status-bar-style');
-      if (metaStatus) metaStatus.setAttribute("content", statusBarStyle);
     }
 
     function updateDarkModeIcon(isDark) {
-      const elSun = document.getElementById('icon-sun');
-      const elMoon = document.getElementById('icon-moon');
-      if (elSun) elSun.classList.toggle('hidden', !isDark);
-      if (elMoon) elMoon.classList.toggle('hidden', isDark);
+      document.getElementById('icon-sun').classList.toggle('hidden', !isDark);
+      document.getElementById('icon-moon').classList.toggle('hidden', isDark);
     }
 
     function formatRupiah(number) {
@@ -937,7 +929,7 @@
       if (!iso) return '-';
       const parts = String(iso).split('-');
       if (parts.length < 3) return String(iso);
-      const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       const m = parseInt(parts[1], 10);
       return `${parseInt(parts[2], 10)} ${months[m - 1] || ''} ${parts[0]}`;
     }
@@ -1057,14 +1049,14 @@
     }
 
     const TRANSACTION_TYPE_OPTIONS = [
-      { value: 'Expense', label: 'Pengeluaran (-)', icon: 'arrow-up-right', chip: 'chip-pengeluaran', badge: '🔴' },
-      { value: 'Income', label: 'Pemasukan (+)', icon: 'trending-up', chip: 'chip-pemasukan', badge: '🟢' },
-      { value: 'Internal Transfer', label: 'Transfer Internal', icon: 'arrow-right-left', chip: 'chip-info', badge: '🔵' },
-      { value: 'External Transfer', label: 'Transfer Eksternal (-)', icon: 'arrow-up-right', chip: 'chip-pengeluaran', badge: '🔴' },
-      { value: 'Give Receivable', label: 'Beri Piutang / Menalangi', icon: 'send', chip: 'chip-info', badge: '🔵' },
-      { value: 'Receive Receivable', label: 'Terima Piutang (+)', icon: 'hand-coins', chip: 'chip-pemasukan', badge: '🟢' },
-      { value: 'Receive Payable', label: 'Terima Hutang (+)', icon: 'piggy-bank', chip: 'chip-pemasukan', badge: '🟢' },
-      { value: 'Pay Installment', label: 'Bayar Hutang/Cicilan (-)', icon: 'credit-card', chip: 'chip-pengeluaran', badge: '🔴' }
+      { value: 'Expense', label: 'Expense (-)', icon: 'arrow-up-right', chip: 'chip-pengeluaran', badge: '🔴' },
+      { value: 'Income', label: 'Income (+)', icon: 'trending-up', chip: 'chip-pemasukan', badge: '🟢' },
+      { value: 'Internal Transfer', label: 'Internal Transfer', icon: 'arrow-right-left', chip: 'chip-info', badge: '🔵' },
+      { value: 'External Transfer', label: 'External Transfer (-)', icon: 'arrow-up-right', chip: 'chip-pengeluaran', badge: '🔴' },
+      { value: 'Give Receivable', label: 'Give Receivable', icon: 'send', chip: 'chip-info', badge: '🔵' },
+      { value: 'Receive Receivable', label: 'Receive Receivable (+)', icon: 'hand-coins', chip: 'chip-pemasukan', badge: '🟢' },
+      { value: 'Receive Payable', label: 'Receive Payable (+)', icon: 'piggy-bank', chip: 'chip-pemasukan', badge: '🟢' },
+      { value: 'Pay Installment', label: 'Pay Installment (-)', icon: 'credit-card', chip: 'chip-pengeluaran', badge: '🔴' }
     ];
 
     function openTypePicker() {
@@ -1080,7 +1072,7 @@
         const isSelected = opt.value === currentVal;
         const borderCls = isSelected ? 'border-mochi ring-2 ring-mochi/20' : 'border-slate-100 dark:border-[var(--border-color)]';
         return `
-          <div onclick="selectType('${opt.value}')" class="floating-item flex justify-between items-center px-4 py-3 cursor-pointer tap-shrink border ${borderCls} transition-all">
+          <div onclick="vibrate(30); selectType('${opt.value}')" class="floating-item flex justify-between items-center px-4 py-3 cursor-pointer tap-shrink border ${borderCls} transition-all">
             <div class="flex items-center space-x-3">
               <div class="icon-chip ${opt.chip}"><i data-lucide="${opt.icon}" class="w-4 h-4"></i></div>
               <span class="font-extrabold text-main text-[13px]">${opt.label}</span>
@@ -1089,7 +1081,7 @@
           </div>
         `;
       }).join('');
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
     }
 
     function selectType(value) {
@@ -1111,12 +1103,11 @@
           <div class="icon-chip ${opt.chip} w-6 h-6 rounded-md"><i data-lucide="${opt.icon}" class="w-3.5 h-3.5"></i></div>
           <span class="font-extrabold text-main text-xs">${opt.label}</span>
         `;
-        if (window.lucide) lucide.createIcons();
+        lucide.createIcons();
       }
     }
 
     function animateNumber(el, targetValue, duration = 700) {
-      if (!el) return;
       const start = 0;
       const startTime = performance.now();
       function tick(now) {
@@ -1143,11 +1134,11 @@
       document.getElementById('form-amount-value').value = "";
 
       const catDisplay = document.getElementById('form-category-display');
-      catDisplay.innerText = "Pilih Kategori...";
+      catDisplay.innerText = "Select Category...";
       catDisplay.classList.add('text-faint');
 
-      document.getElementById('modal-title-transaction').innerText = "Tambah Transaksi";
-      document.getElementById('btn-submit-transaction').innerText = "Simpan Transaksi";
+      document.getElementById('modal-title-transaction').innerText = "New Transaction";
+      document.getElementById('btn-submit-transaction').innerText = "Save Transaction";
 
       document.getElementById('form-type').value = "Expense";
       updateTypeDisplay("Expense");
@@ -1157,6 +1148,7 @@
     }
 
     function handleEditTransaction(transactionId) {
+      vibrate(30);
       const trx = GLOBAL_DATA.transactions.find(t => t.transactionId === transactionId);
       if (!trx) return;
 
@@ -1184,7 +1176,7 @@
           catDisplay.innerText = trx.category;
           catDisplay.classList.remove('text-faint');
         } else {
-          catDisplay.innerText = "Pilih Kategori...";
+          catDisplay.innerText = "Select Category...";
           catDisplay.classList.add('text-faint');
         }
 
@@ -1194,33 +1186,35 @@
         document.getElementById('form-description').value = trx.description || "";
         document.getElementById('form-notes').value = trx.notes || "";
 
-        document.getElementById('modal-title-transaction').innerText = "Edit Transaksi";
-        document.getElementById('btn-submit-transaction').innerText = "Update Transaksi";
+        document.getElementById('modal-title-transaction').innerText = "Edit Transaction";
+        document.getElementById('btn-submit-transaction').innerText = "Update Transaction";
 
         openModal('modalTransactionForm');
-      }, 300);
+      }, 400);
     }
 
     function promptDeleteTransaction(transactionId) {
+      vibrate(40);
       transactionToDelete = transactionId;
       closeModal('modalDetail');
       
       const titleEl = document.getElementById('delete-modal-title');
       const descEl = document.getElementById('delete-modal-desc');
-      if (titleEl) titleEl.innerText = "Hapus Transaksi?";
-      if (descEl) descEl.innerText = "Tindakan ini tidak dapat dibatalkan. Data akan dihapus permanen dari Vault.";
+      if (titleEl) titleEl.innerText = "Delete Transaction?";
+      if (descEl) descEl.innerText = "This action cannot be undone. Data will be permanently removed.";
 
       document.getElementById('btn-confirm-delete').onclick = async () => {
         if (!transactionToDelete) return;
+        vibrate(30);
         await handleDeleteTransaction(transactionToDelete);
       };
 
-      setTimeout(() => openModal('modalDelete'), 300);
+      setTimeout(() => openModal('modalDelete'), 400);
     }
 
     async function handleDeleteTransaction(transactionId) {
       closeModal('modalDelete');
-      let loadingToast = showToast("Menghapus transaksi...", "info");
+      let loadingToast = showToast("Deleting transaction...", "info");
 
       try {
         const res = await fetch(API_URL, {
@@ -1233,11 +1227,11 @@
 
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
 
-        await showRewardAnimation("Transaksi Dihapus");
+        await showRewardAnimation("Transaction Deleted");
         await loadAppData(true);
       } catch (err) {
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Gagal menghapus: " + err.message, "error");
+        showToast("Failed to delete: " + err.message, "error");
       }
     }
 
@@ -1248,8 +1242,8 @@
       const amount = Number(document.getElementById('form-amount-value').value) || 0;
       const category = document.getElementById('form-category').value;
 
-      if (amount <= 0) { triggerInputError('form-amount-display', "Jumlah transaksi tidak boleh kosong."); return; }
-      if (!category) { triggerInputError('form-category-display', "Silakan pilih kategori terlebih dahulu."); return; }
+      if (amount <= 0) { triggerInputError('form-amount-display', "Transaction amount cannot be empty."); return; }
+      if (!category) { triggerInputError('form-category-display', "Please select a category first."); return; }
 
       const transactionId = document.getElementById('form-transaction-id').value;
       const isEdit = !!transactionId;
@@ -1271,7 +1265,7 @@
 
       const btn = document.getElementById('btn-submit-transaction');
       btn.disabled = true;
-      let loadingToast = showToast(isEdit ? "Memperbarui transaksi..." : "Menyimpan transaksi...", "info");
+      let loadingToast = showToast(isEdit ? "Updating transaction..." : "Saving transaction...", "info");
 
       try {
         const res = await fetch(API_URL, {
@@ -1285,35 +1279,44 @@
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         closeModal('modalTransactionForm');
 
-        await showRewardAnimation(isEdit ? "Transaksi Diperbarui" : "Tersimpan");
-        await loadAppData(true);
+        setTimeout(async () => {
+          await showRewardAnimation(isEdit ? "Transaction Updated" : "Saved");
+          await loadAppData(true);
+        }, 300);
       } catch (err) {
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Gagal menyimpan: " + err.message, "error");
+        showToast("Failed to save: " + err.message, "error");
       } finally {
         btn.disabled = false;
       }
     }
 
+    function dismissSplashScreen() {
+      const splash = document.getElementById('splash-screen');
+      const main = document.getElementById('main-content');
+      if (!splash) return;
+
+      main.classList.remove('hidden');
+      splash.style.opacity = '0';
+      splash.style.pointerEvents = 'none';
+
+      setTimeout(() => {
+        splash.classList.add('hidden');
+      }, 500);
+    }
+
     async function loadAppData(isSilentReload = false) {
       const localCache = localStorage.getItem('mochi_vault_global_data');
-      const topBar = document.getElementById('top-loading-bar');
-
-      if (topBar) {
-        topBar.style.width = '30%';
-        topBar.classList.remove('opacity-0');
-      }
-
       if (localCache && !isSilentReload) {
         try {
           GLOBAL_DATA = JSON.parse(localCache);
           renderAllViews();
+          setTimeout(() => dismissSplashScreen(), 1200);
           isSilentReload = true;
         } catch(e) { console.error("Cache parse error", e); }
       }
 
       try {
-        if (topBar) topBar.style.width = '70%';
         const res = await fetch(API_URL, { redirect: 'follow' });
         const result = await res.json();
         if (result.status === 'error') throw new Error(result.message);
@@ -1322,36 +1325,29 @@
         localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
 
         renderAllViews();
+
+        if (!isSilentReload) {
+          setTimeout(() => dismissSplashScreen(), 1200);
+        }
       } catch (err) {
         if (!localCache) {
-          showToast("Gagal memuat data: " + err.message, "error");
-        }
-      } finally {
-        if (topBar) {
-          topBar.style.width = '100%';
-          setTimeout(() => {
-            topBar.classList.add('opacity-0');
-            setTimeout(() => topBar.style.width = '0%', 300);
-          }, 200);
+          showToast("Failed to load data: " + err.message, "error");
+          dismissSplashScreen();
         }
       }
     }
 
     function renderAllViews() {
-      try {
-        renderDashboard();
-        renderMochiMood();
-        renderBudgetSummaryCard();
-        renderCategoryAnalysis();
-        populateYearFilter();
-        renderHistory();
-        renderWallets();
-        renderPayablesReceivables();
-        populateFormDropdowns();
-        if (window.lucide) lucide.createIcons();
-      } catch (err) {
-        console.error("Render Error:", err);
-      }
+      renderDashboard();
+      renderMochiMood();
+      renderBudgetSummaryCard();
+      renderCategoryAnalysis();
+      populateYearFilter();
+      renderHistory();
+      renderWallets();
+      renderPayablesReceivables();
+      populateFormDropdowns();
+      lucide.createIcons();
     }
 
     function renderDashboard() {
@@ -1376,28 +1372,21 @@
 
       animateNumber(document.getElementById('kpi-networth'), calculatedNetWorth);
       animateNumber(document.getElementById('kpi-disposable'), kpi['Disposable Income'] || 0);
+      document.getElementById('kpi-cash').innerText = formatRupiah(totalCashAssets);
+      document.getElementById('kpi-receivables').innerText = formatRupiah(totalReceivables);
       
-      const elCash = document.getElementById('kpi-cash');
-      const elRec = document.getElementById('kpi-receivables');
-      const elPay = document.getElementById('kpi-payables');
-      const elSav = document.getElementById('kpi-savings');
-
-      if (elCash) elCash.innerText = formatRupiah(totalCashAssets);
-      if (elRec) elRec.innerText = formatRupiah(totalReceivables);
-      if (elPay) elPay.innerText = formatRupiah(totalPayablesAP + totalLiabilityBalance);
-      if (elSav) elSav.innerText = formatRupiah(kpi['Net Operating Savings']);
+      // Bersih tanpa minus ganda pada kartu Payables
+      document.getElementById('kpi-payables').innerText = formatRupiah(Math.abs(totalPayablesAP + totalLiabilityBalance));
+      document.getElementById('kpi-savings').innerText = formatRupiah(kpi['Net Operating Savings']);
 
       const hasPayableActive = (GLOBAL_DATA.payables || []).some(p => (p.status || '').toLowerCase() === 'active' && Number(p.remainingAmount) > 0);
-      const elNavBadge = document.getElementById('badge-payables-nav');
-      if (elNavBadge) elNavBadge.classList.toggle('hidden', !hasPayableActive);
+      document.getElementById('badge-payables-nav').classList.toggle('hidden', !hasPayableActive);
 
       const trxList = GLOBAL_DATA.transactions || [];
       const dashListEl = document.getElementById('dashboard-transaction-list');
 
-      if (!dashListEl) return;
-
       if (trxList.length === 0) {
-        dashListEl.innerHTML = `<p class="text-xs text-center text-muted py-4 font-semibold">Belum ada transaksi.</p>`;
+        dashListEl.innerHTML = `<p class="text-xs text-center text-muted py-4 font-semibold">No recent transactions.</p>`;
         return;
       }
 
@@ -1408,29 +1397,30 @@
         div.className = "floating-item p-3.5 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-2 last:mb-0 select-none";
         div.style.animationDelay = `${i * 0.05}s`;
 
-        div.onclick = () => { currentModalBackFn = null; showTransactionDetail(trx.transactionId); };
+        div.onclick = () => { vibrate(30); currentModalBackFn = null; showTransactionDetail(trx.transactionId); };
 
         let accountFlowText = trx.sourceAccount || '';
         if (trx.sourceAccount && trx.targetAccount) accountFlowText += ` ➔ ${trx.targetAccount}`;
         else if (trx.targetAccount) accountFlowText = trx.targetAccount;
 
         div.innerHTML = `
-          <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-2 pointer-events-none">
+          <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
             ${iconChipHtml(trx.type, trx.category)}
             <div class="truncate">
               <p class="text-[13px] font-bold text-main truncate">${escapeHtml(trx.description || trx.category)}</p>
-              <p class="text-xs text-faint font-medium mt-0.5 truncate">${accountFlowText ? escapeHtml(accountFlowText) + ' • ' : ''}${formatDate(trx.date)}</p>
+              <p class="text-[10px] text-faint font-medium mt-0.5 truncate">${accountFlowText ? escapeHtml(accountFlowText) + ' • ' : ''}${formatDate(trx.date)}</p>
             </div>
           </div>
-          <span class="text-[13px] font-black ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.amount)}</span>
+          <span class="text-[13px] font-extrabold ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.amount)}</span>
         `;
         dashListEl.appendChild(div);
       });
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
     }
 
     let categoryAnalysisExpanded = {};
     function toggleCategoryAnalysis(mainCategory) {
+      vibrate(30);
       categoryAnalysisExpanded[mainCategory] = !categoryAnalysisExpanded[mainCategory];
       renderCategoryAnalysis();
     }
@@ -1490,7 +1480,7 @@
       if (subdescEl) subdescEl.innerText = subdesc;
       if (badgeEl) {
         badgeEl.innerText = badgeText;
-        badgeEl.className = `text-[11px] font-extrabold px-2.5 py-0.5 rounded-md uppercase tracking-wider ${badgeClass}`;
+        badgeEl.className = `text-[8px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${badgeClass}`;
       }
 
       startMochiBlinking();
@@ -1514,7 +1504,7 @@
       }, 1500);
     }
 
-    /* RENDER BUDGET CARD TANPA BORDER GARIS TIPIS (CLEAN SHADOW) */
+    // KARTU BUDGET DENGAN PADDING AMAN TANPA TEKS BERKADALUARSA
     function renderBudgetSummaryCard() {
       const container = document.getElementById('dashboard-budget-summary');
       if (!container) return;
@@ -1524,9 +1514,9 @@
 
       if (activeBudgets.length === 0) {
         container.innerHTML = `
-          <div class="text-center py-6 px-4 bg-[var(--bg-subtle-2)] rounded-2xl border-none">
+          <div class="text-center py-6 px-4 bg-[var(--bg-subtle-2)] rounded-2xl border border-[var(--border-color)]">
             <p class="text-xs text-muted font-bold">No budgets configured yet.</p>
-            <p class="text-xs text-faint mt-1">Tap 'Set Budget' to define monthly limits.</p>
+            <p class="text-[10px] text-faint mt-1">Tap 'Set Budget' to define monthly limits.</p>
           </div>
         `;
         return;
@@ -1565,39 +1555,39 @@
           : `Left ${formatRupiah(remaining)}`;
 
         return `
-          <div onclick="showBudgetDetail('${escapeAttr(cat)}')" class="floating-item p-5 bg-card border-none cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3 select-none">
-            <div class="flex justify-between items-center">
+          <div onclick="vibrate(30); showBudgetDetail('${escapeAttr(cat)}')" class="floating-item p-4.5 bg-card border border-[var(--border-color)] cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3 select-none">
+            <div class="flex justify-between items-center px-0.5">
               <span class="text-sm font-extrabold text-main truncate pr-2">${escapeHtml(cat)}</span>
-              <span class="text-xs font-black px-3 py-1 rounded-full border ${badgeClass} shadow-sm whitespace-nowrap">
+              <span class="text-[10px] font-black px-2.5 py-1 rounded-full border ${badgeClass} shadow-sm whitespace-nowrap">
                 ${remainingBadge}
               </span>
             </div>
 
             <div class="flex justify-between items-baseline pt-0.5 px-0.5">
               <div>
-                <span class="text-xs font-bold text-muted uppercase tracking-wider block mb-1">SPENT</span>
+                <span class="text-[10px] font-bold text-muted uppercase tracking-wider block mb-0.5">SPENT</span>
                 <span class="text-base font-black text-main leading-tight">${formatRupiah(spent)}</span>
               </div>
-              <div class="text-right">
-                <span class="text-xs font-bold text-faint uppercase tracking-wider block mb-1">LIMIT</span>
+              <div class="text-right pr-1">
+                <span class="text-[10px] font-bold text-faint uppercase tracking-wider block mb-0.5">LIMIT</span>
                 <span class="text-xs font-extrabold text-muted">${formatRupiah(limit)}</span>
               </div>
             </div>
 
-            <div class="space-y-1.5">
+            <div class="space-y-1.5 px-0.5">
               <div class="w-full bg-slate-100 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden">
                 <div class="bg-gradient-to-r ${barColor} h-2 rounded-full transition-all duration-1000 ease-out" style="width: ${pct}%"></div>
               </div>
-              <div class="flex justify-between items-center text-xs font-semibold text-faint pt-0.5">
+              <div class="flex justify-between items-center text-[10px] font-semibold text-faint pt-0.5">
                 <span>${pct.toFixed(0)}% used</span>
-                <span class="flex items-center text-mochi dark:text-mochi-light font-extrabold">Details <i data-lucide="chevron-right" class="w-3.5 h-3.5 ml-0.5"></i></span>
+                <span class="flex items-center text-mochi dark:text-mochi-light font-bold">Details <i data-lucide="chevron-right" class="w-3 h-3 ml-0.5"></i></span>
               </div>
             </div>
           </div>
         `;
       }).join('');
 
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
     }
 
     function showBudgetDetail(catName) {
@@ -1635,12 +1625,12 @@
 
       let statusBadge = isOver 
         ? `<span class="px-3 py-1 bg-rose-500/15 text-rose-500 font-extrabold text-xs rounded-full border border-rose-500/20">Over Budget ${formatRupiah(Math.abs(remaining))}</span>`
-        : `<span class="px-3 py-1 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-extrabold text-xs rounded-full border border-emerald-500/20">Sisa Anggaran ${formatRupiah(remaining)}</span>`;
+        : `<span class="px-3 py-1 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-extrabold text-xs rounded-full border border-emerald-500/20">Remaining ${formatRupiah(remaining)}</span>`;
 
       const subEntries = Object.entries(subMap).sort((a, b) => b[1] - a[1]);
       let subBreakdownHtml = "";
       if (subEntries.length === 0) {
-        subBreakdownHtml = `<p class="text-xs text-faint italic py-2">Belum ada pengeluaran untuk kategori ini bulan ini.</p>`;
+        subBreakdownHtml = `<p class="text-xs text-faint italic py-2">No expenses for this category this month.</p>`;
       } else {
         subBreakdownHtml = subEntries.map(([sub, amt]) => {
           const subPct = totalSpent > 0 ? ((amt / totalSpent) * 100).toFixed(0) : 0;
@@ -1648,7 +1638,7 @@
             <div class="flex justify-between items-center text-xs py-2 border-b border-slate-100 dark:border-[var(--border-color)] last:border-0">
               <div class="truncate pr-2">
                 <span class="font-extrabold text-main block truncate">${escapeHtml(sub)}</span>
-                <span class="text-xs text-faint font-semibold">${subPct}% dari total terpakai</span>
+                <span class="text-[10px] text-faint font-semibold">${subPct}% of total spent</span>
               </div>
               <span class="font-black text-main whitespace-nowrap">${formatRupiah(amt)}</span>
             </div>
@@ -1658,13 +1648,13 @@
 
       let recentTrxHtml = "";
       if (categoryTrx.length === 0) {
-        recentTrxHtml = `<p class="text-xs text-faint italic py-2">Tidak ada riwayat transaksi.</p>`;
+        recentTrxHtml = `<p class="text-xs text-faint italic py-2">No transaction history.</p>`;
       } else {
         recentTrxHtml = categoryTrx.slice(0, 5).map(t => `
-          <div onclick="showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3 rounded-xl bg-[var(--bg-subtle-2)] cursor-pointer card-hover transition mb-2 last:mb-0">
+          <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-2.5 rounded-xl bg-[var(--bg-subtle-2)] cursor-pointer card-hover transition mb-1.5 last:mb-0">
             <div class="truncate pr-2">
               <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
-              <p class="text-xs text-faint font-medium mt-0.5">${formatDate(t.date)} • ${escapeHtml(t.sourceAccount || '-')}</p>
+              <p class="text-[10px] text-faint font-medium mt-0.5">${formatDate(t.date)} • ${escapeHtml(t.sourceAccount || '-')}</p>
             </div>
             <span class="font-extrabold amount-out whitespace-nowrap">-${formatRupiah(t.amount)}</span>
           </div>
@@ -1674,18 +1664,18 @@
       let html = `
         <div class="space-y-5 pt-1">
           <div class="text-center pb-3 border-b border-slate-200/60 dark:border-[var(--border-color)]">
-            <span class="text-xs font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-muted uppercase tracking-wider mb-3 inline-block">Rincian Anggaran Bulanan</span>
+            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-muted uppercase tracking-wider mb-3 inline-block">Monthly Budget Overview</span>
             <h3 class="text-xl font-black text-main leading-tight mb-2">${escapeHtml(catName)}</h3>
             <div class="mt-2">${statusBadge}</div>
           </div>
 
-          <div class="ios-input p-4 space-y-3 bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
+          <div class="ios-input p-4.5 space-y-3 bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
             <div class="flex justify-between items-center text-xs">
-              <span class="text-muted font-bold">Total Terpakai:</span>
+              <span class="text-muted font-bold">Total Spent:</span>
               <span class="font-black text-main text-sm">${formatRupiah(totalSpent)}</span>
             </div>
             <div class="flex justify-between items-center text-xs">
-              <span class="text-muted font-bold">Batas Anggaran:</span>
+              <span class="text-muted font-bold">Budget Limit:</span>
               <span class="font-extrabold text-main">${formatRupiah(limit)}</span>
             </div>
             <div class="w-full bg-slate-200 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden mt-1">
@@ -1695,18 +1685,18 @@
 
           <div>
             <h4 class="text-xs font-black text-main uppercase tracking-wider mb-2.5 flex items-center">
-              <i data-lucide="pie-chart" class="w-3.5 h-3.5 mr-1.5 text-mochi"></i> Breakdown Sub-Kategori
+              <i data-lucide="pie-chart" class="w-3.5 h-3.5 mr-1.5 text-mochi"></i> Sub-Category Breakdown
             </h4>
-            <div class="bg-card p-4 rounded-2xl border border-[var(--border-color)] space-y-1">
+            <div class="bg-card p-3.5 rounded-2xl border border-[var(--border-color)] space-y-1">
               ${subBreakdownHtml}
             </div>
           </div>
 
           <div>
             <h4 class="text-xs font-black text-main uppercase tracking-wider mb-2.5 flex items-center">
-              <i data-lucide="history" class="w-3.5 h-3.5 mr-1.5 text-mochi"></i> Transaksi Terkini (${categoryTrx.length})
+              <i data-lucide="history" class="w-3.5 h-3.5 mr-1.5 text-mochi"></i> Recent Transactions (${categoryTrx.length})
             </h4>
-            <div class="space-y-2 max-h-44 overflow-y-auto pr-0.5">
+            <div class="space-y-1.5 max-h-40 overflow-y-auto pr-0.5">
               ${recentTrxHtml}
             </div>
           </div>
@@ -1715,7 +1705,7 @@
 
       document.getElementById('modal-detail-inner').innerHTML = html;
       openModal('modalDetail');
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
     }
 
     function getCustomBudgets() {
@@ -1740,7 +1730,7 @@
 
       const categories = getExpenseMainCategories();
       if (categories.length === 0) {
-        container.innerHTML = `<p class="text-xs text-muted text-center py-4 font-semibold">Belum ada master kategori pengeluaran.</p>`;
+        container.innerHTML = `<p class="text-xs text-muted text-center py-4 font-semibold">No expense categories available.</p>`;
         openModal('modalBudgetEditor');
         return;
       }
@@ -1772,7 +1762,7 @@
         updatedBudgets[cat] = numVal;
       });
 
-      let loadingToast = showToast("Menyimpan anggaran...", "info");
+      let loadingToast = showToast("Saving budgets...", "info");
 
       try {
         const res = await fetch(API_URL, {
@@ -1789,13 +1779,13 @@
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         closeModal('modalBudgetEditor');
         
-        await showRewardAnimation("Anggaran Diperbarui");
+        await showRewardAnimation("Budgets Updated");
         renderBudgetSummaryCard();
         renderCategoryAnalysis();
         renderMochiMood();
       } catch (err) {
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Gagal menyimpan anggaran: " + err.message, "error");
+        showToast("Failed to save budgets: " + err.message, "error");
       }
     }
     
@@ -1825,23 +1815,23 @@
         const trendColor = isHigher ? "amount-out bg-[var(--chip-out-bg)]" : "amount-in bg-[var(--chip-in-bg)]";
         const trendIcon = isHigher ? "trending-up" : "trending-down";
         const trendText = isHigher 
-          ? `${Math.abs(diffPct).toFixed(0)}% lebih tinggi dari bulan lalu` 
-          : `${Math.abs(diffPct).toFixed(0)}% lebih hemat dari bulan lalu`;
+          ? `${Math.abs(diffPct).toFixed(0)}% higher than last month` 
+          : `${Math.abs(diffPct).toFixed(0)}% lower than last month`;
 
         trendHtml = `
-          <div class="mb-4 p-3.5 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-subtle-2)] flex items-center justify-between text-xs">
-            <div class="flex items-center space-x-2.5">
-              <div class="w-7 h-7 rounded-lg flex items-center justify-center ${trendColor}">
-                <i data-lucide="${trendIcon}" class="w-4 h-4"></i>
+          <div class="mb-4 p-3 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-subtle-2)] flex items-center justify-between text-xs">
+            <div class="flex items-center space-x-2">
+              <div class="w-6 h-6 rounded-md flex items-center justify-center ${trendColor}">
+                <i data-lucide="${trendIcon}" class="w-3.5 h-3.5"></i>
               </div>
               <span class="font-extrabold text-main">${trendText}</span>
             </div>
-            <span class="text-xs font-bold text-muted">${formatRupiah(totalLastMonth)} prev</span>
+            <span class="text-[10px] font-bold text-muted">${formatRupiah(totalLastMonth)} prev</span>
           </div>`;
       }
 
       if (trxThisMonth.length === 0) {
-        el.innerHTML = trendHtml + `<p class="text-xs text-center text-muted py-4 font-semibold">Belum ada pengeluaran bulan ini.</p>`;
+        el.innerHTML = trendHtml + `<p class="text-xs text-center text-muted py-4 font-semibold">No expenses recorded this month.</p>`;
         return;
       }
 
@@ -1849,20 +1839,9 @@
       let grandTotal = 0;
 
       trxThisMonth.forEach(t => {
-        const catName = (t.category || '').trim();
-        const catMatch = categories.find(c => 
-          c.categoryName.toLowerCase() === catName.toLowerCase() || 
-          (c.subCategory && c.subCategory.toLowerCase() === catName.toLowerCase())
-        );
-
-        let main = (catMatch && catMatch.mainCategory) ? catMatch.mainCategory : (t.mainCategory || catName || 'Lainnya');
-
-        const lowerCat = catName.toLowerCase();
-        if (lowerCat.includes('dining') || lowerCat.includes('groceries') || lowerCat.includes('snack') || lowerCat.includes('makan')) {
-          main = 'Food & Groceries';
-        }
-
-        const subKey = catName || main;
+        const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
+        const main = t.mainCategory || (catMatch ? catMatch.mainCategory : null) || t.category || 'Lainnya';
+        const subKey = t.category || main;
         const amount = Number(t.amount) || 0;
 
         grandTotal += amount;
@@ -1895,8 +1874,8 @@
               </span>
               <span class="text-xs font-black text-main flex-shrink-0 text-right">${displayText}</span>
             </div>
-            <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden">
-              <div class="bg-gradient-to-r ${barColor} h-2 rounded-full transition-all duration-1000 ease-out" style="width:0%" data-target-width="${expensePct}%"></div>
+            <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
+              <div class="bg-gradient-to-r ${barColor} h-1.5 rounded-full transition-all duration-1000 ease-out" style="width:0%" data-target-width="${expensePct}%"></div>
             </div>
           </div>`;
 
@@ -1904,7 +1883,7 @@
           html += `<div class="${isExpanded ? '' : 'hidden'} mt-2.5 pl-4 border-l-2 border-slate-200 dark:border-[var(--border-color)] space-y-1.5">`;
           subKeys.forEach(sub => {
             html += `
-              <div class="flex justify-between items-center text-xs">
+              <div class="flex justify-between items-center text-[11px]">
                 <span class="text-muted font-semibold truncate pr-2">${escapeHtml(sub)}</span>
                 <span class="font-extrabold text-main flex-shrink-0">${formatRupiah(g.subs[sub])}</span>
               </div>`;
@@ -1915,7 +1894,7 @@
       });
 
       el.innerHTML = html;
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
 
       setTimeout(() => {
         el.querySelectorAll('[data-target-width]').forEach(bar => { bar.style.width = bar.getAttribute('data-target-width'); });
@@ -1927,13 +1906,11 @@
       const selYear = document.getElementById('filter-year');
       const selMonth = document.getElementById('filter-month');
 
-      if (!selYear || !selMonth) return;
-
       const now = new Date();
       const currentYear = String(now.getFullYear());
       const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
 
-      selYear.innerHTML = `<option value="ALL">Semua Tahun</option>` + years.map(y => `<option value="${y}">${y}</option>`).join('');
+      selYear.innerHTML = `<option value="ALL">All Years</option>` + years.map(y => `<option value="${y}">${y}</option>`).join('');
       
       if (selYear.value === 'ALL') {
         selYear.value = years.includes(currentYear) ? currentYear : (years[0] || 'ALL');
@@ -1944,19 +1921,11 @@
     }
 
     function renderHistory() {
-      const elMonth = document.getElementById('filter-month');
-      const elYear = document.getElementById('filter-year');
-      const elType = document.getElementById('filter-type');
-      const elUser = document.getElementById('filter-user');
-      const elSearch = document.getElementById('filter-search');
-
-      if (!elMonth || !elYear || !elType || !elUser || !elSearch) return;
-
-      const filterMonth = elMonth.value;
-      const filterYear = elYear.value;
-      const filterType = elType.value;
-      const filterUser = elUser.value;
-      const searchTerm = (elSearch.value || '').toLowerCase().trim();
+      const filterMonth = document.getElementById('filter-month').value;
+      const filterYear = document.getElementById('filter-year').value;
+      const filterType = document.getElementById('filter-type').value;
+      const filterUser = document.getElementById('filter-user').value;
+      const searchTerm = (document.getElementById('filter-search').value || '').toLowerCase().trim();
 
       const filtered = (GLOBAL_DATA.transactions || []).filter(trx => {
         const d = trx.date || "";
@@ -1976,20 +1945,13 @@
         if (direction === 'in') totalIncome += val;
         else if (direction === 'out') totalExpense += val;
       });
-
-      const elInc = document.getElementById('sum-income');
-      const elExp = document.getElementById('sum-expense');
-      const elNet = document.getElementById('sum-net');
-
-      if (elInc) elInc.innerText = '+' + formatRupiah(totalIncome);
-      if (elExp) elExp.innerText = '-' + formatRupiah(totalExpense);
-      if (elNet) elNet.innerText = formatRupiah(totalIncome - totalExpense);
+      document.getElementById('sum-income').innerText = '+' + formatRupiah(totalIncome);
+      document.getElementById('sum-expense').innerText = '-' + formatRupiah(totalExpense);
+      document.getElementById('sum-net').innerText = formatRupiah(totalIncome - totalExpense);
 
       const listEl = document.getElementById('history-transaction-list');
-      if (!listEl) return;
-
       if (filtered.length === 0) {
-        listEl.innerHTML = `<p class="text-xs text-center text-muted py-8 font-semibold">Tidak ada transaksi pada filter ini.</p>`;
+        listEl.innerHTML = `<p class="text-xs text-center text-muted py-8 font-semibold">No transactions match the selected filter.</p>`;
         return;
       }
 
@@ -2001,19 +1963,19 @@
         else if (trx.targetAccount) accountFlowText = trx.targetAccount;
 
         return `
-          <div onclick="currentModalBackFn = null; showTransactionDetail('${trx.transactionId}')" class="floating-item p-3.5 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item select-none" style="animation-delay:${Math.min(i, 10) * 0.04}s">
-            <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-2 pointer-events-none">
+          <div onclick="vibrate(30); currentModalBackFn = null; showTransactionDetail('${trx.transactionId}')" class="floating-item p-3.5 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item select-none" style="animation-delay:${Math.min(i, 10) * 0.04}s">
+            <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
               ${iconChipHtml(trx.type, trx.category)}
               <div class="truncate">
                 <p class="text-[13px] font-bold text-main truncate">${escapeHtml(trx.description || trx.category)}</p>
-                <p class="text-xs text-faint font-medium mt-0.5 truncate">${accountFlowText ? escapeHtml(accountFlowText) + ' • ' : ''}${formatDate(trx.date)} • ${escapeHtml(trx.enteredBy)}</p>
+                <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${accountFlowText ? escapeHtml(accountFlowText) + ' • ' : ''}${formatDate(trx.date)} • ${escapeHtml(trx.enteredBy)}</p>
               </div>
             </div>
-            <span class="text-[13px] font-black ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.amount)}</span>
+            <span class="text-[13px] font-extrabold ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.amount)}</span>
           </div>
         `;
       }).join('');
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
     }
 
     function exportPDFStatement() {
@@ -2033,11 +1995,11 @@
       });
 
       if (filtered.length === 0) {
-        showToast("Tidak ada data transaksi untuk dicetak.", "error");
+        showToast("No transaction data available to export.", "error");
         return;
       }
 
-      let loadingToast = showToast("Menyiapkan dokumen PDF...", "info");
+      let loadingToast = showToast("Preparing PDF statement...", "info");
 
       let totalIn = 0, totalOut = 0;
       filtered.forEach(t => {
@@ -2055,28 +2017,28 @@
         <div style="border-bottom: 2px solid #C87A4B; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-between: space-between; align-items: center;">
           <div>
             <h1 style="font-size: 20px; font-weight: 900; margin: 0; color: #C87A4B;">MOCHI'S VAULT</h1>
-            <p style="font-size: 11px; color: #80736B; margin: 4px 0 0 0;">Laporan Keuangan & Statement Mutasi Resmi — Yosa & Fani</p>
+            <p style="font-size: 11px; color: #80736B; margin: 4px 0 0 0;">Official Financial Statement — Yosa & Fani</p>
           </div>
           <div style="text-align: right; font-size: 10px; color: #80736B;">
-            <p style="margin:0;">Periode: <strong>${filterMonth === 'ALL' ? 'Semua Bulan' : filterMonth} / ${filterYear}</strong></p>
-            <p style="margin:2px 0 0 0;">Dicetak: ${new Date().toLocaleDateString('id-ID')}</p>
+            <p style="margin:0;">Period: <strong>${filterMonth === 'ALL' ? 'All Months' : filterMonth} / ${filterYear}</strong></p>
+            <p style="margin:2px 0 0 0;">Exported: ${new Date().toLocaleDateString('en-US')}</p>
           </div>
         </div>
 
-        <div style="background-color: #F3ECE4; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: flex; justify-between: space-between; font-size: 11px;">
-          <div><span>Total Pemasukan:</span> <strong style="color: #2E6F40; display: block; font-size: 13px;">+${formatRupiah(totalIn)}</strong></div>
-          <div><span>Total Pengeluaran:</span> <strong style="color: #B93838; display: block; font-size: 13px;">-${formatRupiah(totalOut)}</strong></div>
-          <div><span>Surplus / Defisit:</span> <strong style="color: #181412; display: block; font-size: 13px;">${formatRupiah(totalIn - totalOut)}</strong></div>
+        <div style="background-color: #F3ECE4; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; font-size: 11px;">
+          <div><span>Total Income:</span> <strong style="color: #2E6F40; display: block; font-size: 13px;">+${formatRupiah(totalIn)}</strong></div>
+          <div><span>Total Expenses:</span> <strong style="color: #B93838; display: block; font-size: 13px;">-${formatRupiah(totalOut)}</strong></div>
+          <div><span>Net Surplus / Deficit:</span> <strong style="color: #181412; display: block; font-size: 13px;">${formatRupiah(totalIn - totalOut)}</strong></div>
         </div>
 
         <table style="width: 100%; border-collapse: collapse; font-size: 10px; text-align: left;">
           <thead>
             <tr style="background-color: #221C19; color: #FAF8F5;">
-              <th style="padding: 8px; border: 1px solid #ddd;">Tanggal</th>
-              <th style="padding: 8px; border: 1px solid #ddd;">Oleh</th>
-              <th style="padding: 8px; border: 1px solid #ddd;">Kategori / Deskripsi</th>
-              <th style="padding: 8px; border: 1px solid #ddd;">Alat Bayar</th>
-              <th style="padding: 8px; border: 1px solid #ddd; text-align: right;">Jumlah</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Date</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">By</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Category / Description</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Account</th>
+              <th style="padding: 8px; border: 1px solid #ddd; text-align: right;">Amount</th>
             </tr>
           </thead>
           <tbody>
@@ -2108,7 +2070,7 @@
 
       const opt = {
         margin:       10,
-        filename:     `Laporan_Keuangan_Mochi_${filterYear}-${filterMonth}.pdf`,
+        filename:     `Mochi_Financial_Statement_${filterYear}-${filterMonth}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2 },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -2116,32 +2078,34 @@
 
       html2pdf().set(opt).from(printContainer).save().then(() => {
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("PDF berhasil diunduh!", "success");
+        showToast("PDF downloaded successfully!", "success");
       }).catch(err => {
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Gagal membuat PDF: " + err.message, "error");
+        showToast("Failed to generate PDF: " + err.message, "error");
       });
     }
 
+    // WALLETS: DENGAN PEMBERSIHAN DUA NAMA PEMILIK BERULANG
     function renderWallets() {
       const operationalEl = document.getElementById('list-accounts-operational');
       const savingsEl = document.getElementById('list-accounts-savings');
-      if (!operationalEl || !savingsEl) return;
-
       operationalEl.innerHTML = ""; savingsEl.innerHTML = "";
 
-      const accounts = GLOBAL_DATA.accounts || [];
-      if (accounts.length === 0) {
-        operationalEl.innerHTML = `<p class="text-xs text-muted font-semibold">Belum ada akun.</p>`;
+      if (!GLOBAL_DATA.accounts || GLOBAL_DATA.accounts.length === 0) {
+        operationalEl.innerHTML = `<p class="text-xs text-muted font-semibold text-center py-4">No accounts added yet.</p>`;
         return;
       }
 
-      accounts.forEach((acc, i) => {
+      GLOBAL_DATA.accounts.forEach((acc, i) => {
         const meta = getAccountIconMeta(acc.accountName, acc.accountType);
         const balanceColorClass = meta.isLiability ? "amount-out" : "amount-in";
         const badgeBgClass = meta.isLiability ? "bg-[var(--chip-out-bg)] amount-out" : "bg-[var(--chip-in-bg)] amount-in";
-        const statusLabel = meta.isLiability ? "Tagihan Berjalan" : "Saldo Berjalan";
+        const statusLabel = meta.isLiability ? "RUNNING BALANCE" : "RUNNING BALANCE";
         const ownerLabel = acc.owner ? escapeHtml(acc.owner) : 'Yosa & Fani';
+
+        // Hanya sertakan tag owner jika nama akun belum memuat nama pemilik
+        const nameHasOwner = acc.owner && acc.accountName.toLowerCase().includes(acc.owner.toLowerCase());
+        const badgeText = nameHasOwner ? escapeHtml(acc.accountType) : `${escapeHtml(acc.accountType)} • ${ownerLabel}`;
 
         const div = document.createElement('div');
         div.className = "floating-item p-4.5 cursor-pointer card-hover transition stagger-item flex flex-col justify-between";
@@ -2149,32 +2113,31 @@
         
         div.innerHTML = `
           <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-            <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-2" onclick="showAccountHistory('${escapeAttr(acc.accountName)}')">
-              <div class="w-10 h-10 rounded-xl ${meta.bg} flex items-center justify-center flex-shrink-0 shadow-sm">
-                <i data-lucide="${meta.icon}" class="w-5 h-5"></i>
+            <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2" onclick="vibrate(30); showAccountHistory('${escapeAttr(acc.accountName)}')">
+              <div class="w-9 h-9 rounded-xl ${meta.bg} flex items-center justify-center flex-shrink-0 shadow-sm">
+                <i data-lucide="${meta.icon}" class="w-4.5 h-4.5"></i>
               </div>
               <div class="truncate">
-                <h4 class="text-sm font-extrabold text-main leading-tight truncate">${escapeHtml(acc.accountName)}</h4>
+                <h4 class="text-[13px] font-extrabold text-main leading-tight truncate pr-1">${escapeHtml(acc.accountName)}</h4>
                 <div class="flex items-center space-x-1.5 mt-1">
-                  <span class="text-[11px] font-extrabold px-2 py-0.5 rounded-md uppercase ${badgeBgClass}">${escapeHtml(acc.accountType)}</span>
-                  <span class="text-xs text-faint font-semibold truncate">• ${ownerLabel}</span>
+                  <span class="text-[8px] font-extrabold px-2 py-0.5 rounded-full uppercase ${badgeBgClass}">${badgeText}</span>
                 </div>
               </div>
             </div>
 
             <div class="flex items-center space-x-1 flex-shrink-0">
-              <button type="button" onclick="event.stopPropagation(); openEditAccountModal('${escapeAttr(acc.accountName)}')" class="p-1.5 text-faint hover:text-main transition-colors rounded-lg hover:bg-[var(--bg-subtle-2)]">
-                <i data-lucide="edit-3" class="w-4 h-4"></i>
+              <button type="button" onclick="vibrate(30); event.stopPropagation(); openEditAccountModal('${escapeAttr(acc.accountName)}')" class="p-1.5 text-faint hover:text-main transition-colors rounded-lg hover:bg-[var(--bg-subtle-2)]">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
               </button>
-              <button type="button" onclick="event.stopPropagation(); promptDeleteAccount('${escapeAttr(acc.accountName)}')" class="p-1.5 text-faint hover:text-rose-500 transition-colors rounded-lg hover:bg-[var(--bg-subtle-2)]">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              <button type="button" onclick="vibrate(30); event.stopPropagation(); promptDeleteAccount('${escapeAttr(acc.accountName)}')" class="p-1.5 text-faint hover:text-rose-500 transition-colors rounded-lg hover:bg-[var(--bg-subtle-2)]">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
             </div>
           </div>
 
-          <div onclick="showAccountHistory('${escapeAttr(acc.accountName)}')">
-            <span class="text-xs text-muted font-bold uppercase tracking-wider block mb-1">${statusLabel}</span>
-            <span class="text-lg font-black ${balanceColorClass} block leading-none tracking-tight">${formatRupiah(acc.runningBalance)}</span>
+          <div onclick="vibrate(30); showAccountHistory('${escapeAttr(acc.accountName)}')">
+            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">${statusLabel}</span>
+            <span class="text-[18px] font-black ${balanceColorClass} block leading-none tracking-tight">${formatRupiah(acc.runningBalance)}</span>
           </div>
         `;
 
@@ -2184,7 +2147,7 @@
           savingsEl.appendChild(div);
         }
       });
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
     }
 
     function openEditAccountModal(accountName) {
@@ -2202,14 +2165,16 @@
     }
 
     function promptDeleteAccount(accountName) {
+      vibrate(40);
       const titleEl = document.getElementById('delete-modal-title');
       const descEl = document.getElementById('delete-modal-desc');
-      if (titleEl) titleEl.innerText = `Hapus Akun "${accountName}"?`;
-      if (descEl) descEl.innerText = "Menghapus akun ini akan menghapusnya dari daftar Wallets. Riwayat transaksi dengan akun ini tetap tersimpan.";
+      if (titleEl) titleEl.innerText = `Delete "${accountName}"?`;
+      if (descEl) descEl.innerText = "Removing this account will hide it from Wallets. Transaction history associated with this account will be preserved.";
 
       document.getElementById('btn-confirm-delete').onclick = async () => {
+        vibrate(30);
         closeModal('modalDelete');
-        let loadingToast = showToast("Menghapus akun...", "info");
+        let loadingToast = showToast("Deleting account...", "info");
 
         try {
           const res = await fetch(API_URL, {
@@ -2221,27 +2186,27 @@
           if (result.status === 'error') throw new Error(result.message);
 
           if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-          showToast("Akun berhasil dihapus!");
+          showToast("Account deleted successfully!");
           await loadAppData(true);
         } catch (err) {
           if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-          showToast("Gagal menghapus akun: " + err.message, "error");
+          showToast("Failed to delete account: " + err.message, "error");
         }
       };
 
       openModal('modalDelete');
     }
 
+    // ACTIVE PAYABLES & UNPAID RECEIVABLES (MEMBERIKAN PADDING AMAN TANPA TABRAKAN GARIS)
     function renderPayablesReceivables() {
       const payableEl = document.getElementById('list-payables-active');
       const receivableEl = document.getElementById('list-receivables-active');
-      if (!payableEl || !receivableEl) return;
-
       payableEl.innerHTML = "";
       receivableEl.innerHTML = "";
 
       let hasActivePayables = false;
 
+      // 1. ACTIVE PAYABLES (CC / PAYLATER)
       (GLOBAL_DATA.accounts || []).forEach((acc, i) => {
         const meta = getAccountIconMeta(acc.accountName, acc.accountType);
         const rawBal = Number(acc.runningBalance) || 0;
@@ -2250,26 +2215,28 @@
         if (meta.isLiability && bal > 0) {
           hasActivePayables = true;
           const ownerLabel = acc.owner ? escapeHtml(acc.owner) : 'Yosa & Fani';
-          const typeBadge = `${escapeHtml(acc.accountType)} • ${ownerLabel}`;
+          const nameHasOwner = acc.owner && acc.accountName.toLowerCase().includes(acc.owner.toLowerCase());
+          const typeBadge = nameHasOwner ? escapeHtml(acc.accountType) : `${escapeHtml(acc.accountType)} • ${ownerLabel}`;
 
           const div = document.createElement('div');
-          div.className = "floating-item p-4.5 cursor-pointer card-hover transition stagger-item mb-3.5";
+          div.className = "floating-item p-4.5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden";
           div.style.animationDelay = `${i * 0.05}s`;
-          div.onclick = () => { showPayableDetail(acc, true); };
+          div.onclick = () => { vibrate(30); showPayableDetail(acc, true); };
           div.innerHTML = `
             <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-              <h4 class="text-sm font-extrabold text-main leading-tight">${escapeHtml(acc.accountName)}</h4>
-              <span class="text-[11px] amount-out bg-[var(--chip-out-bg)] px-2.5 py-0.5 rounded-md font-extrabold uppercase tracking-wider mt-2 inline-block">${typeBadge}</span>
+              <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(acc.accountName)}</h4>
+              <span class="text-[9px] amount-out bg-[var(--chip-out-bg)] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${typeBadge}</span>
             </div>
             <div>
-              <span class="text-xs text-muted font-bold uppercase tracking-wider block mb-1">REMAINING PAYABLE</span>
-              <span class="text-lg font-black amount-out block leading-none tracking-tight">${formatRupiah(bal)}</span>
+              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING PAYABLE</span>
+              <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(bal)}</span>
             </div>
           `;
           payableEl.appendChild(div);
         }
       });
 
+      // 2. ACTIVE PAYABLES (HUTANG TERSTRUKTUR / CICILAN)
       const activePayables = (GLOBAL_DATA.payables || [])
         .filter(p => {
           const st = (p.status || '').toLowerCase().trim();
@@ -2282,17 +2249,17 @@
         const rem = Math.abs(Number(p.remainingAmount) || 0);
 
         const div = document.createElement('div');
-        div.className = "floating-item p-4.5 cursor-pointer card-hover transition stagger-item mb-3.5";
+        div.className = "floating-item p-4.5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden";
         div.style.animationDelay = `${i * 0.05}s`;
-        div.onclick = () => { showPayableDetail(p, false); };
+        div.onclick = () => { vibrate(30); showPayableDetail(p, false); };
         div.innerHTML = `
           <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-            <h4 class="text-sm font-extrabold text-main leading-tight">${escapeHtml(p.payableName)}</h4>
-            <span class="text-[11px] amount-out bg-[var(--chip-out-bg)] px-2.5 py-0.5 rounded-md font-extrabold uppercase tracking-wider mt-2 inline-block">${escapeHtml(p.payableType || 'PAYABLE')}</span>
+            <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(p.payableName)}</h4>
+            <span class="text-[9px] amount-out bg-[var(--chip-out-bg)] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(p.payableType || 'PAYABLE')}</span>
           </div>
           <div>
-            <span class="text-xs text-muted font-bold uppercase tracking-wider block mb-1">REMAINING PAYABLE</span>
-            <span class="text-lg font-black amount-out block leading-none tracking-tight">${formatRupiah(rem)}</span>
+            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING PAYABLE</span>
+            <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(rem)}</span>
           </div>
         `;
         payableEl.appendChild(div);
@@ -2302,6 +2269,7 @@
         payableEl.innerHTML = `<p class="text-xs text-muted font-semibold text-center py-4">All payables and credit card bills are clear!</p>`;
       }
 
+      // 3. UNPAID RECEIVABLES (PIUTANG)
       const activeReceivables = (GLOBAL_DATA.receivables || [])
         .filter(r => {
           const st = (r.status || '').toLowerCase().trim();
@@ -2314,162 +2282,30 @@
         activeReceivables.forEach((r, i) => {
           const rem = Math.abs(Number(r.remainingAmount) || 0);
           const div = document.createElement('div');
-          div.className = "floating-item p-4.5 cursor-pointer card-hover transition stagger-item mb-3.5";
+          div.className = "floating-item p-4.5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden";
           div.style.animationDelay = `${i * 0.05}s`;
-          div.onclick = () => { showReceivableDetail(r); };
+          div.onclick = () => { vibrate(30); showReceivableDetail(r); };
           div.innerHTML = `
             <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-              <h4 class="text-sm font-extrabold text-main leading-tight">${escapeHtml(r.receivableName)}</h4>
-              <span class="text-[11px] amount-info bg-[var(--chip-info-bg)] px-2.5 py-0.5 rounded-md font-extrabold uppercase tracking-wider mt-2 inline-block">${escapeHtml(r.receivableType || 'RECEIVABLE')}</span>
+              <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(r.receivableName)}</h4>
+              <span class="text-[9px] amount-info bg-[var(--chip-info-bg)] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(r.receivableType || 'RECEIVABLE')}</span>
             </div>
             <div>
-              <span class="text-xs text-muted font-bold uppercase tracking-wider block mb-1">REMAINING RECEIVABLE</span>
-              <span class="text-lg font-black amount-info block leading-none tracking-tight">${formatRupiah(rem)}</span>
+              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING RECEIVABLE</span>
+              <span class="text-[18px] font-black amount-info block leading-none tracking-tight">${formatRupiah(rem)}</span>
             </div>
           `;
           receivableEl.appendChild(div);
         });
       }
-      if (window.lucide) lucide.createIcons();
-    }
-
-    function showPayableDetail(item, isAccount = false) {
-      if (!item) return;
-      const name = isAccount ? item.accountName : item.payableName;
-      currentModalBackFn = () => showPayableDetail(item, isAccount);
-      window.isNestedModalView = false;
-
-      const type = isAccount ? item.accountType : (item.payableType || 'Payable');
-      const rawAmt = isAccount ? item.runningBalance : item.remainingAmount;
-      const amount = Math.abs(Number(rawAmt) || 0);
-      const status = isAccount ? 'Active' : (item.status || 'Active');
-
-      const relatedTrx = isAccount 
-        ? (GLOBAL_DATA.transactions || []).filter(t => t.sourceAccount === name || t.targetAccount === name)
-        : (GLOBAL_DATA.transactions || []).filter(t => t.relatedPayable === name);
-
-      let html = `
-        <div class="space-y-4 pt-1">
-          <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
-            <span class="text-xs font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">Active Payable</span>
-            <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(name)}</h3>
-          </div>
-
-          <div class="ios-input space-y-2.5 text-xs font-semibold text-muted py-4 px-5">
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
-              <span>Payable Type:</span> 
-              <span class="font-extrabold text-main">${escapeHtml(type)}</span>
-            </div>
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2 items-center">
-              <span>Remaining Payable:</span> 
-              <span class="font-black amount-out text-base">${formatRupiah(amount)}</span>
-            </div>
-            <div class="flex justify-between mt-2">
-              <span>Status:</span> 
-              <span class="font-extrabold text-main">${escapeHtml(status)}</span>
-            </div>
-          </div>
-
-          <div>
-            <p class="font-bold text-xs text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
-            <div class="space-y-2 max-h-48 overflow-y-auto pr-1">
-      `;
-
-      if (relatedTrx.length === 0) {
-        html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
-      } else {
-        relatedTrx.forEach(t => {
-          const meta = getTypeMeta(t.type);
-          html += `
-            <div onclick="showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-              <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-2 pointer-events-none">
-                <div class="truncate">
-                  <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
-                  <p class="text-xs text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
-                </div>
-              </div>
-              <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
-            </div>
-          `;
-        });
-      }
-
-      html += `</div></div></div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html;
-      openModal('modalDetail');
-      if (window.lucide) lucide.createIcons();
-    }
-
-    function showReceivableDetail(r) {
-      if (!r) return;
-      currentModalBackFn = () => showReceivableDetail(r);
-      window.isNestedModalView = false;
-
-      const name = r.receivableName;
-      const type = r.receivableType || 'Receivable';
-      const amount = Math.abs(Number(r.remainingAmount) || 0);
-      const status = r.status || 'Active';
-
-      const relatedTrx = (GLOBAL_DATA.transactions || []).filter(t => t.relatedReceivable === name);
-
-      let html = `
-        <div class="space-y-4 pt-1">
-          <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
-            <span class="text-xs font-bold px-3 py-1 rounded-full bg-[var(--chip-info-bg)] amount-info uppercase tracking-wider mb-2 inline-block">Unpaid Receivable</span>
-            <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(name)}</h3>
-          </div>
-
-          <div class="ios-input space-y-2.5 text-xs font-semibold text-muted py-4 px-5">
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
-              <span>Receivable Type:</span> 
-              <span class="font-extrabold text-main">${escapeHtml(type)}</span>
-            </div>
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2 items-center">
-              <span>Remaining Receivable:</span> 
-              <span class="font-black amount-info text-base">${formatRupiah(amount)}</span>
-            </div>
-            <div class="flex justify-between mt-2">
-              <span>Status:</span> 
-              <span class="font-extrabold text-main">${escapeHtml(status)}</span>
-            </div>
-          </div>
-
-          <div>
-            <p class="font-bold text-xs text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
-            <div class="space-y-2 max-h-48 overflow-y-auto pr-1">
-      `;
-
-      if (relatedTrx.length === 0) {
-        html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
-      } else {
-        relatedTrx.forEach(t => {
-          const meta = getTypeMeta(t.type);
-          html += `
-            <div onclick="showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-              <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-2 pointer-events-none">
-                <div class="truncate">
-                  <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
-                  <p class="text-xs text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
-                </div>
-              </div>
-              <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
-            </div>
-          `;
-        });
-      }
-
-      html += `</div></div></div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html;
-      openModal('modalDetail');
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
     }
 
     function populateFormDropdowns() {
       const fillSelect = (id, items, key) => {
         const sel = document.getElementById(id);
-        if (!sel) return;
-        const optionsHtml = (items || []).map(item => `<option value="${escapeAttr(item[key])}">${escapeHtml(item[key])}</option>`).join('');
-        sel.innerHTML = `<option value="">-- Pilih --</option>` + optionsHtml;
+        const optionsHtml = items.map(item => `<option value="${escapeAttr(item[key])}">${escapeHtml(item[key])}</option>`).join('');
+        sel.innerHTML = `<option value="">-- Select --</option>` + optionsHtml;
       };
       fillSelect('form-source-account', GLOBAL_DATA.accounts, 'accountName');
       fillSelect('form-target-account', GLOBAL_DATA.accounts, 'accountName');
@@ -2482,11 +2318,10 @@
     let categoryPickerExpanded = {};
 
     function resetCategoryPicker() {
-      const elCat = document.getElementById('form-category');
-      if (elCat) elCat.value = "";
+      document.getElementById('form-category').value = "";
       const displayEl = document.getElementById('form-category-display');
       if (displayEl) {
-        displayEl.innerText = "Pilih Kategori...";
+        displayEl.innerText = "Select Category...";
         displayEl.classList.add('text-faint');
       }
     }
@@ -2501,8 +2336,7 @@
     }
 
     function groupCategoryData() {
-      const elType = document.getElementById('form-type');
-      const activeType = elType ? elType.value : 'Expense';
+      const activeType = document.getElementById('form-type').value || 'Expense';
       const groups = {};
       const order = [];
 
@@ -2523,7 +2357,7 @@
         renderCategoryPickerList();
         openModal('modalCategoryPicker');
       } catch (err) {
-        showToast("Gagal membuka kategori picker", "error");
+        showToast("Failed to open category picker", "error");
       }
     }
 
@@ -2544,18 +2378,18 @@
 
         if (onlyMainItem) {
           html += `
-            <div onclick="selectCategory('${escapeAttr(group.items[0].categoryName)}')" class="floating-item flex justify-between items-center px-4.5 py-3.5 mb-2.5 cursor-pointer tap-shrink border border-slate-100 dark:border-[var(--border-color)] transition-colors">
-              <div class="flex items-center space-x-3.5">
+            <div onclick="vibrate(30); selectCategory('${escapeAttr(group.items[0].categoryName)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-[var(--border-color)] transition-colors">
+              <div class="flex items-center space-x-3">
                 <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
                 <span class="font-extrabold text-main text-[13px]">${escapeHtml(main)}</span>
               </div>
-              <span class="text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider ${badgeColor}">${escapeHtml(group.type)}</span>
+              <span class="text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badgeColor}">${escapeHtml(group.type)}</span>
             </div>`;
         } else {
           html += `
-            <div class="mb-2.5 floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden">
-              <div onclick="toggleCategoryGroup('${escapeAttr(main)}')" class="flex justify-between items-center px-4.5 py-3.5 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
-                <div class="flex items-center space-x-3.5">
+            <div class="mb-2 floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden">
+              <div onclick="vibrate(30); toggleCategoryGroup('${escapeAttr(main)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
+                <div class="flex items-center space-x-3">
                   <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
                   <span class="font-extrabold text-main text-[13px]">${escapeHtml(main)}</span>
                 </div>
@@ -2569,8 +2403,8 @@
             const mSub = getCategoryIconMeta(label, group.type);
 
             html += `
-              <div onclick="selectCategory('${escapeAttr(item.categoryName)}')" class="px-4.5 py-3.5 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between ${borderCls}">
-                <div class="flex items-center space-x-3.5">
+              <div onclick="vibrate(30); selectCategory('${escapeAttr(item.categoryName)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between ${borderCls}">
+                <div class="flex items-center space-x-3">
                   <div class="icon-chip ${mSub.chip} w-7 h-7"><i data-lucide="${mSub.icon}" class="w-3.5 h-3.5"></i></div>
                   <span class="text-main">${escapeHtml(label)}</span>
                 </div>
@@ -2581,7 +2415,7 @@
       });
 
       listEl.innerHTML = html;
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
     }
 
     function toggleCategoryGroup(main) {
@@ -2590,8 +2424,7 @@
     }
 
     function selectCategory(categoryName) {
-      const elCat = document.getElementById('form-category');
-      if (elCat) elCat.value = categoryName;
+      document.getElementById('form-category').value = categoryName;
       const displayEl = document.getElementById('form-category-display');
       if (displayEl) {
         displayEl.innerText = categoryName;
@@ -2601,23 +2434,18 @@
     }
 
     function handleTypeChange() {
-      const elType = document.getElementById('form-type');
-      if (!elType) return;
-      const type = elType.value;
+      const type = document.getElementById('form-type').value;
       const meta = getTypeMeta(type);
       const show = (id, isShow) => {
         const el = document.getElementById(id);
-        if (el) {
-          if (isShow) el.classList.remove('hidden'); else el.classList.add('hidden');
-        }
+        if (isShow) el.classList.remove('hidden'); else el.classList.add('hidden');
       };
       show('wrap-source-account', meta.showSource);
       show('wrap-target-account', meta.showTarget);
       show('wrap-payable', meta.showPayable);
       show('wrap-receivable', meta.showReceivable);
 
-      const elCat = document.getElementById('form-category');
-      const selectedCategoryName = elCat ? elCat.value : '';
+      const selectedCategoryName = document.getElementById('form-category').value;
       if (selectedCategoryName) {
         const currentCategoryObj = (GLOBAL_DATA.categories || []).find(c => c.categoryName === selectedCategoryName);
         if (currentCategoryObj && !isCategoryMatchingType(currentCategoryObj, type)) resetCategoryPicker();
@@ -2631,7 +2459,7 @@
       else if (kpiName === 'Total Receivables') kpiColor = 'amount-info';
       else if (kpiName === 'Total Payables') kpiColor = 'amount-out';
 
-      let displayValue = (GLOBAL_DATA.kpi && GLOBAL_DATA.kpi[kpiName]) || 0;
+      let displayValue = GLOBAL_DATA.kpi[kpiName] || 0;
 
       if (kpiName === 'Total Payables') {
         let totalLiabilities = 0;
@@ -2658,7 +2486,7 @@
 
       let html = `<div class="space-y-4 pt-1">
           <div class="text-center pb-2">
-            <span class="text-xs font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">Rincian KPI</span>
+            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">KPI Overview</span>
             <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(kpiName)}</h3>
             <p class="text-3xl font-black mt-2 ${kpiColor}">${formatRupiah(displayValue)}</p>
           </div>
@@ -2666,26 +2494,25 @@
       `;
 
       if (kpiName === 'Net Worth') {
-        const kpi = GLOBAL_DATA.kpi || {};
         html += `
-          <p class="font-extrabold text-main mb-3 text-[13px]">Komponen Kekayaan Bersih:</p>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Total Kas & Tabungan:</span> <span class="font-extrabold amount-in">${formatRupiah(kpi['Total Cash'])}</span></div>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Total Piutang:</span> <span class="font-extrabold amount-info">${formatRupiah(kpi['Total Receivables'])}</span></div>
-          <div class="flex justify-between amount-out pb-2 mt-2"><span>Total Hutang (-):</span> <span class="font-extrabold">${formatRupiah(kpi['Total Payables'])}</span></div>
-          <div class="flex justify-between font-black text-main pt-3 mt-1 border-t border-slate-200/50 dark:border-[var(--border-color)] text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(kpi['Net Worth'])}</span></div>
+          <p class="font-extrabold text-main mb-3 text-[13px]">Net Worth Breakdown:</p>
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Total Cash & Savings:</span> <span class="font-extrabold amount-in">${formatRupiah(GLOBAL_DATA.kpi['Total Cash'])}</span></div>
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Total Receivables:</span> <span class="font-extrabold amount-info">${formatRupiah(GLOBAL_DATA.kpi['Total Receivables'])}</span></div>
+          <div class="flex justify-between amount-out pb-2 mt-2"><span>Total Liabilities (-):</span> <span class="font-extrabold">${formatRupiah(GLOBAL_DATA.kpi['Total Payables'])}</span></div>
+          <div class="flex justify-between font-black text-main pt-3 mt-1 border-t border-slate-200/50 dark:border-[var(--border-color)] text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(GLOBAL_DATA.kpi['Net Worth'])}</span></div>
         `;
       } else if (kpiName === 'Disposable Income') {
-        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Keterangan:</p><p class="text-muted leading-relaxed font-semibold">Dana sisa kas operasional harian yang bebas digunakan untuk konsumsi dan tabungan setelah mengurangi komitmen bulanan.</p>`;
+        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Note:</p><p class="text-muted leading-relaxed font-semibold">Remaining daily operational cash available for consumption and savings after deducting monthly commitments.</p>`;
       } else if (kpiName === 'Total Cash') {
-        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Rincian Saldo Akun:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
+        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Account Balances:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
         (GLOBAL_DATA.accounts || []).forEach(a => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${escapeHtml(a.accountName)} (${escapeHtml(a.owner)}):</span> <span class="font-extrabold amount-in">${formatRupiah(a.runningBalance)}</span></div>`; });
         html += `</div>`;
       } else if (kpiName === 'Total Receivables') {
-        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Rincian Piutang:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
+        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Receivables Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
         (GLOBAL_DATA.receivables || []).forEach(r => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${escapeHtml(r.receivableName)}:</span> <span class="font-extrabold amount-info">${formatRupiah(r.remainingAmount)}</span></div>`; });
         html += `</div>`;
       } else if (kpiName === 'Total Payables') {
-        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Rincian Tagihan CC/PayLater & Hutang:</p><div class="space-y-3 max-h-56 overflow-y-auto pr-1">`;
+        html += `<p class="font-extrabold text-main mb-3 text-[13px]">Payables & Credit Card Bills:</p><div class="space-y-3 max-h-56 overflow-y-auto pr-1">`;
         
         let hasPayables = false;
 
@@ -2714,29 +2541,28 @@
           if ((st === 'active' || st === 'aktif') && rem > 0) {
             hasPayables = true;
             html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
-              <span>${escapeHtml(p.payableName)} (Cicilan/KTA):</span> 
+              <span>${escapeHtml(p.payableName)} (Installment):</span> 
               <span class="font-extrabold amount-out">${formatRupiah(rem)}</span>
             </div>`;
           }
         });
 
         if (!hasPayables) {
-          html += `<p class="text-xs text-faint italic py-2 text-center">Tidak ada tagihan atau hutang aktif.</p>`;
+          html += `<p class="text-xs text-faint italic py-2 text-center">No active payables or credit card bills.</p>`;
         }
 
         html += `</div>`;
       } else if (kpiName === 'Net Operating Savings') {
-        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Keterangan:</p><p class="text-muted leading-relaxed font-semibold">Selisih antara total pemasukan operasional dan total pengeluaran operasional.</p>`;
+        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Note:</p><p class="text-muted leading-relaxed font-semibold">Net difference between total operational income and operational expenses.</p>`;
       }
 
       html += `</div></div>`;
-      const innerEl = document.getElementById('modal-detail-inner');
-      if (innerEl) innerEl.innerHTML = html;
+      document.getElementById('modal-detail-inner').innerHTML = html;
       openModal('modalDetail');
     }
 
     function showTransactionDetail(transactionId) {
-      const trx = (GLOBAL_DATA.transactions || []).find(t => t.transactionId === transactionId);
+      const trx = GLOBAL_DATA.transactions.find(t => t.transactionId === transactionId);
       if (!trx) return;
 
       const meta = getTypeMeta(trx.type);
@@ -2745,42 +2571,42 @@
       let html = `<div class="space-y-4 pt-1">`;
       if (currentModalBackFn) {
         window.isNestedModalView = true;
-        html += `<button onclick="window.isNestedModalView = false; currentModalBackFn()" class="tap-shrink text-xs font-extrabold text-main flex items-center mb-2 transition-colors"><i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Kembali</button>`;
+        html += `<button onclick="vibrate(30); window.isNestedModalView = false; currentModalBackFn()" class="tap-shrink text-xs font-extrabold text-main flex items-center mb-2 transition-colors"><i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back</button>`;
       } else { window.isNestedModalView = false; }
 
       html += `
         <div class="text-center flex flex-col items-center mb-5 pb-4 border-b border-slate-200/60 dark:border-[var(--border-color)]">
-          <span class="text-xs font-mono font-black tracking-wider px-3 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mb-4 shadow-sm border border-[var(--border-color)]">REF: ${escapeHtml(trx.transactionId)}</span>
+          <span class="text-[10px] font-mono font-black tracking-wider px-3 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mb-4 shadow-sm border border-[var(--border-color)]">REF: ${escapeHtml(trx.transactionId)}</span>
           <div class="icon-chip ${m.chip} w-14 h-14 rounded-2xl mb-3 shadow-sm border border-slate-100 dark:border-[var(--border-color)]"><i data-lucide="${m.icon}" class="w-6 h-6"></i></div>
           <h3 class="text-base font-extrabold text-main leading-snug px-4">${escapeHtml(trx.description || trx.category)}</h3>
           <p class="text-3xl font-black mt-1.5 tracking-tight ${meta.cls}">${meta.prefix}${formatRupiah(trx.amount)}</p>
-          <span class="text-xs font-black px-3.5 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mt-2.5 uppercase tracking-wider shadow-sm border border-[var(--border-color)]">${escapeHtml(trx.type)}</span>
+          <span class="text-[10px] font-black px-3.5 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mt-2.5 uppercase tracking-wider shadow-sm border border-[var(--border-color)]">${escapeHtml(trx.type)}</span>
         </div>
 
-        <div class="bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-2xl p-4 border border-slate-200/60 dark:border-[var(--border-color)] space-y-2.5 text-xs font-semibold">
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Tanggal</span><span class="font-extrabold text-main">${formatDate(trx.date)}</span></div>
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Kategori</span><span class="font-extrabold text-main">${escapeHtml(trx.category)}</span></div>
-          ${trx.sourceAccount ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Akun Sumber</span><span class="font-extrabold text-main">${escapeHtml(trx.sourceAccount)}</span></div>` : ''}
-          ${trx.targetAccount ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Akun Tujuan</span><span class="font-extrabold text-main">${escapeHtml(trx.targetAccount)}</span></div>` : ''}
-          ${trx.relatedPayable ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Terkait Hutang</span><span class="font-extrabold text-main">${escapeHtml(trx.relatedPayable)}</span></div>` : ''}
-          ${trx.relatedReceivable ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Terkait Piutang</span><span class="font-extrabold text-main">${escapeHtml(trx.relatedReceivable)}</span></div>` : ''}
-          <div class="flex justify-between items-center pt-0.5"><span class="text-muted">Input Oleh</span><span class="font-extrabold text-main">${escapeHtml(trx.enteredBy)}</span></div>
+        <div class="bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-2xl p-4.5 border border-slate-200/60 dark:border-[var(--border-color)] space-y-2.5 text-xs font-semibold">
+          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Date</span><span class="font-extrabold text-main">${formatDate(trx.date)}</span></div>
+          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Category</span><span class="font-extrabold text-main">${escapeHtml(trx.category)}</span></div>
+          ${trx.sourceAccount ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Source Account</span><span class="font-extrabold text-main">${escapeHtml(trx.sourceAccount)}</span></div>` : ''}
+          ${trx.targetAccount ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Target Account</span><span class="font-extrabold text-main">${escapeHtml(trx.targetAccount)}</span></div>` : ''}
+          ${trx.relatedPayable ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Payable</span><span class="font-extrabold text-main">${escapeHtml(trx.relatedPayable)}</span></div>` : ''}
+          ${trx.relatedReceivable ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Receivable</span><span class="font-extrabold text-main">${escapeHtml(trx.relatedReceivable)}</span></div>` : ''}
+          <div class="flex justify-between items-center pt-0.5"><span class="text-muted">Input By</span><span class="font-extrabold text-main">${escapeHtml(trx.enteredBy)}</span></div>
         </div>
 
-        ${trx.notes ? `<div class="text-xs bg-[var(--chip-info-bg)] p-3.5 rounded-2xl amount-info border border-[var(--border-color)]"><span class="font-bold block mb-0.5">Catatan:</span><span class="font-medium leading-relaxed block">${escapeHtml(trx.notes)}</span></div>` : ''}
+        ${trx.notes ? `<div class="text-xs bg-[var(--chip-info-bg)] p-3.5 rounded-2xl amount-info border border-[var(--border-color)]"><span class="font-bold block mb-0.5">Notes:</span><span class="font-medium leading-relaxed block">${escapeHtml(trx.notes)}</span></div>` : ''}
 
         <div class="flex space-x-3 pt-3">
           <button onclick="handleEditTransaction('${trx.transactionId}')" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit</button>
-          <button onclick="promptDeleteTransaction('${trx.transactionId}')" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Hapus</button>
+          <button onclick="promptDeleteTransaction('${trx.transactionId}')" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
         </div>
       </div>`;
 
-      const innerEl = document.getElementById('modal-detail-inner');
-      if (innerEl) innerEl.innerHTML = html;
+      document.getElementById('modal-detail-inner').innerHTML = html;
       openModal('modalDetail');
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
     }
 
+    // MODAL ACCOUNT HISTORY (ESTETIK & MOCHI EMPTY STATE)
     function showAccountHistory(accountName) {
       currentModalBackFn = () => showAccountHistory(accountName);
       window.isNestedModalView = false;
@@ -2789,21 +2615,31 @@
 
       let html = `
         <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 mb-4 pr-6">
-          <span class="text-xs font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-muted uppercase tracking-wider mb-2 inline-block">Account History</span>
+          <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-muted uppercase tracking-wider mb-2 inline-block">Account History</span>
           <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(accountName)}</h3>
         </div>
-        <div class="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
+        <div class="space-y-1.5 max-h-[60vh] overflow-y-auto pr-1">
       `;
-      if (historyItems.length === 0) html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions found for this account.</p>`;
-      else {
+
+      if (historyItems.length === 0) {
+        html += `
+          <div class="text-center py-8 px-4">
+            <div class="w-12 h-12 rounded-2xl bg-[var(--bg-subtle-2)] flex items-center justify-center mx-auto mb-3 border border-[var(--border-color)]">
+              <i data-lucide="receipt" class="w-6 h-6 text-faint"></i>
+            </div>
+            <p class="text-xs font-bold text-main">No Transactions Yet</p>
+            <p class="text-[11px] text-faint mt-1">Transactions for this account will show up here 🐾</p>
+          </div>
+        `;
+      } else {
         historyItems.forEach(t => {
           const meta = getTypeMeta(t.type);
           html += `
-            <div onclick="showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-              <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-2 pointer-events-none">
+            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+              <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
                 <div class="truncate">
                   <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
-                  <p class="text-xs text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
+                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
                 </div>
               </div>
               <span class="font-black flex-shrink-0 whitespace-nowrap text-[13px] ${meta.cls} pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
@@ -2814,46 +2650,170 @@
       html += `</div>`;
       document.getElementById('modal-detail-inner').innerHTML = html;
       openModal('modalDetail');
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
+    }
+
+    // MODAL DETAIL ACTIVE PAYABLE
+    function showPayableDetail(item, isAccount = false) {
+      if (!item) return;
+      const name = isAccount ? item.accountName : item.payableName;
+      currentModalBackFn = () => showPayableDetail(item, isAccount);
+      window.isNestedModalView = false;
+
+      const type = isAccount ? item.accountType : (item.payableType || 'Payable');
+      const rawAmt = isAccount ? item.runningBalance : item.remainingAmount;
+      const amount = Math.abs(Number(rawAmt) || 0);
+      const status = isAccount ? 'Active' : (item.status || 'Active');
+
+      const relatedTrx = isAccount 
+        ? (GLOBAL_DATA.transactions || []).filter(t => t.sourceAccount === name || t.targetAccount === name)
+        : (GLOBAL_DATA.transactions || []).filter(t => t.relatedPayable === name);
+
+      let html = `
+        <div class="space-y-4 pt-1">
+          <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
+            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">Active Payable</span>
+            <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(name)}</h3>
+          </div>
+
+          <div class="ios-input space-y-2.5 text-xs font-semibold text-muted py-4 px-5">
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5">
+              <span>Payable Type:</span> 
+              <span class="font-extrabold text-main">${escapeHtml(type)}</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5 mt-2 items-center">
+              <span>Remaining Payable:</span> 
+              <span class="font-black amount-out text-[15px]">${formatRupiah(amount)}</span>
+            </div>
+            <div class="flex justify-between mt-2">
+              <span>Status:</span> 
+              <span class="font-extrabold text-main">${escapeHtml(status)}</span>
+            </div>
+          </div>
+
+          <div>
+            <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
+            <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+      `;
+
+      if (relatedTrx.length === 0) {
+        html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
+      } else {
+        relatedTrx.forEach(t => {
+          const meta = getTypeMeta(t.type);
+          html += `
+            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+              <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
+                <div class="truncate">
+                  <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
+                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
+                </div>
+              </div>
+              <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
+            </div>
+          `;
+        });
+      }
+
+      html += `</div></div></div>`;
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+      lucide.createIcons();
+    }
+
+    // MODAL DETAIL UNPAID RECEIVABLE
+    function showReceivableDetail(r) {
+      if (!r) return;
+      currentModalBackFn = () => showReceivableDetail(r);
+      window.isNestedModalView = false;
+
+      const name = r.receivableName;
+      const type = r.receivableType || 'Receivable';
+      const amount = Math.abs(Number(r.remainingAmount) || 0);
+      const status = r.status || 'Active';
+
+      const relatedTrx = (GLOBAL_DATA.transactions || []).filter(t => t.relatedReceivable === name);
+
+      let html = `
+        <div class="space-y-4 pt-1">
+          <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
+            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--chip-info-bg)] amount-info uppercase tracking-wider mb-2 inline-block">Unpaid Receivable</span>
+            <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(name)}</h3>
+          </div>
+
+          <div class="ios-input space-y-2.5 text-xs font-semibold text-muted py-4 px-5">
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5">
+              <span>Receivable Type:</span> 
+              <span class="font-extrabold text-main">${escapeHtml(type)}</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5 mt-2 items-center">
+              <span>Remaining Receivable:</span> 
+              <span class="font-black amount-info text-[15px]">${formatRupiah(amount)}</span>
+            </div>
+            <div class="flex justify-between mt-2">
+              <span>Status:</span> 
+              <span class="font-extrabold text-main">${escapeHtml(status)}</span>
+            </div>
+          </div>
+
+          <div>
+            <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
+            <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+      `;
+
+      if (relatedTrx.length === 0) {
+        html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
+      } else {
+        relatedTrx.forEach(t => {
+          const meta = getTypeMeta(t.type);
+          html += `
+            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+              <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
+                <div class="truncate">
+                  <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
+                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
+                </div>
+              </div>
+              <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
+            </div>
+          `;
+        });
+      }
+
+      html += `</div></div></div>`;
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+      lucide.createIcons();
     }
 
     function handleMainCategorySelectChange() {
-      const el = document.getElementById('master-main-category-select');
-      if (!el) return;
-      document.getElementById('master-main-category-new-wrap').classList.toggle('hidden', el.value !== '__NEW__');
+      const val = document.getElementById('master-main-category-select').value;
+      document.getElementById('master-main-category-new-wrap').classList.toggle('hidden', val !== '__NEW__');
     }
 
     function handleMasterCategoryTypeChange() {
-      const el = document.getElementById('master-category-type');
-      if (!el) return;
-      const selectedType = el.value;
+      const selectedType = document.getElementById('master-category-type').value;
       const allCategories = GLOBAL_DATA.categories || [];
 
       const filtered = allCategories.filter(c => (c.type || '').toLowerCase().trim() === selectedType.toLowerCase().trim());
       const mainCategories = [...new Set(filtered.map(c => c.mainCategory || c.categoryName).filter(Boolean))];
 
-      let optHtml = `<option value="__NEW__">+ Buat Kategori Utama Baru</option>`;
+      let optHtml = `<option value="__NEW__">+ Create New Main Category</option>`;
       mainCategories.forEach(u => { optHtml += `<option value="${escapeAttr(u)}">${escapeHtml(u)}</option>`; });
 
       const sel = document.getElementById('master-main-category-select');
-      if (sel) {
-        sel.innerHTML = optHtml;
-        sel.value = "__NEW__";
-      }
+      sel.innerHTML = optHtml;
+      sel.value = "__NEW__";
       handleMainCategorySelectChange();
     }
 
     function openMasterModal(type, isEdit = false) {
-      const elType = document.getElementById('master-type');
-      if (elType) elType.value = type;
-      if (!isEdit) {
-        const elOld = document.getElementById('master-old-name');
-        if (elOld) elOld.value = "";
-      }
+      document.getElementById('master-type').value = type;
+      if (!isEdit) document.getElementById('master-old-name').value = "";
       
       const titleEl = document.getElementById('master-title');
       const extraEl = document.getElementById('master-extra-field');
-      if (extraEl) extraEl.innerHTML = "";
+      extraEl.innerHTML = "";
 
       const nameLabelEl = document.getElementById('master-name-label');
       const nameInputEl = document.getElementById('master-name');
@@ -2861,115 +2821,103 @@
       const mainCategoryWrap = document.getElementById('master-main-category-wrap');
       const mainCategoryNewWrap = document.getElementById('master-main-category-new-wrap');
 
-      if (categoryTypeWrap) categoryTypeWrap.classList.add('hidden');
-      if (mainCategoryWrap) mainCategoryWrap.classList.add('hidden');
-      if (mainCategoryNewWrap) mainCategoryNewWrap.classList.add('hidden');
-      if (nameLabelEl) nameLabelEl.innerText = "Nama";
-      if (nameInputEl) {
-        nameInputEl.required = true;
-        nameInputEl.placeholder = "";
-      }
+      categoryTypeWrap.classList.add('hidden');
+      mainCategoryWrap.classList.add('hidden');
+      mainCategoryNewWrap.classList.add('hidden');
+      nameLabelEl.innerText = "Name";
+      nameInputEl.required = true;
+      nameInputEl.placeholder = "";
 
       if (type === 'category') {
-        if (titleEl) titleEl.innerText = isEdit ? "Edit Kategori" : "Tambah Kategori Baru";
-        if (categoryTypeWrap) categoryTypeWrap.classList.remove('hidden');
-        if (mainCategoryWrap) mainCategoryWrap.classList.remove('hidden');
+        titleEl.innerText = isEdit ? "Edit Category" : "Add New Category";
+        categoryTypeWrap.classList.remove('hidden');
+        mainCategoryWrap.classList.remove('hidden');
 
-        if (nameLabelEl) nameLabelEl.innerText = "Nama Sub-Kategori (opsional)";
-        if (nameInputEl) {
-          nameInputEl.required = false;
-          nameInputEl.placeholder = "Kosongkan jika ini kategori utama";
-        }
+        nameLabelEl.innerText = "Sub-Category Name (Optional)";
+        nameInputEl.required = false;
+        nameInputEl.placeholder = "Leave blank if this is a main category";
 
-        const elFormType = document.getElementById('form-type');
-        const activeTrxType = elFormType ? elFormType.value : 'Expense';
+        const activeTrxType = document.getElementById('form-type').value || 'Expense';
         const meta = getTypeMeta(activeTrxType);
         const defaultCatType = meta.categoryType || 'Expense';
         
-        const elCatType = document.getElementById('master-category-type');
-        if (elCatType) elCatType.value = defaultCatType;
+        document.getElementById('master-category-type').value = defaultCatType;
         handleMasterCategoryTypeChange();
       }
 
       if (type === 'account') {
-        if (titleEl) titleEl.innerText = isEdit ? "Edit Akun" : "Tambah Akun Baru";
-        if (extraEl) {
-          extraEl.innerHTML = `
-            <div>
-              <label for="master-account-type" class="font-extrabold text-main block mb-1.5 text-xs cursor-pointer">Jenis Akun</label>
-              <select id="master-account-type" class="w-full ios-input cursor-pointer py-2.5">
-                <option value="Bank Account">Bank</option>
-                <option value="E-Wallet">E-Wallet</option>
-                <option value="Cash">Cash / Tunai</option>
-                <option value="Credit Card / PayLater">Credit Card / PayLater</option>
-              </select>
-            </div>
-            <div>
-              <label for="master-account-owner" class="font-extrabold text-main block mb-1.5 text-xs cursor-pointer">Pemilik Akun (Owner)</label>
-              <select id="master-account-owner" class="w-full ios-input cursor-pointer py-2.5">
-                <option value="Yosa">Yosa</option>
-                <option value="Fani">Fani</option>
-                <option value="Yosa & Fani">Yosa & Fani (Gabungan)</option>
-              </select>
-            </div>
-            <div>
-              <label for="master-function-category" class="font-extrabold text-main block mb-1.5 text-xs cursor-pointer">Fungsi Akun</label>
-              <select id="master-function-category" class="w-full ios-input cursor-pointer py-2.5">
-                <option value="Daily Operations">Operasional Harian</option>
-                <option value="Emergency Fund & Savings">Dana Darurat & Tabungan</option>
-              </select>
-            </div>
-            <div>
-              <label for="master-initial-balance" class="font-extrabold text-main block mb-1.5 text-xs cursor-pointer">Saldo / Tagihan Awal (Rp)</label>
-              <input type="number" id="master-initial-balance" class="w-full ios-input py-2.5" value="0">
-            </div>
-          `;
-        }
+        titleEl.innerText = isEdit ? "Edit Account" : "Add New Account";
+        extraEl.innerHTML = `
+          <div>
+            <label for="master-account-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Type</label>
+            <select id="master-account-type" class="w-full ios-input cursor-pointer py-2.5">
+              <option value="Bank Account">Bank</option>
+              <option value="E-Wallet">E-Wallet</option>
+              <option value="Cash">Cash / Tunai</option>
+              <option value="Credit Card / PayLater">Credit Card / PayLater</option>
+            </select>
+          </div>
+          <div>
+            <label for="master-account-owner" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Owner</label>
+            <select id="master-account-owner" class="w-full ios-input cursor-pointer py-2.5">
+              <option value="Yosa">Yosa</option>
+              <option value="Fani">Fani</option>
+              <option value="Yosa & Fani">Yosa & Fani (Joint)</option>
+            </select>
+          </div>
+          <div>
+            <label for="master-function-category" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Function</label>
+            <select id="master-function-category" class="w-full ios-input cursor-pointer py-2.5">
+              <option value="Daily Operations">Daily Operations</option>
+              <option value="Emergency Fund & Savings">Emergency Fund & Savings</option>
+            </select>
+          </div>
+          <div>
+            <label for="master-initial-balance" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Balance / Bill (Rp)</label>
+            <input type="number" id="master-initial-balance" class="w-full ios-input py-2.5" value="0">
+          </div>
+        `;
       } else if (type === 'payable') {
-        if (titleEl) titleEl.innerText = isEdit ? "Edit Hutang" : "Tambah Hutang Baru";
-        if (extraEl) {
-          extraEl.innerHTML = `
-            <div>
-              <label for="master-payable-type" class="font-extrabold text-main block mb-1.5 text-xs cursor-pointer">Jenis Hutang</label>
-              <select id="master-payable-type" class="w-full ios-input cursor-pointer py-2.5">
-                <option value="Vehicle Installment">Cicilan Kendaraan</option>
-                <option value="Bank Loan">KTA / Bank</option>
-                <option value="Personal Loan">Pinjaman Personal</option>
-                <option value="Other">Lainnya</option>
-              </select>
-            </div>
-            <div>
-              <label for="master-payable-total" class="font-extrabold text-main block mb-1.5 text-xs cursor-pointer">Total Hutang Awal (Rp)</label>
-              <input type="number" id="master-payable-total" class="w-full ios-input py-2.5" value="0" required>
-            </div>
-            <div>
-              <label for="master-payable-notes" class="font-extrabold text-main block mb-1.5 text-xs cursor-pointer">Keterangan</label>
-              <input type="text" id="master-payable-notes" class="w-full ios-input py-2.5" placeholder="Catatan cicilan...">
-            </div>
-          `;
-        }
+        titleEl.innerText = isEdit ? "Edit Payable" : "Add New Payable";
+        extraEl.innerHTML = `
+          <div>
+            <label for="master-payable-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Payable Type</label>
+            <select id="master-payable-type" class="w-full ios-input cursor-pointer py-2.5">
+              <option value="Vehicle Installment">Vehicle Installment</option>
+              <option value="Bank Loan">Bank Loan / KTA</option>
+              <option value="Personal Loan">Personal Loan</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="master-payable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Total Amount (Rp)</label>
+            <input type="number" id="master-payable-total" class="w-full ios-input py-2.5" value="0" required>
+          </div>
+          <div>
+            <label for="master-payable-notes" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Notes</label>
+            <input type="text" id="master-payable-notes" class="w-full ios-input py-2.5" placeholder="Installment details...">
+          </div>
+        `;
       } else if (type === 'receivable') {
-        if (titleEl) titleEl.innerText = isEdit ? "Edit Piutang" : "Tambah Piutang Baru";
-        if (extraEl) {
-          extraEl.innerHTML = `
-            <div>
-              <label for="master-receivable-type" class="font-extrabold text-main block mb-1.5 text-xs cursor-pointer">Jenis Piutang</label>
-              <select id="master-receivable-type" class="w-full ios-input cursor-pointer py-2.5">
-                <option value="Shopping Reimbursement">Talangan Belanja</option>
-                <option value="Personal Loan">Pinjaman Teman/Keluarga</option>
-                <option value="Other">Lainnya</option>
-              </select>
-            </div>
-            <div>
-              <label for="master-receivable-total" class="font-extrabold text-main block mb-1.5 text-xs cursor-pointer">Total Piutang Awal (Rp)</label>
-              <input type="number" id="master-receivable-total" class="w-full ios-input py-2.5" value="0" required>
-            </div>
-            <div>
-              <label for="master-receivable-notes" class="font-extrabold text-main block mb-1.5 text-xs cursor-pointer">Keterangan</label>
-              <textarea id="master-receivable-notes" rows="2" class="w-full ios-input py-2.5" placeholder="Contoh: Titip belanja token, galon, dll"></textarea>
-            </div>
-          `;
-        }
+        titleEl.innerText = isEdit ? "Edit Receivable" : "Add New Receivable";
+        extraEl.innerHTML = `
+          <div>
+            <label for="master-receivable-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Receivable Type</label>
+            <select id="master-receivable-type" class="w-full ios-input cursor-pointer py-2.5">
+              <option value="Shopping Reimbursement">Shopping Reimbursement</option>
+              <option value="Personal Loan">Personal Loan</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="master-receivable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Total Amount (Rp)</label>
+            <input type="number" id="master-receivable-total" class="w-full ios-input py-2.5" value="0" required>
+          </div>
+          <div>
+            <label for="master-receivable-notes" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Notes</label>
+            <textarea id="master-receivable-notes" rows="2" class="w-full ios-input py-2.5" placeholder="e.g. Shared shopping reimbursement"></textarea>
+          </div>
+        `;
       }
       openModal('modalMaster');
     }
@@ -2983,7 +2931,7 @@
       let payload = { oldName: oldName };
 
       if (type === 'account') {
-        if (!name) { triggerInputError('master-name', "Nama akun wajib diisi."); return; }
+        if (!name) { triggerInputError('master-name', "Account name is required."); return; }
 
         const isDuplicate = (GLOBAL_DATA.accounts || []).some(a => 
           a.accountName.toLowerCase().trim() === name.toLowerCase() && 
@@ -2991,7 +2939,7 @@
         );
 
         if (isDuplicate) {
-          triggerInputError('master-name', `Nama akun '${name}' sudah digunakan! Gunakan nama lain.`);
+          triggerInputError('master-name', `Account name '${name}' is already in use!`);
           return;
         }
 
@@ -3003,26 +2951,26 @@
       } else if (type === 'category') {
         const mainSel = document.getElementById('master-main-category-select').value;
         const mainCategory = mainSel === '__NEW__' ? document.getElementById('master-main-category-new').value.trim() : mainSel;
-        if (!mainCategory) { triggerInputError('master-main-category-new', "Nama kategori utama wajib diisi."); return; }
+        if (!mainCategory) { triggerInputError('master-main-category-new', "Main category name is required."); return; }
         payload.mainCategory = mainCategory;
         payload.subCategory = name;
         payload.categoryName = name || mainCategory;
         payload.type = document.getElementById('master-category-type').value;
       } else if (type === 'payable') {
-        if (!name) { triggerInputError('master-name', "Nama hutang wajib diisi."); return; }
+        if (!name) { triggerInputError('master-name', "Payable name is required."); return; }
         payload.payableName = name;
         payload.payableType = document.getElementById('master-payable-type').value;
         payload.initialAmount = Number(document.getElementById('master-payable-total').value) || 0;
         payload.notes = document.getElementById('master-payable-notes').value;
       } else if (type === 'receivable') {
-        if (!name) { triggerInputError('master-name', "Nama piutang wajib diisi."); return; }
+        if (!name) { triggerInputError('master-name', "Receivable name is required."); return; }
         payload.receivableName = name;
         payload.receivableType = document.getElementById('master-receivable-type').value;
         payload.initialAmount = Number(document.getElementById('master-receivable-total').value) || 0;
         payload.notes = document.getElementById('master-receivable-notes').value;
       }
 
-      let loadingToast = showToast("Menyimpan master data...", "info");
+      let loadingToast = showToast("Saving master data...", "info");
       try {
         const actionType = oldName ? 'editMasterData' : 'addMasterData';
         const res = await fetch(API_URL, {
@@ -3035,28 +2983,23 @@
 
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         closeModal('modalMaster');
-        showToast(result.message || "Master data berhasil disimpan!");
+        showToast(result.message || "Master data saved successfully!");
         await loadAppData(true);
       } catch (err) {
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Gagal menyimpan: " + err.message, "error");
+        showToast("Failed to save: " + err.message, "error");
       }
     }
 
     window.addEventListener('DOMContentLoaded', () => {
       applyDarkModePref();
-      if (window.lucide) lucide.createIcons();
-      
-      const elDate = document.getElementById('form-date');
-      if (elDate) elDate.valueAsDate = new Date();
-
-      const savedTab = localStorage.getItem('mochi_active_tab') || 'dashboard';
-      switchTab(savedTab);
+      lucide.createIcons();
+      document.getElementById('form-date').valueAsDate = new Date();
 
       loadAppData().then(() => {
         const params = new URLSearchParams(location.search);
         if (params.get('action') === 'add') {
-          setTimeout(() => openNewTransactionForm(), 200);
+          setTimeout(() => openNewTransactionForm(), 400);
         }
       });
     });
