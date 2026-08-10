@@ -1,4 +1,4 @@
-const APP_VERSION = "v18.6.2.4"; // Versi dinaikkan agar HP memperbarui cache index.html
+const APP_VERSION = "v18.6.2.5"; // Versi dinaikkan agar HP memperbarui cache index.html
 const CACHE_NAME = "mochis-vault-" + APP_VERSION;
 
 const ASSETS = [
