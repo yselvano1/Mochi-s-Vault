@@ -84,6 +84,27 @@
 
     * { font-variant-numeric: tabular-nums; -webkit-tap-highlight-color: transparent; }
 
+    /* ELEGANT ENTRANCE ANIMATION DENGAN KURVA IOS */
+    @keyframes appEntrance {
+      from { opacity: 0; transform: translateY(6px) scale(0.995); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .app-entrance {
+      animation: appEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* TOP LOADING LINE REFRESH INDICATOR */
+    #top-loading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2.5px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--mochi-light), var(--mochi));
+      z-index: 9999;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    }
+
     .floating-card { background-color: var(--bg-card); box-shadow: var(--shadow-card); border-radius: 1.5rem; border: 1px solid var(--border-color); }
     .floating-item { background-color: var(--bg-card); box-shadow: var(--shadow-item); border-radius: 1rem; border: 1px solid var(--border-color); }
 
@@ -134,7 +155,10 @@
 </head>
 <body class="min-h-screen">
 
-  <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-300 pointer-events-auto">
+  <!-- TOP PROGRESS BAR REFRESH INDICATOR -->
+  <div id="top-loading-bar" class="opacity-0"></div>
+
+  <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-200 pointer-events-auto">
     <div class="animate-float flex flex-col items-center">
       <div class="w-28 h-28 flex items-center justify-center rounded-full shadow-[0_8px_30px_rgba(200,122,75,0.15)] relative overflow-hidden bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)]">
         <img src="mochi-logo-new.png" alt="Mochi" class="w-full h-full object-cover">
@@ -823,6 +847,8 @@
 
     function switchTab(tabId) {
       currentTab = tabId;
+      localStorage.setItem('mochi_active_tab', tabId);
+
       document.querySelectorAll('.nav-item').forEach(el => {
         el.classList.remove('bg-mochi-light/20', 'text-mochi', 'dark:text-mochi-light', 'px-4', 'py-2.5', 'rounded-2xl');
         el.classList.add('text-slate-400', 'dark:text-[#A89B91]', 'p-2.5');
@@ -1271,19 +1297,30 @@
       }
     }
 
+    // INSTANT SPLASH DISMISSAL WITH ELEGANT SMOOTH ENTRANCE
     function dismissSplashScreen() {
       const splash = document.getElementById('splash-screen');
       const main = document.getElementById('main-content');
-      if (main) main.classList.remove('hidden');
-      if (splash) {
+      if (main) {
+        main.classList.remove('hidden');
+        main.classList.add('app-entrance');
+      }
+      if (splash && !splash.classList.contains('hidden')) {
         splash.style.opacity = '0';
         splash.style.pointerEvents = 'none';
-        splash.classList.add('hidden');
+        setTimeout(() => splash.classList.add('hidden'), 200);
       }
     }
 
     async function loadAppData(isSilentReload = false) {
       const localCache = localStorage.getItem('mochi_vault_global_data');
+      const topBar = document.getElementById('top-loading-bar');
+
+      if (topBar) {
+        topBar.style.width = '30%';
+        topBar.classList.remove('opacity-0');
+      }
+
       if (localCache && !isSilentReload) {
         try {
           GLOBAL_DATA = JSON.parse(localCache);
@@ -1294,6 +1331,7 @@
       }
 
       try {
+        if (topBar) topBar.style.width = '70%';
         const res = await fetch(API_URL, { redirect: 'follow' });
         const result = await res.json();
         if (result.status === 'error') throw new Error(result.message);
@@ -1307,6 +1345,13 @@
           showToast("Gagal memuat data: " + err.message, "error");
         }
       } finally {
+        if (topBar) {
+          topBar.style.width = '100%';
+          setTimeout(() => {
+            topBar.classList.add('opacity-0');
+            setTimeout(() => topBar.style.width = '0%', 300);
+          }, 200);
+        }
         dismissSplashScreen();
       }
     }
@@ -2293,7 +2338,7 @@
           div.innerHTML = `
             <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
               <h4 class="text-[13px] font-extrabold text-main leading-tight">${escapeHtml(r.receivableName)}</h4>
-              <span class="text-[9px] amount-info bg-[var(--chip-info-bg)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(r.receivableType || 'RECEIVABLE')}</span>
+              <span class="text-[9px] amount-info bg-[var(--chip-info-bg)] px-2 py-0.5 rounded-full uppercase tracking-wider mt-2 inline-block">${escapeHtml(r.receivableType || 'RECEIVABLE')}</span>
             </div>
             <div>
               <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING RECEIVABLE</span>
@@ -3022,6 +3067,10 @@
       
       const elDate = document.getElementById('form-date');
       if (elDate) elDate.valueAsDate = new Date();
+
+      // BUKA TAB TERAKHIR YANG DISIMPAN (TAB PERSISTENCE)
+      const savedTab = localStorage.getItem('mochi_active_tab') || 'dashboard';
+      switchTab(savedTab);
 
       loadAppData().then(() => {
         const params = new URLSearchParams(location.search);
