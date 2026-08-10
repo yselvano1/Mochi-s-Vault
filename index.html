@@ -2238,10 +2238,11 @@
 
       let hasActivePayables = false;
 
-      // 1. TAMPILKAN KARTU TAGIHAN CC & PAYLATER BERJALAN (> 0)
+      // 1. TAMPILKAN KARTU TAGIHAN CC & PAYLATER BERJALAN
       (GLOBAL_DATA.accounts || []).forEach((acc, i) => {
         const meta = getAccountIconMeta(acc.accountName, acc.accountType);
-        const bal = Number(acc.runningBalance) || 0;
+        const rawBal = Number(acc.runningBalance) || 0;
+        const bal = Math.abs(rawBal); // Konversi nilai minus menjadi positif
 
         if (meta.isLiability && bal > 0) {
           hasActivePayables = true;
