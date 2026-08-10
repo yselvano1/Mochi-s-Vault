@@ -54,8 +54,6 @@
 
     html {
       background-color: var(--bg-app) !important;
-      /* Mencegah layar memantul saat ditarik agar background putih tidak terlihat */
-      overscroll-behavior-y: none; 
     }
 
     body {
@@ -136,7 +134,7 @@
 </head>
 <body class="min-h-screen">
 
-  <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-500 pointer-events-auto">
+  <div id="splash-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-[var(--bg-app)] transition-opacity duration-300 pointer-events-auto">
     <div class="animate-float flex flex-col items-center">
       <div class="w-28 h-28 flex items-center justify-center rounded-full shadow-[0_8px_30px_rgba(200,122,75,0.15)] relative overflow-hidden bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)]">
         <img src="mochi-logo-new.png" alt="Mochi" class="w-full h-full object-cover">
@@ -194,7 +192,7 @@
       </div>
     </div>
 
-    <button onclick="toggleDarkMode(); vibrate(30);" class="tap-shrink w-11 h-11 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm flex-shrink-0" aria-label="Toggle Mode">
+    <button onclick="toggleDarkMode();" class="tap-shrink w-11 h-11 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm flex-shrink-0" aria-label="Toggle Mode">
       <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
       <i data-lucide="moon" id="icon-moon" class="w-5 h-5"></i>
     </button>
@@ -202,7 +200,7 @@
   
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
     <section id="page-dashboard" class="space-y-6 page-animate pt-2">
-      <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden bg-gradient-to-br from-obsidian via-[#2C201A] to-coffee-darkest dark:from-mochi-dark dark:via-[#3E2519] dark:to-obsidian text-white border border-white/10 shadow-xl rounded-[2rem]">
+      <div onclick="showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden bg-gradient-to-br from-obsidian via-[#2C201A] to-coffee-darkest dark:from-mochi-dark dark:via-[#3E2519] dark:to-obsidian text-white border border-white/10 shadow-xl rounded-[2rem]">
         <div class="flex justify-between items-center mb-6 relative z-10">
           <div class="flex items-center space-x-2.5">
             <div class="w-9 h-7 rounded-md bg-gradient-to-tr from-amber-200 via-amber-300 to-yellow-500 p-0.5 shadow-sm flex items-center justify-center">
@@ -218,7 +216,7 @@
           <div id="kpi-networth" class="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-md truncate max-w-full">-</div>
         </div>
 
-        <div ontouchstart="vibrate(30); event.stopPropagation(); showKpiDetail('Disposable Income')" class="relative z-10 bg-white/10 dark:bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/15 flex items-center justify-between">
+        <div onclick="event.stopPropagation(); showKpiDetail('Disposable Income')" class="relative z-10 bg-white/10 dark:bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/15 flex items-center justify-between">
           <div class="min-w-0 flex-1 pr-2">
             <span class="text-[9px] font-extrabold tracking-widest uppercase text-amber-200/90 block mb-0.5">DISPOSABLE INCOME</span>
             <span id="kpi-disposable" class="text-lg sm:text-xl font-black text-amber-100 block tracking-tight truncate">-</span>
@@ -231,22 +229,22 @@
       </div>
 
       <div class="grid grid-cols-2 gap-3">
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+        <div onclick="showKpiDetail('Total Cash')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-3.5 h-3.5 mr-1.5 amount-in"></i> TOTAL CASH</span>
           <span id="kpi-cash" class="text-sm md:text-base font-extrabold amount-in block truncate w-full">-</span>
         </div>
 
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+        <div onclick="showKpiDetail('Net Operating Savings')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="piggy-bank" class="w-3.5 h-3.5 mr-1.5 amount-in"></i> NET SAVINGS</span>
           <span id="kpi-savings" class="text-sm md:text-base font-extrabold amount-in block truncate w-full">-</span>
         </div>
 
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+        <div onclick="showKpiDetail('Total Receivables')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="hand-coins" class="w-3.5 h-3.5 mr-1.5 amount-info"></i> RECEIVABLES</span>
           <span id="kpi-receivables" class="text-sm md:text-base font-extrabold amount-info block truncate w-full">-</span>
         </div>
 
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
+        <div onclick="showKpiDetail('Total Payables')" class="floating-item p-4 cursor-pointer card-hover flex flex-col justify-center bg-card">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="credit-card" class="w-3.5 h-3.5 mr-1.5 amount-out"></i> PAYABLES</span>
           <span id="kpi-payables" class="text-sm md:text-base font-extrabold amount-out block truncate w-full">-</span>
         </div>
@@ -268,7 +266,7 @@
             </div>
             <h3 class="text-sm font-extrabold text-main">Monthly Category Budgets</h3>
           </div>
-          <button type="button" onclick="vibrate(30); openBudgetEditorModal()" class="tap-shrink text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider bg-mochi-light/20 text-mochi dark:text-mochi-light border border-mochi/20 flex items-center">
+          <button type="button" onclick="openBudgetEditorModal()" class="tap-shrink text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider bg-mochi-light/20 text-mochi dark:text-mochi-light border border-mochi/20 flex items-center">
             <i data-lucide="sliders-horizontal" class="w-3 h-3 mr-1"></i> Set Budget
           </button>
         </div>
@@ -280,7 +278,7 @@
       <div class="floating-card p-5 mb-12">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <h3 class="text-sm font-extrabold text-main">Recent Transactions</h3>
-          <button ontouchstart="vibrate(30)" onclick="switchTab('history')" class="text-xs font-bold text-mochi hover:text-mochi-dark dark:text-mochi-light bg-mochi-light/10 px-3 py-1.5 rounded-full transition-colors">See All</button>
+          <button onclick="switchTab('history')" class="text-xs font-bold text-mochi hover:text-mochi-dark dark:text-mochi-light bg-mochi-light/10 px-3 py-1.5 rounded-full transition-colors">See All</button>
         </div>
         <div id="dashboard-transaction-list" class="space-y-2"></div>
       </div>
@@ -294,7 +292,7 @@
             <span class="text-sm font-extrabold uppercase tracking-wider">e-Statement & Mutasi</span>
           </div>
           
-          <button ontouchstart="vibrate(30)" onclick="exportPDFStatement()" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-4 py-2 rounded-full text-xs font-bold flex items-center shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] justify-center transition-colors">
+          <button onclick="exportPDFStatement()" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-4 py-2 rounded-full text-xs font-bold flex items-center shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] justify-center transition-colors">
             <i data-lucide="printer" class="w-3.5 h-3.5 mr-1.5"></i> Export PDF Laporan
           </button>
         </div>
@@ -379,7 +377,7 @@
           <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
             <i data-lucide="briefcase" class="w-4 h-4 mr-2"></i> Operasional Harian
           </h3>
-          <button type="button" onclick="vibrate(30); openMasterModal('account')" class="text-xs font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ Akun Baru</button>
+          <button type="button" onclick="openMasterModal('account')" class="text-xs font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ Akun Baru</button>
         </div>
         <div id="list-accounts-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
       </div>
@@ -409,22 +407,22 @@
 
   <nav class="fixed bottom-0 left-0 right-0 nav-bar-bottom z-40 rounded-t-3xl border-t border-slate-200/50 dark:border-[var(--border-color)]">
     <div class="flex justify-between items-center w-full max-w-md mx-auto px-6 py-3 relative">
-      <button ontouchstart="vibrate(30)" onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-item bg-mochi-light/20 text-mochi dark:text-mochi-light px-4 py-2.5 rounded-2xl flex items-center justify-center space-x-2 tap-shrink">
+      <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-item bg-mochi-light/20 text-mochi dark:text-mochi-light px-4 py-2.5 rounded-2xl flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="layout-dashboard" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text text-[12px] font-extrabold tracking-wide whitespace-nowrap">Home</span>
       </button>
 
-      <button ontouchstart="vibrate(30)" onclick="switchTab('history')" id="tab-history" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
+      <button onclick="switchTab('history')" id="tab-history" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="list" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">History</span>
       </button>
 
-      <button ontouchstart="vibrate(30)" onclick="switchTab('wallets')" id="tab-wallets" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
+      <button onclick="switchTab('wallets')" id="tab-wallets" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="wallet" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text hidden text-[12px] font-extrabold tracking-wide whitespace-nowrap">Wallets</span>
       </button>
 
-      <button ontouchstart="vibrate(30)" onclick="switchTab('payables')" id="tab-payables" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
+      <button onclick="switchTab('payables')" id="tab-payables" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
         <div class="relative flex-shrink-0">
           <i data-lucide="credit-card" class="w-5 h-5"></i>
           <span id="badge-payables-nav" class="hidden absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-[var(--amount-out)] ring-2 ring-[var(--glass-bg)]"></span>
@@ -436,7 +434,7 @@
 
   <div class="fixed bottom-[5.5rem] left-0 right-0 z-50 pointer-events-none">
     <div class="max-w-3xl mx-auto px-5 relative h-full">
-      <button ontouchstart="vibrate(35)" onclick="openNewTransactionForm()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full text-white shadow-[0_8px_20px_-6px_rgba(200,122,75,0.5)] flex items-center justify-center pointer-events-auto border border-white/20 group">
+      <button onclick="openNewTransactionForm()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-gradient-to-tr from-mochi-dark to-mochi-light rounded-full text-white shadow-[0_8px_20px_-6px_rgba(200,122,75,0.5)] flex items-center justify-center pointer-events-auto border border-white/20 group">
         <svg class="w-7 h-7 text-white transform -translate-y-[1px]" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 11.5c-2.8 0-5 2.1-5 4.8 0 2.2 1.8 3.7 5 3.7s5-1.5 5-3.7c0-2.7-2.2-4.8-5-4.8z"/>
           <ellipse cx="6.5" cy="9.5" rx="1.8" ry="2.5"/>
@@ -452,7 +450,7 @@
     <div id="modalTransactionForm-content" class="glass-modal-content w-full max-w-lg rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200 dark:border-[var(--border-color)] pb-4 mb-4">
         <h3 id="modal-title-transaction" class="font-extrabold text-main text-base">Tambah Transaksi</h3>
-        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalTransactionForm')" class="tap-shrink text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition-colors border border-[var(--border-color)]">
+        <button type="button" onclick="closeModal('modalTransactionForm')" class="tap-shrink text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition-colors border border-[var(--border-color)]">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
@@ -476,7 +474,7 @@
 
         <div>
           <label class="font-bold text-main block mb-1 text-xs">Jenis Transaksi</label>
-          <div ontouchstart="vibrate(30)" onclick="openTypePicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+          <div onclick="openTypePicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
             <div id="form-type-display" class="flex items-center space-x-2.5"></div>
             <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
           </div>
@@ -486,7 +484,7 @@
         <div id="wrap-source-account" class="space-y-1">
           <div class="flex justify-between items-center">
             <label for="form-source-account" class="font-bold text-main text-xs cursor-pointer">Akun Sumber</label>
-            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Akun Baru</button>
+            <button type="button" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Akun Baru</button>
           </div>
           <select id="form-source-account" class="w-full ios-input cursor-pointer"></select>
         </div>
@@ -494,7 +492,7 @@
         <div id="wrap-target-account" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
             <label for="form-target-account" class="font-bold text-main text-xs cursor-pointer">Akun Tujuan</label>
-            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Akun Baru</button>
+            <button type="button" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Akun Baru</button>
           </div>
           <select id="form-target-account" class="w-full ios-input cursor-pointer"></select>
         </div>
@@ -502,9 +500,9 @@
         <div class="space-y-1">
           <div class="flex justify-between items-center">
             <label class="font-bold text-main text-xs">Kategori</label>
-            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('category')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Kategori Baru</button>
+            <button type="button" onclick="openMasterModal('category')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Kategori Baru</button>
           </div>
-          <div ontouchstart="vibrate(30)" onclick="openCategoryPicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+          <div onclick="openCategoryPicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
             <span id="form-category-display" class="font-semibold text-faint truncate">Pilih Kategori...</span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
           </div>
@@ -514,7 +512,7 @@
         <div id="wrap-payable" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
             <label for="form-payable" class="font-bold text-main text-xs cursor-pointer">Terkait Hutang</label>
-            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('payable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Hutang Baru</button>
+            <button type="button" onclick="openMasterModal('payable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Hutang Baru</button>
           </div>
           <select id="form-payable" class="w-full ios-input cursor-pointer"></select>
         </div>
@@ -522,7 +520,7 @@
         <div id="wrap-receivable" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
             <label for="form-receivable" class="font-bold text-main text-xs cursor-pointer">Terkait Piutang</label>
-            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('receivable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Piutang Baru</button>
+            <button type="button" onclick="openMasterModal('receivable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ Piutang Baru</button>
           </div>
           <select id="form-receivable" class="w-full ios-input cursor-pointer"></select>
         </div>
@@ -556,7 +554,7 @@
 
   <div id="modalDetail" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDetail')">
     <div id="modalDetail-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto modal-content-center">
-      <button ontouchstart="vibrate(30)" onclick="closeModal('modalDetail')" class="tap-shrink absolute top-4 right-4 text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition z-20 border border-[var(--border-color)]">
+      <button onclick="closeModal('modalDetail')" class="tap-shrink absolute top-4 right-4 text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition z-20 border border-[var(--border-color)]">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
       <div id="modal-detail-inner" class="relative mt-2"></div>
@@ -567,7 +565,7 @@
     <div id="modalTypePicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
         <h3 class="font-extrabold text-main text-sm">Pilih Jenis Transaksi</h3>
-        <button ontouchstart="vibrate(30)" onclick="closeModal('modalTypePicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
+        <button onclick="closeModal('modalTypePicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
@@ -579,7 +577,7 @@
     <div id="modalCategoryPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center pb-3 mb-3 border-b border-slate-200/50 dark:border-[var(--border-color)]">
         <h3 class="font-extrabold text-main text-base">Pilih Kategori</h3>
-        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalCategoryPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
+        <button type="button" onclick="closeModal('modalCategoryPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
@@ -591,7 +589,7 @@
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3">
         <h4 id="master-title" class="font-extrabold text-main text-base">Tambah Master Data</h4>
-        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalMaster')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]"><i data-lucide="x" class="w-4 h-4"></i></button>
+        <button type="button" onclick="closeModal('modalMaster')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
       <form id="formMaster" onsubmit="handleSaveMaster(event)" class="space-y-3 text-sm">
         <input type="hidden" id="master-type">
@@ -638,7 +636,7 @@
         <h4 class="font-extrabold text-main text-base flex items-center">
           <i data-lucide="sliders" class="w-4 h-4 mr-2 text-mochi"></i> Set Category Budgets
         </h4>
-        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalBudgetEditor')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
+        <button type="button" onclick="closeModal('modalBudgetEditor')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
@@ -665,7 +663,7 @@
       <p id="delete-modal-desc" class="text-sm font-medium text-muted mb-6 px-2">Tindakan ini tidak dapat dibatalkan. Data akan dihapus permanen.</p>
 
       <div class="flex space-x-3">
-        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalDelete')" class="flex-1 py-3 bg-[var(--bg-subtle-2)] text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-[var(--border-color)]">Batal</button>
+        <button type="button" onclick="closeModal('modalDelete')" class="flex-1 py-3 bg-[var(--bg-subtle-2)] text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-[var(--border-color)]">Batal</button>
         <button type="button" id="btn-confirm-delete" class="flex-1 py-3 bg-rose-500 hover:bg-rose-600 text-white font-extrabold rounded-xl tap-shrink shadow-sm">Ya, Hapus</button>
       </div>
     </div>
@@ -698,16 +696,11 @@
       }
     });
 
-    function vibrate(ms) {
-      if (navigator.vibrate) navigator.vibrate(Math.max(ms, 25));
-    }
-
     function handleBackdropClick(event, modalId) {
       if (event.target.id === modalId) closeModal(modalId);
     }
 
     function triggerInputError(elementId, message) {
-      vibrate(40);
       showToast(message, "error");
       const el = document.getElementById(elementId);
       if (el) {
@@ -739,7 +732,7 @@
       toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 mr-2.5 flex-shrink-0 ${iconSpin}"></i> <span class="flex-1">${escapeHtml(message)}</span>`;
 
       container.appendChild(toast);
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
 
       requestAnimationFrame(() => {
         toast.classList.remove('translate-y-[-20px]', 'opacity-0');
@@ -773,7 +766,6 @@
           bg.classList.add('opacity-100');
           content.classList.remove('scale-50', 'opacity-0');
           content.classList.add('scale-100', 'opacity-100');
-          vibrate(50);
         });
 
         setTimeout(() => {
@@ -786,8 +778,8 @@
             overlay.classList.add('hidden');
             overlay.classList.remove('flex');
             resolve();
-          }, 500);
-        }, 1800);
+          }, 300);
+        }, 1200);
       });
     }
 
@@ -803,7 +795,7 @@
         modal.classList.add('show');
         if (content) content.classList.add('show');
       });
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
 
     function closeModal(id) {
@@ -848,10 +840,12 @@
 
       document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
       const activeSection = document.getElementById('page-' + tabId);
-      activeSection.classList.remove('hidden');
-      activeSection.classList.remove('page-animate');
-      void activeSection.offsetWidth;
-      activeSection.classList.add('page-animate');
+      if (activeSection) {
+        activeSection.classList.remove('hidden');
+        activeSection.classList.remove('page-animate');
+        void activeSection.offsetWidth;
+        activeSection.classList.add('page-animate');
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -868,8 +862,8 @@
         let isEdgeSwipe = (touchStartX < 40) || (touchStartX > window.innerWidth - 40);
         if (!isEdgeSwipe && activeModals.length === 0) {
           let currentIndex = TABS.indexOf(currentTab);
-          if (dx < -60 && currentIndex < TABS.length - 1) { vibrate(30); switchTab(TABS[currentIndex + 1]); }
-          else if (dx > 60 && currentIndex > 0) { vibrate(30); switchTab(TABS[currentIndex - 1]); }
+          if (dx < -60 && currentIndex < TABS.length - 1) { switchTab(TABS[currentIndex + 1]); }
+          else if (dx > 60 && currentIndex > 0) { switchTab(TABS[currentIndex - 1]); }
         }
       }
     }, { passive: true });
@@ -897,8 +891,10 @@
     }
 
     function updateDarkModeIcon(isDark) {
-      document.getElementById('icon-sun').classList.toggle('hidden', !isDark);
-      document.getElementById('icon-moon').classList.toggle('hidden', isDark);
+      const elSun = document.getElementById('icon-sun');
+      const elMoon = document.getElementById('icon-moon');
+      if (elSun) elSun.classList.toggle('hidden', !isDark);
+      if (elMoon) elMoon.classList.toggle('hidden', isDark);
     }
 
     function formatRupiah(number) {
@@ -1060,7 +1056,7 @@
         const isSelected = opt.value === currentVal;
         const borderCls = isSelected ? 'border-mochi ring-2 ring-mochi/20' : 'border-slate-100 dark:border-[var(--border-color)]';
         return `
-          <div onclick="vibrate(30); selectType('${opt.value}')" class="floating-item flex justify-between items-center px-4 py-3 cursor-pointer tap-shrink border ${borderCls} transition-all">
+          <div onclick="selectType('${opt.value}')" class="floating-item flex justify-between items-center px-4 py-3 cursor-pointer tap-shrink border ${borderCls} transition-all">
             <div class="flex items-center space-x-3">
               <div class="icon-chip ${opt.chip}"><i data-lucide="${opt.icon}" class="w-4 h-4"></i></div>
               <span class="font-extrabold text-main text-[13px]">${opt.label}</span>
@@ -1069,7 +1065,7 @@
           </div>
         `;
       }).join('');
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
 
     function selectType(value) {
@@ -1091,7 +1087,7 @@
           <div class="icon-chip ${opt.chip} w-6 h-6 rounded-md"><i data-lucide="${opt.icon}" class="w-3.5 h-3.5"></i></div>
           <span class="font-extrabold text-main text-xs">${opt.label}</span>
         `;
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
       }
     }
 
@@ -1137,7 +1133,6 @@
     }
 
     function handleEditTransaction(transactionId) {
-      vibrate(30);
       const trx = GLOBAL_DATA.transactions.find(t => t.transactionId === transactionId);
       if (!trx) return;
 
@@ -1179,11 +1174,10 @@
         document.getElementById('btn-submit-transaction').innerText = "Update Transaksi";
 
         openModal('modalTransactionForm');
-      }, 400);
+      }, 300);
     }
 
     function promptDeleteTransaction(transactionId) {
-      vibrate(40);
       transactionToDelete = transactionId;
       closeModal('modalDetail');
       
@@ -1194,11 +1188,10 @@
 
       document.getElementById('btn-confirm-delete').onclick = async () => {
         if (!transactionToDelete) return;
-        vibrate(30);
         await handleDeleteTransaction(transactionToDelete);
       };
 
-      setTimeout(() => openModal('modalDelete'), 400);
+      setTimeout(() => openModal('modalDelete'), 300);
     }
 
     async function handleDeleteTransaction(transactionId) {
@@ -1268,10 +1261,8 @@
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         closeModal('modalTransactionForm');
 
-        setTimeout(async () => {
-          await showRewardAnimation(isEdit ? "Transaksi Diperbarui" : "Tersimpan");
-          await loadAppData(true);
-        }, 300);
+        await showRewardAnimation(isEdit ? "Transaksi Diperbarui" : "Tersimpan");
+        await loadAppData(true);
       } catch (err) {
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         showToast("Gagal menyimpan: " + err.message, "error");
@@ -1287,7 +1278,7 @@
       if (splash) {
         splash.style.opacity = '0';
         splash.style.pointerEvents = 'none';
-        setTimeout(() => splash.classList.add('hidden'), 500);
+        splash.classList.add('hidden');
       }
     }
 
@@ -1297,7 +1288,7 @@
         try {
           GLOBAL_DATA = JSON.parse(localCache);
           renderAllViews();
-          setTimeout(() => dismissSplashScreen(), 1200);
+          dismissSplashScreen();
           isSilentReload = true;
         } catch(e) { console.error("Cache parse error", e); }
       }
@@ -1316,7 +1307,7 @@
           showToast("Gagal memuat data: " + err.message, "error");
         }
       } finally {
-        setTimeout(() => dismissSplashScreen(), 1200);
+        dismissSplashScreen();
       }
     }
 
@@ -1391,7 +1382,7 @@
         div.className = "floating-item p-3 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item mb-2 last:mb-0 select-none";
         div.style.animationDelay = `${i * 0.05}s`;
 
-        div.onclick = () => { vibrate(30); currentModalBackFn = null; showTransactionDetail(trx.transactionId); };
+        div.onclick = () => { currentModalBackFn = null; showTransactionDetail(trx.transactionId); };
 
         let accountFlowText = trx.sourceAccount || '';
         if (trx.sourceAccount && trx.targetAccount) accountFlowText += ` ➔ ${trx.targetAccount}`;
@@ -1414,7 +1405,6 @@
 
     let categoryAnalysisExpanded = {};
     function toggleCategoryAnalysis(mainCategory) {
-      vibrate(30);
       categoryAnalysisExpanded[mainCategory] = !categoryAnalysisExpanded[mainCategory];
       renderCategoryAnalysis();
     }
@@ -1548,7 +1538,7 @@
           : `Left ${formatRupiah(remaining)}`;
 
         return `
-          <div onclick="vibrate(30); showBudgetDetail('${escapeAttr(cat)}')" class="floating-item p-4.5 bg-card border border-[var(--border-color)] cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3 select-none">
+          <div onclick="showBudgetDetail('${escapeAttr(cat)}')" class="floating-item p-4.5 bg-card border border-[var(--border-color)] cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3 select-none">
             <div class="flex justify-between items-center">
               <span class="text-sm font-extrabold text-main truncate pr-2">${escapeHtml(cat)}</span>
               <span class="text-[10px] font-black px-2.5 py-1 rounded-full border ${badgeClass} shadow-sm whitespace-nowrap">
@@ -1580,7 +1570,7 @@
         `;
       }).join('');
 
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
 
     function showBudgetDetail(catName) {
@@ -1644,7 +1634,7 @@
         recentTrxHtml = `<p class="text-xs text-faint italic py-2">Tidak ada riwayat transaksi.</p>`;
       } else {
         recentTrxHtml = categoryTrx.slice(0, 5).map(t => `
-          <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-2.5 rounded-xl bg-[var(--bg-subtle-2)] cursor-pointer card-hover transition mb-1.5 last:mb-0">
+          <div onclick="showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-2.5 rounded-xl bg-[var(--bg-subtle-2)] cursor-pointer card-hover transition mb-1.5 last:mb-0">
             <div class="truncate pr-2">
               <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
               <p class="text-[10px] text-faint font-medium mt-0.5">${formatDate(t.date)} • ${escapeHtml(t.sourceAccount || '-')}</p>
@@ -1838,10 +1828,8 @@
           (c.subCategory && c.subCategory.toLowerCase() === catName.toLowerCase())
         );
 
-        // Tarik ke Main Category dari master data
         let main = (catMatch && catMatch.mainCategory) ? catMatch.mainCategory : (t.mainCategory || catName || 'Lainnya');
 
-        // FALLBACK AUTO-GROUP: Memastikan variasi kategori makanan otomatis masuk ke Food & Groceries
         const lowerCat = catName.toLowerCase();
         if (lowerCat.includes('dining') || lowerCat.includes('groceries') || lowerCat.includes('snack') || lowerCat.includes('makan')) {
           main = 'Food & Groceries';
@@ -1986,7 +1974,7 @@
         else if (trx.targetAccount) accountFlowText = trx.targetAccount;
 
         return `
-          <div onclick="vibrate(30); currentModalBackFn = null; showTransactionDetail('${trx.transactionId}')" class="floating-item p-3.5 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item select-none" style="animation-delay:${Math.min(i, 10) * 0.04}s">
+          <div onclick="currentModalBackFn = null; showTransactionDetail('${trx.transactionId}')" class="floating-item p-3.5 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item select-none" style="animation-delay:${Math.min(i, 10) * 0.04}s">
             <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
               ${iconChipHtml(trx.type, trx.category)}
               <div class="truncate">
@@ -2134,7 +2122,7 @@
         
         div.innerHTML = `
           <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-            <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2" onclick="vibrate(30); showAccountHistory('${escapeAttr(acc.accountName)}')">
+            <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2" onclick="showAccountHistory('${escapeAttr(acc.accountName)}')">
               <div class="w-9 h-9 rounded-xl ${meta.bg} flex items-center justify-center flex-shrink-0 shadow-sm">
                 <i data-lucide="${meta.icon}" class="w-4.5 h-4.5"></i>
               </div>
@@ -2148,16 +2136,16 @@
             </div>
 
             <div class="flex items-center space-x-1 flex-shrink-0">
-              <button type="button" onclick="vibrate(30); event.stopPropagation(); openEditAccountModal('${escapeAttr(acc.accountName)}')" class="p-1.5 text-faint hover:text-main transition-colors rounded-lg hover:bg-[var(--bg-subtle-2)]">
+              <button type="button" onclick="event.stopPropagation(); openEditAccountModal('${escapeAttr(acc.accountName)}')" class="p-1.5 text-faint hover:text-main transition-colors rounded-lg hover:bg-[var(--bg-subtle-2)]">
                 <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
               </button>
-              <button type="button" onclick="vibrate(30); event.stopPropagation(); promptDeleteAccount('${escapeAttr(acc.accountName)}')" class="p-1.5 text-faint hover:text-rose-500 transition-colors rounded-lg hover:bg-[var(--bg-subtle-2)]">
+              <button type="button" onclick="event.stopPropagation(); promptDeleteAccount('${escapeAttr(acc.accountName)}')" class="p-1.5 text-faint hover:text-rose-500 transition-colors rounded-lg hover:bg-[var(--bg-subtle-2)]">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
             </div>
           </div>
 
-          <div onclick="vibrate(30); showAccountHistory('${escapeAttr(acc.accountName)}')">
+          <div onclick="showAccountHistory('${escapeAttr(acc.accountName)}')">
             <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">${statusLabel}</span>
             <span class="text-[18px] font-black ${balanceColorClass} block leading-none tracking-tight">${formatRupiah(acc.runningBalance)}</span>
           </div>
@@ -2187,14 +2175,12 @@
     }
 
     function promptDeleteAccount(accountName) {
-      vibrate(40);
       const titleEl = document.getElementById('delete-modal-title');
       const descEl = document.getElementById('delete-modal-desc');
       if (titleEl) titleEl.innerText = `Hapus Akun "${accountName}"?`;
       if (descEl) descEl.innerText = "Menghapus akun ini akan menghapusnya dari daftar Wallets. Riwayat transaksi dengan akun ini tetap tersimpan.";
 
       document.getElementById('btn-confirm-delete').onclick = async () => {
-        vibrate(30);
         closeModal('modalDelete');
         let loadingToast = showToast("Menghapus akun...", "info");
 
@@ -2242,7 +2228,7 @@
           const div = document.createElement('div');
           div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
           div.style.animationDelay = `${i * 0.05}s`;
-          div.onclick = () => { vibrate(30); showPayableDetail(acc, true); };
+          div.onclick = () => { showPayableDetail(acc, true); };
           div.innerHTML = `
             <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
               <h4 class="text-[13px] font-extrabold text-main leading-tight">${escapeHtml(acc.accountName)}</h4>
@@ -2271,7 +2257,7 @@
         const div = document.createElement('div');
         div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
         div.style.animationDelay = `${i * 0.05}s`;
-        div.onclick = () => { vibrate(30); showPayableDetail(p, false); };
+        div.onclick = () => { showPayableDetail(p, false); };
         div.innerHTML = `
           <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
             <h4 class="text-[13px] font-extrabold text-main leading-tight">${escapeHtml(p.payableName)}</h4>
@@ -2303,7 +2289,7 @@
           const div = document.createElement('div');
           div.className = "floating-item p-4 cursor-pointer card-hover transition stagger-item mb-3";
           div.style.animationDelay = `${i * 0.05}s`;
-          div.onclick = () => { vibrate(30); showReceivableDetail(r); };
+          div.onclick = () => { showReceivableDetail(r); };
           div.innerHTML = `
             <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
               <h4 class="text-[13px] font-extrabold text-main leading-tight">${escapeHtml(r.receivableName)}</h4>
@@ -2368,7 +2354,7 @@
         relatedTrx.forEach(t => {
           const meta = getTypeMeta(t.type);
           html += `
-            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+            <div onclick="showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
               <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
                 <div class="truncate">
                   <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
@@ -2432,7 +2418,7 @@
         relatedTrx.forEach(t => {
           const meta = getTypeMeta(t.type);
           html += `
-            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+            <div onclick="showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
               <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
                 <div class="truncate">
                   <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
@@ -2531,7 +2517,7 @@
 
         if (onlyMainItem) {
           html += `
-            <div onclick="vibrate(30); selectCategory('${escapeAttr(group.items[0].categoryName)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-[var(--border-color)] transition-colors">
+            <div onclick="selectCategory('${escapeAttr(group.items[0].categoryName)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-[var(--border-color)] transition-colors">
               <div class="flex items-center space-x-3">
                 <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
                 <span class="font-extrabold text-main text-[13px]">${escapeHtml(main)}</span>
@@ -2541,7 +2527,7 @@
         } else {
           html += `
             <div class="mb-2 floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden">
-              <div onclick="vibrate(30); toggleCategoryGroup('${escapeAttr(main)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
+              <div onclick="toggleCategoryGroup('${escapeAttr(main)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
                 <div class="flex items-center space-x-3">
                   <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
                   <span class="font-extrabold text-main text-[13px]">${escapeHtml(main)}</span>
@@ -2556,7 +2542,7 @@
             const mSub = getCategoryIconMeta(label, group.type);
 
             html += `
-              <div onclick="vibrate(30); selectCategory('${escapeAttr(item.categoryName)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between ${borderCls}">
+              <div onclick="selectCategory('${escapeAttr(item.categoryName)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between ${borderCls}">
                 <div class="flex items-center space-x-3">
                   <div class="icon-chip ${mSub.chip} w-7 h-7"><i data-lucide="${mSub.icon}" class="w-3.5 h-3.5"></i></div>
                   <span class="text-main">${escapeHtml(label)}</span>
@@ -2732,7 +2718,7 @@
       let html = `<div class="space-y-4 pt-1">`;
       if (currentModalBackFn) {
         window.isNestedModalView = true;
-        html += `<button onclick="vibrate(30); window.isNestedModalView = false; currentModalBackFn()" class="tap-shrink text-xs font-extrabold text-main flex items-center mb-2 transition-colors"><i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Kembali</button>`;
+        html += `<button onclick="window.isNestedModalView = false; currentModalBackFn()" class="tap-shrink text-xs font-extrabold text-main flex items-center mb-2 transition-colors"><i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Kembali</button>`;
       } else { window.isNestedModalView = false; }
 
       html += `
@@ -2768,7 +2754,6 @@
       if (window.lucide) lucide.createIcons();
     }
 
-    // 1. PERBAIKAN MODAL ACCOUNT HISTORY (FULL ENGLISH & BORDER CLEAN)
     function showAccountHistory(accountName) {
       currentModalBackFn = () => showAccountHistory(accountName);
       window.isNestedModalView = false;
@@ -2787,7 +2772,7 @@
         historyItems.forEach(t => {
           const meta = getTypeMeta(t.type);
           html += `
-            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+            <div onclick="showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
               <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
                 <div class="truncate">
                   <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
@@ -2802,7 +2787,7 @@
       html += `</div>`;
       document.getElementById('modal-detail-inner').innerHTML = html;
       openModal('modalDetail');
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
 
     function handleMainCategorySelectChange() {
@@ -3041,7 +3026,7 @@
       loadAppData().then(() => {
         const params = new URLSearchParams(location.search);
         if (params.get('action') === 'add') {
-          setTimeout(() => openNewTransactionForm(), 400);
+          setTimeout(() => openNewTransactionForm(), 200);
         }
       });
     });
