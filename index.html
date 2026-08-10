@@ -6,8 +6,10 @@
   <title>Mochi's Vault — Keuangan Yosa & Fani</title>
 
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" id="meta-theme-color" content="#FAF8F5">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#FAF8F5" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#181412" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <link rel="apple-touch-icon" href="mochi-logo-new.png">
   <link rel="icon" type="image/png" href="mochi-logo-new.png">
@@ -50,16 +52,23 @@
       --shadow-inset: inset 0 2px 4px rgba(45, 36, 30, 0.03);
     }
 
-    html, body {
+    html {
+      background-color: var(--bg-app) !important;
+      /* Mencegah layar memantul saat ditarik agar background putih tidak terlihat */
+      overscroll-behavior-y: none; 
+    }
+
+    body {
       background-color: var(--bg-app) !important;
       color: var(--text-primary);
       min-height: 100vh;
+      min-height: -webkit-fill-available;
       overflow-x: hidden;
       font-family: 'Plus Jakarta Sans', sans-serif;
       transition: background-color 0.3s ease, color 0.3s ease;
       padding-bottom: max(6rem, env(safe-area-inset-bottom));
     }
-
+    
     html.dark {
       --bg-app: #181412; --bg-card: #221C19; --bg-subtle: #2D2520; --bg-subtle-2: #382F2A;
       --text-primary: #FAF8F5; --text-secondary: #A89B91; --text-tertiary: #786C64;
