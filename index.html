@@ -227,24 +227,24 @@
         </div>
       </div>
 
-      <!-- KPI GRID DENGAN PADDING AMAN TANPA POTONGAN CORNER -->
+      <!-- KPI GRID DENGAN PADDING AMAN TAILWIND (P-5) -->
       <div class="grid grid-cols-2 gap-3">
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="floating-item p-5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-3.5 h-3.5 mr-1.5 amount-in flex-shrink-0"></i> TOTAL CASH</span>
           <span id="kpi-cash" class="text-sm sm:text-base font-extrabold amount-in block truncate w-full">-</span>
         </div>
 
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="floating-item p-5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="piggy-bank" class="w-3.5 h-3.5 mr-1.5 amount-in flex-shrink-0"></i> NET SAVINGS</span>
           <span id="kpi-savings" class="text-sm sm:text-base font-extrabold amount-in block truncate w-full">-</span>
         </div>
 
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="floating-item p-5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="hand-coins" class="w-3.5 h-3.5 mr-1.5 amount-info flex-shrink-0"></i> RECEIVABLES</span>
           <span id="kpi-receivables" class="text-sm sm:text-base font-extrabold amount-info block truncate w-full">-</span>
         </div>
 
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="floating-item p-4.5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="floating-item p-5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
           <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="credit-card" class="w-3.5 h-3.5 mr-1.5 amount-out flex-shrink-0"></i> PAYABLES</span>
           <span id="kpi-payables" class="text-sm sm:text-base font-extrabold amount-out block truncate w-full">-</span>
         </div>
@@ -355,7 +355,7 @@
           <input type="text" id="filter-search" oninput="renderHistory()" placeholder="Search description..." class="w-full text-sm ios-input pl-10 pr-4 py-2.5">
         </div>
 
-        <div id="statement-summary" class="floating-item p-4.5 pb-5 mt-3 flex flex-col space-y-3.5 border border-slate-100 dark:border-[var(--border-color)]">
+        <div id="statement-summary" class="floating-item p-5 pb-5 mt-3 flex flex-col space-y-3.5 border border-slate-100 dark:border-[var(--border-color)]">
           <div class="flex justify-between items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
             <span class="text-muted text-[10px] uppercase font-bold tracking-wider">TOTAL INCOME</span>
             <span id="sum-income" class="font-extrabold amount-in text-[15px]">+Rp 0</span>
@@ -1503,7 +1503,7 @@
       }, 1500);
     }
 
-    // OPSI A: SOFT BACKGROUND TANPA INNER GARIS BORDER BERLAPIS
+    // OPSI A: SOFT SURFACE CARD TANPA BORDER DALAM BERLAPIS
     function renderBudgetSummaryCard() {
       const container = document.getElementById('dashboard-budget-summary');
       if (!container) return;
@@ -1554,7 +1554,7 @@
           : `Left ${formatRupiah(remaining)}`;
 
         return `
-          <div onclick="vibrate(30); showBudgetDetail('${escapeAttr(cat)}')" class="floating-item p-4.5 bg-[var(--bg-subtle-2)] cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3 select-none">
+          <div onclick="vibrate(30); showBudgetDetail('${escapeAttr(cat)}')" class="p-5 bg-[var(--bg-subtle-2)] rounded-2xl cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3 select-none">
             <div class="flex justify-between items-center">
               <span class="text-sm font-extrabold text-main truncate pr-2">${escapeHtml(cat)}</span>
               <span class="text-[10px] font-black px-2.5 py-1 rounded-full border ${badgeClass} shadow-sm whitespace-nowrap">
@@ -1650,7 +1650,7 @@
         recentTrxHtml = `<p class="text-xs text-faint italic py-2">No transaction history.</p>`;
       } else {
         recentTrxHtml = categoryTrx.slice(0, 5).map(t => `
-          <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-2.5 rounded-xl bg-[var(--bg-subtle-2)] cursor-pointer card-hover transition mb-1.5 last:mb-0">
+          <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 rounded-xl bg-[var(--bg-subtle-2)] cursor-pointer card-hover transition mb-1.5 last:mb-0">
             <div class="truncate pr-2">
               <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
               <p class="text-[10px] text-faint font-medium mt-0.5">${formatDate(t.date)} • ${escapeHtml(t.sourceAccount || '-')}</p>
@@ -1668,7 +1668,7 @@
             <div class="mt-2">${statusBadge}</div>
           </div>
 
-          <div class="ios-input p-4.5 space-y-3 bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
+          <div class="ios-input p-5 space-y-3 bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
             <div class="flex justify-between items-center text-xs">
               <span class="text-muted font-bold">Total Spent:</span>
               <span class="font-black text-main text-sm">${formatRupiah(totalSpent)}</span>
@@ -1686,7 +1686,7 @@
             <h4 class="text-xs font-black text-main uppercase tracking-wider mb-2.5 flex items-center">
               <i data-lucide="pie-chart" class="w-3.5 h-3.5 mr-1.5 text-mochi"></i> Sub-Category Breakdown
             </h4>
-            <div class="bg-card p-3.5 rounded-2xl border border-[var(--border-color)] space-y-1">
+            <div class="bg-card p-4 rounded-2xl border border-[var(--border-color)] space-y-1">
               ${subBreakdownHtml}
             </div>
           </div>
@@ -2084,7 +2084,7 @@
       });
     }
 
-    // WALLETS: DIVIDER CLEAN TANPA BORDER LINTAS
+    // WALLETS: DENGAN DIVIDER CLEAN PADDING P-5 DAN BEBAS DOUBLE NAME
     function renderWallets() {
       const operationalEl = document.getElementById('list-accounts-operational');
       const savingsEl = document.getElementById('list-accounts-savings');
@@ -2106,7 +2106,7 @@
         const badgeText = nameHasOwner ? escapeHtml(acc.accountType) : `${escapeHtml(acc.accountType)} • ${ownerLabel}`;
 
         const div = document.createElement('div');
-        div.className = "floating-item p-4.5 cursor-pointer card-hover transition stagger-item flex flex-col justify-between";
+        div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item flex flex-col justify-between";
         div.style.animationDelay = `${i * 0.05}s`;
         
         div.innerHTML = `
@@ -2195,7 +2195,7 @@
       openModal('modalDelete');
     }
 
-    // ACTIVE PAYABLES & UNPAID RECEIVABLES (MEMBERIKAN PADDING AMAN TANPA TABRAKAN GARIS)
+    // ACTIVE PAYABLES & UNPAID RECEIVABLES (P-5 PADDING LEGA)
     function renderPayablesReceivables() {
       const payableEl = document.getElementById('list-payables-active');
       const receivableEl = document.getElementById('list-receivables-active');
@@ -2217,7 +2217,7 @@
           const typeBadge = nameHasOwner ? escapeHtml(acc.accountType) : `${escapeHtml(acc.accountType)} • ${ownerLabel}`;
 
           const div = document.createElement('div');
-          div.className = "floating-item p-4.5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden";
+          div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden";
           div.style.animationDelay = `${i * 0.05}s`;
           div.onclick = () => { vibrate(30); showPayableDetail(acc, true); };
           div.innerHTML = `
@@ -2247,7 +2247,7 @@
         const rem = Math.abs(Number(p.remainingAmount) || 0);
 
         const div = document.createElement('div');
-        div.className = "floating-item p-4.5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden";
+        div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden";
         div.style.animationDelay = `${i * 0.05}s`;
         div.onclick = () => { vibrate(30); showPayableDetail(p, false); };
         div.innerHTML = `
@@ -2280,7 +2280,7 @@
         activeReceivables.forEach((r, i) => {
           const rem = Math.abs(Number(r.remainingAmount) || 0);
           const div = document.createElement('div');
-          div.className = "floating-item p-4.5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden";
+          div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden";
           div.style.animationDelay = `${i * 0.05}s`;
           div.onclick = () => { vibrate(30); showReceivableDetail(r); };
           div.innerHTML = `
@@ -2581,7 +2581,7 @@
           <span class="text-[10px] font-black px-3.5 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mt-2.5 uppercase tracking-wider shadow-sm border border-[var(--border-color)]">${escapeHtml(trx.type)}</span>
         </div>
 
-        <div class="bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-2xl p-4.5 border border-slate-200/60 dark:border-[var(--border-color)] space-y-2.5 text-xs font-semibold">
+        <div class="bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-2xl p-5 border border-slate-200/60 dark:border-[var(--border-color)] space-y-2.5 text-xs font-semibold">
           <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Date</span><span class="font-extrabold text-main">${formatDate(trx.date)}</span></div>
           <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Category</span><span class="font-extrabold text-main">${escapeHtml(trx.category)}</span></div>
           ${trx.sourceAccount ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Source Account</span><span class="font-extrabold text-main">${escapeHtml(trx.sourceAccount)}</span></div>` : ''}
@@ -2604,7 +2604,7 @@
       lucide.createIcons();
     }
 
-    // MODAL ACCOUNT HISTORY (ESTETIK & MOCHI EMPTY STATE)
+    // MODAL ACCOUNT HISTORY
     function showAccountHistory(accountName) {
       currentModalBackFn = () => showAccountHistory(accountName);
       window.isNestedModalView = false;
