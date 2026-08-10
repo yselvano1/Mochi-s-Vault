@@ -1521,7 +1521,7 @@
 
       if (activeBudgets.length === 0) {
         container.innerHTML = `
-          <div class="text-center py-6 px-4 bg-[var(--bg-subtle-2)] rounded-2xl border border-[var(--border-color)]">
+          <div class="text-center py-6 px-4 bg-[var(--bg-subtle-2)] rounded-2xl border-none">
             <p class="text-xs text-muted font-bold">No budgets configured yet.</p>
             <p class="text-[10px] text-faint mt-1">Tap 'Set Budget' to define monthly limits.</p>
           </div>
@@ -1562,7 +1562,7 @@
           : `Left ${formatRupiah(remaining)}`;
 
         return `
-          <div onclick="showBudgetDetail('${escapeAttr(cat)}')" class="floating-item p-4.5 bg-card border border-[var(--border-color)] cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3 select-none">
+          <div onclick="showBudgetDetail('${escapeAttr(cat)}')" class="floating-item p-4.5 bg-card border-none cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3 select-none">
             <div class="flex justify-between items-center">
               <span class="text-sm font-extrabold text-main truncate pr-2">${escapeHtml(cat)}</span>
               <span class="text-[10px] font-black px-2.5 py-1 rounded-full border ${badgeClass} shadow-sm whitespace-nowrap">
