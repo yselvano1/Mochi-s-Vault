@@ -1875,8 +1875,23 @@
       let grandTotal = 0;
 
       trxThisMonth.forEach(t => {
-        const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
-        const main = t.mainCategory || (catMatch ? catMatch.mainCategory : null) || t.category || 'Lainnya';
+        // Look up category mapping in master data
+        const catMatch = categories.find(c => 
+          c.categoryName === t.category || 
+          c.subCategory === t.category ||
+          (c.categoryName && c.categoryName.toLowerCase() === (t.category || '').toLowerCase()) ||
+          (c.subCategory && c.subCategory.toLowerCase() === (t.category || '').toLowerCase())
+        );
+
+        // Force fallback to Main Category parent
+        let main = t.mainCategory;
+        if (!main && catMatch) {
+          main = catMatch.mainCategory || catMatch.categoryName;
+        }
+        if (!main) {
+          main = t.category || 'Other Expenses';
+        }
+
         const subKey = t.category || main;
         const amount = Number(t.amount) || 0;
 
@@ -1891,21 +1906,19 @@
       let html = trendHtml;
       sortedMain.forEach((main, index) => {
         const g = groups[main];
-        
         const expensePct = grandTotal > 0 ? (g.total / grandTotal * 100) : 0;
         const displayText = `${formatRupiah(g.total)} (${expensePct.toFixed(0)}%)`;
         const barColor = "from-mochi-light to-mochi";
 
         const isExpanded = !!categoryAnalysisExpanded[main];
         const subKeys = Object.keys(g.subs).sort((a, b) => g.subs[b] - g.subs[a]);
-        const hasMultipleSubs = subKeys.length > 1 || (subKeys.length === 1 && subKeys[0] !== main);
 
         html += `<div class="mb-4 last:mb-0 stagger-item" style="animation-delay: ${index * 0.05}s">`;
         html += `
-          <div ${hasMultipleSubs ? `onclick="toggleCategoryAnalysis('${escapeAttr(main)}')" class="cursor-pointer group"` : ''}>
+          <div onclick="toggleCategoryAnalysis('${escapeAttr(main)}')" class="cursor-pointer group">
             <div class="flex justify-between items-center mb-1.5 gap-2">
               <span class="text-xs font-extrabold text-main flex items-center group-hover:text-mochi dark:group-hover:text-mochi-light transition-colors truncate">
-                ${hasMultipleSubs ? `<i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-3.5 h-3.5 mr-1 text-faint flex-shrink-0"></i>` : ''}
+                <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-3.5 h-3.5 mr-1.5 text-faint flex-shrink-0"></i>
                 <span class="truncate">${escapeHtml(main)}</span>
               </span>
               <span class="text-xs font-black text-main flex-shrink-0 text-right">${displayText}</span>
@@ -1915,11 +1928,11 @@
             </div>
           </div>`;
 
-        if (hasMultipleSubs) {
+        if (subKeys.length > 0) {
           html += `<div class="${isExpanded ? '' : 'hidden'} mt-2.5 pl-4 border-l-2 border-slate-200 dark:border-[var(--border-color)] space-y-1.5">`;
           subKeys.forEach(sub => {
             html += `
-              <div class="flex justify-between items-center text-[11px]">
+              <div class="flex justify-between items-center text-[11px] py-0.5">
                 <span class="text-muted font-semibold truncate pr-2">${escapeHtml(sub)}</span>
                 <span class="font-extrabold text-main flex-shrink-0">${formatRupiah(g.subs[sub])}</span>
               </div>`;
