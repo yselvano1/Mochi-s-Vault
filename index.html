@@ -2028,132 +2028,142 @@
     }
 
     function exportPDFStatement() {
-      const filterMonth = document.getElementById('filter-month').value;
-      const filterYear = document.getElementById('filter-year').value;
-      const filterType = document.getElementById('filter-type').value;
-      const filterUser = document.getElementById('filter-user').value;
+  const filterMonth = document.getElementById('filter-month').value;
+  const filterYear = document.getElementById('filter-year').value;
+  const filterType = document.getElementById('filter-type').value;
+  const filterUser = document.getElementById('filter-user').value;
 
-      const filtered = (GLOBAL_DATA.transactions || []).filter(trx => {
-        const d = trx.date || "";
-        const year = d.length >= 4 ? d.substring(0, 4) : "";
-        const month = d.length >= 7 ? d.substring(5, 7) : "";
-        return (filterMonth === 'ALL' || month === filterMonth) &&
-               (filterYear === 'ALL' || year === filterYear) &&
-               (filterType === 'ALL' || trx.type === filterType) &&
-               (filterUser === 'ALL' || trx.enteredBy === filterUser);
-      });
+  const filtered = (GLOBAL_DATA.transactions || []).filter(trx => {
+    const d = trx.date || "";
+    const year = d.length >= 4 ? d.substring(0, 4) : "";
+    const month = d.length >= 7 ? d.substring(5, 7) : "";
+    return (filterMonth === 'ALL' || month === filterMonth) &&
+           (filterYear === 'ALL' || year === filterYear) &&
+           (filterType === 'ALL' || trx.type === filterType) &&
+           (filterUser === 'ALL' || trx.enteredBy === filterUser);
+  });
 
-      if (filtered.length === 0) {
-        showToast("No transaction data available to export.", "error");
-        return;
-      }
+  if (filtered.length === 0) {
+    showToast("No transaction data available to export.", "error");
+    return;
+  }
 
-      // 1. SORTING KRONOLOGIS (TANGGAL 1 SAMPAI 31)
-      const sortedTransactions = [...filtered].sort((a, b) => new Date(a.date) - new Date(b.date));
+  // 1. Sorting Kronologis (Tanggal 1 ke 31)
+  const sortedTransactions = [...filtered].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-      let loadingToast = showToast("Preparing PDF statement...", "info");
+  let loadingToast = showToast("Preparing PDF statement...", "info");
 
-      let totalIn = 0, totalOut = 0;
-      sortedTransactions.forEach(t => {
-        const dir = getTypeMeta(t.type).direction;
-        if (dir === 'in') totalIn += Number(t.amount) || 0;
-        else if (dir === 'out') totalOut += Number(t.amount) || 0;
-      });
+  let totalIn = 0, totalOut = 0;
+  sortedTransactions.forEach(t => {
+    const meta = getTypeMeta(t.type) || {};
+    const dir = meta.direction;
+    if (dir === 'in') totalIn += Number(t.amount) || 0;
+    else if (dir === 'out') totalOut += Number(t.amount) || 0;
+  });
 
-      const printContainer = document.createElement('div');
-      printContainer.style.padding = '24px';
-      printContainer.style.backgroundColor = '#FAF8F5';
-      printContainer.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
-      printContainer.style.color = '#2D241E';
+  // 2. Buat Kontainer Off-screen
+  const printContainer = document.createElement('div');
+  printContainer.style.position = 'absolute';
+  printContainer.style.left = '-9999px';
+  printContainer.style.top = '-9999px';
+  printContainer.style.width = '800px';
+  printContainer.style.padding = '24px';
+  printContainer.style.backgroundColor = '#FAF8F5';
+  printContainer.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+  printContainer.style.color = '#2D241E';
 
-      printContainer.innerHTML = `
-        <style>
-          @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap');
-          * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        </style>
+  printContainer.innerHTML = `
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap');
+      * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
 
-        <!-- HEADER BANNER MOCHI VAULT -->
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #C87A4B; padding-bottom: 16px; margin-bottom: 20px;">
-          <div>
-            <h1 style="font-size: 22px; font-weight: 900; margin: 0; color: #C87A4B; letter-spacing: -0.5px;">MOCHI'S VAULT</h1>
-            <p style="font-size: 11px; color: #80736B; margin: 4px 0 0 0; font-weight: 600;">Official Financial Statement — Yosa & Fani</p>
-          </div>
-          <div style="text-align: right;">
-            <span style="background-color: #EFE6DC; color: #80736B; font-size: 10px; font-weight: 800; padding: 6px 14px; border-radius: 20px; display: inline-block; text-transform: uppercase;">
-              Period: ${filterMonth === 'ALL' ? 'All Months' : filterMonth} / ${filterYear}
-            </span>
-            <p style="font-size: 9px; color: #A89B91; margin: 6px 0 0 0; font-weight: 600;">Exported on ${new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
-          </div>
-        </div>
+    <!-- HEADER BANNER MOCHI VAULT -->
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #C87A4B; padding-bottom: 16px; margin-bottom: 20px;">
+      <div>
+        <h1 style="font-size: 22px; font-weight: 900; margin: 0; color: #C87A4B; letter-spacing: -0.5px;">MOCHI'S VAULT</h1>
+        <p style="font-size: 11px; color: #80736B; margin: 4px 0 0 0; font-weight: 600;">Official Financial Statement — Yosa & Fani</p>
+      </div>
+      <div style="text-align: right;">
+        <span style="background-color: #EFE6DC; color: #80736B; font-size: 10px; font-weight: 800; padding: 6px 14px; border-radius: 20px; display: inline-block; text-transform: uppercase;">
+          Period: ${filterMonth === 'ALL' ? 'All Months' : filterMonth} / ${filterYear}
+        </span>
+        <p style="font-size: 9px; color: #A89B91; margin: 6px 0 0 0; font-weight: 600;">Exported on ${new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+      </div>
+    </div>
 
-        <!-- SUMMARY CARDS -->
-        <div style="display: flex; gap: 12px; margin-bottom: 24px;">
-          <div style="flex: 1; background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 14px; padding: 12px 16px;">
-            <span style="font-size: 9px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Total Income</span>
-            <strong style="font-size: 14px; font-weight: 900; color: #2E6F40;">+${formatRupiah(totalIn)}</strong>
-          </div>
-          <div style="flex: 1; background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 14px; padding: 12px 16px;">
-            <span style="font-size: 9px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Total Expenses</span>
-            <strong style="font-size: 14px; font-weight: 900; color: #B93838;">-${formatRupiah(totalOut)}</strong>
-          </div>
-          <div style="flex: 1; background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 14px; padding: 12px 16px;">
-            <span style="font-size: 9px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Net Surplus / Deficit</span>
-            <strong style="font-size: 14px; font-weight: 900; color: #2D241E;">${formatRupiah(totalIn - totalOut)}</strong>
-          </div>
-        </div>
+    <!-- SUMMARY CARDS -->
+    <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+      <div style="flex: 1; background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 14px; padding: 12px 16px;">
+        <span style="font-size: 9px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Total Income</span>
+        <strong style="font-size: 14px; font-weight: 900; color: #2E6F40;">+${formatRupiah(totalIn)}</strong>
+      </div>
+      <div style="flex: 1; background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 14px; padding: 12px 16px;">
+        <span style="font-size: 9px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Total Expenses</span>
+        <strong style="font-size: 14px; font-weight: 900; color: #B93838;">-${formatRupiah(totalOut)}</strong>
+      </div>
+      <div style="flex: 1; background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 14px; padding: 12px 16px;">
+        <span style="font-size: 9px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Net Surplus / Deficit</span>
+        <strong style="font-size: 14px; font-weight: 900; color: #2D241E;">${formatRupiah(totalIn - totalOut)}</strong>
+      </div>
+    </div>
 
-        <!-- TRANSACTION LIST -->
-        <div style="margin-bottom: 12px;">
-          <span style="font-size: 10px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.8px;">Transaction Details (Date 1 - 31)</span>
-        </div>
+    <!-- TRANSACTION LIST -->
+    <div style="margin-bottom: 12px;">
+      <span style="font-size: 10px; font-weight: 800; color: #80736B; text-transform: uppercase; letter-spacing: 0.8px;">Transaction Details (Date 1 - 31)</span>
+    </div>
 
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          ${sortedTransactions.map((t) => {
-            const meta = getTypeMeta(t.type);
-            let acc = t.sourceAccount || '';
-            if (t.sourceAccount && t.targetAccount) acc += ` ➔ ${t.targetAccount}`;
-            else if (t.targetAccount) acc = t.targetAccount;
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      ${sortedTransactions.map((t) => {
+        const meta = getTypeMeta(t.type) || {};
+        let acc = t.sourceAccount || '';
+        if (t.sourceAccount && t.targetAccount) acc += ` ➔ ${t.targetAccount}`;
+        else if (t.targetAccount) acc = t.targetAccount;
 
-            let amtColor = meta.direction === 'in' ? '#2E6F40' : (meta.direction === 'out' ? '#B93838' : '#1D63B8');
+        let amtColor = meta.direction === 'in' ? '#2E6F40' : (meta.direction === 'out' ? '#B93838' : '#1D63B8');
 
-            return `
-              <div style="background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                  <div style="background: #EFE6DC; border-radius: 8px; padding: 6px 10px; font-size: 10px; font-weight: 800; color: #2D241E; text-align: center; white-space: nowrap;">
-                    ${formatDate(t.date)}
-                  </div>
-                  <div>
-                    <div style="font-size: 12px; font-weight: 800; color: #2D241E; line-height: 1.2;">${escapeHtml(t.description || t.category)}</div>
-                    <div style="font-size: 9px; font-weight: 600; color: #80736B; margin-top: 3px;">
-                      ${escapeHtml(t.category)} ${acc ? '• ' + escapeHtml(acc) : ''} • By ${escapeHtml(t.enteredBy)}
-                    </div>
-                  </div>
-                </div>
-                <div style="font-size: 12px; font-weight: 900; color: ${amtColor}; text-align: right; white-space: nowrap;">
-                  ${meta.prefix}${formatRupiah(t.amount)}
+        return `
+          <div style="background: #FFFFFF; border: 1px solid rgba(45, 36, 30, 0.08); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="background: #EFE6DC; border-radius: 8px; padding: 6px 10px; font-size: 10px; font-weight: 800; color: #2D241E; text-align: center; white-space: nowrap;">
+                ${formatDate(t.date)}
+              </div>
+              <div>
+                <div style="font-size: 12px; font-weight: 800; color: #2D241E; line-height: 1.2;">${escapeHtml(t.description || t.category)}</div>
+                <div style="font-size: 9px; font-weight: 600; color: #80736B; margin-top: 3px;">
+                  ${escapeHtml(t.category)} ${acc ? '• ' + escapeHtml(acc) : ''} • By ${escapeHtml(t.enteredBy)}
                 </div>
               </div>
-            `;
-          }).join('')}
-        </div>
-      `;
+            </div>
+            <div style="font-size: 12px; font-weight: 900; color: ${amtColor}; text-align: right; white-space: nowrap;">
+              ${meta.prefix || ''}${formatRupiah(t.amount)}
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
 
-      const opt = {
-        margin:       8,
-        filename:     `Mochi_Statement_${filterYear}-${filterMonth}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
+  document.body.appendChild(printContainer);
 
-      html2pdf().set(opt).from(printContainer).save().then(() => {
-        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("PDF downloaded successfully!", "success");
-      }).catch(err => {
-        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Failed to generate PDF: " + err.message, "error");
-      });
-    }
+  const opt = {
+    margin:       8,
+    filename:     `Mochi_Statement_${filterYear}-${filterMonth}.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+
+  html2pdf().set(opt).from(printContainer).save().then(() => {
+    if (document.body.contains(printContainer)) document.body.removeChild(printContainer);
+    if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+    showToast("PDF downloaded successfully!", "success");
+  }).catch(err => {
+    if (document.body.contains(printContainer)) document.body.removeChild(printContainer);
+    if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+    showToast("Failed to generate PDF: " + err.message, "error");
+  });
+}
 
     function openEditAccountModal(accountName) {
       const acc = (GLOBAL_DATA.accounts || []).find(a => a.accountName === accountName);
