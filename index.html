@@ -1535,15 +1535,15 @@
 
       if (activeBudgets.length === 0) {
         container.innerHTML = `
-          <div class="text-center py-4 px-3 bg-[var(--bg-subtle-2)] rounded-2xl border border-[var(--border-color)]">
+          <div class="text-center py-6 px-4 bg-[var(--bg-subtle-2)] rounded-2xl border border-[var(--border-color)]">
             <p class="text-xs text-muted font-bold">Belum ada anggaran dikonfigurasi.</p>
-            <p class="text-[10px] text-faint mt-0.5">Klik 'Set Budget' untuk menentukan limit bulanan.</p>
+            <p class="text-[10px] text-faint mt-1">Klik 'Set Budget' untuk menentukan limit bulanan.</p>
           </div>
         `;
         return;
       }
 
-      // Hitung akumulasi pengeluaran bulan berjalan per Kategori Utama
+      // Hitung pengeluaran bulan berjalan per Kategori Utama
       const now = new Date();
       const currentYM = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
       const allTrx = GLOBAL_DATA.transactions || [];
@@ -1557,7 +1557,7 @@
         spentMap[main] = (spentMap[main] || 0) + (Number(t.amount) || 0);
       });
 
-      // Render kartu anggaran interaktif
+      // Render Kartu Anggaran Lega dengan White Space ala iOS (Clickable)
       container.innerHTML = activeBudgets.map(([cat, limitNum]) => {
         const limit = Number(limitNum) || 0;
         const spent = spentMap[cat] || 0;
@@ -1573,32 +1573,175 @@
           ? "bg-rose-500/15 text-rose-500 border-rose-500/20" 
           : "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/20";
         
-        const remainingText = isOver 
+        const remainingBadge = isOver 
           ? `Over ${formatRupiah(Math.abs(remaining))}` 
           : `Sisa ${formatRupiah(remaining)}`;
 
         return `
-          <div class="floating-item p-3.5 bg-[var(--bg-subtle-2)] border border-[var(--border-color)] space-y-2">
-            <div class="flex justify-between items-center text-xs">
-              <span class="font-extrabold text-main truncate pr-2">${escapeHtml(cat)}</span>
-              <span class="text-[10px] font-black px-2 py-0.5 rounded-full border ${badgeClass}">
-                ${remainingText}
+          <div onclick="vibrate(30); showBudgetDetail('${escapeAttr(cat)}')" class="floating-item p-4.5 bg-card border border-[var(--border-color)] cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3 select-none">
+            <!-- Header: Judul Kategori & Status Badge -->
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-extrabold text-main truncate pr-2">${escapeHtml(cat)}</span>
+              <span class="text-[10px] font-black px-2.5 py-1 rounded-full border ${badgeClass} shadow-sm whitespace-nowrap">
+                ${remainingBadge}
               </span>
             </div>
 
-            <div class="flex justify-between items-center text-[11px]">
-              <span class="text-muted font-medium">Terpakai: <strong class="text-main font-bold">${formatRupiah(spent)}</strong></span>
-              <span class="text-faint font-semibold">Limit: ${formatRupiah(limit)}</span>
+            <!-- Body: Nominal Terpakai vs Limit -->
+            <div class="flex justify-between items-baseline pt-0.5">
+              <div>
+                <span class="text-[10px] font-bold text-muted uppercase tracking-wider block mb-0.5">Terpakai</span>
+                <span class="text-base font-black text-main leading-tight">${formatRupiah(spent)}</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[10px] font-bold text-faint uppercase tracking-wider block mb-0.5">Batas Limit</span>
+                <span class="text-xs font-extrabold text-muted">${formatRupiah(limit)}</span>
+              </div>
             </div>
 
-            <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
-              <div class="bg-gradient-to-r ${barColor} h-1.5 rounded-full transition-all duration-1000 ease-out" style="width: ${pct}%"></div>
+            <!-- Progress Bar Lega -->
+            <div class="space-y-1.5">
+              <div class="w-full bg-slate-100 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden">
+                <div class="bg-gradient-to-r ${barColor} h-2 rounded-full transition-all duration-1000 ease-out" style="width: ${pct}%"></div>
+              </div>
+              <div class="flex justify-between items-center text-[10px] font-semibold text-faint pt-0.5">
+                <span>Terpakai ${pct.toFixed(0)}%</span>
+                <span class="flex items-center text-mochi dark:text-mochi-light font-bold">Rincian <i data-lucide="chevron-right" class="w-3 h-3 ml-0.5"></i></span>
+              </div>
             </div>
           </div>
         `;
       }).join('');
+
+      lucide.createIcons();
     }
 
+    function showBudgetDetail(catName) {
+      currentModalBackFn = null;
+      window.isNestedModalView = false;
+
+      const budgets = getCustomBudgets();
+      const limit = Number(budgets[catName]) || 0;
+
+      const now = new Date();
+      const currentYM = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+      const allTrx = GLOBAL_DATA.transactions || [];
+      const categories = GLOBAL_DATA.categories || [];
+
+      // Filter Transaksi Pengeluaran untuk Kategori Utama ini di bulan berjalan
+      const categoryTrx = allTrx.filter(t => {
+        if (t.type !== 'Expense' || !t.date || t.date.substring(0, 7) !== currentYM) return false;
+        const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
+        const main = t.mainCategory || (catMatch ? catMatch.mainCategory : null) || t.category || 'Lainnya';
+        return main === catName;
+      });
+
+      let totalSpent = 0;
+      const subMap = {};
+
+      categoryTrx.forEach(t => {
+        const amt = Number(t.amount) || 0;
+        totalSpent += amt;
+        const subName = t.category || catName;
+        subMap[subName] = (subMap[subName] || 0) + amt;
+      });
+
+      const remaining = limit - totalSpent;
+      const isOver = remaining < 0;
+      const pct = limit > 0 ? Math.min((totalSpent / limit) * 100, 100) : 0;
+
+      let statusBadge = isOver 
+        ? `<span class="px-3 py-1 bg-rose-500/15 text-rose-500 font-extrabold text-xs rounded-full border border-rose-500/20">Over Budget ${formatRupiah(Math.abs(remaining))}</span>`
+        : `<span class="px-3 py-1 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-extrabold text-xs rounded-full border border-emerald-500/20">Sisa Anggaran ${formatRupiah(remaining)}</span>`;
+
+      // Render Sub-Kategori Breakdown
+      const subEntries = Object.entries(subMap).sort((a, b) => b[1] - a[1]);
+      let subBreakdownHtml = "";
+      if (subEntries.length === 0) {
+        subBreakdownHtml = `<p class="text-xs text-faint italic py-2">Belum ada pengeluaran untuk kategori ini bulan ini.</p>`;
+      } else {
+        subBreakdownHtml = subEntries.map(([sub, amt]) => {
+          const subPct = totalSpent > 0 ? ((amt / totalSpent) * 100).toFixed(0) : 0;
+          return `
+            <div class="flex justify-between items-center text-xs py-2 border-b border-slate-100 dark:border-[var(--border-color)] last:border-0">
+              <div class="truncate pr-2">
+                <span class="font-extrabold text-main block truncate">${escapeHtml(sub)}</span>
+                <span class="text-[10px] text-faint font-semibold">${subPct}% dari total terpakai</span>
+              </div>
+              <span class="font-black text-main whitespace-nowrap">${formatRupiah(amt)}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Render Daftar 5 Transaksi Terbaru
+      let recentTrxHtml = "";
+      if (categoryTrx.length === 0) {
+        recentTrxHtml = `<p class="text-xs text-faint italic py-2">Tidak ada riwayat transaksi.</p>`;
+      } else {
+        recentTrxHtml = categoryTrx.slice(0, 5).map(t => `
+          <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-2.5 rounded-xl bg-[var(--bg-subtle-2)] cursor-pointer card-hover transition mb-1.5 last:mb-0">
+            <div class="truncate pr-2">
+              <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
+              <p class="text-[10px] text-faint font-medium mt-0.5">${formatDate(t.date)} • ${escapeHtml(t.sourceAccount || '-')}</p>
+            </div>
+            <span class="font-extrabold amount-out whitespace-nowrap">-${formatRupiah(t.amount)}</span>
+          </div>
+        `).join('');
+      }
+
+      // Inject HTML ke Modal Detail
+      let html = `
+        <div class="space-y-5 pt-1">
+          <!-- Header Pop-Up Nota Anggaran -->
+          <div class="text-center pb-3 border-b border-slate-200/60 dark:border-[var(--border-color)]">
+            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-muted uppercase tracking-wider mb-3 inline-block">Rincian Anggaran Bulanan</span>
+            <h3 class="text-xl font-black text-main leading-tight mb-2">${escapeHtml(catName)}</h3>
+            <div class="mt-2">${statusBadge}</div>
+          </div>
+
+          <!-- KARTU RINGKASAN PERSENTASE -->
+          <div class="ios-input p-4 space-y-3 bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-muted font-bold">Total Terpakai:</span>
+              <span class="font-black text-main text-sm">${formatRupiah(totalSpent)}</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-muted font-bold">Batas Anggaran:</span>
+              <span class="font-extrabold text-main">${formatRupiah(limit)}</span>
+            </div>
+            <div class="w-full bg-slate-200 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden mt-1">
+              <div class="bg-mochi h-2 rounded-full" style="width: ${pct}%"></div>
+            </div>
+          </div>
+
+          <!-- RINCIAN BREAKDOWN PER SUB-KATEGORI -->
+          <div>
+            <h4 class="text-xs font-black text-main uppercase tracking-wider mb-2.5 flex items-center">
+              <i data-lucide="pie-chart" class="w-3.5 h-3.5 mr-1.5 text-mochi"></i> Breakdown Sub-Kategori
+            </h4>
+            <div class="bg-card p-3.5 rounded-2xl border border-[var(--border-color)] space-y-1">
+              ${subBreakdownHtml}
+            </div>
+          </div>
+
+          <!-- RIWAYAT TRANSAKSI TERAKHIR DARI KATEGORI INI -->
+          <div>
+            <h4 class="text-xs font-black text-main uppercase tracking-wider mb-2.5 flex items-center">
+              <i data-lucide="history" class="w-3.5 h-3.5 mr-1.5 text-mochi"></i> Transaksi Terkini (${categoryTrx.length})
+            </h4>
+            <div class="space-y-1.5 max-h-40 overflow-y-auto pr-0.5">
+              ${recentTrxHtml}
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+      lucide.createIcons();
+    }
+    
     function getCustomBudgets() {
       if (GLOBAL_DATA.budgets && Object.keys(GLOBAL_DATA.budgets).length > 0) {
         return GLOBAL_DATA.budgets;
