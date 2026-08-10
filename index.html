@@ -2161,16 +2161,14 @@
       const acc = (GLOBAL_DATA.accounts || []).find(a => a.accountName === accountName);
       if (!acc) return;
 
-      openMasterModal('account');
+      openMasterModal('account', true);
 
-      setTimeout(() => {
-        document.getElementById('master-old-name').value = acc.accountName || '';
-        document.getElementById('master-name').value = acc.accountName || '';
-        document.getElementById('master-account-type').value = acc.accountType || 'Bank Account';
-        document.getElementById('master-function-category').value = acc.functionCategory || 'Daily Operations';
-        document.getElementById('master-account-owner').value = acc.owner || 'Yosa & Fani';
-        document.getElementById('master-initial-balance').value = acc.initialBalance || 0;
-      }, 150);
+      document.getElementById('master-old-name').value = acc.accountName || '';
+      document.getElementById('master-name').value = acc.accountName || '';
+      document.getElementById('master-account-type').value = acc.accountType || 'Bank Account';
+      document.getElementById('master-function-category').value = acc.functionCategory || 'Daily Operations';
+      document.getElementById('master-account-owner').value = acc.owner || 'Yosa & Fani';
+      document.getElementById('master-initial-balance').value = acc.initialBalance || 0;
     }
 
     function promptDeleteAccount(accountName) {
@@ -2218,7 +2216,7 @@
       (GLOBAL_DATA.accounts || []).forEach((acc, i) => {
         const meta = getAccountIconMeta(acc.accountName, acc.accountType);
         const rawBal = Number(acc.runningBalance) || 0;
-        const bal = Math.abs(rawBal); // Konversi nilai minus menjadi positif
+        const bal = Math.abs(rawBal);
 
         if (meta.isLiability && bal > 0) {
           hasActivePayables = true;
@@ -2468,7 +2466,6 @@
       else if (kpiName === 'Total Receivables') kpiColor = 'amount-info';
       else if (kpiName === 'Total Payables') kpiColor = 'amount-out';
 
-      // Hitung nilai display secara dinamis agar sinkron dengan rincian di bawahnya
       let displayValue = GLOBAL_DATA.kpi[kpiName] || 0;
 
       if (kpiName === 'Total Payables') {
@@ -2533,8 +2530,13 @@
 
           if (meta.isLiability && bal > 0) {
             hasPayables = true;
+            let ownerTag = "";
+            if (a.owner && !a.accountName.toLowerCase().includes(a.owner.toLowerCase())) {
+              ownerTag = ` (${escapeHtml(a.owner)})`;
+            }
+
             html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
-              <span>${escapeHtml(a.accountName)} (${escapeHtml(a.owner || 'PayLater')}):</span> 
+              <span>${escapeHtml(a.accountName)}${ownerTag}:</span> 
               <span class="font-extrabold amount-out">${formatRupiah(bal)}</span>
             </div>`;
           }
@@ -2754,9 +2756,10 @@
       handleMainCategorySelectChange();
     }
 
-    function openMasterModal(type) {
+    function openMasterModal(type, isEdit = false) {
       document.getElementById('master-type').value = type;
-      document.getElementById('master-old-name').value = "";
+      if (!isEdit) document.getElementById('master-old-name').value = "";
+      
       const titleEl = document.getElementById('master-title');
       const extraEl = document.getElementById('master-extra-field');
       extraEl.innerHTML = "";
@@ -2775,7 +2778,7 @@
       nameInputEl.placeholder = "";
 
       if (type === 'category') {
-        titleEl.innerText = "Tambah Kategori Baru";
+        titleEl.innerText = isEdit ? "Edit Kategori" : "Tambah Kategori Baru";
         categoryTypeWrap.classList.remove('hidden');
         mainCategoryWrap.classList.remove('hidden');
 
@@ -2792,7 +2795,7 @@
       }
 
       if (type === 'account') {
-        titleEl.innerText = "Tambah Akun Baru";
+        titleEl.innerText = isEdit ? "Edit Akun" : "Tambah Akun Baru";
         extraEl.innerHTML = `
           <div>
             <label for="master-account-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Jenis Akun</label>
@@ -2824,7 +2827,7 @@
           </div>
         `;
       } else if (type === 'payable') {
-        titleEl.innerText = "Tambah Hutang Baru";
+        titleEl.innerText = isEdit ? "Edit Hutang" : "Tambah Hutang Baru";
         extraEl.innerHTML = `
           <div>
             <label for="master-payable-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Jenis Hutang</label>
@@ -2845,7 +2848,7 @@
           </div>
         `;
       } else if (type === 'receivable') {
-        titleEl.innerText = "Tambah Piutang Baru";
+        titleEl.innerText = isEdit ? "Edit Piutang" : "Tambah Piutang Baru";
         extraEl.innerHTML = `
           <div>
             <label for="master-receivable-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Jenis Piutang</label>
@@ -2878,6 +2881,18 @@
 
       if (type === 'account') {
         if (!name) { triggerInputError('master-name', "Nama akun wajib diisi."); return; }
+
+        // Validasi Keunikan Nama Akun (Golden Rule)
+        const isDuplicate = (GLOBAL_DATA.accounts || []).some(a => 
+          a.accountName.toLowerCase().trim() === name.toLowerCase() && 
+          a.accountName.toLowerCase().trim() !== oldName.toLowerCase().trim()
+        );
+
+        if (isDuplicate) {
+          triggerInputError('master-name', `Nama akun '${name}' sudah digunakan! Gunakan nama lain.`);
+          return;
+        }
+
         payload.accountName = name;
         payload.accountType = document.getElementById('master-account-type').value;
         payload.owner = document.getElementById('master-account-owner').value;
