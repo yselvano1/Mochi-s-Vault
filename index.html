@@ -202,7 +202,7 @@
     </div>
   </div>
 
-  <div id="toast-container" class="fixed left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4" style="top: max(1.25rem, env(safe-area-inset-top))"></div>
+  <div id="toast-container" class="fixed left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4" style="top: max(1.25rem, env(safe-area-inset-top))"></div>>
 
   <!-- HEADER BAR -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
@@ -2084,6 +2084,8 @@
       lucide.createIcons();
     }
 
+    const MOCHI_PDF_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
     function exportPDFStatement() {
       const filterMonth = document.getElementById('filter-month').value;
       const filterYear = document.getElementById('filter-year').value;
@@ -2107,85 +2109,191 @@
 
       let loadingToast = showToast("Preparing PDF statement...", "info");
 
+      // Sort chronologically ascending (1 -> 31)
+      const sorted = filtered.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+
       let totalIn = 0, totalOut = 0;
-      filtered.forEach(t => {
+      sorted.forEach(t => {
         const dir = getTypeMeta(t.type).direction;
         if (dir === 'in') totalIn += Number(t.amount) || 0;
         else if (dir === 'out') totalOut += Number(t.amount) || 0;
       });
+      const netSurplus = totalIn - totalOut;
+
+      // Category breakdown (expenses only)
+      const categories = GLOBAL_DATA.categories || [];
+      const catBreakdown = {};
+      sorted.forEach(t => {
+        if (getTypeMeta(t.type).direction !== 'out') return;
+        const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
+        const main = (catMatch && (catMatch.mainCategory || catMatch.categoryName)) || t.category || 'Lainnya';
+        catBreakdown[main] = (catBreakdown[main] || 0) + (Number(t.amount) || 0);
+      });
+      const catArray = Object.entries(catBreakdown).sort((a, b) => b[1] - a[1]).slice(0, 5);
+      const maxCatVal = catArray.length ? catArray[0][1] : 1;
+
+      // Mochi mood status
+      const ratio = totalIn > 0 ? (totalOut / totalIn) : (totalOut > 0 ? 999 : 0);
+      const pctSpent = totalIn > 0 ? Math.round(ratio * 100) : 0;
+      let moodEmoji, moodTitle, moodText;
+      if (totalIn <= 0 && totalOut <= 0) {
+        moodEmoji = '🍡'; moodTitle = 'Mochi is resting~';
+        moodText = 'No transactions recorded for this period.';
+      } else if (ratio <= 0.5) {
+        moodEmoji = '😌'; moodTitle = 'Mochi feels comfy~';
+        moodText = `Pengeluaran bulan ini terjaga di ${pctSpent}% dari pemasukan.`;
+      } else if (ratio <= 0.8) {
+        moodEmoji = '🙂'; moodTitle = 'Mochi is doing okay~';
+        moodText = `Pengeluaran sudah mencapai ${pctSpent}% dari pemasukan. Tetap dipantau ya~`;
+      } else if (ratio <= 1.0) {
+        moodEmoji = '😟'; moodTitle = 'Mochi getting worried~';
+        moodText = `Pengeluaran hampir menyentuh ${pctSpent}% dari pemasukan bulan ini.`;
+      } else {
+        moodEmoji = '😰'; moodTitle = 'Mochi is worried!';
+        moodText = `Pengeluaran melebihi pemasukan sebesar ${formatRupiah(totalOut - totalIn)}.`;
+      }
+
+      const periodLabel = (filterMonth === 'ALL' ? 'All Months' : (MOCHI_PDF_MONTHS[parseInt(filterMonth, 10) - 1] || filterMonth)) +
+                           ' / ' + (filterYear === 'ALL' ? 'All Years' : filterYear);
+      const exportedAt = new Date();
+      const exportedLabel = exportedAt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) +
+                             ' — ' + exportedAt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
       const printContainer = document.createElement('div');
-      printContainer.style.padding = '20px';
-      printContainer.style.fontFamily = 'Arial, sans-serif';
-      printContainer.style.color = '#181412';
+      printContainer.id = 'mochi-pdf-export-root';
+      printContainer.style.cssText = 'position:fixed; top:0; left:-9999px; width:750px; background:#FAF8F5; padding:0;';
 
       printContainer.innerHTML = `
-        <div style="border-bottom: 2px solid #C87A4B; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-between: space-between; align-items: center;">
-          <div>
-            <h1 style="font-size: 20px; font-weight: 900; margin: 0; color: #C87A4B;">MOCHI'S VAULT</h1>
-            <p style="font-size: 11px; color: #80736B; margin: 4px 0 0 0;">Official Financial Statement — Yosa & Fani</p>
+        <style>
+          #mochi-pdf-export-root, #mochi-pdf-export-root * { font-family: 'Plus Jakarta Sans', Arial, sans-serif; box-sizing: border-box; }
+          #mochi-pdf-export-root .mochi-card { page-break-inside: avoid; break-inside: avoid; }
+          #mochi-pdf-export-root .mochi-section { page-break-inside: avoid; break-inside: avoid; }
+        </style>
+
+        <div style="padding: 28px 30px 30px 30px;">
+
+          <!-- HEADER -->
+          <div class="mochi-section" style="background:#FAF8F5; border:1px solid rgba(45,36,30,0.08); border-left:5px solid #C87A4B; border-radius:14px; padding:18px 22px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between;">
+            <div>
+              <div style="font-size:21px; font-weight:900; letter-spacing:0.5px; color:#2D241E; margin:0;">MOCHI<span style="color:#C87A4B;">'</span>S VAULT</div>
+              <div style="font-size:10.5px; font-weight:600; color:#80736B; margin-top:3px; letter-spacing:0.3px;">Official Financial Statement &middot; Yosa &amp; Fani</div>
+            </div>
+            <div style="text-align:right;">
+              <span style="display:inline-block; background:#EFE6DC; color:#A45D33; font-size:10.5px; font-weight:800; padding:6px 14px; border-radius:999px; letter-spacing:0.2px;">Period: ${escapeHtml(periodLabel)}</span>
+              <div style="font-size:9px; color:#A89B91; margin-top:6px; font-weight:600;">Exported ${exportedLabel}</div>
+            </div>
           </div>
-          <div style="text-align: right; font-size: 10px; color: #80736B;">
-            <p style="margin:0;">Period: <strong>${filterMonth === 'ALL' ? 'All Months' : filterMonth} / ${filterYear}</strong></p>
-            <p style="margin:2px 0 0 0;">Exported: ${new Date().toLocaleDateString('en-US')}</p>
+
+          <!-- MOOD STATUS BOX -->
+          <div class="mochi-section" style="background:#FFFFFF; border:1px solid rgba(45,36,30,0.08); border-radius:14px; padding:14px 18px; margin-bottom:16px; display:flex; align-items:center; gap:12px;">
+            <div style="font-size:26px; line-height:1; flex-shrink:0;">${moodEmoji}</div>
+            <div>
+              <div style="font-size:12px; font-weight:800; color:#2D241E;">${escapeHtml(moodTitle)}</div>
+              <div style="font-size:10.5px; color:#80736B; font-weight:500; margin-top:2px;">${escapeHtml(moodText)}</div>
+            </div>
           </div>
+
+          <!-- KPI 3-COLUMN -->
+          <div class="mochi-section" style="display:flex; gap:12px; margin-bottom:16px;">
+            <div style="flex:1; background:#FFFFFF; border:1px solid rgba(45,36,30,0.08); border-radius:14px; padding:14px 16px;">
+              <div style="font-size:9px; font-weight:700; color:#80736B; text-transform:uppercase; letter-spacing:0.4px;">Total Income</div>
+              <div style="font-size:15px; font-weight:900; color:#2E6F40; margin-top:6px;">+${formatRupiah(totalIn)}</div>
+            </div>
+            <div style="flex:1; background:#FFFFFF; border:1px solid rgba(45,36,30,0.08); border-radius:14px; padding:14px 16px;">
+              <div style="font-size:9px; font-weight:700; color:#80736B; text-transform:uppercase; letter-spacing:0.4px;">Total Expenses</div>
+              <div style="font-size:15px; font-weight:900; color:#B93838; margin-top:6px;">-${formatRupiah(totalOut)}</div>
+            </div>
+            <div style="flex:1; background:#FFFFFF; border:1px solid rgba(45,36,30,0.08); border-radius:14px; padding:14px 16px;">
+              <div style="font-size:9px; font-weight:700; color:#80736B; text-transform:uppercase; letter-spacing:0.4px;">Net Surplus / Deficit</div>
+              <div style="font-size:15px; font-weight:900; color:${netSurplus >= 0 ? '#1D63B8' : '#B93838'}; margin-top:6px;">${netSurplus >= 0 ? '' : '-'}${formatRupiah(Math.abs(netSurplus))}</div>
+            </div>
+          </div>
+
+          ${catArray.length ? `
+          <!-- CATEGORY BREAKDOWN -->
+          <div class="mochi-section" style="background:#FFFFFF; border:1px solid rgba(45,36,30,0.08); border-radius:14px; padding:16px 18px; margin-bottom:18px;">
+            <div style="font-size:10.5px; font-weight:800; color:#2D241E; margin-bottom:12px; letter-spacing:0.2px;">TOP SPENDING CATEGORIES</div>
+            ${catArray.map(([name, val]) => `
+              <div style="margin-bottom:9px;">
+                <div style="display:flex; justify-content:space-between; font-size:10px; margin-bottom:4px;">
+                  <span style="font-weight:700; color:#2D241E;">${escapeHtml(name)}</span>
+                  <span style="font-weight:800; color:#B93838;">${formatRupiah(val)}</span>
+                </div>
+                <div style="background:#EFE6DC; border-radius:6px; height:6px; width:100%; overflow:hidden;">
+                  <div style="background:#C87A4B; height:6px; border-radius:6px; width:${Math.max(4, Math.round((val / maxCatVal) * 100))}%;"></div>
+                </div>
+              </div>
+            `).join('')}
+          </div>` : ''}
+
+          <!-- TRANSACTION DETAIL -->
+          <div style="font-size:11px; font-weight:800; color:#2D241E; margin-bottom:10px; letter-spacing:0.3px;">TRANSACTION DETAILS &middot; ${sorted.length} entries</div>
+
+          ${sorted.map(t => {
+            const meta = getTypeMeta(t.type);
+            const amountColor = meta.direction === 'in' ? '#2E6F40' : (meta.direction === 'out' ? '#B93838' : '#1D63B8');
+            let accountHtml;
+            if (t.sourceAccount && t.targetAccount) {
+              accountHtml = `${escapeHtml(t.sourceAccount)} <span style="color:#C87A4B; font-weight:800;">&#10148;</span> ${escapeHtml(t.targetAccount)}`;
+            } else if (t.targetAccount) {
+              accountHtml = escapeHtml(t.targetAccount);
+            } else if (t.sourceAccount) {
+              accountHtml = escapeHtml(t.sourceAccount);
+            } else {
+              accountHtml = '-';
+            }
+
+            return `
+              <div class="mochi-card" style="background:#FFFFFF; border:1px solid rgba(45,36,30,0.08); border-radius:12px; padding:12px 16px; margin-bottom:8px; display:flex; align-items:center; gap:12px;">
+                <div style="flex-shrink:0; background:#EFE6DC; color:#A45D33; font-size:9px; font-weight:800; padding:5px 9px; border-radius:8px; text-align:center; min-width:52px;">${formatDate(t.date)}</div>
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:11px; font-weight:700; color:#2D241E; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(t.description || t.category || t.type)}</div>
+                  <div style="font-size:9px; color:#80736B; font-weight:500; margin-top:2px;">${escapeHtml(t.category || meta.categoryType || '')} &middot; ${accountHtml} &middot; <span style="color:#A89B91;">By ${escapeHtml(t.enteredBy || '-')}</span></div>
+                </div>
+                <div style="flex-shrink:0; font-size:12px; font-weight:800; color:${amountColor}; text-align:right; white-space:nowrap;">${meta.prefix}${formatRupiah(t.amount)}</div>
+              </div>
+            `;
+          }).join('')}
+
         </div>
-
-        <div style="background-color: #F3ECE4; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; font-size: 11px;">
-          <div><span>Total Income:</span> <strong style="color: #2E6F40; display: block; font-size: 13px;">+${formatRupiah(totalIn)}</strong></div>
-          <div><span>Total Expenses:</span> <strong style="color: #B93838; display: block; font-size: 13px;">-${formatRupiah(totalOut)}</strong></div>
-          <div><span>Net Surplus / Deficit:</span> <strong style="color: #181412; display: block; font-size: 13px;">${formatRupiah(totalIn - totalOut)}</strong></div>
-        </div>
-
-        <table style="width: 100%; border-collapse: collapse; font-size: 10px; text-align: left;">
-          <thead>
-            <tr style="background-color: #221C19; color: #FAF8F5;">
-              <th style="padding: 8px; border: 1px solid #ddd;">Date</th>
-              <th style="padding: 8px; border: 1px solid #ddd;">By</th>
-              <th style="padding: 8px; border: 1px solid #ddd;">Category / Description</th>
-              <th style="padding: 8px; border: 1px solid #ddd;">Account</th>
-              <th style="padding: 8px; border: 1px solid #ddd; text-align: right;">Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${filtered.map((t, idx) => {
-              const meta = getTypeMeta(t.type);
-              const bg = idx % 2 === 0 ? '#FFFFFF' : '#FAF8F5';
-              let acc = t.sourceAccount || '';
-              if (t.sourceAccount && t.targetAccount) acc += ` -> ${t.targetAccount}`;
-              else if (t.targetAccount) acc = t.targetAccount;
-
-              return `
-                <tr style="background-color: ${bg};">
-                  <td style="padding: 6px 8px; border: 1px solid #eee;">${formatDate(t.date)}</td>
-                  <td style="padding: 6px 8px; border: 1px solid #eee;">${escapeHtml(t.enteredBy)}</td>
-                  <td style="padding: 6px 8px; border: 1px solid #eee;">
-                    <strong>${escapeHtml(t.description || t.category)}</strong>
-                    <div style="font-size: 8px; color: #80736B;">${escapeHtml(t.category)}</div>
-                  </td>
-                  <td style="padding: 6px 8px; border: 1px solid #eee;">${escapeHtml(acc || '-')}</td>
-                  <td style="padding: 6px 8px; border: 1px solid #eee; text-align: right; font-weight: bold; color: ${meta.direction === 'in' ? '#2E6F40' : (meta.direction === 'out' ? '#B93838' : '#181412')};">
-                    ${meta.prefix}${formatRupiah(t.amount)}
-                  </td>
-                </tr>
-              `;
-            }).join('')}
-          </tbody>
-        </table>
       `;
 
+      document.body.appendChild(printContainer);
+
       const opt = {
-        margin:       10,
+        margin:       [10, 8, 14, 8],
         filename:     `Mochi_Financial_Statement_${filterYear}-${filterMonth}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#FAF8F5' },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: ['css', 'avoid-all'], avoid: ['.mochi-card', '.mochi-section'] }
       };
 
-      html2pdf().set(opt).from(printContainer).save().then(() => {
+      html2pdf().set(opt).from(printContainer).toPdf().get('pdf').then(pdf => {
+        const totalPages = pdf.internal.getNumberOfPages();
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        for (let i = 1; i <= totalPages; i++) {
+          pdf.setPage(i);
+          pdf.setDrawColor(200, 122, 75);
+          pdf.setLineWidth(0.2);
+          pdf.line(8, pageHeight - 11, pageWidth - 8, pageHeight - 11);
+          pdf.setFont(undefined, 'bold');
+          pdf.setFontSize(7.5);
+          pdf.setTextColor(45, 36, 30);
+          pdf.text("MOCHI'S VAULT — Official Digital Statement", 8, pageHeight - 7);
+          pdf.setFont(undefined, 'normal');
+          pdf.setFontSize(7);
+          pdf.setTextColor(128, 115, 107);
+          pdf.text(`Exported ${exportedLabel}`, 8, pageHeight - 4);
+          pdf.text(`Page ${i} of ${totalPages}`, pageWidth - 8, pageHeight - 4, { align: 'right' });
+        }
+      }).save().then(() => {
+        if (printContainer.parentNode) printContainer.parentNode.removeChild(printContainer);
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         showToast("PDF downloaded successfully!", "success");
       }).catch(err => {
+        if (printContainer.parentNode) printContainer.parentNode.removeChild(printContainer);
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         showToast("Failed to generate PDF: " + err.message, "error");
       });
