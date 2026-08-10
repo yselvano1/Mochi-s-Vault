@@ -1543,12 +1543,60 @@
         return;
       }
 
-      container.innerHTML = activeBudgets.map(([cat, limit]) => `
-        <div class="floating-item p-3 bg-[var(--bg-subtle-2)] border border-[var(--border-color)] flex justify-between items-center text-xs">
-          <span class="font-extrabold text-main truncate pr-2">${escapeHtml(cat)}</span>
-          <span class="font-black text-mochi dark:text-mochi-light whitespace-nowrap">${formatRupiah(limit)} / bln</span>
-        </div>
-      `).join('');
+      // Hitung akumulasi pengeluaran bulan berjalan per Kategori Utama
+      const now = new Date();
+      const currentYM = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+      const allTrx = GLOBAL_DATA.transactions || [];
+      const categories = GLOBAL_DATA.categories || [];
+      const trxThisMonth = allTrx.filter(t => t.type === 'Expense' && t.date && t.date.substring(0, 7) === currentYM);
+
+      const spentMap = {};
+      trxThisMonth.forEach(t => {
+        const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
+        const main = t.mainCategory || (catMatch ? catMatch.mainCategory : null) || t.category || 'Lainnya';
+        spentMap[main] = (spentMap[main] || 0) + (Number(t.amount) || 0);
+      });
+
+      // Render kartu anggaran interaktif
+      container.innerHTML = activeBudgets.map(([cat, limitNum]) => {
+        const limit = Number(limitNum) || 0;
+        const spent = spentMap[cat] || 0;
+        const remaining = limit - spent;
+        const pct = Math.min((spent / limit) * 100, 100);
+        const isOver = remaining < 0;
+
+        let barColor = "from-emerald-400 to-emerald-600";
+        if (pct >= 90 || isOver) barColor = "from-rose-400 to-rose-600";
+        else if (pct >= 70) barColor = "from-amber-400 to-amber-500";
+
+        const badgeClass = isOver 
+          ? "bg-rose-500/15 text-rose-500 border-rose-500/20" 
+          : "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/20";
+        
+        const remainingText = isOver 
+          ? `Over ${formatRupiah(Math.abs(remaining))}` 
+          : `Sisa ${formatRupiah(remaining)}`;
+
+        return `
+          <div class="floating-item p-3.5 bg-[var(--bg-subtle-2)] border border-[var(--border-color)] space-y-2">
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-extrabold text-main truncate pr-2">${escapeHtml(cat)}</span>
+              <span class="text-[10px] font-black px-2 py-0.5 rounded-full border ${badgeClass}">
+                ${remainingText}
+              </span>
+            </div>
+
+            <div class="flex justify-between items-center text-[11px]">
+              <span class="text-muted font-medium">Terpakai: <strong class="text-main font-bold">${formatRupiah(spent)}</strong></span>
+              <span class="text-faint font-semibold">Limit: ${formatRupiah(limit)}</span>
+            </div>
+
+            <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
+              <div class="bg-gradient-to-r ${barColor} h-1.5 rounded-full transition-all duration-1000 ease-out" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     function getCustomBudgets() {
