@@ -1,4 +1,4 @@
-const APP_VERSION = "v17.9";
+const APP_VERSION = "v18.0"; // Versi dinaikkan agar HP memperbarui cache index.html
 const CACHE_NAME = "mochis-vault-" + APP_VERSION;
 
 const ASSETS = [
@@ -41,10 +41,7 @@ self.addEventListener("fetch", (e) => {
     return;
   }
 
-  // Stale-while-revalidate: serve the cached copy immediately if we have one
-  // (fast), while quietly refreshing the cache from the network in the
-  // background. Falls back to the cached app shell if totally offline and
-  // nothing matched.
+  // Stale-while-revalidate strategy
   e.respondWith(
     caches.open(CACHE_NAME).then(async (cache) => {
       const cached = await cache.match(e.request);
