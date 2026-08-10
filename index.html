@@ -2377,72 +2377,6 @@
       openModal('modalDetail');
       lucide.createIcons();
     }
-    
-    // 3. MODAL DETAIL UNPAID RECEIVABLE
-    function showReceivableDetail(r) {
-      currentModalBackFn = () => showReceivableDetail(r);
-      window.isNestedModalView = false;
-
-      const name = r.receivableName;
-      const type = r.receivableType || 'Receivable';
-      const amount = Math.abs(Number(r.remainingAmount) || 0);
-      const status = r.status || 'Active';
-
-      const relatedTrx = GLOBAL_DATA.transactions.filter(t => t.relatedReceivable === name);
-
-      let html = `
-        <div class="space-y-4 pt-1">
-          <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
-            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--chip-info-bg)] amount-info uppercase tracking-wider mb-2 inline-block">Unpaid Receivable</span>
-            <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(name)}</h3>
-          </div>
-
-          <!-- SUMMARY CARD KEMBAR (BLUE THEME) -->
-          <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
-              <span>Receivable Type:</span> 
-              <span class="font-extrabold text-main">${escapeHtml(type)}</span>
-            </div>
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2 items-center">
-              <span>Remaining Receivable:</span> 
-              <span class="font-black amount-info text-[15px]">${formatRupiah(amount)}</span>
-            </div>
-            <div class="flex justify-between mt-2">
-              <span>Status:</span> 
-              <span class="font-extrabold text-main">${escapeHtml(status)}</span>
-            </div>
-          </div>
-
-          <!-- RIWAYAT TRANSAKSI TERKAIT DENGAN 3-COLOR RULES -->
-          <div>
-            <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
-            <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-      `;
-
-      if (relatedTrx.length === 0) {
-        html += `<p class="text-xs text-center text-muted py-4 font-semibold">No transactions yet.</p>`;
-      } else {
-        relatedTrx.forEach(t => {
-          const meta = getTypeMeta(t.type);
-          html += `
-            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-              <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
-                <div class="truncate">
-                  <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
-                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
-                </div>
-              </div>
-              <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
-            </div>
-          `;
-        });
-      }
-
-      html += `</div></div></div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html;
-      openModal('modalDetail');
-      lucide.createIcons();
-    }
 
     function populateFormDropdowns() {
       const fillSelect = (id, items, key) => {
@@ -2780,50 +2714,6 @@
         });
       }
       html += `</div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html;
-      openModal('modalDetail');
-      lucide.createIcons();
-    }
-
-    function showPayableDetail(p) {
-      currentModalBackFn = () => showPayableDetail(p);
-      window.isNestedModalView = false;
-      const relatedTrx = GLOBAL_DATA.transactions.filter(t => t.relatedPayable === p.payableName);
-      let html = `
-        <div class="space-y-4 pt-1">
-          <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
-            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">Hutang Aktif</span>
-            <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(p.payableName)}</h3>
-          </div>
-          <div class="ios-input space-y-2 text-xs font-semibold text-muted py-4 px-5">
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Jenis Hutang:</span> <span class="font-extrabold text-main">${escapeHtml(p.payableType || '-')}</span></div>
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2 items-center"><span>Sisa Hutang:</span> <span class="font-black amount-out text-[15px]">${formatRupiah(p.remainingAmount)}</span></div>
-            ${p.monthlyInstallment ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Cicilan Bulanan:</span> <span class="font-extrabold text-main">${formatRupiah(p.monthlyInstallment)}</span></div>` : ''}
-            ${p.dueDate ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Jatuh Tempo:</span> <span class="font-extrabold text-main">${formatDate(p.dueDate)}</span></div>` : ''}
-            <div class="flex justify-between mt-2"><span>Status:</span> <span class="font-extrabold text-main">${escapeHtml(p.status)}</span></div>
-          </div>
-          <div>
-            <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Riwayat Transaksi Terkait</p>
-            <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-      `;
-      if (relatedTrx.length === 0) html += `<p class="text-xs text-center text-muted py-4 font-semibold">Belum ada transaksi.</p>`;
-      else {
-        relatedTrx.forEach(t => {
-          const meta = getTypeMeta(t.type);
-          html += `
-            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-              <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
-                <div class="truncate">
-                  <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
-                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
-                </div>
-              </div>
-              <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
-            </div>
-          `;
-        });
-      }
-      html += `</div></div></div>`;
       document.getElementById('modal-detail-inner').innerHTML = html;
       openModal('modalDetail');
       lucide.createIcons();
