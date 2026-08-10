@@ -37,8 +37,8 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   // Never cache responses from the Apps Script backend — financial data must
   // always be fresh, never served stale from cache.
-  if (e.request.url.includes("script.google.com")) {
-    return;
+  if (event.request.url.includes('script.google.com')) {
+    return; // Request API Google Apps Script jangan pernah dicache!
   }
 
   // Stale-while-revalidate strategy
