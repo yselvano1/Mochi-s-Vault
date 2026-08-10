@@ -1699,23 +1699,11 @@
       let html = trendHtml;
       sortedMain.forEach((main, index) => {
         const g = groups[main];
-        const customBudgets = getCustomBudgets();
-        const budgetLimit = customBudgets[main] || 0;
         
-        let barColor = "from-mochi-light to-mochi";
-        let budgetPct = 0;
-        let budgetText = "";
-
-        if (budgetLimit > 0) {
-          budgetPct = Math.min((g.total / budgetLimit) * 100, 100);
-          budgetText = `${formatRupiah(g.total)} / ${formatRupiah(budgetLimit)}`;
-          if (budgetPct >= 90) barColor = "from-rose-400 to-rose-600";
-          else if (budgetPct >= 70) barColor = "from-amber-400 to-amber-500";
-          else barColor = "from-emerald-400 to-emerald-600";
-        } else {
-          budgetPct = grandTotal > 0 ? (g.total / grandTotal * 100) : 0;
-          budgetText = `${formatRupiah(g.total)} (${budgetPct.toFixed(0)}%)`;
-        }
+        // MURNI PROPORSI PENGELUARAN TERHADAP TOTAL PENGELUARAN BULANAN
+        const expensePct = grandTotal > 0 ? (g.total / grandTotal * 100) : 0;
+        const displayText = `${formatRupiah(g.total)} (${expensePct.toFixed(0)}%)`;
+        const barColor = "from-mochi-light to-mochi";
 
         const isExpanded = !!categoryAnalysisExpanded[main];
         const subKeys = Object.keys(g.subs).sort((a, b) => g.subs[b] - g.subs[a]);
@@ -1729,10 +1717,10 @@
                 ${hasMultipleSubs ? `<i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-3.5 h-3.5 mr-1 text-faint flex-shrink-0"></i>` : ''}
                 <span class="truncate">${escapeHtml(main)}</span>
               </span>
-              <span class="text-xs font-black text-main flex-shrink-0 text-right">${budgetText}</span>
+              <span class="text-xs font-black text-main flex-shrink-0 text-right">${displayText}</span>
             </div>
             <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
-              <div class="bg-gradient-to-r ${barColor} h-1.5 rounded-full transition-all duration-1000 ease-out" style="width:0%" data-target-width="${budgetPct}%"></div>
+              <div class="bg-gradient-to-r ${barColor} h-1.5 rounded-full transition-all duration-1000 ease-out" style="width:0%" data-target-width="${expensePct}%"></div>
             </div>
           </div>`;
 
@@ -1757,7 +1745,7 @@
         el.querySelectorAll('[data-target-width]').forEach(bar => { bar.style.width = bar.getAttribute('data-target-width'); });
       }, 50);
     }
-
+    
     function populateYearFilter() {
       const years = [...new Set((GLOBAL_DATA.transactions || []).map(t => (t.date || '').substring(0, 4)).filter(Boolean))].sort().reverse();
       const selYear = document.getElementById('filter-year');
