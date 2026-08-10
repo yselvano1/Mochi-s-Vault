@@ -164,35 +164,30 @@
 
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- HEADER BAR (TERSTRUKTUR PERSIS 3 BARIS UNTUK STATUS MOCHI) -->
+  <!-- HEADER BAR -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-3">
       <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0 self-center">
         <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Avatar" class="w-full h-full object-contain filter drop-shadow-sm transition-all duration-300">
       </div>
 
-      <!-- FORMAT STRICT 3 BARIS -->
       <div class="flex flex-col justify-center min-w-0 flex-1">
         <div class="flex items-center space-x-2 mb-0.5">
           <span id="mochi-mood-badge" class="text-[8px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-in-bg)] amount-in">Rich Mochi</span>
           <span class="text-[10px] text-faint font-semibold">• Live Status</span>
         </div>
-        <!-- Baris 1: Main Title -->
         <h1 id="mochi-mood-title" class="text-sm md:text-base font-black text-main leading-tight tracking-tight truncate">
           Mochi is purr-fectly happy! 💰
         </h1>
-        <!-- Baris 2: Subcaption persentase expense -->
         <p id="mochi-mood-desc" class="text-[11px] font-semibold text-muted mt-0.5 leading-snug truncate">
           Expenses are only at 0% of income!
         </p>
-        <!-- Baris 3: Subcaption lanjutan aksi/saran -->
         <p id="mochi-mood-subdesc" class="text-[11px] font-semibold text-muted leading-snug truncate">
           Mochi is swimming in gold bars!
         </p>
       </div>
     </div>
 
-    <!-- TOMBOL THEME TOGGLE -->
     <button onclick="toggleDarkMode(); vibrate(30);" class="tap-shrink w-11 h-11 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm flex-shrink-0" aria-label="Toggle Mode">
       <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
       <i data-lucide="moon" id="icon-moon" class="w-5 h-5"></i>
@@ -414,6 +409,7 @@
         <div id="list-receivables-active" class="space-y-3"></div>
       </div>
     </section>
+  </main>
 
   <!-- BOTTOM NAVIGATION -->
   <nav class="fixed bottom-0 left-0 right-0 nav-bar-bottom z-40 rounded-t-3xl border-t border-slate-200/50 dark:border-[var(--border-color)]">
@@ -687,6 +683,7 @@
       </div>
     </div>
   </div>
+
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbx8HzV4KHpr6QAM4bDebEbBTIwSNeg5idIaQZUeBUuPu6OJ3xWMFvby82aOrq1CPYCLHg/exec";
 
@@ -890,7 +887,6 @@
       }
     }, { passive: true });
 
-    // REVISI POIN 1: THEME COLOR DINAMIS MENYESUAIKAN STATUS BAR & BOTTOM NAV
     function applyDarkModePref() {
       const pref = localStorage.getItem('yf-theme');
       const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -948,16 +944,13 @@
       else { el.style.fontSize = ''; el.style.lineHeight = ''; }
     }
 
-    // REVISI POIN 2: FIX DETEKSI AKUN SHOPEE E-WALLET VS SHOPEE PAYLATER
     function getAccountIconMeta(accountName, accountType) {
       const name = (accountName || '').toLowerCase().trim();
       const type = (accountType || '').toLowerCase().trim();
 
-      // Utamakan jenis akun (accountType) terlebih dahulu
       const isTypeLiability = type.includes('credit card') || type.includes('paylater');
       const isNamePaylater = name.includes('paylater') || name.includes('spaylater') || name.includes('credit card') || name.includes(' cc');
 
-      // Akun bertipe E-Wallet/Bank/Cash BUKAN Liability meskipun namanya ada kata 'Shopee'
       const isLiability = isTypeLiability || (isNamePaylater && !type.includes('e-wallet') && !type.includes('bank') && !type.includes('cash'));
 
       if (name.includes('shopee') || name.includes('spaylater') || name.includes('paylater')) {
@@ -1299,7 +1292,6 @@
       }
     }
 
-    // REVISI POIN 4: DURASI SPLASH SCREEN TEPAT 1200ms DENGAN TRANSISI FADE-OUT HALUS
     function dismissSplashScreen() {
       const splash = document.getElementById('splash-screen');
       const main = document.getElementById('main-content');
@@ -1320,7 +1312,7 @@
         try {
           GLOBAL_DATA = JSON.parse(localCache);
           renderAllViews();
-          setTimeout(() => dismissSplashScreen(), 1200); // Tampil tepat 1.2 detik
+          setTimeout(() => dismissSplashScreen(), 1200);
           isSilentReload = true;
         } catch(e) { console.error("Cache parse error", e); }
       }
@@ -1448,7 +1440,6 @@
     let currentMochiMood = 'chill';
     let mochiBlinkTimeout = null;
 
-    // REVISI POIN 3: FORMAT MOCHI LIVE STATUS TEPAT & KONSISTEN 3 BARIS
     function renderMochiMood() {
       const kpi = GLOBAL_DATA.kpi || {};
       const income = Number(kpi["This Month's Income"]) || 0;
@@ -1542,7 +1533,6 @@
         return;
       }
 
-      // Hitung pengeluaran bulan berjalan per Kategori Utama
       const now = new Date();
       const currentYM = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
       const allTrx = GLOBAL_DATA.transactions || [];
@@ -1556,7 +1546,6 @@
         spentMap[main] = (spentMap[main] || 0) + (Number(t.amount) || 0);
       });
 
-      // Render Kartu Anggaran Lega dengan White Space ala iOS (Clickable)
       container.innerHTML = activeBudgets.map(([cat, limitNum]) => {
         const limit = Number(limitNum) || 0;
         const spent = spentMap[cat] || 0;
@@ -1578,7 +1567,6 @@
 
         return `
           <div onclick="vibrate(30); showBudgetDetail('${escapeAttr(cat)}')" class="floating-item p-4.5 bg-card border border-[var(--border-color)] cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3 select-none">
-            <!-- Header: Judul Kategori & Status Badge -->
             <div class="flex justify-between items-center">
               <span class="text-sm font-extrabold text-main truncate pr-2">${escapeHtml(cat)}</span>
               <span class="text-[10px] font-black px-2.5 py-1 rounded-full border ${badgeClass} shadow-sm whitespace-nowrap">
@@ -1586,7 +1574,6 @@
               </span>
             </div>
 
-            <!-- Body: Nominal Terpakai vs Limit -->
             <div class="flex justify-between items-baseline pt-0.5">
               <div>
                 <span class="text-[10px] font-bold text-muted uppercase tracking-wider block mb-0.5">Terpakai</span>
@@ -1598,7 +1585,6 @@
               </div>
             </div>
 
-            <!-- Progress Bar Lega -->
             <div class="space-y-1.5">
               <div class="w-full bg-slate-100 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden">
                 <div class="bg-gradient-to-r ${barColor} h-2 rounded-full transition-all duration-1000 ease-out" style="width: ${pct}%"></div>
@@ -1627,7 +1613,6 @@
       const allTrx = GLOBAL_DATA.transactions || [];
       const categories = GLOBAL_DATA.categories || [];
 
-      // Filter Transaksi Pengeluaran untuk Kategori Utama ini di bulan berjalan
       const categoryTrx = allTrx.filter(t => {
         if (t.type !== 'Expense' || !t.date || t.date.substring(0, 7) !== currentYM) return false;
         const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
@@ -1653,7 +1638,6 @@
         ? `<span class="px-3 py-1 bg-rose-500/15 text-rose-500 font-extrabold text-xs rounded-full border border-rose-500/20">Over Budget ${formatRupiah(Math.abs(remaining))}</span>`
         : `<span class="px-3 py-1 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-extrabold text-xs rounded-full border border-emerald-500/20">Sisa Anggaran ${formatRupiah(remaining)}</span>`;
 
-      // Render Sub-Kategori Breakdown
       const subEntries = Object.entries(subMap).sort((a, b) => b[1] - a[1]);
       let subBreakdownHtml = "";
       if (subEntries.length === 0) {
@@ -1673,7 +1657,6 @@
         }).join('');
       }
 
-      // Render Daftar 5 Transaksi Terbaru
       let recentTrxHtml = "";
       if (categoryTrx.length === 0) {
         recentTrxHtml = `<p class="text-xs text-faint italic py-2">Tidak ada riwayat transaksi.</p>`;
@@ -1689,17 +1672,14 @@
         `).join('');
       }
 
-      // Inject HTML ke Modal Detail
       let html = `
         <div class="space-y-5 pt-1">
-          <!-- Header Pop-Up Nota Anggaran -->
           <div class="text-center pb-3 border-b border-slate-200/60 dark:border-[var(--border-color)]">
             <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-muted uppercase tracking-wider mb-3 inline-block">Rincian Anggaran Bulanan</span>
             <h3 class="text-xl font-black text-main leading-tight mb-2">${escapeHtml(catName)}</h3>
             <div class="mt-2">${statusBadge}</div>
           </div>
 
-          <!-- KARTU RINGKASAN PERSENTASE -->
           <div class="ios-input p-4 space-y-3 bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
             <div class="flex justify-between items-center text-xs">
               <span class="text-muted font-bold">Total Terpakai:</span>
@@ -1714,7 +1694,6 @@
             </div>
           </div>
 
-          <!-- RINCIAN BREAKDOWN PER SUB-KATEGORI -->
           <div>
             <h4 class="text-xs font-black text-main uppercase tracking-wider mb-2.5 flex items-center">
               <i data-lucide="pie-chart" class="w-3.5 h-3.5 mr-1.5 text-mochi"></i> Breakdown Sub-Kategori
@@ -1724,7 +1703,6 @@
             </div>
           </div>
 
-          <!-- RIWAYAT TRANSAKSI TERAKHIR DARI KATEGORI INI -->
           <div>
             <h4 class="text-xs font-black text-main uppercase tracking-wider mb-2.5 flex items-center">
               <i data-lucide="history" class="w-3.5 h-3.5 mr-1.5 text-mochi"></i> Transaksi Terkini (${categoryTrx.length})
@@ -1740,7 +1718,7 @@
       openModal('modalDetail');
       lucide.createIcons();
     }
-    
+
     function getCustomBudgets() {
       if (GLOBAL_DATA.budgets && Object.keys(GLOBAL_DATA.budgets).length > 0) {
         return GLOBAL_DATA.budgets;
@@ -1872,7 +1850,6 @@
       let grandTotal = 0;
 
       trxThisMonth.forEach(t => {
-        // MATCHING DARI MASTER CATEGORY: Memastikan Sub-Kategori selalu ditarik ke Kategori Utama Induknya
         const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
         const main = t.mainCategory || (catMatch ? catMatch.mainCategory : null) || t.category || 'Lainnya';
         const subKey = t.category || main;
@@ -1890,7 +1867,6 @@
       sortedMain.forEach((main, index) => {
         const g = groups[main];
         
-        // MURNI PROPORSI PENGELUARAN TERHADAP TOTAL PENGELUARAN BULANAN
         const expensePct = grandTotal > 0 ? (g.total / grandTotal * 100) : 0;
         const displayText = `${formatRupiah(g.total)} (${expensePct.toFixed(0)}%)`;
         const barColor = "from-mochi-light to-mochi";
@@ -2238,7 +2214,7 @@
 
       let hasActivePayables = false;
 
-      // 1. TAMPILKAN KARTU TAGIHAN CC & PAYLATER BERJALAN
+      // 1. TAMPILKAN KARTU TAGIHAN CC & PAYLATER BERJALAN (> 0)
       (GLOBAL_DATA.accounts || []).forEach((acc, i) => {
         const meta = getAccountIconMeta(acc.accountName, acc.accountType);
         const rawBal = Number(acc.runningBalance) || 0;
@@ -2524,11 +2500,11 @@
         
         let hasPayables = false;
 
-        // 1. Rincian Tagihan Berjalan dari Credit Card & PayLater (Menggunakan Math.abs agar minus tetap terbaca)
+        // 1. Rincian Tagihan Berjalan dari Credit Card & PayLater
         (GLOBAL_DATA.accounts || []).forEach(a => {
           const meta = getAccountIconMeta(a.accountName, a.accountType);
           const rawBal = Number(a.runningBalance) || 0;
-          const bal = Math.abs(rawBal); // Konversi nilai minus menjadi positif
+          const bal = Math.abs(rawBal);
 
           if (meta.isLiability && bal > 0) {
             hasPayables = true;
@@ -2557,7 +2533,14 @@
         }
 
         html += `</div>`;
+      } else if (kpiName === 'Net Operating Savings') {
+        html += `<p class="font-extrabold text-main mb-2 text-[13px]">Keterangan:</p><p class="text-muted leading-relaxed font-semibold">Selisih antara total pemasukan operasional dan total pengeluaran operasional.</p>`;
       }
+
+      html += `</div></div>`;
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+    }
 
     function showTransactionDetail(transactionId) {
       const trx = GLOBAL_DATA.transactions.find(t => t.transactionId === transactionId);
