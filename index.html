@@ -1605,7 +1605,7 @@
         const meta = getAccountIconMeta(a.accountName, a.accountType);
         const bal = Number(a.runningBalance) || 0;
         if (meta.isLiability) {
-          totalLiabilityBalance += bal;
+          totalLiabilityBalance += Math.abs(bal); // <--- KUNCI PERBAIKANNYA DI SINI
         } else {
           totalCashAssets += bal;
         }
