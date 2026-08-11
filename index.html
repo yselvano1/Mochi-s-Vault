@@ -2424,6 +2424,108 @@
       openModal('modalDelete');
     }
 
+    // ===== PAYABLE — edit & delete (mirrors the account flow above) =====
+    function openEditPayableModal(payableName) {
+      const p = (GLOBAL_DATA.payables || []).find(x => x.payableName === payableName);
+      if (!p) return;
+
+      closeModal('modalDetail');
+      setTimeout(() => {
+        openMasterModal('payable', true);
+        document.getElementById('master-old-name').value = p.payableName || '';
+        document.getElementById('master-name').value = p.payableName || '';
+        document.getElementById('master-payable-type').value = p.payableType || 'Other';
+        document.getElementById('master-payable-total').value = p.initialAmount || 0;
+        document.getElementById('master-payable-notes').value = p.notes || '';
+      }, 400);
+    }
+
+    function promptDeletePayable(payableName) {
+      vibrate(40);
+      closeModal('modalDetail');
+
+      const titleEl = document.getElementById('delete-modal-title');
+      const descEl = document.getElementById('delete-modal-desc');
+      if (titleEl) titleEl.innerText = `Delete "${payableName}"?`;
+      if (descEl) descEl.innerText = "Removing this payable will hide it from AP/R. Transaction history linked to it will be preserved.";
+
+      document.getElementById('btn-confirm-delete').onclick = async () => {
+        vibrate(30);
+        closeModal('modalDelete');
+        let loadingToast = showToast("Deleting payable...", "info");
+
+        try {
+          const res = await fetch(API_URL, {
+            method: 'POST', redirect: 'follow',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'deleteMasterData', type: 'payable', payload: { payableName } })
+          });
+          const result = await res.json();
+          if (result.status === 'error') throw new Error(result.message);
+
+          if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+          showToast("Payable deleted successfully!");
+          await loadAppData(true);
+        } catch (err) {
+          if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+          showToast("Failed to delete payable: " + err.message, "error");
+        }
+      };
+
+      setTimeout(() => openModal('modalDelete'), 400);
+    }
+
+    // ===== RECEIVABLE — edit & delete (mirrors the account flow above) =====
+    function openEditReceivableModal(receivableName) {
+      const r = (GLOBAL_DATA.receivables || []).find(x => x.receivableName === receivableName);
+      if (!r) return;
+
+      closeModal('modalDetail');
+      setTimeout(() => {
+        openMasterModal('receivable', true);
+        document.getElementById('master-old-name').value = r.receivableName || '';
+        document.getElementById('master-name').value = r.receivableName || '';
+        document.getElementById('master-receivable-type').value = r.receivableType || 'Other';
+        document.getElementById('master-receivable-total').value = r.initialAmount || 0;
+        document.getElementById('master-receivable-notes').value = r.notes || '';
+      }, 400);
+    }
+
+    function promptDeleteReceivable(receivableName) {
+      vibrate(40);
+      closeModal('modalDetail');
+
+      const titleEl = document.getElementById('delete-modal-title');
+      const descEl = document.getElementById('delete-modal-desc');
+      if (titleEl) titleEl.innerText = `Delete "${receivableName}"?`;
+      if (descEl) descEl.innerText = "Removing this receivable will hide it from AP/R. Transaction history linked to it will be preserved.";
+
+      document.getElementById('btn-confirm-delete').onclick = async () => {
+        vibrate(30);
+        closeModal('modalDelete');
+        let loadingToast = showToast("Deleting receivable...", "info");
+
+        try {
+          const res = await fetch(API_URL, {
+            method: 'POST', redirect: 'follow',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'deleteMasterData', type: 'receivable', payload: { receivableName } })
+          });
+          const result = await res.json();
+          if (result.status === 'error') throw new Error(result.message);
+
+          if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+          showToast("Receivable deleted successfully!");
+          await loadAppData(true);
+        } catch (err) {
+          if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+          showToast("Failed to delete receivable: " + err.message, "error");
+        }
+      };
+
+      setTimeout(() => openModal('modalDelete'), 400);
+    }
+
     // ACTIVE PAYABLES & UNPAID RECEIVABLES (P-5 PADDING LEGA)
     function renderPayablesReceivables() {
       const payableEl = document.getElementById('list-payables-active');
@@ -2943,6 +3045,11 @@
       }
 
       html += `</div></div></div>`;
+      html += `
+        <div class="flex space-x-3 pt-4">
+          <button onclick="${isAccount ? `openEditAccountModal('${escapeAttr(name)}')` : `openEditPayableModal('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit</button>
+          <button onclick="${isAccount ? `promptDeleteAccount('${escapeAttr(name)}')` : `promptDeletePayable('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
+        </div>`;
       document.getElementById('modal-detail-inner').innerHTML = html;
       openModal('modalDetail');
       lucide.createIcons();
@@ -3008,6 +3115,11 @@
       }
 
       html += `</div></div></div>`;
+      html += `
+        <div class="flex space-x-3 pt-4">
+          <button onclick="openEditReceivableModal('${escapeAttr(name)}')" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit</button>
+          <button onclick="promptDeleteReceivable('${escapeAttr(name)}')" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
+        </div>`;
       document.getElementById('modal-detail-inner').innerHTML = html;
       openModal('modalDetail');
       lucide.createIcons();
