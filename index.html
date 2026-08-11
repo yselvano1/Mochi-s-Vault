@@ -2370,55 +2370,99 @@
       openModal('modalDelete');
     }
 
-    function openEditPayableModal(payableName) {
-      const p = (GLOBAL_DATA.payables || []).find(x => x.payableName === payableName);
-      if (!p) return;
+    // ===== 2. OPEN EDIT PAYABLE WITH FULL FIELDS =====
+function openEditPayableModal(payableName) {
+  const p = (GLOBAL_DATA.payables || []).find(x => x.payableName === payableName);
+  if (!p) return;
 
-      closeModal('modalDetail');
-      setTimeout(() => {
-        openMasterModal('payable', true);
-        document.getElementById('master-old-name').value = p.payableName || '';
-        document.getElementById('master-name').value = p.payableName || '';
-        document.getElementById('master-payable-type').value = p.payableType || 'Other';
-        document.getElementById('master-payable-total').value = p.initialAmount || 0;
-        document.getElementById('master-payable-notes').value = p.notes || '';
-      }, 400);
-    }
+  closeModal('modalDetail');
+  setTimeout(() => {
+    openMasterModal('payable', true);
+    document.getElementById('master-old-name').value = p.payableName || '';
+    document.getElementById('master-name').value = p.payableName || '';
+    document.getElementById('master-payable-type').value = p.payableType || 'Personal Loan';
+    if (document.getElementById('master-payable-owner')) document.getElementById('master-payable-owner').value = p.owner || 'Yosa';
+    if (document.getElementById('master-payable-owed-to')) document.getElementById('master-payable-owed-to').value = p.owedTo || '';
+    document.getElementById('master-payable-total').value = p.initialAmount || 0;
+    if (document.getElementById('master-payable-start')) document.getElementById('master-payable-start').value = p.startDate || '';
+    if (document.getElementById('master-payable-term')) document.getElementById('master-payable-term').value = p.termMonths || '';
+    if (document.getElementById('master-payable-due')) document.getElementById('master-payable-due').value = p.dueDate || '';
+    if (document.getElementById('master-payable-installment')) document.getElementById('master-payable-installment').value = p.monthlyInstallment || '';
+    if (document.getElementById('master-payable-account')) document.getElementById('master-payable-account').value = p.paymentAccount || '';
+    document.getElementById('master-payable-notes').value = p.notes || '';
+  }, 400);
+}
 
-    function promptDeletePayable(payableName) {
-      vibrate(40);
-      closeModal('modalDetail');
+// ===== 3. SAVE MASTER DATA WITH FULL PAYABLE/RECEIVABLE PAYLOAD =====
+async function handleSaveMaster(event) {
+  event.preventDefault();
+  const type = document.getElementById('master-type').value;
+  const oldName = document.getElementById('master-old-name').value;
+  const name = document.getElementById('master-name').value.trim();
 
-      const titleEl = document.getElementById('delete-modal-title');
-      const descEl = document.getElementById('delete-modal-desc');
-      if (titleEl) titleEl.innerText = `Delete "${payableName}"?`;
-      if (descEl) descEl.innerText = "Removing this payable will hide it from AP/R. Transaction history linked to it will be preserved.";
+  let payload = { oldName: oldName };
 
-      document.getElementById('btn-confirm-delete').onclick = async () => {
-        vibrate(30);
-        closeModal('modalDelete');
-        let loadingToast = showToast("Deleting payable...", "info");
+  if (type === 'account') {
+    if (!name) { triggerInputError('master-name', "Account name is required."); return; }
+    payload.accountName = name;
+    payload.accountType = document.getElementById('master-account-type').value;
+    payload.owner = document.getElementById('master-account-owner').value;
+    payload.functionCategory = document.getElementById('master-function-category').value;
+    payload.initialBalance = Number(document.getElementById('master-initial-balance').value) || 0;
+  } else if (type === 'category') {
+    const mainSel = document.getElementById('master-main-category-select').value;
+    const mainCategory = mainSel === '__NEW__' ? document.getElementById('master-main-category-new').value.trim() : mainSel;
+    if (!mainCategory) { triggerInputError('master-main-category-new', "Main category name is required."); return; }
+    payload.mainCategory = mainCategory;
+    payload.subCategory = name;
+    payload.categoryName = name || mainCategory;
+    payload.type = document.getElementById('master-category-type').value;
+  } else if (type === 'payable') {
+    if (!name) { triggerInputError('master-name', "Payable name is required."); return; }
+    payload.payableName = name;
+    payload.payableType = document.getElementById('master-payable-type').value;
+    payload.owner = document.getElementById('master-payable-owner') ? document.getElementById('master-payable-owner').value : "Yosa & Fani";
+    payload.owedTo = document.getElementById('master-payable-owed-to') ? document.getElementById('master-payable-owed-to').value.trim() : "";
+    payload.initialAmount = Number(document.getElementById('master-payable-total').value) || 0;
+    payload.startDate = document.getElementById('master-payable-start') ? document.getElementById('master-payable-start').value : "";
+    payload.termMonths = Number(document.getElementById('master-payable-term').value) || "";
+    payload.monthlyInstallment = Number(document.getElementById('master-payable-installment').value) || "";
+    payload.dueDate = document.getElementById('master-payable-due') ? document.getElementById('master-payable-due').value : "";
+    payload.paymentAccount = document.getElementById('master-payable-account') ? document.getElementById('master-payable-account').value : "";
+    payload.notes = document.getElementById('master-payable-notes').value;
+  } else if (type === 'receivable') {
+    if (!name) { triggerInputError('master-name', "Receivable name is required."); return; }
+    payload.receivableName = name;
+    payload.receivableType = document.getElementById('master-receivable-type').value;
+    payload.owner = document.getElementById('master-receivable-owner') ? document.getElementById('master-receivable-owner').value : "Yosa & Fani";
+    payload.fromToWhom = document.getElementById('master-receivable-from') ? document.getElementById('master-receivable-from').value.trim() : "";
+    payload.initialAmount = Number(document.getElementById('master-receivable-total').value) || 0;
+    payload.dateOccurred = document.getElementById('master-receivable-occurred') ? document.getElementById('master-receivable-occurred').value : "";
+    payload.expectedReturn = document.getElementById('master-receivable-return') ? document.getElementById('master-receivable-return').value : "";
+    payload.relatedAccount = document.getElementById('master-receivable-account') ? document.getElementById('master-receivable-account').value : "";
+    payload.notes = document.getElementById('master-receivable-notes').value;
+  }
 
-        try {
-          const res = await fetch(API_URL, {
-            method: 'POST', redirect: 'follow',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action: 'deleteMasterData', type: 'payable', payload: { payableName } })
-          });
-          const result = await res.json();
-          if (result.status === 'error') throw new Error(result.message);
+  let loadingToast = showToast("Saving master data...", "info");
+  try {
+    const actionType = oldName ? 'editMasterData' : 'addMasterData';
+    const res = await fetch(API_URL, {
+      method: 'POST', redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: actionType, type, payload })
+    });
+    const result = await res.json();
+    if (result.status === 'error') throw new Error(result.message);
 
-          if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-          showToast("Payable deleted successfully!");
-          await loadAppData(true);
-        } catch (err) {
-          if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-          showToast("Failed to delete payable: " + err.message, "error");
-        }
-      };
-
-      setTimeout(() => openModal('modalDelete'), 400);
-    }
+    if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+    closeModal('modalMaster');
+    showToast(result.message || "Master data saved successfully!");
+    await loadAppData(true);
+  } catch (err) {
+    if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+    showToast("Failed to save: " + err.message, "error");
+  }
+}
 
     function openEditReceivableModal(receivableName) {
       const r = (GLOBAL_DATA.receivables || []).find(x => x.receivableName === receivableName);
@@ -3090,7 +3134,8 @@
       handleMainCategorySelectChange();
     }
 
-    function openMasterModal(type, isEdit = false) {
+    // ===== 1. MODAL ADD/EDIT MASTER DATA HUTANG & PIUTANG =====
+function openMasterModal(type, isEdit = false) {
   document.getElementById('master-type').value = type;
   if (!isEdit) document.getElementById('master-old-name').value = "";
   
@@ -3295,6 +3340,455 @@
   openModal('modalMaster');
 }
 
+function calcInstallmentEstimates() {
+  const total = Number(document.getElementById('master-payable-total').value) || 0;
+  const term = Number(document.getElementById('master-payable-term').value) || 0;
+  const installmentEl = document.getElementById('master-payable-installment');
+  if (total > 0 && term > 0 && installmentEl) {
+    installmentEl.value = Math.round(total / term);
+  }
+}
+
+// ===== 2. OPEN EDIT PAYABLE WITH FULL FIELDS =====
+function openEditPayableModal(payableName) {
+  const p = (GLOBAL_DATA.payables || []).find(x => x.payableName === payableName);
+  if (!p) return;
+
+  closeModal('modalDetail');
+  setTimeout(() => {
+    openMasterModal('payable', true);
+    document.getElementById('master-old-name').value = p.payableName || '';
+    document.getElementById('master-name').value = p.payableName || '';
+    document.getElementById('master-payable-type').value = p.payableType || 'Personal Loan';
+    if (document.getElementById('master-payable-owner')) document.getElementById('master-payable-owner').value = p.owner || 'Yosa';
+    if (document.getElementById('master-payable-owed-to')) document.getElementById('master-payable-owed-to').value = p.owedTo || '';
+    document.getElementById('master-payable-total').value = p.initialAmount || 0;
+    if (document.getElementById('master-payable-start')) document.getElementById('master-payable-start').value = p.startDate || '';
+    if (document.getElementById('master-payable-term')) document.getElementById('master-payable-term').value = p.termMonths || '';
+    if (document.getElementById('master-payable-due')) document.getElementById('master-payable-due').value = p.dueDate || '';
+    if (document.getElementById('master-payable-installment')) document.getElementById('master-payable-installment').value = p.monthlyInstallment || '';
+    if (document.getElementById('master-payable-account')) document.getElementById('master-payable-account').value = p.paymentAccount || '';
+    document.getElementById('master-payable-notes').value = p.notes || '';
+  }, 400);
+}
+
+// ===== 3. SAVE MASTER DATA WITH FULL PAYABLE/RECEIVABLE PAYLOAD =====
+async function handleSaveMaster(event) {
+  event.preventDefault();
+  const type = document.getElementById('master-type').value;
+  const oldName = document.getElementById('master-old-name').value;
+  const name = document.getElementById('master-name').value.trim();
+
+  let payload = { oldName: oldName };
+
+  if (type === 'account') {
+    if (!name) { triggerInputError('master-name', "Account name is required."); return; }
+    payload.accountName = name;
+    payload.accountType = document.getElementById('master-account-type').value;
+    payload.owner = document.getElementById('master-account-owner').value;
+    payload.functionCategory = document.getElementById('master-function-category').value;
+    payload.initialBalance = Number(document.getElementById('master-initial-balance').value) || 0;
+  } else if (type === 'category') {
+    const mainSel = document.getElementById('master-main-category-select').value;
+    const mainCategory = mainSel === '__NEW__' ? document.getElementById('master-main-category-new').value.trim() : mainSel;
+    if (!mainCategory) { triggerInputError('master-main-category-new', "Main category name is required."); return; }
+    payload.mainCategory = mainCategory;
+    payload.subCategory = name;
+    payload.categoryName = name || mainCategory;
+    payload.type = document.getElementById('master-category-type').value;
+  } else if (type === 'payable') {
+    if (!name) { triggerInputError('master-name', "Payable name is required."); return; }
+    payload.payableName = name;
+    payload.payableType = document.getElementById('master-payable-type').value;
+    payload.owner = document.getElementById('master-payable-owner') ? document.getElementById('master-payable-owner').value : "Yosa & Fani";
+    payload.owedTo = document.getElementById('master-payable-owed-to') ? document.getElementById('master-payable-owed-to').value.trim() : "";
+    payload.initialAmount = Number(document.getElementById('master-payable-total').value) || 0;
+    payload.startDate = document.getElementById('master-payable-start') ? document.getElementById('master-payable-start').value : "";
+    payload.termMonths = Number(document.getElementById('master-payable-term').value) || "";
+    payload.monthlyInstallment = Number(document.getElementById('master-payable-installment').value) || "";
+    payload.dueDate = document.getElementById('master-payable-due') ? document.getElementById('master-payable-due').value : "";
+    payload.paymentAccount = document.getElementById('master-payable-account') ? document.getElementById('master-payable-account').value : "";
+    payload.notes = document.getElementById('master-payable-notes').value;
+  } else if (type === 'receivable') {
+    if (!name) { triggerInputError('master-name', "Receivable name is required."); return; }
+    payload.receivableName = name;
+    payload.receivableType = document.getElementById('master-receivable-type').value;
+    payload.owner = document.getElementById('master-receivable-owner') ? document.getElementById('master-receivable-owner').value : "Yosa & Fani";
+    payload.fromToWhom = document.getElementById('master-receivable-from') ? document.getElementById('master-receivable-from').value.trim() : "";
+    payload.initialAmount = Number(document.getElementById('master-receivable-total').value) || 0;
+    payload.dateOccurred = document.getElementById('master-receivable-occurred') ? document.getElementById('master-receivable-occurred').value : "";
+    payload.expectedReturn = document.getElementById('master-receivable-return') ? document.getElementById('master-receivable-return').value : "";
+    payload.relatedAccount = document.getElementById('master-receivable-account') ? document.getElementById('master-receivable-account').value : "";
+    payload.notes = document.getElementById('master-receivable-notes').value;
+  }
+
+  let loadingToast = showToast("Saving master data...", "info");
+  try {
+    const actionType = oldName ? 'editMasterData' : 'addMasterData';
+    const res = await fetch(API_URL, {
+      method: 'POST', redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: actionType, type, payload })
+    });
+    const result = await res.json();
+    if (result.status === 'error') throw new Error(result.message);
+
+    if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+    closeModal('modalMaster');
+    showToast(result.message || "Master data saved successfully!");
+    await loadAppData(true);
+  } catch (err) {
+    if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+    showToast("Failed to save: " + err.message, "error");
+  }
+}
+
+// ===== 4. RENDER AP/R TAB WITH PROGRESS BARS & DUE DATES =====
+function renderPayablesReceivables() {
+  const payableEl = document.getElementById('list-payables-active');
+  const receivableEl = document.getElementById('list-receivables-active');
+  payableEl.innerHTML = "";
+  receivableEl.innerHTML = "";
+
+  let hasActivePayables = false;
+
+  // 1. ACTIVE PAYABLES (CREDIT CARD / PAYLATER)
+  (GLOBAL_DATA.accounts || []).forEach((acc, i) => {
+    const meta = getAccountIconMeta(acc.accountName, acc.accountType);
+    const rawBal = Number(acc.runningBalance) || 0;
+    const bal = Math.abs(rawBal);
+
+    if (meta.isLiability && bal > 0) {
+      hasActivePayables = true;
+      const ownerLabel = acc.owner ? escapeHtml(acc.owner) : 'Yosa & Fani';
+      const nameHasOwner = acc.owner && acc.accountName.toLowerCase().includes(acc.owner.toLowerCase());
+      const typeBadge = nameHasOwner ? escapeHtml(acc.accountType) : `${escapeHtml(acc.accountType)} • ${ownerLabel}`;
+
+      const div = document.createElement('div');
+      div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden select-none";
+      div.style.animationDelay = `${i * 0.05}s`;
+      div.onclick = () => { vibrate(30); showPayableDetail(acc, true); };
+      div.innerHTML = `
+        <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)] flex justify-between items-start">
+          <div>
+            <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(acc.accountName)}</h4>
+            <span class="text-[10px] amount-out bg-[var(--chip-out-bg)] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider mt-1.5 inline-block">${typeBadge}</span>
+          </div>
+          <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[var(--bg-subtle-2)] text-muted">Tagihan Bulanan</span>
+        </div>
+        <div>
+          <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING PAYABLE</span>
+          <span class="text-[18px] font-black amount-out block leading-none tracking-tight font-numeric">${formatRupiah(bal)}</span>
+        </div>
+      `;
+      payableEl.appendChild(div);
+    }
+  });
+
+  // 2. ACTIVE PAYABLES (CICILAN / HUTANG TERSTRUKTUR)
+  const activePayables = (GLOBAL_DATA.payables || [])
+    .filter(p => {
+      const st = (p.status || '').toLowerCase().trim();
+      return (st === 'active' || st === 'aktif') && Number(p.remainingAmount) > 0;
+    })
+    .sort((a, b) => b.remainingAmount - a.remainingAmount);
+
+  activePayables.forEach((p, i) => {
+    hasActivePayables = true;
+    const initial = Number(p.initialAmount) || 0;
+    const rem = Math.abs(Number(p.remainingAmount) || 0);
+    const paid = Math.max(0, initial - rem);
+    const pctPaid = initial > 0 ? Math.min(100, Math.round((paid / initial) * 100)) : 0;
+
+    let installmentText = p.monthlyInstallment > 0 ? `${formatRupiah(p.monthlyInstallment)} / bln` : '';
+    let dueText = p.dueDate ? `Jatuh Tempo: ${formatDate(p.dueDate)}` : '';
+
+    const div = document.createElement('div');
+    div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden select-none space-y-3";
+    div.style.animationDelay = `${i * 0.05}s`;
+    div.onclick = () => { vibrate(30); showPayableDetail(p, false); };
+    div.innerHTML = `
+      <div class="pb-3 border-b border-slate-100 dark:border-[var(--border-color)] flex justify-between items-start">
+        <div>
+          <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(p.payableName)}</h4>
+          <div class="flex items-center space-x-1.5 mt-1.5">
+            <span class="text-[10px] amount-out bg-[var(--chip-out-bg)] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">${escapeHtml(p.payableType || 'PAYABLE')}</span>
+            ${p.owedTo ? `<span class="text-[10px] text-faint font-extrabold">• ${escapeHtml(p.owedTo)}</span>` : ''}
+          </div>
+        </div>
+        ${p.termMonths ? `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main border border-[var(--border-color)]">${p.termMonths} Bulan Tenor</span>` : ''}
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">SISA HUTANG</span>
+          <span class="text-[16px] font-black amount-out block leading-none tracking-tight font-numeric">${formatRupiah(rem)}</span>
+        </div>
+        ${p.monthlyInstallment ? `
+          <div class="text-right">
+            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">CICILAN</span>
+            <span class="text-[14px] font-extrabold text-main block leading-none font-numeric">${formatRupiah(p.monthlyInstallment)}/bln</span>
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- PROGRESS BAR PELUNASAN -->
+      ${initial > 0 ? `
+        <div class="space-y-1 pt-1">
+          <div class="flex justify-between text-[10px] font-extrabold text-muted">
+            <span>Terbayar: ${pctPaid}%</span>
+            <span>Plafon: ${formatRupiah(initial)}</span>
+          </div>
+          <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden">
+            <div class="bg-gradient-to-r from-mochi-light to-mochi h-full rounded-full transition-all duration-700" style="width: ${pctPaid}%"></div>
+          </div>
+        </div>
+      ` : ''}
+
+      ${dueText ? `<div class="text-[10px] font-extrabold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-3 py-1 rounded-lg flex items-center justify-between"><span class="flex items-center"><i data-lucide="calendar" class="w-3 h-3 mr-1"></i> ${dueText}</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></div>` : ''}
+    `;
+    payableEl.appendChild(div);
+  });
+
+  if (!hasActivePayables) {
+    payableEl.innerHTML = emptyStateHtml('party-popper', "All clear!", "No payables or credit card bills outstanding. Mochi's tail is doing a happy wiggle.");
+  }
+
+  // 3. UNPAID RECEIVABLES (PIUTANG)
+  const activeReceivables = (GLOBAL_DATA.receivables || [])
+    .filter(r => {
+      const st = (r.status || '').toLowerCase().trim();
+      return (st === 'active' || st === 'unsettled' || st === 'aktif' || st === 'belum lunas') && Number(r.remainingAmount) > 0;
+    });
+
+  if (activeReceivables.length === 0) {
+    receivableEl.innerHTML = emptyStateHtml('party-popper', "All collected!", "Every receivable has been paid back. Nothing left for Mochi to chase.");
+  } else {
+    activeReceivables.forEach((r, i) => {
+      const rem = Math.abs(Number(r.remainingAmount) || 0);
+      const div = document.createElement('div');
+      div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden select-none space-y-2";
+      div.style.animationDelay = `${i * 0.05}s`;
+      div.onclick = () => { vibrate(30); showReceivableDetail(r); };
+      div.innerHTML = `
+        <div class="pb-3 border-b border-slate-100 dark:border-[var(--border-color)] flex justify-between items-start">
+          <div>
+            <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(r.receivableName)}</h4>
+            <div class="flex items-center space-x-1.5 mt-1.5">
+              <span class="text-[10px] amount-info bg-[var(--chip-info-bg)] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">${escapeHtml(r.receivableType || 'RECEIVABLE')}</span>
+              ${r.fromToWhom ? `<span class="text-[10px] text-faint font-extrabold">• ${escapeHtml(r.fromToWhom)}</span>` : ''}
+            </div>
+          </div>
+        </div>
+        <div>
+          <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING RECEIVABLE</span>
+          <span class="text-[18px] font-black amount-info block leading-none tracking-tight font-numeric">${formatRupiah(rem)}</span>
+        </div>
+        ${r.expectedReturn ? `<div class="text-[10px] font-extrabold text-sky-600 dark:text-sky-400 bg-sky-500/10 px-3 py-1 rounded-lg flex items-center justify-between"><span class="flex items-center"><i data-lucide="calendar" class="w-3 h-3 mr-1"></i> Target Pelunasan: ${formatDate(r.expectedReturn)}</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></div>` : ''}
+      `;
+      receivableEl.appendChild(div);
+    });
+  }
+  lucide.createIcons();
+}
+
+// ===== 5. SHOW PAYABLE DETAIL MODAL WITH FULL METRICS =====
+function showPayableDetail(item, isAccount = false) {
+  if (!item) return;
+  const name = isAccount ? item.accountName : item.payableName;
+  currentModalBackFn = () => showPayableDetail(item, isAccount);
+  window.isNestedModalView = false;
+
+  const type = isAccount ? item.accountType : (item.payableType || 'Payable');
+  const rawAmt = isAccount ? item.runningBalance : item.remainingAmount;
+  const amount = Math.abs(Number(rawAmt) || 0);
+  const status = isAccount ? 'Active' : (item.status || 'Active');
+
+  const initial = isAccount ? amount : (Number(item.initialAmount) || amount);
+  const paid = Math.max(0, initial - amount);
+  const pctPaid = initial > 0 ? Math.min(100, Math.round((paid / initial) * 100)) : 0;
+
+  const relatedTrx = isAccount 
+    ? (GLOBAL_DATA.transactions || []).filter(t => t.sourceAccount === name || t.targetAccount === name)
+    : (GLOBAL_DATA.transactions || []).filter(t => t.relatedPayable === name);
+
+  let html = `
+    <div class="space-y-4 pt-1">
+      <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
+        <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">Active Payable Detail</span>
+        <h3 class="text-xl font-black text-main leading-tight">${escapeHtml(name)}</h3>
+      </div>
+
+      <div class="ios-input space-y-2.5 text-xs font-semibold text-muted py-4 px-5 bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
+        <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+          <span>Kategori Pinjaman:</span> 
+          <span class="font-extrabold text-main">${escapeHtml(type)}</span>
+        </div>
+        ${!isAccount && item.owedTo ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Kreditur / Provider:</span> <span class="font-extrabold text-main">${escapeHtml(item.owedTo)}</span></div>` : ''}
+        ${!isAccount && item.owner ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Pemilik Pinjaman:</span> <span class="font-extrabold text-main">${escapeHtml(item.owner)}</span></div>` : ''}
+        
+        <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+          <span>Total Plafon / Hutang Awal:</span> 
+          <span class="font-extrabold text-main font-numeric">${formatRupiah(initial)}</span>
+        </div>
+        
+        ${!isAccount && item.termMonths ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Tenor Pinjaman:</span> <span class="font-extrabold text-main">${item.termMonths} Bulan</span></div>` : ''}
+        ${!isAccount && item.monthlyInstallment ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Cicilan Bulanan:</span> <span class="font-extrabold amount-out font-numeric">${formatRupiah(item.monthlyInstallment)}/bln</span></div>` : ''}
+        ${!isAccount && item.dueDate ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Tanggal Jatuh Tempo:</span> <span class="font-extrabold text-main">${formatDate(item.dueDate)}</span></div>` : ''}
+        ${!isAccount && item.paymentAccount ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Rekening Pemotong:</span> <span class="font-extrabold text-main">${escapeHtml(item.paymentAccount)}</span></div>` : ''}
+
+        <div class="flex justify-between pt-1 items-center">
+          <span>Sisa Hutang:</span> 
+          <span class="font-black amount-out text-[16px] font-numeric">${formatRupiah(amount)}</span>
+        </div>
+      </div>
+
+      <!-- PROGRESS BAR METRIC -->
+      ${!isAccount && initial > 0 ? `
+        <div class="space-y-1.5 p-4 rounded-2xl bg-card border border-[var(--border-color)]">
+          <div class="flex justify-between text-xs font-extrabold">
+            <span class="text-muted">Status Pelunasan</span>
+            <span class="text-mochi">${pctPaid}% Terbayar</span>
+          </div>
+          <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2.5 overflow-hidden">
+            <div class="bg-gradient-to-r from-mochi-light to-mochi h-full rounded-full" style="width: ${pctPaid}%"></div>
+          </div>
+        </div>
+      ` : ''}
+
+      <div>
+        <p class="font-bold text-[10px] text-muted mb-2.5 uppercase tracking-wider">Riwayat Pembayaran & Transaksi Terkait</p>
+        <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+  `;
+
+  if (relatedTrx.length === 0) {
+    html += `<p class="text-xs text-center text-muted py-6 font-semibold flex flex-col items-center"><i data-lucide="inbox" class="w-5 h-5 mb-2 text-faint"></i>Belum ada transaksi cicilan tercatat.</p>`;
+  } else {
+    relatedTrx.forEach(t => {
+      const meta = getTypeMeta(t.type);
+      html += `
+        <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+          <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
+            <div class="truncate">
+              <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
+              <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
+            </div>
+          </div>
+          <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] font-numeric pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
+        </div>
+      `;
+    });
+  }
+
+  html += `</div></div></div>`;
+  html += `
+    <div class="flex space-x-3 pt-4">
+      <button onclick="${isAccount ? `openEditAccountModal('${escapeAttr(name)}')` : `openEditPayableModal('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit Detail</button>
+      <button onclick="${isAccount ? `promptDeleteAccount('${escapeAttr(name)}')` : `promptDeletePayable('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
+    </div>`;
+  document.getElementById('modal-detail-inner').innerHTML = html;
+  openModal('modalDetail');
+  lucide.createIcons();
+}
+    
+// ===== 5. SHOW PAYABLE DETAIL MODAL WITH FULL METRICS =====
+function showPayableDetail(item, isAccount = false) {
+  if (!item) return;
+  const name = isAccount ? item.accountName : item.payableName;
+  currentModalBackFn = () => showPayableDetail(item, isAccount);
+  window.isNestedModalView = false;
+
+  const type = isAccount ? item.accountType : (item.payableType || 'Payable');
+  const rawAmt = isAccount ? item.runningBalance : item.remainingAmount;
+  const amount = Math.abs(Number(rawAmt) || 0);
+  const status = isAccount ? 'Active' : (item.status || 'Active');
+
+  const initial = isAccount ? amount : (Number(item.initialAmount) || amount);
+  const paid = Math.max(0, initial - amount);
+  const pctPaid = initial > 0 ? Math.min(100, Math.round((paid / initial) * 100)) : 0;
+
+  const relatedTrx = isAccount 
+    ? (GLOBAL_DATA.transactions || []).filter(t => t.sourceAccount === name || t.targetAccount === name)
+    : (GLOBAL_DATA.transactions || []).filter(t => t.relatedPayable === name);
+
+  let html = `
+    <div class="space-y-4 pt-1">
+      <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
+        <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">Active Payable Detail</span>
+        <h3 class="text-xl font-black text-main leading-tight">${escapeHtml(name)}</h3>
+      </div>
+
+      <div class="ios-input space-y-2.5 text-xs font-semibold text-muted py-4 px-5 bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
+        <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+          <span>Kategori Pinjaman:</span> 
+          <span class="font-extrabold text-main">${escapeHtml(type)}</span>
+        </div>
+        ${!isAccount && item.owedTo ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Kreditur / Provider:</span> <span class="font-extrabold text-main">${escapeHtml(item.owedTo)}</span></div>` : ''}
+        ${!isAccount && item.owner ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Pemilik Pinjaman:</span> <span class="font-extrabold text-main">${escapeHtml(item.owner)}</span></div>` : ''}
+        
+        <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+          <span>Total Plafon / Hutang Awal:</span> 
+          <span class="font-extrabold text-main font-numeric">${formatRupiah(initial)}</span>
+        </div>
+        
+        ${!isAccount && item.termMonths ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Tenor Pinjaman:</span> <span class="font-extrabold text-main">${item.termMonths} Bulan</span></div>` : ''}
+        ${!isAccount && item.monthlyInstallment ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Cicilan Bulanan:</span> <span class="font-extrabold amount-out font-numeric">${formatRupiah(item.monthlyInstallment)}/bln</span></div>` : ''}
+        ${!isAccount && item.dueDate ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Tanggal Jatuh Tempo:</span> <span class="font-extrabold text-main">${formatDate(item.dueDate)}</span></div>` : ''}
+        ${!isAccount && item.paymentAccount ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Rekening Pemotong:</span> <span class="font-extrabold text-main">${escapeHtml(item.paymentAccount)}</span></div>` : ''}
+
+        <div class="flex justify-between pt-1 items-center">
+          <span>Sisa Hutang:</span> 
+          <span class="font-black amount-out text-[16px] font-numeric">${formatRupiah(amount)}</span>
+        </div>
+      </div>
+
+      <!-- PROGRESS BAR METRIC -->
+      ${!isAccount && initial > 0 ? `
+        <div class="space-y-1.5 p-4 rounded-2xl bg-card border border-[var(--border-color)]">
+          <div class="flex justify-between text-xs font-extrabold">
+            <span class="text-muted">Status Pelunasan</span>
+            <span class="text-mochi">${pctPaid}% Terbayar</span>
+          </div>
+          <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2.5 overflow-hidden">
+            <div class="bg-gradient-to-r from-mochi-light to-mochi h-full rounded-full" style="width: ${pctPaid}%"></div>
+          </div>
+        </div>
+      ` : ''}
+
+      <div>
+        <p class="font-bold text-[10px] text-muted mb-2.5 uppercase tracking-wider">Riwayat Pembayaran & Transaksi Terkait</p>
+        <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+  `;
+
+  if (relatedTrx.length === 0) {
+    html += `<p class="text-xs text-center text-muted py-6 font-semibold flex flex-col items-center"><i data-lucide="inbox" class="w-5 h-5 mb-2 text-faint"></i>Belum ada transaksi cicilan tercatat.</p>`;
+  } else {
+    relatedTrx.forEach(t => {
+      const meta = getTypeMeta(t.type);
+      html += `
+        <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+          <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
+            <div class="truncate">
+              <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
+              <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
+            </div>
+          </div>
+          <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] font-numeric pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
+        </div>
+      `;
+    });
+  }
+
+  html += `</div></div></div>`;
+  html += `
+    <div class="flex space-x-3 pt-4">
+      <button onclick="${isAccount ? `openEditAccountModal('${escapeAttr(name)}')` : `openEditPayableModal('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit Detail</button>
+      <button onclick="${isAccount ? `promptDeleteAccount('${escapeAttr(name)}')` : `promptDeletePayable('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
+    </div>`;
+  document.getElementById('modal-detail-inner').innerHTML = html;
+  openModal('modalDetail');
+  lucide.createIcons();
+}
     async function handleSaveMaster(event) {
       event.preventDefault();
       const type = document.getElementById('master-type').value;
