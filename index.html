@@ -3091,119 +3091,209 @@
     }
 
     function openMasterModal(type, isEdit = false) {
-      document.getElementById('master-type').value = type;
-      if (!isEdit) document.getElementById('master-old-name').value = "";
-      
-      const titleEl = document.getElementById('master-title');
-      const extraEl = document.getElementById('master-extra-field');
-      extraEl.innerHTML = "";
+  document.getElementById('master-type').value = type;
+  if (!isEdit) document.getElementById('master-old-name').value = "";
+  
+  const titleEl = document.getElementById('master-title');
+  const extraEl = document.getElementById('master-extra-field');
+  extraEl.innerHTML = "";
 
-      const nameLabelEl = document.getElementById('master-name-label');
-      const nameInputEl = document.getElementById('master-name');
-      const categoryTypeWrap = document.getElementById('master-category-type-wrap');
-      const mainCategoryWrap = document.getElementById('master-main-category-wrap');
-      const mainCategoryNewWrap = document.getElementById('master-main-category-new-wrap');
+  const nameLabelEl = document.getElementById('master-name-label');
+  const nameInputEl = document.getElementById('master-name');
+  const categoryTypeWrap = document.getElementById('master-category-type-wrap');
+  const mainCategoryWrap = document.getElementById('master-main-category-wrap');
+  const mainCategoryNewWrap = document.getElementById('master-main-category-new-wrap');
 
-      categoryTypeWrap.classList.add('hidden');
-      mainCategoryWrap.classList.add('hidden');
-      mainCategoryNewWrap.classList.add('hidden');
-      nameLabelEl.innerText = "Name";
-      nameInputEl.required = true;
-      nameInputEl.placeholder = "";
+  categoryTypeWrap.classList.add('hidden');
+  mainCategoryWrap.classList.add('hidden');
+  mainCategoryNewWrap.classList.add('hidden');
+  nameLabelEl.innerText = "Name";
+  nameInputEl.required = true;
+  nameInputEl.placeholder = "";
 
-      if (type === 'category') {
-        titleEl.innerText = isEdit ? "Edit Category" : "Add New Category";
-        categoryTypeWrap.classList.remove('hidden');
-        mainCategoryWrap.classList.remove('hidden');
+  if (type === 'category') {
+    titleEl.innerText = isEdit ? "Edit Category" : "Add New Category";
+    categoryTypeWrap.classList.remove('hidden');
+    mainCategoryWrap.classList.remove('hidden');
 
-        nameLabelEl.innerText = "Sub-Category Name (Optional)";
-        nameInputEl.required = false;
-        nameInputEl.placeholder = "Leave blank if this is a main category";
+    nameLabelEl.innerText = "Sub-Category Name (Optional)";
+    nameInputEl.required = false;
+    nameInputEl.placeholder = "Leave blank if this is a main category";
 
-        const activeTrxType = document.getElementById('form-type').value || 'Expense';
-        const meta = getTypeMeta(activeTrxType);
-        const defaultCatType = meta.categoryType || 'Expense';
-        
-        document.getElementById('master-category-type').value = defaultCatType;
-        handleMasterCategoryTypeChange();
-      }
+    const activeTrxType = document.getElementById('form-type').value || 'Expense';
+    const meta = getTypeMeta(activeTrxType);
+    const defaultCatType = meta.categoryType || 'Expense';
+    
+    document.getElementById('master-category-type').value = defaultCatType;
+    handleMasterCategoryTypeChange();
+  }
 
-      if (type === 'account') {
-        titleEl.innerText = isEdit ? "Edit Account" : "Add New Account";
-        extraEl.innerHTML = `
-          <div>
-            <label for="master-account-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Type</label>
-            <select id="master-account-type" class="w-full ios-input cursor-pointer py-2.5">
-              <option value="Bank Account">Bank</option>
-              <option value="E-Wallet">E-Wallet</option>
-              <option value="Cash">Cash / Tunai</option>
-              <option value="Credit Card / PayLater">Credit Card / PayLater</option>
-            </select>
-          </div>
-          <div>
-            <label for="master-account-owner" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Owner</label>
-            <select id="master-account-owner" class="w-full ios-input cursor-pointer py-2.5">
-              <option value="Yosa">Yosa</option>
-              <option value="Fani">Fani</option>
-              <option value="Yosa & Fani">Yosa & Fani (Joint)</option>
-            </select>
-          </div>
-          <div>
-            <label for="master-function-category" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Function</label>
-            <select id="master-function-category" class="w-full ios-input cursor-pointer py-2.5">
-              <option value="Daily Operations">Daily Operations</option>
-              <option value="Emergency Fund & Savings">Emergency Fund & Savings</option>
-            </select>
-          </div>
-          <div>
-            <label for="master-initial-balance" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Balance / Bill (Rp)</label>
-            <input type="number" id="master-initial-balance" class="w-full ios-input py-2.5" value="0">
-          </div>
-        `;
-      } else if (type === 'payable') {
-        titleEl.innerText = isEdit ? "Edit Payable" : "Add New Payable";
-        extraEl.innerHTML = `
-          <div>
-            <label for="master-payable-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Payable Type</label>
-            <select id="master-payable-type" class="w-full ios-input cursor-pointer py-2.5">
-              <option value="Vehicle Installment">Vehicle Installment</option>
-              <option value="Bank Loan">Bank Loan / KTA</option>
-              <option value="Personal Loan">Personal Loan</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div>
-            <label for="master-payable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Total Amount (Rp)</label>
-            <input type="number" id="master-payable-total" class="w-full ios-input py-2.5" value="0" required>
-          </div>
-          <div>
-            <label for="master-payable-notes" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Notes</label>
-            <input type="text" id="master-payable-notes" class="w-full ios-input py-2.5" placeholder="Installment details...">
-          </div>
-        `;
-      } else if (type === 'receivable') {
-        titleEl.innerText = isEdit ? "Edit Receivable" : "Add New Receivable";
-        extraEl.innerHTML = `
-          <div>
-            <label for="master-receivable-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Receivable Type</label>
-            <select id="master-receivable-type" class="w-full ios-input cursor-pointer py-2.5">
-              <option value="Shopping Reimbursement">Shopping Reimbursement</option>
-              <option value="Personal Loan">Personal Loan</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div>
-            <label for="master-receivable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Total Amount (Rp)</label>
-            <input type="number" id="master-receivable-total" class="w-full ios-input py-2.5" value="0" required>
-          </div>
-          <div>
-            <label for="master-receivable-notes" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Notes</label>
-            <textarea id="master-receivable-notes" rows="2" class="w-full ios-input py-2.5" placeholder="e.g. Shared shopping reimbursement"></textarea>
-          </div>
-        `;
-      }
-      openModal('modalMaster');
-    }
+  if (type === 'account') {
+    titleEl.innerText = isEdit ? "Edit Account" : "Add New Account";
+    extraEl.innerHTML = `
+      <div>
+        <label for="master-account-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Type</label>
+        <select id="master-account-type" class="w-full ios-input cursor-pointer py-2.5">
+          <option value="Bank Account">Bank</option>
+          <option value="E-Wallet">E-Wallet</option>
+          <option value="Cash">Cash / Tunai</option>
+          <option value="Credit Card / PayLater">Credit Card / PayLater</option>
+        </select>
+      </div>
+      <div>
+        <label for="master-account-owner" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Owner</label>
+        <select id="master-account-owner" class="w-full ios-input cursor-pointer py-2.5">
+          <option value="Yosa">Yosa</option>
+          <option value="Fani">Fani</option>
+          <option value="Yosa & Fani">Yosa & Fani (Joint)</option>
+        </select>
+      </div>
+      <div>
+        <label for="master-function-category" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Function</label>
+        <select id="master-function-category" class="w-full ios-input cursor-pointer py-2.5">
+          <option value="Daily Operations">Daily Operations</option>
+          <option value="Emergency Fund & Savings">Emergency Fund & Savings</option>
+        </select>
+      </div>
+      <div>
+        <label for="master-initial-balance" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Balance / Bill (Rp)</label>
+        <input type="number" id="master-initial-balance" class="w-full ios-input py-2.5" value="0">
+      </div>
+    `;
+  } else if (type === 'payable') {
+    titleEl.innerText = isEdit ? "Edit Payable / Installment" : "Add New Payable / Installment";
+    
+    const accountOptions = (GLOBAL_DATA.accounts || []).map(a => `<option value="${escapeAttr(a.accountName)}">${escapeHtml(a.accountName)}</option>`).join('');
+
+    extraEl.innerHTML = `
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label for="master-payable-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Payable Type</label>
+          <select id="master-payable-type" class="w-full ios-input cursor-pointer py-2.5">
+            <option value="Personal Loan">Personal Loan / FinTech</option>
+            <option value="Vehicle Installment">Vehicle Installment</option>
+            <option value="Bank Loan">Bank Loan / KTA</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label for="master-payable-owner" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Owner</label>
+          <select id="master-payable-owner" class="w-full ios-input cursor-pointer py-2.5">
+            <option value="Yosa">Yosa</option>
+            <option value="Fani">Fani</option>
+            <option value="Yosa & Fani">Yosa & Fani</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label for="master-payable-owed-to" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Kreditur / Pihak Pemberi Pinjaman</label>
+        <input type="text" id="master-payable-owed-to" class="w-full ios-input py-2.5" placeholder="Contoh: GoPinjam / Kredivo / BCA">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label for="master-payable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Total Plafon / Hutang (Rp)</label>
+          <input type="number" id="master-payable-total" class="w-full ios-input py-2.5" value="0" required oninput="calcInstallmentEstimates()">
+        </div>
+        <div>
+          <label for="master-payable-disbursed" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Terima Bersih (Pencairan)</label>
+          <input type="number" id="master-payable-disbursed" class="w-full ios-input py-2.5" placeholder="Opsional (setelah admin)">
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+        <div>
+          <label for="master-payable-start" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Tgl Cair</label>
+          <input type="date" id="master-payable-start" class="w-full ios-input py-2 px-2 text-xs">
+        </div>
+        <div>
+          <label for="master-payable-term" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Tenor (Bulan)</label>
+          <input type="number" id="master-payable-term" class="w-full ios-input py-2 px-2 text-xs" placeholder="3" oninput="calcInstallmentEstimates()">
+        </div>
+        <div>
+          <label for="master-payable-due" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Jatuh Tempo</label>
+          <input type="date" id="master-payable-due" class="w-full ios-input py-2 px-2 text-xs">
+        </div>
+      </div>
+      <div>
+        <label for="master-payable-installment" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Cicilan Per Bulan (Rp)</label>
+        <input type="number" id="master-payable-installment" class="w-full ios-input py-2.5" placeholder="Otomatis terhitung jika tenor diisi">
+      </div>
+      <div>
+        <label for="master-payable-account" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Rekening Pemotong Cicilan</label>
+        <select id="master-payable-account" class="w-full ios-input cursor-pointer py-2.5">
+          <option value="">-- Pilih Rekening --</option>
+          ${accountOptions}
+        </select>
+      </div>
+      <div>
+        <label for="master-payable-notes" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Notes</label>
+        <input type="text" id="master-payable-notes" class="w-full ios-input py-2.5" placeholder="Rincian bunga/admin...">
+      </div>
+    `;
+
+    setTimeout(() => {
+      document.getElementById('master-payable-start').valueAsDate = new Date();
+    }, 50);
+  } else if (type === 'receivable') {
+    titleEl.innerText = isEdit ? "Edit Receivable" : "Add New Receivable";
+
+    const accountOptions = (GLOBAL_DATA.accounts || []).map(a => `<option value="${escapeAttr(a.accountName)}">${escapeHtml(a.accountName)}</option>`).join('');
+
+    extraEl.innerHTML = `
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label for="master-receivable-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Receivable Type</label>
+          <select id="master-receivable-type" class="w-full ios-input cursor-pointer py-2.5">
+            <option value="Shopping Reimbursement">Shopping Reimbursement</option>
+            <option value="Personal Loan">Personal Loan</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label for="master-receivable-owner" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Owner</label>
+          <select id="master-receivable-owner" class="w-full ios-input cursor-pointer py-2.5">
+            <option value="Yosa">Yosa</option>
+            <option value="Fani">Fani</option>
+            <option value="Yosa & Fani">Yosa & Fani</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label for="master-receivable-from" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Debitur / Pihak Yang Berhutang</label>
+        <input type="text" id="master-receivable-from" class="w-full ios-input py-2.5" placeholder="Contoh: Mama / Teman">
+      </div>
+      <div>
+        <label for="master-receivable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Total Piutang (Rp)</label>
+        <input type="number" id="master-receivable-total" class="w-full ios-input py-2.5" value="0" required>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label for="master-receivable-occurred" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Tgl Pinjam</label>
+          <input type="date" id="master-receivable-occurred" class="w-full ios-input py-2 px-2 text-xs">
+        </div>
+        <div>
+          <label for="master-receivable-return" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Target Pelunasan</label>
+          <input type="date" id="master-receivable-return" class="w-full ios-input py-2 px-2 text-xs">
+        </div>
+      </div>
+      <div>
+        <label for="master-receivable-account" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Rekening Sumber / Penerima</label>
+        <select id="master-receivable-account" class="w-full ios-input cursor-pointer py-2.5">
+          <option value="">-- Pilih Rekening --</option>
+          ${accountOptions}
+        </select>
+      </div>
+      <div>
+        <label for="master-receivable-notes" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Notes</label>
+        <textarea id="master-receivable-notes" rows="2" class="w-full ios-input py-2.5" placeholder="Catatan talangan..."></textarea>
+      </div>
+    `;
+
+    setTimeout(() => {
+      document.getElementById('master-receivable-occurred').valueAsDate = new Date();
+    }, 50);
+  }
+  openModal('modalMaster');
+}
 
     async function handleSaveMaster(event) {
       event.preventDefault();
