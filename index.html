@@ -236,7 +236,7 @@
 
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-3">
-      <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0 self-center">
+      <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0 self-center cursor-pointer tap-shrink" onclick="openCommandCenter()">
         <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Avatar" class="w-full h-full object-contain filter drop-shadow-sm transition-all duration-300">
       </div>
 
@@ -582,18 +582,26 @@
 
         <div id="wrap-source-account" class="space-y-1">
           <div class="flex justify-between items-center">
-            <label for="form-source-account" class="font-bold text-main text-xs cursor-pointer">Source Account</label>
+            <label class="font-bold text-main text-xs">Source Account</label>
             <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
           </div>
-          <select id="form-source-account" class="w-full ios-input cursor-pointer"></select>
+          <div ontouchstart="vibrate(30)" onclick="openItemPicker('source-account')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+            <span id="display-source-account" class="font-semibold text-faint truncate">Select Account...</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
+          </div>
+          <input type="hidden" id="form-source-account">
         </div>
 
         <div id="wrap-target-account" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label for="form-target-account" class="font-bold text-main text-xs cursor-pointer">Target Account</label>
+            <label class="font-bold text-main text-xs">Target Account</label>
             <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
           </div>
-          <select id="form-target-account" class="w-full ios-input cursor-pointer"></select>
+          <div ontouchstart="vibrate(30)" onclick="openItemPicker('target-account')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+            <span id="display-target-account" class="font-semibold text-faint truncate">Select Account...</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
+          </div>
+          <input type="hidden" id="form-target-account">
         </div>
 
         <div class="space-y-1">
@@ -610,18 +618,26 @@
 
         <div id="wrap-payable" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label for="form-payable" class="font-bold text-main text-xs cursor-pointer">Related Payable</label>
+            <label class="font-bold text-main text-xs">Related Payable</label>
             <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('payable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Payable</button>
           </div>
-          <select id="form-payable" class="w-full ios-input cursor-pointer"></select>
+          <div ontouchstart="vibrate(30)" onclick="openItemPicker('payable')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+            <span id="display-payable" class="font-semibold text-faint truncate">Select Payable...</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
+          </div>
+          <input type="hidden" id="form-payable">
         </div>
 
         <div id="wrap-receivable" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label for="form-receivable" class="font-bold text-main text-xs cursor-pointer">Related Receivable</label>
+            <label class="font-bold text-main text-xs">Related Receivable</label>
             <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('receivable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Receivable</button>
           </div>
-          <select id="form-receivable" class="w-full ios-input cursor-pointer"></select>
+          <div ontouchstart="vibrate(30)" onclick="openItemPicker('receivable')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+            <span id="display-receivable" class="font-semibold text-faint truncate">Select Receivable...</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
+          </div>
+          <input type="hidden" id="form-receivable">
         </div>
 
         <div>
@@ -669,6 +685,19 @@
         </button>
       </div>
       <div id="type-picker-list" class="text-xs space-y-2"></div>
+    </div>
+  </div>
+
+  
+  <div id="modalItemPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalItemPicker')">
+    <div id="modalItemPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
+      <div class="flex justify-between items-center pb-3 mb-3 border-b border-slate-200/50 dark:border-[var(--border-color)] sticky top-0 bg-inherit backdrop-blur-md z-10">
+        <h3 id="item-picker-title" class="font-extrabold text-main text-sm">Select Item</h3>
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalItemPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div id="item-picker-list" class="text-xs space-y-2"></div>
     </div>
   </div>
 
@@ -753,6 +782,88 @@
     </div>
   </div>
 
+  
+  <div id="modalCommandCenter" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[75] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalCommandCenter')">
+    <div id="modalCommandCenter-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-6 shadow-2xl modal-content-bottom md:modal-content-center">
+      <div class="flex justify-between items-center mb-5">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-mochi-light/20 flex items-center justify-center"><img src="mochi-logo-new.png" class="w-6 h-6 object-contain"></div>
+          <div>
+            <h3 class="font-black text-main text-base leading-tight">Command Center</h3>
+            <p class="text-[10px] font-bold text-muted uppercase tracking-wider">Mochi's Vault Settings</p>
+          </div>
+        </div>
+        <button ontouchstart="vibrate(30)" onclick="closeModal('modalCommandCenter')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Profile -->
+        <div class="bg-slate-50 dark:bg-[var(--bg-subtle)] p-4 rounded-2xl border border-[var(--border-color)] flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-[var(--chip-info-bg)] amount-info flex items-center justify-center font-black text-lg">YF</div>
+            <div>
+              <p class="text-[10px] text-muted font-bold uppercase tracking-wider">Active Users</p>
+              <p class="font-extrabold text-main text-sm">Yosa & Fani</p>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-faint"></i>
+        </div>
+
+        <!-- Master Data Shortcuts -->
+        <div>
+          <p class="text-[10px] text-muted font-bold uppercase tracking-wider mb-2 px-1">Master Data Shortcuts</p>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>openMasterModal('account'), 300)" class="tap-shrink flex items-center p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
+              <div class="w-7 h-7 rounded-lg bg-[var(--bg-subtle-2)] flex items-center justify-center mr-2"><i data-lucide="wallet" class="w-3.5 h-3.5 text-main"></i></div>
+              <span class="text-xs font-extrabold text-main">New Account</span>
+            </button>
+            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>openMasterModal('category'), 300)" class="tap-shrink flex items-center p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
+              <div class="w-7 h-7 rounded-lg bg-[var(--bg-subtle-2)] flex items-center justify-center mr-2"><i data-lucide="tag" class="w-3.5 h-3.5 text-main"></i></div>
+              <span class="text-xs font-extrabold text-main">New Category</span>
+            </button>
+            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>openMasterModal('payable'), 300)" class="tap-shrink flex items-center p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
+              <div class="w-7 h-7 rounded-lg bg-rose-500/10 flex items-center justify-center mr-2"><i data-lucide="credit-card" class="w-3.5 h-3.5 text-rose-500"></i></div>
+              <span class="text-xs font-extrabold text-main">New Payable</span>
+            </button>
+            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>openMasterModal('receivable'), 300)" class="tap-shrink flex items-center p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
+              <div class="w-7 h-7 rounded-lg bg-sky-500/10 flex items-center justify-center mr-2"><i data-lucide="hand-coins" class="w-3.5 h-3.5 text-sky-500"></i></div>
+              <span class="text-xs font-extrabold text-main">New Receivable</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- General Actions -->
+        <div>
+          <p class="text-[10px] text-muted font-bold uppercase tracking-wider mb-2 px-1">General Actions</p>
+          <div class="space-y-2">
+            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>loadAppData(), 300)" class="w-full tap-shrink flex items-center justify-between p-3.5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
+              <div class="flex items-center space-x-3">
+                <i data-lucide="refresh-cw" class="w-4 h-4 text-mochi"></i>
+                <span class="text-xs font-extrabold text-main">Force Sync Data</span>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-faint"></i>
+            </button>
+            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>switchTab('history'), 300)" class="w-full tap-shrink flex items-center justify-between p-3.5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
+              <div class="flex items-center space-x-3">
+                <i data-lucide="printer" class="w-4 h-4 text-mochi"></i>
+                <span class="text-xs font-extrabold text-main">Export PDF Reports</span>
+              </div>
+              <span class="text-[10px] font-bold text-muted bg-[var(--bg-subtle-2)] px-2 py-0.5 rounded-full">In History Tab</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- App Info -->
+        <div class="text-center pt-2">
+          <p class="text-[10px] font-bold text-faint uppercase tracking-widest">Mochi's Vault v28.0</p>
+          <p class="text-[9px] font-semibold text-faint mt-0.5">Core Engine Active</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="modalDelete" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDelete')">
     <div id="modalDelete-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center text-center">
       <div class="w-16 h-16 bg-rose-500/10 amount-out rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-500/20">
@@ -794,6 +905,12 @@
         }
       }
     });
+
+    
+    function openCommandCenter() {
+      vibrate(30);
+      openModal('modalCommandCenter');
+    }
 
     function vibrate(ms) {
       if (navigator.vibrate) navigator.vibrate(Math.max(ms, 25));
@@ -1270,10 +1387,18 @@
 
         handleTypeChange();
 
-        document.getElementById('form-source-account').value = trx.sourceAccount || "";
-        document.getElementById('form-target-account').value = trx.targetAccount || "";
-        document.getElementById('form-payable').value = trx.relatedPayable || "";
-        document.getElementById('form-receivable').value = trx.relatedReceivable || "";
+        const setField = (id, val) => {
+          document.getElementById('form-' + id).value = val || "";
+          const disp = document.getElementById('display-' + id);
+          if (disp) {
+            disp.innerText = val || "Select...";
+            disp.classList.toggle('text-faint', !val);
+          }
+        };
+        setField('source-account', trx.sourceAccount);
+        setField('target-account', trx.targetAccount);
+        setField('payable', trx.relatedPayable);
+        setField('receivable', trx.relatedReceivable);
 
         document.getElementById('form-category').value = trx.category || "";
         const catDisplay = document.getElementById('form-category-display');
@@ -1515,11 +1640,11 @@
 
               <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <span class="text-[9px] text-muted font-extrabold uppercase block mb-0.5">Sisa Wajib Bayar</span>
+                  <span class="text-[9px] text-muted font-extrabold uppercase block mb-0.5">Remaining Due</span>
                   <span class="text-base font-black amount-out block leading-none font-numeric">${formatRupiah(monthlyDue)}</span>
                 </div>
                 <div class="text-right">
-                  <span class="text-[9px] text-muted font-extrabold uppercase block mb-0.5">Opsi Bayar Min. (KK)</span>
+                  <span class="text-[9px] text-muted font-extrabold uppercase block mb-0.5">Min. Payment (CC)</span>
                   <span class="text-sm font-extrabold text-main block leading-none font-numeric">${formatRupiah(monthlyMinDue)}</span>
                 </div>
               </div>
@@ -1661,38 +1786,63 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
   setTimeout(() => {
     openNewTransactionForm();
 
-    if (isAccount) {
+    if (categoryTag === 'RECEIVABLE') {
+      document.getElementById('form-type').value = "Receive Receivable";
+      updateTypeDisplay("Receive Receivable");
+      handleTypeChange();
+      
+      document.getElementById('form-receivable').value = targetName;
+      if (document.getElementById('display-receivable')) {
+        document.getElementById('display-receivable').innerText = targetName;
+        document.getElementById('display-receivable').classList.remove('text-faint');
+      }
+      document.getElementById('form-category').value = "Receive Receivable";
+      const catDisplay = document.getElementById('form-category-display');
+      if (catDisplay) {
+        catDisplay.innerText = "Receive Receivable";
+        catDisplay.classList.remove('text-faint');
+      }
+      document.getElementById('form-description').value = "Payment received from " + targetName;
+    } else if (isAccount) {
       document.getElementById('form-type').value = "Internal Transfer";
       updateTypeDisplay("Internal Transfer");
       handleTypeChange();
 
       document.getElementById('form-target-account').value = targetName;
+      if (document.getElementById('display-target-account')) {
+        document.getElementById('display-target-account').innerText = targetName;
+        document.getElementById('display-target-account').classList.remove('text-faint');
+      }
       document.getElementById('form-category').value = "Internal Transfer";
       const catDisplay = document.getElementById('form-category-display');
       if (catDisplay) {
         catDisplay.innerText = "Internal Transfer";
         catDisplay.classList.remove('text-faint');
       }
+      document.getElementById('form-description').value = "Payment of " + targetName;
     } else {
       document.getElementById('form-type').value = "Pay Installment";
       updateTypeDisplay("Pay Installment");
       handleTypeChange();
 
       document.getElementById('form-payable').value = targetName;
+      if (document.getElementById('display-payable')) {
+        document.getElementById('display-payable').innerText = targetName;
+        document.getElementById('display-payable').classList.remove('text-faint');
+      }
       document.getElementById('form-category').value = "Pay Installment";
       const catDisplay = document.getElementById('form-category-display');
       if (catDisplay) {
         catDisplay.innerText = "Pay Installment";
         catDisplay.classList.remove('text-faint');
       }
+      document.getElementById('form-description').value = "Payment of " + targetName;
     }
 
     if (defaultAmount && defaultAmount > 0) {
       document.getElementById('form-amount-value').value = defaultAmount;
       document.getElementById('form-amount-display').value = new Intl.NumberFormat('id-ID').format(defaultAmount);
     }
-
-    document.getElementById('form-description').value = "Pelunasan Tagihan " + targetName;
   }, 350);
 }
     
@@ -1736,7 +1886,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
       trxThisMonth.forEach(t => {
         const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
         // REVISI: Utamakan matching kategori JavaScript agar selalu merujuk ke MainCategory yang benar
-        const main = (catMatch ? catMatch.mainCategory : null) || t.mainCategory || t.category || 'Lainnya';
+        const main = (catMatch ? catMatch.mainCategory : null) || t.mainCategory || t.category || 'Others';
         spentMap[main] = (spentMap[main] || 0) + (Number(t.amount) || 0);
       });
 
@@ -1842,7 +1992,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
       const categoryTrx = allTrx.filter(t => {
         if (t.type !== 'Expense' || !t.date || t.date.substring(0, 7) !== currentYM) return false;
         const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
-        const main = (catMatch ? catMatch.mainCategory : null) || t.mainCategory || t.category || 'Lainnya';
+        const main = (catMatch ? catMatch.mainCategory : null) || t.mainCategory || t.category || 'Others';
         return main === catName;
       });
 
@@ -2118,7 +2268,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
   trxThisMonth.forEach(t => {
     const categoryName = t.category || '';
     const catMatch = categories.find(c => c.categoryName === categoryName || c.subCategory === categoryName);
-    const main = (catMatch ? catMatch.mainCategory : null) || t.mainCategory || categoryName || 'Lainnya';
+    const main = (catMatch ? catMatch.mainCategory : null) || t.mainCategory || categoryName || 'Others';
     const subKey = categoryName || main;
     const amount = Number(t.amount) || 0;
 
@@ -2697,11 +2847,11 @@ async function handleSaveMaster(event) {
 
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <span class="text-[9px] text-muted font-extrabold uppercase block mb-0.5">Total Wajib Bayar</span>
+          <span class="text-[9px] text-muted font-extrabold uppercase block mb-0.5">Total Amount Due</span>
           <span class="text-base font-black amount-out block leading-none font-numeric">${formatRupiah(monthlyDue)}</span>
         </div>
         <div class="text-right">
-          <span class="text-[9px] text-muted font-extrabold uppercase block mb-0.5">Opsi Bayar Min. (KK)</span>
+          <span class="text-[9px] text-muted font-extrabold uppercase block mb-0.5">Min. Payment (CC)</span>
           <span class="text-sm font-extrabold text-main block leading-none font-numeric">${formatRupiah(monthlyMinDue)}</span>
         </div>
       </div>
@@ -2739,7 +2889,7 @@ async function handleSaveMaster(event) {
               ${isPayLater ? 'PayLater • Full Payment' : 'Credit Card • Revolving'}
             </span>
           </div>
-          <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[var(--bg-subtle-2)] text-muted">Tagihan Bulan Ini</span>
+          <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[var(--bg-subtle-2)] text-muted">This Month's Bill</span>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
@@ -2755,7 +2905,7 @@ async function handleSaveMaster(event) {
           ` : `
             <div class="text-right">
               <span class="text-[9px] text-orange-600 dark:text-orange-400 font-bold uppercase block mb-0.5">STRICT DATED</span>
-              <span class="text-[11px] font-extrabold text-orange-600 dark:text-orange-400 block leading-none">Wajib Lunas 100%</span>
+              <span class="text-[11px] font-extrabold text-orange-600 dark:text-orange-400 block leading-none">100% Full Payment</span>
             </div>
           `}
         </div>
@@ -2806,16 +2956,16 @@ async function handleSaveMaster(event) {
             ${p.owedTo ? `<span class="text-[10px] text-faint font-extrabold">• ${escapeHtml(p.owedTo)}</span>` : ''}
           </div>
         </div>
-        ${p.termMonths ? `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main border border-[var(--border-color)]">${p.termMonths} Bulan Tenor</span>` : ''}
+        ${p.termMonths ? `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main border border-[var(--border-color)]">${p.termMonths} Months Term</span>` : ''}
       </div>
 
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">SISA TOTAL POKOK</span>
+          <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">REMAINING PRINCIPAL</span>
           <span class="text-[16px] font-black amount-out block leading-none font-numeric">${formatRupiah(rem)}</span>
         </div>
         <div class="text-right">
-          <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">CICILAN BULAN INI</span>
+          <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">THIS MONTH'S INSTALLMENT</span>
           <span class="text-[14px] font-extrabold text-main block leading-none font-numeric">${formatRupiah(instAmt)}</span>
         </div>
       </div>
@@ -2824,8 +2974,8 @@ async function handleSaveMaster(event) {
       ${initial > 0 ? `
         <div class="space-y-1 pt-1">
           <div class="flex justify-between text-[10px] font-extrabold text-muted">
-            <span>Terbayar: ${pctPaid}%</span>
-            <span>Plafon: ${formatRupiah(initial)}</span>
+            <span>Paid: ${pctPaid}%</span>
+            <span>Principal: ${formatRupiah(initial)}</span>
           </div>
           <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden">
             <div class="bg-gradient-to-r from-mochi-light to-mochi h-full rounded-full transition-all duration-700" style="width: ${pctPaid}%"></div>
@@ -2858,9 +3008,30 @@ async function handleSaveMaster(event) {
     receivableEl.innerHTML = emptyStateHtml('party-popper', "All collected!", "Every receivable has been paid back. Nothing left for Mochi to chase.");
   } else {
     activeReceivables.forEach((r, i) => {
+      const initial = Math.abs(Number(r.initialAmount) || 0);
       const rem = Math.abs(Number(r.remainingAmount) || 0);
+      const collected = Math.max(0, initial - rem);
+      const pctCollected = initial > 0 ? Math.min(100, Math.round((collected / initial) * 100)) : 0;
+
+      let dueBadgeHtml = '';
+      if (r.expectedReturn) {
+        const dueDate = new Date(r.expectedReturn);
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        dueDate.setHours(0,0,0,0);
+        const diffDays = Math.round((dueDate - today) / (1000 * 60 * 60 * 24));
+        
+        if (diffDays < 0) {
+          dueBadgeHtml = `<span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/20">Overdue ${Math.abs(diffDays)} Days</span>`;
+        } else if (diffDays === 0) {
+          dueBadgeHtml = `<span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20">Due Today</span>`;
+        } else {
+          dueBadgeHtml = `<span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Due in ${diffDays} Days</span>`;
+        }
+      }
+
       const div = document.createElement('div');
-      div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden select-none space-y-2";
+      div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden select-none space-y-3";
       div.style.animationDelay = `${i * 0.05}s`;
       div.onclick = () => { vibrate(30); showReceivableDetail(r); };
 
@@ -2873,12 +3044,39 @@ async function handleSaveMaster(event) {
               ${r.fromToWhom ? `<span class="text-[10px] text-faint font-extrabold">• ${escapeHtml(r.fromToWhom)}</span>` : ''}
             </div>
           </div>
+          ${dueBadgeHtml}
         </div>
-        <div>
-          <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING RECEIVABLE</span>
-          <span class="text-[18px] font-black amount-info block leading-none tracking-tight font-numeric">${formatRupiah(rem)}</span>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">REMAINING RECEIVABLE</span>
+            <span class="text-[16px] font-black amount-info block leading-none tracking-tight font-numeric">${formatRupiah(rem)}</span>
+          </div>
+          <div class="text-right">
+            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">TARGET DATE</span>
+            <span class="text-[13px] font-extrabold text-main block leading-none">${r.expectedReturn ? formatDate(r.expectedReturn) : 'No Target'}</span>
+          </div>
         </div>
-        ${r.expectedReturn ? `<div class="text-[10px] font-extrabold text-sky-600 dark:text-sky-400 bg-sky-500/10 px-3 py-1 rounded-lg flex items-center justify-between"><span class="flex items-center"><i data-lucide="calendar" class="w-3 h-3 mr-1"></i> Target Pelunasan: ${formatDate(r.expectedReturn)}</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></div>` : ''}
+
+        <!-- PROGRESS BAR PELUNASAN -->
+        ${initial > 0 ? `
+          <div class="space-y-1 pt-1">
+            <div class="flex justify-between text-[10px] font-extrabold text-muted">
+              <span>Collected: ${pctCollected}%</span>
+              <span>Total Loan: ${formatRupiah(initial)}</span>
+            </div>
+            <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden">
+              <div class="bg-gradient-to-r from-sky-400 to-sky-600 h-full rounded-full transition-all duration-700" style="width: ${pctCollected}%"></div>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- QUICK-PAY BUTTON -->
+        <div class="pt-2 border-t border-slate-100 dark:border-[var(--border-color)]">
+          <button type="button" onclick="vibrate(30); event.stopPropagation(); quickPayCommitment('${escapeAttr(r.receivableName)}', false, ${rem}, 'RECEIVABLE')" class="w-full py-2 bg-[var(--chip-info-bg)] text-sky-700 dark:text-sky-300 font-extrabold text-xs rounded-xl tap-shrink shadow-sm flex items-center justify-center hover:bg-sky-500/20">
+            <i data-lucide="download" class="w-3.5 h-3.5 mr-1"></i> Receive Payment (${formatRupiah(rem)})
+          </button>
+        </div>
       `;
       receivableEl.appendChild(div);
     });
@@ -3003,16 +3201,12 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
 }
 
     function populateFormDropdowns() {
-      const fillSelect = (id, items, key) => {
-        const sel = document.getElementById(id);
-        const optionsHtml = items.map(item => `<option value="${escapeAttr(item[key])}">${escapeHtml(item[key])}</option>`).join('');
-        sel.innerHTML = `<option value="">-- Select --</option>` + optionsHtml;
-      };
-      fillSelect('form-source-account', GLOBAL_DATA.accounts, 'accountName');
-      fillSelect('form-target-account', GLOBAL_DATA.accounts, 'accountName');
-      fillSelect('form-payable', GLOBAL_DATA.payables, 'payableName');
-      fillSelect('form-receivable', GLOBAL_DATA.receivables, 'receivableName');
+      // Just resets display on load
       resetCategoryPicker();
+      ['source-account', 'target-account', 'payable', 'receivable'].forEach(id => {
+        const disp = document.getElementById('display-' + id);
+        if (disp) { disp.innerText = "Select..."; disp.classList.add('text-faint'); }
+      });
       handleTypeChange();
     }
 
@@ -3051,6 +3245,119 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
         groups[main].items.push(c);
       });
       return { groups, order };
+    }
+
+    
+    function openItemPicker(type) {
+      vibrate(30);
+      const listEl = document.getElementById('item-picker-list');
+      const titleEl = document.getElementById('item-picker-title');
+      listEl.innerHTML = '';
+      
+      let html = '';
+      
+      if (type === 'source-account' || type === 'target-account') {
+        titleEl.innerText = type === 'source-account' ? 'Select Source Account' : 'Select Target Account';
+        
+        const groups = { 'Bank Accounts': [], 'E-Wallets': [], 'Physical Cash': [], 'Credit Cards & PayLater': [] };
+        
+        (GLOBAL_DATA.accounts || []).forEach(acc => {
+          const typeLower = (acc.accountType || '').toLowerCase();
+          const meta = getAccountIconMeta(acc.accountName, acc.accountType);
+          acc._meta = meta;
+          
+          if (meta.isLiability || typeLower.includes('credit card') || typeLower.includes('paylater')) {
+            groups['Credit Cards & PayLater'].push(acc);
+          } else if (typeLower.includes('e-wallet')) {
+            groups['E-Wallets'].push(acc);
+          } else if (typeLower.includes('cash') || typeLower.includes('tunai')) {
+            groups['Physical Cash'].push(acc);
+          } else {
+            groups['Bank Accounts'].push(acc);
+          }
+        });
+        
+        Object.entries(groups).forEach(([gName, items]) => {
+          if (items.length > 0) {
+            html += `<div class="mb-2 floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden">
+              <div class="px-4 py-2.5 bg-slate-50 dark:bg-[var(--bg-subtle)] text-[10px] font-bold text-muted uppercase tracking-wider">${gName}</div>
+              <div class="bg-[var(--bg-card)]">`;
+            items.forEach(acc => {
+              html += `
+                <div onclick="selectItemPicker('${type}', '${escapeAttr(acc.accountName)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center border-t border-slate-100 dark:border-[var(--border-color)] first:border-0">
+                  <div class="w-7 h-7 rounded-lg ${acc._meta.bg} flex items-center justify-center mr-3"><i data-lucide="${acc._meta.icon}" class="w-3.5 h-3.5"></i></div>
+                  <div class="flex-1 truncate">
+                    <span class="block truncate">${escapeHtml(acc.accountName)}</span>
+                    <span class="text-[10px] text-faint">${escapeHtml(acc.owner || 'Joint')}</span>
+                  </div>
+                </div>`;
+            });
+            html += `</div></div>`;
+          }
+        });
+        
+      } else if (type === 'payable') {
+        titleEl.innerText = 'Select Payable';
+        const activePayables = (GLOBAL_DATA.payables || []).filter(p => {
+          const st = (p.status || '').toLowerCase().trim();
+          return (st === 'active' || st === 'aktif') && Number(p.remainingAmount) > 0;
+        });
+        
+        if (activePayables.length === 0) {
+          html = `<p class="text-xs text-center text-muted py-4">No active payables found.</p>`;
+        } else {
+          html += `<div class="floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden bg-[var(--bg-card)]">`;
+          activePayables.forEach(p => {
+            html += `
+              <div onclick="selectItemPicker('${type}', '${escapeAttr(p.payableName)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between border-t border-slate-100 dark:border-[var(--border-color)] first:border-0">
+                <div class="flex items-center space-x-3 truncate">
+                  <div class="w-7 h-7 rounded-lg bg-[var(--chip-out-bg)] amount-out flex items-center justify-center"><i data-lucide="credit-card" class="w-3.5 h-3.5"></i></div>
+                  <span class="truncate">${escapeHtml(p.payableName)}</span>
+                </div>
+                <span class="text-[10px] font-bold text-muted">${formatRupiah(p.remainingAmount)}</span>
+              </div>`;
+          });
+          html += `</div>`;
+        }
+      } else if (type === 'receivable') {
+        titleEl.innerText = 'Select Receivable';
+        const activeReceivables = (GLOBAL_DATA.receivables || []).filter(r => {
+          const st = (r.status || '').toLowerCase().trim();
+          return (st === 'active' || st === 'unsettled' || st === 'aktif' || st === 'belum lunas') && Number(r.remainingAmount) > 0;
+        });
+        
+        if (activeReceivables.length === 0) {
+          html = `<p class="text-xs text-center text-muted py-4">No unsettled receivables found.</p>`;
+        } else {
+          html += `<div class="floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden bg-[var(--bg-card)]">`;
+          activeReceivables.forEach(r => {
+            html += `
+              <div onclick="selectItemPicker('${type}', '${escapeAttr(r.receivableName)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between border-t border-slate-100 dark:border-[var(--border-color)] first:border-0">
+                <div class="flex items-center space-x-3 truncate">
+                  <div class="w-7 h-7 rounded-lg bg-[var(--chip-info-bg)] amount-info flex items-center justify-center"><i data-lucide="hand-coins" class="w-3.5 h-3.5"></i></div>
+                  <span class="truncate">${escapeHtml(r.receivableName)}</span>
+                </div>
+                <span class="text-[10px] font-bold text-muted">${formatRupiah(r.remainingAmount)}</span>
+              </div>`;
+          });
+          html += `</div>`;
+        }
+      }
+      
+      listEl.innerHTML = html;
+      lucide.createIcons();
+      openModal('modalItemPicker');
+    }
+
+    function selectItemPicker(type, value) {
+      vibrate(20);
+      document.getElementById('form-' + type).value = value;
+      const displayEl = document.getElementById('display-' + type);
+      if (displayEl) {
+        displayEl.innerText = value;
+        displayEl.classList.remove('text-faint');
+      }
+      closeModal('modalItemPicker');
     }
 
     function openCategoryPicker() {
@@ -3324,14 +3631,14 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       let html = `<div class="space-y-4 pt-1">
         <div class="text-center pb-2">
           <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--chip-in-bg)] amount-in uppercase tracking-wider mb-2 inline-block">Real Income Insight</span>
-          <h3 class="text-lg font-extrabold text-main leading-tight">Total Pemasukan</h3>
+          <h3 class="text-lg font-extrabold text-main leading-tight">Total Income</h3>
           <p class="text-3xl font-black mt-2 amount-in">+${formatRupiah(total)}</p>
         </div>
-        <p class="text-xs text-muted font-semibold text-center px-4 mb-2">Hanya menghitung uang masuk yang benar-benar merupakan pendapatan (gaji, bonus, bunga, dll).</p>
+        <p class="text-xs text-muted font-semibold text-center px-4 mb-2">Only counts incoming money that is truly revenue (salary, bonus, interest, etc).</p>
         <div class="space-y-1.5 max-h-60 overflow-y-auto pr-1">`;
       
       if (incomes.length === 0) {
-        html += `<p class="text-xs text-center text-muted py-6 font-semibold">Tidak ada pemasukan tercatat di periode ini.</p>`;
+        html += `<p class="text-xs text-center text-muted py-6 font-semibold">No income recorded in this period.</p>`;
       } else {
         incomes.forEach(t => {
           html += `<div class="flex justify-between items-center text-xs p-3.5 floating-item border border-slate-100 dark:border-[var(--border-color)] select-none">
@@ -3357,7 +3664,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
 
       const groups = {};
       expenses.forEach(t => {
-        const cat = t.category || 'Lainnya';
+        const cat = t.category || 'Others';
         groups[cat] = (groups[cat] || 0) + (Number(t.amount) || 0);
       });
       const sorted = Object.entries(groups).sort((a,b) => b[1] - a[1]);
@@ -3365,21 +3672,21 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       let html = `<div class="space-y-4 pt-1">
         <div class="text-center pb-2">
           <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">Real Expense Insight</span>
-          <h3 class="text-lg font-extrabold text-main leading-tight">Total Pengeluaran</h3>
+          <h3 class="text-lg font-extrabold text-main leading-tight">Total Expenses</h3>
           <p class="text-3xl font-black mt-2 amount-out">-${formatRupiah(total)}</p>
         </div>
-        <p class="text-xs text-muted font-semibold text-center px-4 mb-2">Hanya menghitung pengeluaran konsumtif. (Membayar hutang cicilan / memberi piutang tidak dihitung di sini).</p>
+        <p class="text-xs text-muted font-semibold text-center px-4 mb-2">Only counts consumptive expenses (Paying debts / giving loans are not counted here).</p>
         <div class="space-y-1.5 max-h-60 overflow-y-auto pr-1">`;
       
       if (sorted.length === 0) {
-        html += `<p class="text-xs text-center text-muted py-6 font-semibold">Tidak ada pengeluaran tercatat di periode ini.</p>`;
+        html += `<p class="text-xs text-center text-muted py-6 font-semibold">No expense recorded in this period.</p>`;
       } else {
         sorted.forEach(([cat, amt]) => {
           const pct = total > 0 ? ((amt / total) * 100).toFixed(0) : 0;
           html += `<div class="flex justify-between items-center text-xs p-3.5 floating-item border border-slate-100 dark:border-[var(--border-color)] select-none">
             <div class="truncate pr-2">
               <p class="font-bold text-main truncate">${escapeHtml(cat)}</p>
-              <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${pct}% dari total pengeluaran</p>
+              <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${pct}% of total expenses</p>
             </div>
             <span class="font-black amount-out whitespace-nowrap text-[13px] font-numeric">${formatRupiah(amt)}</span>
           </div>`;
@@ -3413,7 +3720,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       let html = `<div class="space-y-4 pt-1">
         <div class="text-center pb-2">
           <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">Cashflow Bridge</span>
-          <h3 class="text-lg font-extrabold text-main leading-tight">Jembatan Arus Kas</h3>
+          <h3 class="text-lg font-extrabold text-main leading-tight">Cashflow Bridge</h3>
         </div>
         
         <div class="ios-input p-5 space-y-3 bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
@@ -3432,22 +3739,22 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
         </div>
 
         <div class="px-2">
-          <p class="text-xs text-muted font-semibold text-center mb-4 leading-relaxed">Walaupun Real Surplus kamu <strong>${formatRupiah(netSurplus)}</strong>, wujud fisik uang (di dompet/bank) bertambah/berkurang sesuai angka di bawah, karena adanya transaksi non-P&L (seperti bayar hutang/terima talangan).</p>
+          <p class="text-xs text-muted font-semibold text-center mb-4 leading-relaxed">Even though your Real Surplus is <strong>${formatRupiah(netSurplus)}</strong>, your physical cash (in wallet/bank) changed by the amount below due to non-P&L transactions (e.g., paying debts or receiving reimbursements).</p>
         </div>
 
         <div class="grid grid-cols-2 gap-3 mb-2">
           <div class="p-3.5 bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-xl border border-slate-100 dark:border-[var(--border-color)]">
-            <span class="text-[9px] text-muted font-bold block mb-1 uppercase tracking-wider">Transaksi Fisik Masuk</span>
+            <span class="text-[9px] text-muted font-bold block mb-1 uppercase tracking-wider">Physical Cash In</span>
             <span class="text-sm font-black amount-in font-numeric">+${formatRupiah(otherIn)}</span>
           </div>
           <div class="p-3.5 bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-xl border border-slate-100 dark:border-[var(--border-color)]">
-            <span class="text-[9px] text-muted font-bold block mb-1 uppercase tracking-wider">Transaksi Fisik Keluar</span>
+            <span class="text-[9px] text-muted font-bold block mb-1 uppercase tracking-wider">Physical Cash Out</span>
             <span class="text-sm font-black amount-out font-numeric">-${formatRupiah(otherOut)}</span>
           </div>
         </div>
         
         <div class="flex justify-between items-center p-4 bg-[var(--bg-card)] rounded-2xl border border-[var(--border-color)] shadow-sm">
-          <span class="text-[11px] font-black text-main uppercase tracking-wider">Perubahan Kas Fisik</span>
+          <span class="text-[11px] font-black text-main uppercase tracking-wider">Physical Cash Change</span>
           <span class="text-lg font-black ${pColor} font-numeric">${physicalCashChange >= 0 ? '+' : ''}${formatRupiah(physicalCashChange)}</span>
         </div>
 
@@ -3536,13 +3843,13 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
 
       <div class="ios-input space-y-2.5 text-xs font-semibold text-muted py-4 px-5 bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
         <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
-          <span>Kategori Kewajiban:</span> 
+          <span>Liability Category:</span> 
           <span class="font-extrabold text-main">${escapeHtml(type)}</span>
         </div>
-        ${!isAccount && item.owedTo ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Kreditur / Provider:</span> <span class="font-extrabold text-main">${escapeHtml(item.owedTo)}</span></div>` : ''}
+        ${!isAccount && item.owedTo ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Creditor / Provider:</span> <span class="font-extrabold text-main">${escapeHtml(item.owedTo)}</span></div>` : ''}
         
         <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
-          <span>${isAccount ? 'Statement Balance Cetak:' : 'Total Plafon / Hutang Awal:'}</span> 
+          <span>${isAccount ? 'Statement Balance Cetak:' : 'Total Principal / Initial Debt:'}</span> 
           <span class="font-extrabold text-main font-numeric">${formatRupiah(isAccount ? amount : initial)}</span>
         </div>
 
@@ -3553,45 +3860,45 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
           </div>
         ` : ''}
         
-        ${!isAccount && item.termMonths ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Tenor Pinjaman:</span> <span class="font-extrabold text-main">${item.termMonths} Bulan</span></div>` : ''}
-        ${!isAccount && item.monthlyInstallment ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Cicilan Bulanan:</span> <span class="font-extrabold amount-out font-numeric">${formatRupiah(item.monthlyInstallment)}/bln</span></div>` : ''}
-        ${!isAccount && item.dueDate ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Tanggal Jatuh Tempo:</span> <span class="font-extrabold text-main">${formatDate(item.dueDate)}</span></div>` : ''}
+        ${!isAccount && item.termMonths ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Loan Term:</span> <span class="font-extrabold text-main">${item.termMonths} Months</span></div>` : ''}
+        ${!isAccount && item.monthlyInstallment ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Monthly Installment:</span> <span class="font-extrabold amount-out font-numeric">${formatRupiah(item.monthlyInstallment)}/mo</span></div>` : ''}
+        ${!isAccount && item.dueDate ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Tanggal Due Date:</span> <span class="font-extrabold text-main">${formatDate(item.dueDate)}</span></div>` : ''}
 
         <div class="flex justify-between pt-1 items-center">
-          <span>Sisa Tagihan:</span> 
+          <span>Remaining Bill:</span> 
           <span class="font-black amount-out text-[16px] font-numeric">${formatRupiah(amount)}</span>
         </div>
       </div>
 
       ${isCreditCard ? `
         <div class="p-3.5 rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-300 text-[11px] font-semibold border border-amber-500/20">
-          💡 <strong>Info Kartu Kredit:</strong> Pelunasan Minimum Payment (Rp ${formatRupiah(minPay)}) mencegah denda telat, namun sisa tagihan (Rp ${formatRupiah(amount - minPay)}) akan dikenakan estimasi bunga berjalan ~1.75%/bulan.
+          💡 <strong>Credit Card Info:</strong> Paying the Minimum Payment (Rp ${formatRupiah(minPay)}) prevents late fees, but the remaining balance (Rp ${formatRupiah(amount - minPay)}) will incur an estimated revolving interest of ~1.75%/month.
         </div>
       ` : (isPayLater ? `
         <div class="p-3.5 rounded-xl bg-orange-500/10 text-orange-800 dark:text-orange-300 text-[11px] font-semibold border border-orange-500/20">
-          ⚠️ <strong>Info PayLater:</strong> Wajib pelunasan 100% pada tanggal jatuh tempo. Keterlambatan pembayaran akan langsung dikenakan denda harian.
+          ⚠️ <strong>PayLater Info:</strong> Requires 100% full payment on the due date. Late payments will immediately incur daily penalties.
         </div>
       ` : '')}
 
       <!-- QUICK-PAY ACTION BUTTONS -->
       <div class="pt-2">
         <button onclick="quickPayCommitment('${escapeAttr(name)}', ${isAccount}, ${amount}, 'FULL')" class="w-full py-3 bg-mochi hover:bg-mochi-dark text-white font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center mb-2">
-          <i data-lucide="check-circle-2" class="w-4 h-4 mr-1.5"></i> Pelunasan Penuh (${formatRupiah(amount)})
+          <i data-lucide="check-circle-2" class="w-4 h-4 mr-1.5"></i> Full Payment (${formatRupiah(amount)})
         </button>
         ${isCreditCard ? `
           <button onclick="quickPayCommitment('${escapeAttr(name)}', true, ${minPay}, 'MIN')" class="w-full py-2.5 bg-[var(--bg-subtle-2)] text-main font-bold rounded-xl tap-shrink text-xs border border-[var(--border-color)] flex items-center justify-center">
-            Pembayaran Minimum (${formatRupiah(minPay)})
+            Minimum Payment (${formatRupiah(minPay)})
           </button>
         ` : ''}
       </div>
 
       <div>
-        <p class="font-bold text-[10px] text-muted mb-2.5 uppercase tracking-wider">Riwayat Pembayaran & Transaksi Terkait</p>
+        <p class="font-bold text-[10px] text-muted mb-2.5 uppercase tracking-wider">Payment History & Related Transactions</p>
         <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
   `;
 
   if (relatedTrx.length === 0) {
-    html += `<p class="text-xs text-center text-muted py-6 font-semibold flex flex-col items-center"><i data-lucide="inbox" class="w-5 h-5 mb-2 text-faint"></i>Belum ada transaksi cicilan tercatat.</p>`;
+    html += `<p class="text-xs text-center text-muted py-6 font-semibold flex flex-col items-center"><i data-lucide="inbox" class="w-5 h-5 mb-2 text-faint"></i>No installment transactions recorded yet.</p>`;
   } else {
     relatedTrx.forEach(t => {
       const meta = getTypeMeta(t.type);
@@ -3612,7 +3919,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
   html += `</div></div></div>`;
   html += `
     <div class="flex space-x-3 pt-4">
-      <button onclick="${isAccount ? `openEditAccountModal('${escapeAttr(name)}')` : `openEditPayableModal('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit Detail</button>
+      <button onclick="${isAccount ? `openEditAccountModal('${escapeAttr(name)}')` : `openEditPayableModal('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit Details</button>
       <button onclick="${isAccount ? `promptDeleteAccount('${escapeAttr(name)}')` : `promptDeletePayable('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
     </div>`;
   document.getElementById('modal-detail-inner').innerHTML = html;
@@ -3806,28 +4113,28 @@ function openMasterModal(type, isEdit = false) {
         </div>
       </div>
       <div>
-        <label for="master-payable-owed-to" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Kreditur / Pihak Pemberi Pinjaman</label>
-        <input type="text" id="master-payable-owed-to" class="w-full ios-input py-2.5" placeholder="Contoh: GoPinjam / Kredivo / BCA">
+        <label for="master-payable-owed-to" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Creditor / Lender</label>
+        <input type="text" id="master-payable-owed-to" class="w-full ios-input py-2.5" placeholder="e.g., GoPinjam / Kredivo / BCA">
       </div>
       
       <!-- SMART HYBRID CALCULATOR -->
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label for="master-payable-net" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Pokok Pinjaman Bersih</label>
+          <label for="master-payable-net" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Net Principal</label>
           <input type="number" id="master-payable-net" class="w-full ios-input py-2.5" placeholder="0" oninput="calcSmartPayable()">
         </div>
         <div>
-          <label for="master-payable-term" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Tenor (Bulan)</label>
+          <label for="master-payable-term" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Tenor (Months)</label>
           <input type="number" id="master-payable-term" class="w-full ios-input py-2.5" placeholder="0" oninput="calcSmartPayable()">
         </div>
       </div>
       <div class="grid grid-cols-2 gap-3 mt-1.5">
         <div>
-          <label for="master-payable-interest" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Bunga / Bulan (%)</label>
-          <input type="number" step="0.01" id="master-payable-interest" class="w-full ios-input py-2.5" placeholder="Misal: 2.5" oninput="calcSmartPayable()">
+          <label for="master-payable-interest" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Interest / Month (%)</label>
+          <input type="number" step="0.01" id="master-payable-interest" class="w-full ios-input py-2.5" placeholder="e.g., 2.5" oninput="calcSmartPayable()">
         </div>
         <div>
-          <label for="master-payable-admin" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Biaya Admin (Rp)</label>
+          <label for="master-payable-admin" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Admin Fee (Rp)</label>
           <input type="number" id="master-payable-admin" class="w-full ios-input py-2.5" placeholder="0" oninput="calcSmartPayable()">
         </div>
       </div>
@@ -3835,12 +4142,12 @@ function openMasterModal(type, isEdit = false) {
       <div class="border-t border-slate-200 dark:border-[var(--border-color)] my-3 pt-3">
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label for="master-payable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Total Hutang (Plafon)</label>
-            <input type="number" id="master-payable-total" class="w-full ios-input py-2.5 font-black text-mochi" placeholder="Bisa diedit manual" required>
+            <label for="master-payable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Total Debt (Principal)</label>
+            <input type="number" id="master-payable-total" class="w-full ios-input py-2.5 font-black text-mochi" placeholder="Can be manually edited" required>
           </div>
           <div>
-            <label for="master-payable-installment" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Cicilan per Bulan</label>
-            <input type="number" id="master-payable-installment" class="w-full ios-input py-2.5 font-black text-mochi" placeholder="Bisa diedit manual">
+            <label for="master-payable-installment" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Monthly Installment</label>
+            <input type="number" id="master-payable-installment" class="w-full ios-input py-2.5 font-black text-mochi" placeholder="Can be manually edited">
           </div>
         </div>
       </div>
@@ -3848,7 +4155,7 @@ function openMasterModal(type, isEdit = false) {
 
       <div class="grid grid-cols-2 gap-3 mt-2">
         <div>
-          <label for="master-payable-start" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Tgl Cair</label>
+          <label for="master-payable-start" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Disbursed Date</label>
           <input type="date" id="master-payable-start" class="w-full ios-input py-2 px-2 text-xs">
         </div>
         <div>
@@ -3857,15 +4164,15 @@ function openMasterModal(type, isEdit = false) {
         </div>
       </div>
       <div>
-        <label for="master-payable-account" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Rekening Pemotong Cicilan</label>
+        <label for="master-payable-account" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Payment Account</label>
         <select id="master-payable-account" class="w-full ios-input cursor-pointer py-2.5">
-          <option value="">-- Pilih Rekening --</option>
+          <option value="">-- Select Account --</option>
           ${accountOptions}
         </select>
       </div>
       <div>
         <label for="master-payable-notes" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Notes</label>
-        <input type="text" id="master-payable-notes" class="w-full ios-input py-2.5" placeholder="Catatan tambahan...">
+        <input type="text" id="master-payable-notes" class="w-full ios-input py-2.5" placeholder="Additional notes...">
       </div>
     `;
 
@@ -3897,33 +4204,33 @@ function openMasterModal(type, isEdit = false) {
         </div>
       </div>
       <div>
-        <label for="master-receivable-from" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Debitur / Pihak Yang Berhutang</label>
-        <input type="text" id="master-receivable-from" class="w-full ios-input py-2.5" placeholder="Contoh: Mama / Teman">
+        <label for="master-receivable-from" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Debtor / Borrower</label>
+        <input type="text" id="master-receivable-from" class="w-full ios-input py-2.5" placeholder="e.g., Mom / Friend">
       </div>
       <div>
-        <label for="master-receivable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Total Piutang (Rp)</label>
+        <label for="master-receivable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Total Receivable (Rp)</label>
         <input type="number" id="master-receivable-total" class="w-full ios-input py-2.5" value="0" required>
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label for="master-receivable-occurred" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Tgl Pinjam</label>
+          <label for="master-receivable-occurred" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Loan Date</label>
           <input type="date" id="master-receivable-occurred" class="w-full ios-input py-2 px-2 text-xs">
         </div>
         <div>
-          <label for="master-receivable-return" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Target Pelunasan</label>
+          <label for="master-receivable-return" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Target Date</label>
           <input type="date" id="master-receivable-return" class="w-full ios-input py-2 px-2 text-xs">
         </div>
       </div>
       <div>
-        <label for="master-receivable-account" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Rekening Sumber / Penerima</label>
+        <label for="master-receivable-account" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Source / Receiving Account</label>
         <select id="master-receivable-account" class="w-full ios-input cursor-pointer py-2.5">
-          <option value="">-- Pilih Rekening --</option>
+          <option value="">-- Select Account --</option>
           ${accountOptions}
         </select>
       </div>
       <div>
         <label for="master-receivable-notes" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Notes</label>
-        <textarea id="master-receivable-notes" rows="2" class="w-full ios-input py-2.5" placeholder="Catatan talangan..."></textarea>
+        <textarea id="master-receivable-notes" rows="2" class="w-full ios-input py-2.5" placeholder="Reimbursement notes..."></textarea>
       </div>
     `;
 
