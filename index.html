@@ -77,18 +77,12 @@
 
     * { font-variant-numeric: tabular-nums; -webkit-tap-highlight-color: transparent; }
 
-    /* ===== NUMERIC / MONEY TYPOGRAPHY =====
-       Distinct face for figures so amounts read as precise, "engineered" data —
-       not just slightly-bigger body text. Used on every rupiah amount. */
     .font-numeric {
       font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
       font-variant-numeric: tabular-nums;
       letter-spacing: -0.01em;
     }
 
-    /* ===== AMBIENT BACKGROUND DEPTH =====
-       Two soft, low-opacity color blobs anchored behind the content. Fixed +
-       z-index -1 so they never intercept taps and never shift on scroll. */
     .ambient-blob {
       position: fixed; z-index: -1; border-radius: 9999px; pointer-events: none;
       filter: blur(70px); opacity: 0.35; transition: opacity 0.3s ease;
@@ -139,14 +133,11 @@
     .paw-fab { animation: pawPulse 2.5s ease-out 3; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .paw-fab:active { transform: scale(0.9); }
 
-    /* ===== VAULT CARD — premium metal-card treatment ===== */
     .vault-card { isolation: isolate; }
-    /* Fine grain so the gradient reads as brushed metal, not a flat CSS gradient */
     .vault-texture {
       position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: 0.5; mix-blend-mode: overlay;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
     }
-    /* Diagonal light sweep — plays once on load, replays briefly on tap */
     .vault-sheen { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
     .vault-sheen::after {
       content: ""; position: absolute; top: -50%; left: -60%; width: 45%; height: 200%;
@@ -155,7 +146,6 @@
     }
     .vault-card.replay-sheen .vault-sheen::after { animation: vaultSheenSweep 1.4s cubic-bezier(0.22, 1, 0.36, 1) 1; }
     @keyframes vaultSheenSweep { to { transform: translateX(220%) rotate(8deg); } }
-    /* Embossed gold chip — inset highlight/shadow instead of a flat fill */
     .vault-chip {
       background: linear-gradient(145deg, #F4D690 0%, #D9A94E 45%, #B8842E 100%);
       box-shadow: inset 0 1px 1px rgba(255,255,255,0.7), inset 0 -1.5px 2px rgba(120,80,20,0.5), 0 1px 2px rgba(0,0,0,0.25);
@@ -175,7 +165,6 @@
     .modal-content-center { transform: scale(0.9) translateY(20px); opacity: 0; transition: all 0.3s; }
     .modal-content-center.show { transform: scale(1) translateY(0); opacity: 1; }
 
-    /* ===== SMOOTH ENTRY ANIMATIONS ===== */
     @keyframes floatIdle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
     .animate-float { animation: floatIdle 3s ease-in-out infinite; }
 
@@ -189,7 +178,6 @@
     .page-animate > *:nth-child(6) { animation-delay: 250ms; }
     .page-animate > *:nth-child(n+7) { animation-delay: 300ms; }
 
-    /* ===== SKELETON SHIMMER (shown only on true first load, no cache) ===== */
     @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
     .skeleton-block {
       border-radius: 1.25rem;
@@ -198,10 +186,7 @@
       animation: shimmer 1.4s linear infinite;
     }
 
-    /* ===== TOP PROGRESS BAR (silent background refresh, non-intrusive) ===== */
-    #top-progress-bar {
-      opacity: 0; transition: opacity 0.25s ease;
-    }
+    #top-progress-bar { opacity: 0; transition: opacity 0.25s ease; }
     #top-progress-bar.show { opacity: 1; }
     #top-progress-fill {
       background: linear-gradient(90deg, transparent, var(--mochi, #C87A4B) 40%, var(--mochi, #C87A4B) 60%, transparent);
@@ -216,16 +201,13 @@
 </head>
 <body class="min-h-screen">
 
-  <!-- AMBIENT DEPTH — soft fixed color blobs, purely atmospheric -->
   <div class="ambient-blob ambient-blob-1" aria-hidden="true"></div>
   <div class="ambient-blob ambient-blob-2" aria-hidden="true"></div>
 
-  <!-- TOP PROGRESS BAR (background sync, sits above the status bar area, never crowds header content) -->
   <div id="top-progress-bar" class="fixed top-0 left-0 right-0 h-[3px] z-[160] pointer-events-none">
     <div id="top-progress-fill" class="h-full w-full"></div>
   </div>
 
-  <!-- SKELETON (only shown briefly on a true first-load with no cache) -->
   <div id="skeleton-screen" class="fixed inset-0 z-[140] hidden bg-[var(--bg-app)] px-5 pt-16 max-w-3xl mx-auto">
     <div class="skeleton-block h-24 w-full mb-5"></div>
     <div class="skeleton-block h-40 w-full mb-4 rounded-[2rem]"></div>
@@ -238,13 +220,11 @@
     <div class="skeleton-block h-32 w-full"></div>
   </div>
 
-<!-- REWARD OVERLAY -->
   <div id="reward-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center pointer-events-none">
     <div class="absolute inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/80 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="reward-bg"></div>
     <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="reward-content">
       <div class="relative">
         <div class="absolute inset-0 bg-mochi-light/50 rounded-full animate-ping opacity-75 blur-md"></div>
-        <!-- Gambar mengawang besar (w-28 h-28) dengan bayangan glow 3D -->
         <img src="assets/cat-paw-3d.png" alt="Purrfect Paw" class="w-28 h-28 object-contain relative z-10 filter drop-shadow-[0_12px_25px_rgba(200,122,75,0.6)]">
       </div>
       <h2 class="text-white text-3xl font-black mt-4 drop-shadow-lg tracking-tight">Purr-fect! 🐾</h2>
@@ -254,7 +234,6 @@
 
   <div id="toast-container" class="fixed left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4" style="top: max(1.25rem, env(safe-area-inset-top))"></div>
 
-  <!-- HEADER BAR -->
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-3">
       <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0 self-center">
@@ -285,10 +264,8 @@
   </header>
   
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
-    <!-- DASHBOARD PAGE -->
     <section id="page-dashboard" class="space-y-6 page-animate pt-2">
       
-      <!-- NET WORTH CARD -->
       <div id="vault-card" ontouchstart="vibrate(30); pulseVaultSheen()" onclick="showKpiDetail('Net Worth')" class="vault-card floating-card p-6 cursor-pointer card-hover relative overflow-hidden bg-gradient-to-br from-obsidian via-[#2C201A] to-coffee-darkest dark:from-mochi-dark dark:via-[#3E2519] dark:to-obsidian text-white border border-white/10 shadow-xl rounded-[2rem]">
         <div class="vault-texture"></div>
         <div class="vault-sheen"></div>
@@ -319,7 +296,6 @@
         </div>
       </div>
 
-      <!-- KPI GRID DENGAN PADDING AMAN TAILWIND (P-5) -->
       <div class="grid grid-cols-2 gap-3">
         <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="floating-item p-5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
           <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-3.5 h-3.5 mr-1.5 amount-in flex-shrink-0"></i> TOTAL CASH</span>
@@ -342,7 +318,6 @@
         </div>
       </div>
 
-      <!-- EXPENSE ANALYSIS -->
       <div class="floating-card p-5 relative overflow-hidden">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <h3 class="text-sm font-extrabold text-main">Expense Analysis</h3>
@@ -352,7 +327,6 @@
         <div id="dashboard-category-analysis" class="space-y-3 relative z-10"></div>
       </div>
 
-      <!-- BUDGET MANAGEMENT CARD -->
       <div class="floating-card p-5 relative overflow-hidden">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <div class="flex items-center space-x-2">
@@ -369,7 +343,6 @@
         <div id="dashboard-budget-summary" class="space-y-3"></div>
       </div>
 
-      <!-- RECENT TRANSACTIONS -->
       <div class="floating-card p-5 mb-12">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <h3 class="text-sm font-extrabold text-main">Recent Transactions</h3>
@@ -379,7 +352,6 @@
       </div>
     </section>
 
-    <!-- 2. HISTORY PAGE -->
     <section id="page-history" class="hidden space-y-4 page-animate">
       <div class="floating-card p-5 space-y-4">
         <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 dark:border-[var(--border-color)] pb-4 gap-3">
@@ -466,8 +438,7 @@
 
       <div id="history-transaction-list" class="space-y-2 pb-8"></div>
     </section>
-    
-    <!-- 3. WALLETS PAGE -->
+
     <section id="page-wallets" class="hidden space-y-6 page-animate pb-8">
       <div class="floating-card p-5">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
@@ -486,7 +457,6 @@
       </div>
     </section>
 
-    <!-- 4. AP/R PAGE -->
     <section id="page-payables" class="hidden space-y-6 page-animate pb-8">
       <div class="floating-card p-5">
         <h3 class="text-xs font-extrabold uppercase tracking-wider amount-out mb-4 flex items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
@@ -503,7 +473,6 @@
     </section>
   </main>
 
-  <!-- BOTTOM NAVIGATION -->
   <nav class="fixed bottom-0 left-0 right-0 nav-bar-bottom z-40 rounded-t-3xl border-t border-slate-200/50 dark:border-[var(--border-color)]">
     <div class="flex justify-between items-center w-full max-w-md mx-auto px-6 py-3 relative">
       <button ontouchstart="vibrate(30)" onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-item bg-mochi-light/20 text-mochi dark:text-mochi-light px-4 py-2.5 rounded-2xl flex items-center justify-center space-x-2 tap-shrink">
@@ -531,7 +500,6 @@
     </div>
   </nav>
 
-  <!-- FAB (Soft Chip Style matching "THIS MONTH" badge) -->
   <div class="fixed bottom-[5.5rem] left-0 right-0 z-50 pointer-events-none">
     <div class="max-w-3xl mx-auto px-5 relative h-full">
       <button ontouchstart="vibrate(35)" onclick="openNewTransactionForm()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-[var(--bg-card)] rounded-full shadow-[0_8px_20px_-4px_rgba(200,122,75,0.3)] flex items-center justify-center pointer-events-auto border-2 border-mochi-light/40 group p-2.5">
@@ -540,7 +508,6 @@
     </div>
   </div>
 
-  <!-- MODALS -->
   <div id="modalTransactionForm" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalTransactionForm')">
     <div id="modalTransactionForm-content" class="glass-modal-content w-full max-w-lg rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200 dark:border-[var(--border-color)] pb-4 mb-4">
@@ -647,7 +614,6 @@
     </div>
   </div>
 
-  <!-- MODAL DETAIL -->
   <div id="modalDetail" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDetail')">
     <div id="modalDetail-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto modal-content-center">
       <button ontouchstart="vibrate(30)" onclick="closeModal('modalDetail')" class="tap-shrink absolute top-4 right-4 text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition z-20 border border-[var(--border-color)]">
@@ -657,7 +623,6 @@
     </div>
   </div>
 
-  <!-- MODAL PICKER: TRANSACTION TYPE -->
   <div id="modalTypePicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[75] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalTypePicker')">
     <div id="modalTypePicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
@@ -670,7 +635,6 @@
     </div>
   </div>
 
-  <!-- MODAL PICKER: CATEGORY -->
   <div id="modalCategoryPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalCategoryPicker')">
     <div id="modalCategoryPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center pb-3 mb-3 border-b border-slate-200/50 dark:border-[var(--border-color)]">
@@ -683,7 +647,6 @@
     </div>
   </div>
 
-  <!-- MODAL: MASTER DATA -->
   <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3">
@@ -729,7 +692,6 @@
     </div>
   </div>
 
-  <!-- MODAL: CUSTOM BUDGET EDITOR -->
   <div id="modalBudgetEditor" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalBudgetEditor')">
     <div id="modalBudgetEditor-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center max-h-[85vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-4">
@@ -754,7 +716,6 @@
     </div>
   </div>
 
-  <!-- MODAL: DELETE CONFIRMATION -->
   <div id="modalDelete" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalDelete')">
     <div id="modalDelete-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center text-center">
       <div class="w-16 h-16 bg-rose-500/10 amount-out rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-500/20">
@@ -1210,7 +1171,6 @@
       const card = document.getElementById('vault-card');
       if (!card) return;
       card.classList.remove('replay-sheen');
-      // Force reflow so the animation can be retriggered on consecutive taps
       void card.offsetWidth;
       card.classList.add('replay-sheen');
     }
@@ -1400,14 +1360,14 @@
     }
 
     function dismissSplashScreen(delay = 0) {
-  setTimeout(() => {
-    const skeleton = document.getElementById('skeleton-screen');
-    const main = document.getElementById('main-content');
+      setTimeout(() => {
+        const skeleton = document.getElementById('skeleton-screen');
+        const main = document.getElementById('main-content');
 
-    if (main) main.classList.remove('hidden');
-    if (skeleton) skeleton.classList.add('hidden');
-  }, delay);
-}
+        if (main) main.classList.remove('hidden');
+        if (skeleton) skeleton.classList.add('hidden');
+      }, delay);
+    }
 
     function showSyncIndicator(show) {
       const el = document.getElementById('top-progress-bar');
@@ -1420,15 +1380,13 @@
       const hadCache = !!localCache;
 
       if (localCache && !isSilentReload) {
-        // Cache HIT: render instan, splash dismiss cepat (guard kecil biar gak flicker)
         try {
           GLOBAL_DATA = JSON.parse(localCache);
           renderAllViews();
           dismissSplashScreen(150);
-          isSilentReload = true; // fetch di bawah jadi silent background refresh
+          isSilentReload = true;
         } catch(e) { console.error("Cache parse error", e); }
       } else if (!localCache) {
-        // Cache MISS (first ever open): tampilkan skeleton, bukan spinner kosong
         const skeleton = document.getElementById('skeleton-screen');
         if (skeleton) skeleton.classList.remove('hidden');
       }
@@ -1447,8 +1405,6 @@
         renderAllViews();
 
         if (!isSilentReload) {
-          // Gak ada cache sama sekali: kasih minimum tampil skeleton biar gak "kedip"
-          // kalau fetch-nya ternyata cepat banget
           const elapsed = performance.now() - fetchStart;
           const minShow = Math.max(0, 300 - elapsed);
           dismissSplashScreen(minShow);
@@ -1630,7 +1586,6 @@
       }, 1500);
     }
 
-    // KARTU BUDGET: POLOS TRANSPARAN DENGAN GARIS PEMISAH TIPIS HALUS
     function renderBudgetSummaryCard() {
       const container = document.getElementById('dashboard-budget-summary');
       if (!container) return;
@@ -1652,7 +1607,8 @@
       const spentMap = {};
       trxThisMonth.forEach(t => {
         const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
-        const main = t.mainCategory || (catMatch ? catMatch.mainCategory : null) || t.category || 'Lainnya';
+        // REVISI: Utamakan matching kategori JavaScript agar selalu merujuk ke MainCategory yang benar
+        const main = (catMatch ? catMatch.mainCategory : null) || t.mainCategory || t.category || 'Lainnya';
         spentMap[main] = (spentMap[main] || 0) + (Number(t.amount) || 0);
       });
 
@@ -1665,7 +1621,6 @@
 
         const catMeta = getCategoryIconMeta(cat, 'Expense');
         
-        // Status & Color Rules
         let barColor = "from-emerald-400 to-emerald-600";
         let dotColor = "bg-emerald-500";
         let statusText = "On Track";
@@ -1695,7 +1650,6 @@
 
         return `
           <div onclick="vibrate(30); showBudgetDetail('${escapeAttr(cat)}')" class="p-5 bg-transparent rounded-2xl border border-[var(--border-color)] cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3.5 select-none">
-            <!-- 1. Header: Icon + Name + Edit Action Button (Top Divider) -->
             <div class="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
               <div class="flex items-center space-x-3 min-w-0 pr-2">
                 <div class="w-9 h-9 rounded-xl bg-[var(--bg-subtle-2)] flex items-center justify-center flex-shrink-0 border border-[var(--border-color)]">
@@ -1708,7 +1662,6 @@
               </button>
             </div>
 
-            <!-- 2. Badges Row: Status Dot + Remaining Badge -->
             <div class="flex items-center space-x-2 text-[11px] font-extrabold">
               <span class="px-2.5 py-0.5 rounded-full bg-[var(--bg-subtle-2)] text-main flex items-center border border-[var(--border-color)]">
                 <span class="w-2 h-2 rounded-full ${dotColor} mr-1.5 animate-pulse"></span>
@@ -1719,14 +1672,12 @@
               </span>
             </div>
 
-            <!-- 3. Progress Bar -->
             <div class="space-y-1">
               <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2.5 overflow-hidden">
                 <div class="bg-gradient-to-r ${barColor} h-full rounded-full transition-all duration-1000 ease-out" style="width: ${pct}%"></div>
               </div>
             </div>
 
-            <!-- 4. Footer Row: Spent & Limit + Details CTA (Bottom Divider) -->
             <div class="flex justify-between items-center text-xs font-bold pt-3 border-t border-slate-100 dark:border-[var(--border-color)]">
               <div class="flex items-center space-x-3 text-muted">
                 <span class="text-[11px]">
@@ -1763,7 +1714,7 @@
       const categoryTrx = allTrx.filter(t => {
         if (t.type !== 'Expense' || !t.date || t.date.substring(0, 7) !== currentYM) return false;
         const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
-        const main = t.mainCategory || (catMatch ? catMatch.mainCategory : null) || t.category || 'Lainnya';
+        const main = (catMatch ? catMatch.mainCategory : null) || t.mainCategory || t.category || 'Lainnya';
         return main === catName;
       });
 
@@ -1946,9 +1897,7 @@
         showToast("Failed to save budgets: " + err.message, "error");
       }
     }
-    
-    // Tonal ramp derived from the mochi palette — warmest/most-spent category first,
-    // fading toward the muted border tone so a 7th+ "Other" slice reads as background.
+
     const DONUT_PALETTE = ['#A45D33', '#C87A4B', '#DB9563', '#E8A87C', '#F0C29E', '#F3D5BC', '#D8CBC0'];
 
     function renderCategoryDonut(container, sortedMain, groups, grandTotal) {
@@ -2005,9 +1954,7 @@
         </div>`;
 
       requestAnimationFrame(() => {
-        container.querySelectorAll('[data-final-offset]').forEach(c => {
-          c.style.strokeDashoffset = c.getAttribute('data-final-offset');
-        });
+        container.querySelectorAll('[data-target-width]').forEach(bar => { bar.style.width = bar.getAttribute('data-target-width'); });
       });
     }
 
@@ -2065,7 +2012,7 @@
 
       trxThisMonth.forEach(t => {
         const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
-        const main = t.mainCategory || (catMatch ? catMatch.mainCategory : null) || t.category || 'Lainnya';
+        const main = (catMatch ? catMatch.mainCategory : null) || t.mainCategory || t.category || 'Lainnya';
         const subKey = t.category || main;
         const amount = Number(t.amount) || 0;
 
@@ -2313,7 +2260,6 @@
       });
     }
 
-    // WALLETS: DENGAN DIVIDER CLEAN PADDING P-5 DAN BEBAS DOUBLE NAME
     function renderWallets() {
       const operationalEl = document.getElementById('list-accounts-operational');
       const savingsEl = document.getElementById('list-accounts-savings');
@@ -2424,7 +2370,6 @@
       openModal('modalDelete');
     }
 
-    // ===== PAYABLE — edit & delete (mirrors the account flow above) =====
     function openEditPayableModal(payableName) {
       const p = (GLOBAL_DATA.payables || []).find(x => x.payableName === payableName);
       if (!p) return;
@@ -2475,7 +2420,6 @@
       setTimeout(() => openModal('modalDelete'), 400);
     }
 
-    // ===== RECEIVABLE — edit & delete (mirrors the account flow above) =====
     function openEditReceivableModal(receivableName) {
       const r = (GLOBAL_DATA.receivables || []).find(x => x.receivableName === receivableName);
       if (!r) return;
@@ -2526,7 +2470,6 @@
       setTimeout(() => openModal('modalDelete'), 400);
     }
 
-    // ACTIVE PAYABLES & UNPAID RECEIVABLES (P-5 PADDING LEGA)
     function renderPayablesReceivables() {
       const payableEl = document.getElementById('list-payables-active');
       const receivableEl = document.getElementById('list-receivables-active');
@@ -2535,7 +2478,6 @@
 
       let hasActivePayables = false;
 
-      // 1. ACTIVE PAYABLES (CC / PAYLATER)
       (GLOBAL_DATA.accounts || []).forEach((acc, i) => {
         const meta = getAccountIconMeta(acc.accountName, acc.accountType);
         const rawBal = Number(acc.runningBalance) || 0;
@@ -2565,7 +2507,6 @@
         }
       });
 
-      // 2. ACTIVE PAYABLES (HUTANG TERSTRUKTUR / CICILAN)
       const activePayables = (GLOBAL_DATA.payables || [])
         .filter(p => {
           const st = (p.status || '').toLowerCase().trim();
@@ -2598,7 +2539,6 @@
         payableEl.innerHTML = emptyStateHtml('party-popper', "All clear!", "No payables or credit card bills outstanding. Mochi's tail is doing a happy wiggle.");
       }
 
-      // 3. UNPAID RECEIVABLES (PIUTANG)
       const activeReceivables = (GLOBAL_DATA.receivables || [])
         .filter(r => {
           const st = (r.status || '').toLowerCase().trim();
@@ -2834,7 +2774,14 @@
         html += `<p class="font-extrabold text-main mb-2 text-[13px]">Note:</p><p class="text-muted leading-relaxed font-semibold">Remaining daily operational cash available for consumption and savings after deducting monthly commitments.</p>`;
       } else if (kpiName === 'Total Cash') {
         html += `<p class="font-extrabold text-main mb-3 text-[13px]">Account Balances:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        (GLOBAL_DATA.accounts || []).forEach(a => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${escapeHtml(a.accountName)} (${escapeHtml(a.owner)}):</span> <span class="font-extrabold amount-in">${formatRupiah(a.runningBalance)}</span></div>`; });
+        // REVISI: Filter hanya akun ASET KAS (non-liability) dan gunakan kelas warna dinamis (amount-out jika minus)
+        (GLOBAL_DATA.accounts || []).forEach(a => { 
+          const meta = getAccountIconMeta(a.accountName, a.accountType);
+          if (!meta.isLiability) {
+            const cls = a.runningBalance < 0 ? "amount-out" : "amount-in";
+            html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${escapeHtml(a.accountName)} (${escapeHtml(a.owner)}):</span> <span class="font-extrabold ${cls}">${formatRupiah(a.runningBalance)}</span></div>`; 
+          }
+        });
         html += `</div>`;
       } else if (kpiName === 'Total Receivables') {
         html += `<p class="font-extrabold text-main mb-3 text-[13px]">Receivables Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
@@ -2935,7 +2882,6 @@
       lucide.createIcons();
     }
 
-    // MODAL ACCOUNT HISTORY
     function showAccountHistory(accountName) {
       currentModalBackFn = () => showAccountHistory(accountName);
       window.isNestedModalView = false;
@@ -2982,7 +2928,6 @@
       lucide.createIcons();
     }
 
-    // MODAL DETAIL ACTIVE PAYABLE
     function showPayableDetail(item, isAccount = false) {
       if (!item) return;
       const name = isAccount ? item.accountName : item.payableName;
@@ -3055,7 +3000,6 @@
       lucide.createIcons();
     }
 
-    // MODAL DETAIL UNPAID RECEIVABLE
     function showReceivableDetail(r) {
       if (!r) return;
       currentModalBackFn = () => showReceivableDetail(r);
