@@ -1511,62 +1511,113 @@
     let mochiBlinkTimeout = null;
 
     function renderMochiMood() {
-      const kpi = GLOBAL_DATA.kpi || {};
-      const income = Number(kpi["This Month's Income"]) || 0;
-      const expense = Number(kpi["This Month's Consumptive Expense"]) || 0;
+  const kpi = GLOBAL_DATA.kpi || {};
+  const income = Number(kpi["This Month's Income"]) || 0;
+  const expense = Number(kpi["This Month's Consumptive Expense"]) || 0;
+  const monthlyDue = Number(kpi["Monthly Amount Due"]) || 0;
+  const dsr = Number(kpi["Debt Service Ratio"]) || 0;
 
-      let mood = 'chill';
-      let title = "Mochi feels comfy~ 😸";
-      let desc = "Expenses are under control!";
-      let subdesc = "Mochi keeps everything in check!";
-      let badgeText = "Chill Mochi";
-      let badgeClass = "bg-[var(--chip-info-bg)] amount-info";
+  let mood = 'chill';
+  let title = "Mochi feels comfy~ 😸";
+  let desc = "Expenses & commitments under control!";
+  let subdesc = "Mochi keeps everything in check!";
+  let badgeText = "Chill Mochi";
+  let badgeClass = "bg-[var(--chip-info-bg)] amount-info";
 
-      const ratio = income > 0 ? (expense / income) : (expense > 0 ? 1 : 0);
-      const displayPct = Math.min(Math.round(ratio * 100), 999);
+  const ratio = income > 0 ? (expense / income) : (expense > 0 ? 1 : 0);
+  const displayPct = Math.min(Math.round(ratio * 100), 999);
 
-      if (ratio <= 0.40) {
-        mood = 'rich';
-        title = "Mochi is purr-fectly happy! 💰";
-        desc = `Expenses are only at ${displayPct}% of income!`;
-        subdesc = "Mochi is swimming in gold bars!";
-        badgeText = "Rich Mochi";
-        badgeClass = "bg-[var(--chip-in-bg)] amount-in";
-      } else if (ratio > 0.80) {
-        mood = 'anxious';
-        title = "Mochi is sweating bullets! 😿";
-        desc = `Expenses reached ${displayPct}% of income!`;
-        subdesc = "Hold back non-essential spending!";
-        badgeText = "Anxious Mochi";
-        badgeClass = "bg-[var(--chip-out-bg)] amount-out";
-      } else {
-        mood = 'chill';
-        title = "Mochi feels comfy~ 😸";
-        desc = `Expenses are at ${displayPct}% of income.`;
-        subdesc = "Mochi keeps everything under control!";
-        badgeText = "Chill Mochi";
-        badgeClass = "bg-[var(--chip-info-bg)] amount-info";
+  // Evaluasi DSR: Jika DSR > 30%, Mochi berubah menjadi Anxious Mochi 😿
+  if (dsr > 30 || ratio > 0.80) {
+    mood = 'anxious';
+    title = "Mochi is sweating bullets! 😿";
+    desc = dsr > 30 ? `Debt Service Ratio (DSR) is at ${dsr}%!` : `Expenses reached ${displayPct}% of income!`;
+    subdesc = dsr > 30 ? "Monthly commitments are taking up too much income!" : "Hold back non-essential spending!";
+    badgeText = dsr > 30 ? "High Debt Ratio" : "Anxious Mochi";
+    badgeClass = "bg-[var(--chip-out-bg)] amount-out";
+  } else if (ratio <= 0.40 && dsr <= 20) {
+    mood = 'rich';
+    title = "Mochi is purr-fectly happy! 💰";
+    desc = `Expenses are at ${displayPct}% & DSR is only ${dsr}%!`;
+    subdesc = "Mochi is swimming in gold bars!";
+    badgeText = "Rich Mochi";
+    badgeClass = "bg-[var(--chip-in-bg)] amount-in";
+  } else {
+    mood = 'chill';
+    title = "Mochi feels comfy~ 😸";
+    desc = `Expenses at ${displayPct}%, DSR at ${dsr}%.`;
+    subdesc = "Mochi keeps everything under control!";
+    badgeText = "Chill Mochi";
+    badgeClass = "bg-[var(--chip-info-bg)] amount-info";
+  }
+
+  currentMochiMood = mood;
+
+  const imgEl = document.getElementById('mochi-mood-img');
+  const titleEl = document.getElementById('mochi-mood-title');
+  const descEl = document.getElementById('mochi-mood-desc');
+  const subdescEl = document.getElementById('mochi-mood-subdesc');
+  const badgeEl = document.getElementById('mochi-mood-badge');
+
+  if (imgEl) imgEl.src = `mochi-${mood}-open.png`;
+  if (titleEl) titleEl.innerText = title;
+  if (descEl) descEl.innerText = desc;
+  if (subdescEl) subdescEl.innerText = subdesc;
+  if (badgeEl) {
+    badgeEl.innerText = badgeText;
+    badgeEl.className = `text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${badgeClass}`;
+  }
+
+  startMochiBlinking();
+}
+
+/**
+ * 2. QUICK-PAY SMART REPAYMENT TRIGGER
+ * Buka modal transaksi otomatis terisi nominal pelunasan
+ */
+function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
+  vibrate(30);
+  if (activeModals.includes('modalDetail')) {
+    performVisualClose('modalDetail');
+  }
+
+  setTimeout(() => {
+    openNewTransactionForm();
+
+    if (isAccount) {
+      document.getElementById('form-type').value = "Internal Transfer";
+      updateTypeDisplay("Internal Transfer");
+      handleTypeChange();
+
+      document.getElementById('form-target-account').value = targetName;
+      document.getElementById('form-category').value = "Internal Transfer";
+      const catDisplay = document.getElementById('form-category-display');
+      if (catDisplay) {
+        catDisplay.innerText = "Internal Transfer";
+        catDisplay.classList.remove('text-faint');
       }
+    } else {
+      document.getElementById('form-type').value = "Pay Installment";
+      updateTypeDisplay("Pay Installment");
+      handleTypeChange();
 
-      currentMochiMood = mood;
-
-      const imgEl = document.getElementById('mochi-mood-img');
-      const titleEl = document.getElementById('mochi-mood-title');
-      const descEl = document.getElementById('mochi-mood-desc');
-      const subdescEl = document.getElementById('mochi-mood-subdesc');
-      const badgeEl = document.getElementById('mochi-mood-badge');
-
-      if (imgEl) imgEl.src = `mochi-${mood}-open.png`;
-      if (titleEl) titleEl.innerText = title;
-      if (descEl) descEl.innerText = desc;
-      if (subdescEl) subdescEl.innerText = subdesc;
-      if (badgeEl) {
-        badgeEl.innerText = badgeText;
-        badgeEl.className = `text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${badgeClass}`;
+      document.getElementById('form-payable').value = targetName;
+      document.getElementById('form-category').value = "Pay Installment";
+      const catDisplay = document.getElementById('form-category-display');
+      if (catDisplay) {
+        catDisplay.innerText = "Pay Installment";
+        catDisplay.classList.remove('text-faint');
       }
-
-      startMochiBlinking();
     }
+
+    if (defaultAmount && defaultAmount > 0) {
+      document.getElementById('form-amount-value').value = defaultAmount;
+      document.getElementById('form-amount-display').value = new Intl.NumberFormat('id-ID').format(defaultAmount);
+    }
+
+    document.getElementById('form-description').value = "Pelunasan Tagihan " + targetName;
+  }, 350);
+}
     
     function startMochiBlinking() {
       if (mochiBlinkTimeout) clearTimeout(mochiBlinkTimeout);
@@ -2515,104 +2566,221 @@ async function handleSaveMaster(event) {
     }
 
     function renderPayablesReceivables() {
-      const payableEl = document.getElementById('list-payables-active');
-      const receivableEl = document.getElementById('list-receivables-active');
-      payableEl.innerHTML = "";
-      receivableEl.innerHTML = "";
+  const payableEl = document.getElementById('list-payables-active');
+  const receivableEl = document.getElementById('list-receivables-active');
+  payableEl.innerHTML = "";
+  receivableEl.innerHTML = "";
 
-      let hasActivePayables = false;
+  const kpi = GLOBAL_DATA.kpi || {};
+  const monthlyDue = Number(kpi['Monthly Amount Due']) || 0;
+  const monthlyMinDue = Number(kpi['Monthly Amount Due (Min)']) || 0;
+  const dsr = Number(kpi['Debt Service Ratio']) || 0;
 
-      (GLOBAL_DATA.accounts || []).forEach((acc, i) => {
-        const meta = getAccountIconMeta(acc.accountName, acc.accountType);
-        const rawBal = Number(acc.runningBalance) || 0;
-        const bal = Math.abs(rawBal);
-
-        if (meta.isLiability && bal > 0) {
-          hasActivePayables = true;
-          const ownerLabel = acc.owner ? escapeHtml(acc.owner) : 'Yosa & Fani';
-          const nameHasOwner = acc.owner && acc.accountName.toLowerCase().includes(acc.owner.toLowerCase());
-          const typeBadge = nameHasOwner ? escapeHtml(acc.accountType) : `${escapeHtml(acc.accountType)} • ${ownerLabel}`;
-
-          const div = document.createElement('div');
-          div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden";
-          div.style.animationDelay = `${i * 0.05}s`;
-          div.onclick = () => { vibrate(30); showPayableDetail(acc, true); };
-          div.innerHTML = `
-            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-              <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(acc.accountName)}</h4>
-              <span class="text-[10px] amount-out bg-[var(--chip-out-bg)] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${typeBadge}</span>
-            </div>
-            <div>
-              <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING PAYABLE</span>
-              <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(bal)}</span>
-            </div>
-          `;
-          payableEl.appendChild(div);
-        }
-      });
-
-      const activePayables = (GLOBAL_DATA.payables || [])
-        .filter(p => {
-          const st = (p.status || '').toLowerCase().trim();
-          return (st === 'active' || st === 'aktif') && Number(p.remainingAmount) > 0;
-        })
-        .sort((a, b) => b.remainingAmount - a.remainingAmount);
-
-      activePayables.forEach((p, i) => {
-        hasActivePayables = true;
-        const rem = Math.abs(Number(p.remainingAmount) || 0);
-
-        const div = document.createElement('div');
-        div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden";
-        div.style.animationDelay = `${i * 0.05}s`;
-        div.onclick = () => { vibrate(30); showPayableDetail(p, false); };
-        div.innerHTML = `
-          <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-            <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(p.payableName)}</h4>
-            <span class="text-[10px] amount-out bg-[var(--chip-out-bg)] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(p.payableType || 'PAYABLE')}</span>
+  // --- A. WIDGET "DUE THIS MONTH" (MONTHLY COMMITMENTS) ---
+  const widgetHtml = `
+    <div class="floating-card p-5 mb-5 space-y-3.5 bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-subtle-2)] border border-[var(--border-color)] rounded-2xl shadow-sm">
+      <div class="flex justify-between items-center pb-2.5 border-b border-slate-100 dark:border-[var(--border-color)]">
+        <div class="flex items-center space-x-2">
+          <div class="w-7 h-7 rounded-lg bg-[var(--chip-out-bg)] amount-out flex items-center justify-center">
+            <i data-lucide="calendar-clock" class="w-4 h-4"></i>
           </div>
+          <h3 class="text-xs font-black uppercase tracking-wider text-main">Due This Month</h3>
+        </div>
+        <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${dsr > 30 ? 'bg-rose-500/15 amount-out' : 'bg-emerald-500/15 amount-in'}">
+          DSR: ${dsr}%
+        </span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <span class="text-[9px] text-muted font-extrabold uppercase block mb-0.5">Total Wajib Bayar</span>
+          <span class="text-base font-black amount-out block leading-none font-numeric">${formatRupiah(monthlyDue)}</span>
+        </div>
+        <div class="text-right">
+          <span class="text-[9px] text-muted font-extrabold uppercase block mb-0.5">Opsi Bayar Min. (KK)</span>
+          <span class="text-sm font-extrabold text-main block leading-none font-numeric">${formatRupiah(monthlyMinDue)}</span>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  payableEl.insertAdjacentHTML('beforeend', widgetHtml);
+
+  let hasActivePayables = false;
+
+  // --- B. RENDER REVOLVING CREDIT (PAYLATER & KARTU KREDIT) ---
+  (GLOBAL_DATA.accounts || []).forEach((acc, i) => {
+    const accName = acc.accountName || '';
+    const accType = acc.accountType || '';
+    const rawBal = Number(acc.runningBalance) || 0;
+    const bal = Math.abs(rawBal);
+
+    const isPayLater = accName.toLowerCase().includes('paylater') || accName.toLowerCase().includes('spaylater') || accType.toLowerCase().includes('paylater');
+    const isCreditCard = (accType.toLowerCase().includes('credit card') || accName.toLowerCase().includes('cc ') || accName.toLowerCase().includes('credit')) && !isPayLater;
+
+    if ((isPayLater || isCreditCard) && bal > 0) {
+      hasActivePayables = true;
+      const minPay = isCreditCard ? Math.max(50000, Math.round(bal * 0.10)) : bal;
+
+      const div = document.createElement('div');
+      div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden select-none space-y-3";
+      div.style.animationDelay = `${i * 0.05}s`;
+      div.onclick = () => { vibrate(30); showPayableDetail(acc, true); };
+
+      div.innerHTML = `
+        <div class="pb-3 border-b border-slate-100 dark:border-[var(--border-color)] flex justify-between items-start">
           <div>
-            <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING PAYABLE</span>
-            <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(rem)}</span>
+            <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(accName)}</h4>
+            <span class="text-[10px] ${isPayLater ? 'amount-warn bg-orange-500/15' : 'amount-out bg-[var(--chip-out-bg)]'} px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider mt-1.5 inline-block">
+              ${isPayLater ? 'PayLater • Full Payment' : 'Credit Card • Revolving'}
+            </span>
           </div>
-        `;
-        payableEl.appendChild(div);
-      });
+          <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[var(--bg-subtle-2)] text-muted">Tagihan Bulan Ini</span>
+        </div>
 
-      if (!hasActivePayables) {
-        payableEl.innerHTML = emptyStateHtml('party-popper', "All clear!", "No payables or credit card bills outstanding. Mochi's tail is doing a happy wiggle.");
-      }
-
-      const activeReceivables = (GLOBAL_DATA.receivables || [])
-        .filter(r => {
-          const st = (r.status || '').toLowerCase().trim();
-          return (st === 'active' || st === 'unsettled' || st === 'aktif' || st === 'belum lunas') && Number(r.remainingAmount) > 0;
-        });
-
-      if (activeReceivables.length === 0) {
-        receivableEl.innerHTML = emptyStateHtml('party-popper', "All collected!", "Every receivable has been paid back. Nothing left for Mochi to chase.");
-      } else {
-        activeReceivables.forEach((r, i) => {
-          const rem = Math.abs(Number(r.remainingAmount) || 0);
-          const div = document.createElement('div');
-          div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden";
-          div.style.animationDelay = `${i * 0.05}s`;
-          div.onclick = () => { vibrate(30); showReceivableDetail(r); };
-          div.innerHTML = `
-            <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
-              <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(r.receivableName)}</h4>
-              <span class="text-[10px] amount-info bg-[var(--chip-info-bg)] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(r.receivableType || 'RECEIVABLE')}</span>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">STATEMENT BALANCE</span>
+            <span class="text-[16px] font-black amount-out block leading-none font-numeric">${formatRupiah(bal)}</span>
+          </div>
+          ${isCreditCard ? `
+            <div class="text-right">
+              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">MINIMUM PAYMENT</span>
+              <span class="text-[14px] font-extrabold text-main block leading-none font-numeric">${formatRupiah(minPay)}</span>
             </div>
-            <div>
-              <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING RECEIVABLE</span>
-              <span class="text-[18px] font-black amount-info block leading-none tracking-tight">${formatRupiah(rem)}</span>
+          ` : `
+            <div class="text-right">
+              <span class="text-[9px] text-orange-600 dark:text-orange-400 font-bold uppercase block mb-0.5">STRICT DATED</span>
+              <span class="text-[11px] font-extrabold text-orange-600 dark:text-orange-400 block leading-none">Wajib Lunas 100%</span>
             </div>
-          `;
-          receivableEl.appendChild(div);
-        });
-      }
-      lucide.createIcons();
+          `}
+        </div>
+
+        <!-- QUICK-PAY BUTTONS -->
+        <div class="pt-2 flex space-x-2 border-t border-slate-100 dark:border-[var(--border-color)]">
+          <button type="button" onclick="vibrate(30); event.stopPropagation(); quickPayCommitment('${escapeAttr(accName)}', true, ${bal}, 'FULL')" class="flex-1 py-2 bg-mochi hover:bg-mochi-dark text-white font-extrabold text-xs rounded-xl tap-shrink shadow-sm flex items-center justify-center">
+            <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mr-1"></i> Pay Full (${formatRupiah(bal)})
+          </button>
+          ${isCreditCard ? `
+            <button type="button" onclick="vibrate(30); event.stopPropagation(); quickPayCommitment('${escapeAttr(accName)}', true, ${minPay}, 'MIN')" class="py-2 px-3 bg-[var(--bg-subtle-2)] text-main font-bold text-xs rounded-xl tap-shrink border border-[var(--border-color)] hover:bg-slate-200">
+              Pay Min (${formatRupiah(minPay)})
+            </button>
+          ` : ''}
+        </div>
+      `;
+      payableEl.appendChild(div);
     }
+  });
+
+  // --- C. RENDER TERM LOANS (PINJAMAN BERJANGKA / GOPINJAM) ---
+  const activePayables = (GLOBAL_DATA.payables || [])
+    .filter(p => {
+      const st = (p.status || '').toLowerCase().trim();
+      return (st === 'active' || st === 'aktif') && Number(p.remainingAmount) > 0;
+    })
+    .sort((a, b) => b.remainingAmount - a.remainingAmount);
+
+  activePayables.forEach((p, i) => {
+    hasActivePayables = true;
+    const initial = Number(p.initialAmount) || 0;
+    const rem = Math.abs(Number(p.remainingAmount) || 0);
+    const paid = Math.max(0, initial - rem);
+    const pctPaid = initial > 0 ? Math.min(100, Math.round((paid / initial) * 100)) : 0;
+    const instAmt = p.monthlyInstallment > 0 ? p.monthlyInstallment : Math.min(rem, Math.round(initial / (p.termMonths || 1)));
+
+    const div = document.createElement('div');
+    div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden select-none space-y-3";
+    div.style.animationDelay = `${i * 0.05}s`;
+    div.onclick = () => { vibrate(30); showPayableDetail(p, false); };
+
+    div.innerHTML = `
+      <div class="pb-3 border-b border-slate-100 dark:border-[var(--border-color)] flex justify-between items-start">
+        <div>
+          <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(p.payableName)}</h4>
+          <div class="flex items-center space-x-1.5 mt-1.5">
+            <span class="text-[10px] amount-out bg-[var(--chip-out-bg)] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">${escapeHtml(p.payableType || 'Term Loan')}</span>
+            ${p.owedTo ? `<span class="text-[10px] text-faint font-extrabold">• ${escapeHtml(p.owedTo)}</span>` : ''}
+          </div>
+        </div>
+        ${p.termMonths ? `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main border border-[var(--border-color)]">${p.termMonths} Bulan Tenor</span>` : ''}
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">SISA TOTAL POKOK</span>
+          <span class="text-[16px] font-black amount-out block leading-none font-numeric">${formatRupiah(rem)}</span>
+        </div>
+        <div class="text-right">
+          <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">CICILAN BULAN INI</span>
+          <span class="text-[14px] font-extrabold text-main block leading-none font-numeric">${formatRupiah(instAmt)}</span>
+        </div>
+      </div>
+
+      <!-- PROGRESS BAR PELUNASAN -->
+      ${initial > 0 ? `
+        <div class="space-y-1 pt-1">
+          <div class="flex justify-between text-[10px] font-extrabold text-muted">
+            <span>Terbayar: ${pctPaid}%</span>
+            <span>Plafon: ${formatRupiah(initial)}</span>
+          </div>
+          <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden">
+            <div class="bg-gradient-to-r from-mochi-light to-mochi h-full rounded-full transition-all duration-700" style="width: ${pctPaid}%"></div>
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- QUICK-PAY BUTTON -->
+      <div class="pt-2 border-t border-slate-100 dark:border-[var(--border-color)]">
+        <button type="button" onclick="vibrate(30); event.stopPropagation(); quickPayCommitment('${escapeAttr(p.payableName)}', false, ${instAmt}, 'INSTALLMENT')" class="w-full py-2 bg-mochi hover:bg-mochi-dark text-white font-extrabold text-xs rounded-xl tap-shrink shadow-sm flex items-center justify-center">
+          <i data-lucide="credit-card" class="w-3.5 h-3.5 mr-1"></i> Pay Monthly Installment (${formatRupiah(instAmt)})
+        </button>
+      </div>
+    `;
+    payableEl.appendChild(div);
+  });
+
+  if (!hasActivePayables) {
+    payableEl.insertAdjacentHTML('beforeend', emptyStateHtml('party-popper', "All clear!", "No payables or credit card bills outstanding. Mochi's tail is doing a happy wiggle."));
+  }
+
+  // --- D. RENDER UNPAID RECEIVABLES (PIUTANG) ---
+  const activeReceivables = (GLOBAL_DATA.receivables || [])
+    .filter(r => {
+      const st = (r.status || '').toLowerCase().trim();
+      return (st === 'active' || st === 'unsettled' || st === 'aktif' || st === 'belum lunas') && Number(r.remainingAmount) > 0;
+    });
+
+  if (activeReceivables.length === 0) {
+    receivableEl.innerHTML = emptyStateHtml('party-popper', "All collected!", "Every receivable has been paid back. Nothing left for Mochi to chase.");
+  } else {
+    activeReceivables.forEach((r, i) => {
+      const rem = Math.abs(Number(r.remainingAmount) || 0);
+      const div = document.createElement('div');
+      div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden select-none space-y-2";
+      div.style.animationDelay = `${i * 0.05}s`;
+      div.onclick = () => { vibrate(30); showReceivableDetail(r); };
+
+      div.innerHTML = `
+        <div class="pb-3 border-b border-slate-100 dark:border-[var(--border-color)] flex justify-between items-start">
+          <div>
+            <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(r.receivableName)}</h4>
+            <div class="flex items-center space-x-1.5 mt-1.5">
+              <span class="text-[10px] amount-info bg-[var(--chip-info-bg)] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">${escapeHtml(r.receivableType || 'RECEIVABLE')}</span>
+              ${r.fromToWhom ? `<span class="text-[10px] text-faint font-extrabold">• ${escapeHtml(r.fromToWhom)}</span>` : ''}
+            </div>
+          </div>
+        </div>
+        <div>
+          <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING RECEIVABLE</span>
+          <span class="text-[18px] font-black amount-info block leading-none tracking-tight font-numeric">${formatRupiah(rem)}</span>
+        </div>
+        ${r.expectedReturn ? `<div class="text-[10px] font-extrabold text-sky-600 dark:text-sky-400 bg-sky-500/10 px-3 py-1 rounded-lg flex items-center justify-between"><span class="flex items-center"><i data-lucide="calendar" class="w-3 h-3 mr-1"></i> Target Pelunasan: ${formatDate(r.expectedReturn)}</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></div>` : ''}
+      `;
+      receivableEl.appendChild(div);
+    });
+  }
+  lucide.createIcons();
+}
 
     // =======================================================
 // FINTECH FRONT-END UI COMPONENTS
@@ -3089,77 +3257,121 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
     }
 
     function showPayableDetail(item, isAccount = false) {
-      if (!item) return;
-      const name = isAccount ? item.accountName : item.payableName;
-      currentModalBackFn = () => showPayableDetail(item, isAccount);
-      window.isNestedModalView = false;
+  if (!item) return;
+  const name = isAccount ? item.accountName : item.payableName;
+  currentModalBackFn = () => showPayableDetail(item, isAccount);
+  window.isNestedModalView = false;
 
-      const type = isAccount ? item.accountType : (item.payableType || 'Payable');
-      const rawAmt = isAccount ? item.runningBalance : item.remainingAmount;
-      const amount = Math.abs(Number(rawAmt) || 0);
-      const status = isAccount ? 'Active' : (item.status || 'Active');
+  const type = isAccount ? item.accountType : (item.payableType || 'Payable');
+  const rawAmt = isAccount ? item.runningBalance : item.remainingAmount;
+  const amount = Math.abs(Number(rawAmt) || 0);
 
-      const relatedTrx = isAccount 
-        ? (GLOBAL_DATA.transactions || []).filter(t => t.sourceAccount === name || t.targetAccount === name)
-        : (GLOBAL_DATA.transactions || []).filter(t => t.relatedPayable === name);
+  const isPayLater = isAccount && (name.toLowerCase().includes('paylater') || name.toLowerCase().includes('spaylater') || type.toLowerCase().includes('paylater'));
+  const isCreditCard = isAccount && !isPayLater;
 
-      let html = `
-        <div class="space-y-4 pt-1">
-          <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
-            <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">Active Payable</span>
-            <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(name)}</h3>
+  const initial = isAccount ? amount : (Number(item.initialAmount) || amount);
+  const paid = Math.max(0, initial - amount);
+  const pctPaid = initial > 0 ? Math.min(100, Math.round((paid / initial) * 100)) : 0;
+  const minPay = isCreditCard ? Math.max(50000, Math.round(amount * 0.10)) : amount;
+
+  const relatedTrx = isAccount 
+    ? (GLOBAL_DATA.transactions || []).filter(t => t.sourceAccount === name || t.targetAccount === name)
+    : (GLOBAL_DATA.transactions || []).filter(t => t.relatedPayable === name);
+
+  let html = `
+    <div class="space-y-4 pt-1">
+      <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
+        <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">
+          ${isCreditCard ? 'Kartu Kredit' : (isPayLater ? 'PayLater • Full Payment' : 'Term Loan / Cicilan')}
+        </span>
+        <h3 class="text-xl font-black text-main leading-tight">${escapeHtml(name)}</h3>
+      </div>
+
+      <div class="ios-input space-y-2.5 text-xs font-semibold text-muted py-4 px-5 bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
+        <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+          <span>Kategori Kewajiban:</span> 
+          <span class="font-extrabold text-main">${escapeHtml(type)}</span>
+        </div>
+        ${!isAccount && item.owedTo ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Kreditur / Provider:</span> <span class="font-extrabold text-main">${escapeHtml(item.owedTo)}</span></div>` : ''}
+        
+        <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+          <span>${isAccount ? 'Statement Balance Cetak:' : 'Total Plafon / Hutang Awal:'}</span> 
+          <span class="font-extrabold text-main font-numeric">${formatRupiah(isAccount ? amount : initial)}</span>
+        </div>
+
+        ${isCreditCard ? `
+          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+            <span>Minimum Payment Due:</span> 
+            <span class="font-extrabold text-main font-numeric">${formatRupiah(minPay)}</span>
           </div>
+        ` : ''}
+        
+        ${!isAccount && item.termMonths ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Tenor Pinjaman:</span> <span class="font-extrabold text-main">${item.termMonths} Bulan</span></div>` : ''}
+        ${!isAccount && item.monthlyInstallment ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Cicilan Bulanan:</span> <span class="font-extrabold amount-out font-numeric">${formatRupiah(item.monthlyInstallment)}/bln</span></div>` : ''}
+        ${!isAccount && item.dueDate ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Tanggal Jatuh Tempo:</span> <span class="font-extrabold text-main">${formatDate(item.dueDate)}</span></div>` : ''}
 
-          <div class="ios-input space-y-2.5 text-xs font-semibold text-muted py-4 px-5">
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5">
-              <span>Payable Type:</span> 
-              <span class="font-extrabold text-main">${escapeHtml(type)}</span>
-            </div>
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5 mt-2 items-center">
-              <span>Remaining Payable:</span> 
-              <span class="font-black amount-out text-[15px]">${formatRupiah(amount)}</span>
-            </div>
-            <div class="flex justify-between mt-2">
-              <span>Status:</span> 
-              <span class="font-extrabold text-main">${escapeHtml(status)}</span>
-            </div>
-          </div>
+        <div class="flex justify-between pt-1 items-center">
+          <span>Sisa Tagihan:</span> 
+          <span class="font-black amount-out text-[16px] font-numeric">${formatRupiah(amount)}</span>
+        </div>
+      </div>
 
-          <div>
-            <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
-            <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-      `;
+      ${isCreditCard ? `
+        <div class="p-3.5 rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-300 text-[11px] font-semibold border border-amber-500/20">
+          💡 <strong>Info Kartu Kredit:</strong> Pelunasan Minimum Payment (Rp ${formatRupiah(minPay)}) mencegah denda telat, namun sisa tagihan (Rp ${formatRupiah(amount - minPay)}) akan dikenakan estimasi bunga berjalan ~1.75%/bulan.
+        </div>
+      ` : (isPayLater ? `
+        <div class="p-3.5 rounded-xl bg-orange-500/10 text-orange-800 dark:text-orange-300 text-[11px] font-semibold border border-orange-500/20">
+          ⚠️ <strong>Info PayLater:</strong> Wajib pelunasan 100% pada tanggal jatuh tempo. Keterlambatan pembayaran akan langsung dikenakan denda harian.
+        </div>
+      ` : '')}
 
-      if (relatedTrx.length === 0) {
-        html += `<p class="text-xs text-center text-muted py-6 font-semibold flex flex-col items-center"><i data-lucide="inbox" class="w-5 h-5 mb-2 text-faint"></i>No linked transactions yet.</p>`;
-      } else {
-        relatedTrx.forEach(t => {
-          const meta = getTypeMeta(t.type);
-          html += `
-            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-              <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
-                <div class="truncate">
-                  <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
-                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
-                </div>
-              </div>
-              <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
-            </div>
-          `;
-        });
-      }
+      <!-- QUICK-PAY ACTION BUTTONS -->
+      <div class="pt-2">
+        <button onclick="quickPayCommitment('${escapeAttr(name)}', ${isAccount}, ${amount}, 'FULL')" class="w-full py-3 bg-mochi hover:bg-mochi-dark text-white font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center mb-2">
+          <i data-lucide="check-circle-2" class="w-4 h-4 mr-1.5"></i> Pelunasan Penuh (${formatRupiah(amount)})
+        </button>
+        ${isCreditCard ? `
+          <button onclick="quickPayCommitment('${escapeAttr(name)}', true, ${minPay}, 'MIN')" class="w-full py-2.5 bg-[var(--bg-subtle-2)] text-main font-bold rounded-xl tap-shrink text-xs border border-[var(--border-color)] flex items-center justify-center">
+            Pembayaran Minimum (${formatRupiah(minPay)})
+          </button>
+        ` : ''}
+      </div>
 
-      html += `</div></div></div>`;
+      <div>
+        <p class="font-bold text-[10px] text-muted mb-2.5 uppercase tracking-wider">Riwayat Pembayaran & Transaksi Terkait</p>
+        <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+  `;
+
+  if (relatedTrx.length === 0) {
+    html += `<p class="text-xs text-center text-muted py-6 font-semibold flex flex-col items-center"><i data-lucide="inbox" class="w-5 h-5 mb-2 text-faint"></i>Belum ada transaksi cicilan tercatat.</p>`;
+  } else {
+    relatedTrx.forEach(t => {
+      const meta = getTypeMeta(t.type);
       html += `
-        <div class="flex space-x-3 pt-4">
-          <button onclick="${isAccount ? `openEditAccountModal('${escapeAttr(name)}')` : `openEditPayableModal('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit</button>
-          <button onclick="${isAccount ? `promptDeleteAccount('${escapeAttr(name)}')` : `promptDeletePayable('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
-        </div>`;
-      document.getElementById('modal-detail-inner').innerHTML = html;
-      openModal('modalDetail');
-      lucide.createIcons();
-    }
+        <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+          <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
+            <div class="truncate">
+              <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
+              <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
+            </div>
+          </div>
+          <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] font-numeric pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
+        </div>
+      `;
+    });
+  }
 
+  html += `</div></div></div>`;
+  html += `
+    <div class="flex space-x-3 pt-4">
+      <button onclick="${isAccount ? `openEditAccountModal('${escapeAttr(name)}')` : `openEditPayableModal('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit Detail</button>
+      <button onclick="${isAccount ? `promptDeleteAccount('${escapeAttr(name)}')` : `promptDeletePayable('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
+    </div>`;
+  document.getElementById('modal-detail-inner').innerHTML = html;
+  openModal('modalDetail');
+  lucide.createIcons();
+}
     function showReceivableDetail(r) {
       if (!r) return;
       currentModalBackFn = () => showReceivableDetail(r);
