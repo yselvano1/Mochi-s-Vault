@@ -236,7 +236,7 @@
 
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-3">
-      <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0 self-center cursor-pointer tap-shrink" onclick="openCommandCenter()">
+      <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0 self-center">
         <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Avatar" class="w-full h-full object-contain filter drop-shadow-sm transition-all duration-300">
       </div>
 
@@ -559,11 +559,12 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label for="form-user" class="font-bold text-main block mb-1 text-xs cursor-pointer">By</label>
-            <select id="form-user" class="w-full ios-input cursor-pointer">
-              <option value="Yosa">Yosa</option>
-              <option value="Fani">Fani</option>
-            </select>
+            <label class="font-bold text-main block mb-1 text-xs">By</label>
+            <div ontouchstart="vibrate(30)" onclick="openUniversalPicker('form-user', 'User')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+              <span id="display-form-user" class="font-semibold text-main truncate"></span>
+              <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
+            </div>
+            <input type="hidden" id="form-user">
           </div>
           <div>
             <label for="form-date" class="font-bold text-main block mb-1 text-xs cursor-pointer">Date</label>
@@ -582,26 +583,18 @@
 
         <div id="wrap-source-account" class="space-y-1">
           <div class="flex justify-between items-center">
-            <label class="font-bold text-main text-xs">Source Account</label>
+            <label for="form-source-account" class="font-bold text-main text-xs cursor-pointer">Source Account</label>
             <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
           </div>
-          <div ontouchstart="vibrate(30)" onclick="openItemPicker('source-account')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
-            <span id="display-source-account" class="font-semibold text-faint truncate">Select Account...</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
-          </div>
-          <input type="hidden" id="form-source-account">
+          <select id="form-source-account" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div id="wrap-target-account" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label class="font-bold text-main text-xs">Target Account</label>
+            <label for="form-target-account" class="font-bold text-main text-xs cursor-pointer">Target Account</label>
             <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
           </div>
-          <div ontouchstart="vibrate(30)" onclick="openItemPicker('target-account')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
-            <span id="display-target-account" class="font-semibold text-faint truncate">Select Account...</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
-          </div>
-          <input type="hidden" id="form-target-account">
+          <select id="form-target-account" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div class="space-y-1">
@@ -618,26 +611,18 @@
 
         <div id="wrap-payable" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label class="font-bold text-main text-xs">Related Payable</label>
+            <label for="form-payable" class="font-bold text-main text-xs cursor-pointer">Related Payable</label>
             <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('payable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Payable</button>
           </div>
-          <div ontouchstart="vibrate(30)" onclick="openItemPicker('payable')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
-            <span id="display-payable" class="font-semibold text-faint truncate">Select Payable...</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
-          </div>
-          <input type="hidden" id="form-payable">
+          <select id="form-payable" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div id="wrap-receivable" class="space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label class="font-bold text-main text-xs">Related Receivable</label>
+            <label for="form-receivable" class="font-bold text-main text-xs cursor-pointer">Related Receivable</label>
             <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('receivable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Receivable</button>
           </div>
-          <div ontouchstart="vibrate(30)" onclick="openItemPicker('receivable')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
-            <span id="display-receivable" class="font-semibold text-faint truncate">Select Receivable...</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
-          </div>
-          <input type="hidden" id="form-receivable">
+          <select id="form-receivable" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div>
@@ -688,19 +673,6 @@
     </div>
   </div>
 
-  
-  <div id="modalItemPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalItemPicker')">
-    <div id="modalItemPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
-      <div class="flex justify-between items-center pb-3 mb-3 border-b border-slate-200/50 dark:border-[var(--border-color)] sticky top-0 bg-inherit backdrop-blur-md z-10">
-        <h3 id="item-picker-title" class="font-extrabold text-main text-sm">Select Item</h3>
-        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalItemPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-      <div id="item-picker-list" class="text-xs space-y-2"></div>
-    </div>
-  </div>
-
   <div id="modalCategoryPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalCategoryPicker')">
     <div id="modalCategoryPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center pb-3 mb-3 border-b border-slate-200/50 dark:border-[var(--border-color)]">
@@ -724,14 +696,13 @@
         <input type="hidden" id="master-old-name">
 
         <div id="master-category-type-wrap" class="hidden">
-          <label for="master-category-type" class="font-extrabold text-main block mb-1 text-xs cursor-pointer">Category Type</label>
-          <select id="master-category-type" onchange="handleMasterCategoryTypeChange()" class="w-full ios-input cursor-pointer py-2.5">
-            <option value="Expense">Expense</option>
-            <option value="Income">Income</option>
-            <option value="Transfer">Transfer</option>
-            <option value="Payable">Payable</option>
-            <option value="Receivable">Receivable</option>
-          </select>
+          <label class="font-extrabold text-main block mb-1.5 text-[11px]">Category Type</label>
+          <div ontouchstart="vibrate(30)" onclick="openUniversalPicker('master-category-type', 'Category Type')" class="w-full ios-input py-2.5 flex justify-between items-center cursor-pointer transition tap-shrink">
+            <span id="display-master-category-type" class="font-semibold text-main truncate">Expense</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
+          </div>
+          <!-- We need onchange behavior, so we add a hidden input and watch it in JS -->
+          <input type="hidden" id="master-category-type" value="Expense">
         </div>
 
         <div id="master-main-category-wrap" class="hidden">
@@ -783,83 +754,29 @@
   </div>
 
   
-  <div id="modalCommandCenter" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[75] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalCommandCenter')">
-    <div id="modalCommandCenter-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-6 shadow-2xl modal-content-bottom md:modal-content-center">
-      <div class="flex justify-between items-center mb-5">
-        <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-xl bg-mochi-light/20 flex items-center justify-center"><img src="mochi-logo-new.png" class="w-6 h-6 object-contain"></div>
-          <div>
-            <h3 class="font-black text-main text-base leading-tight">Command Center</h3>
-            <p class="text-[10px] font-bold text-muted uppercase tracking-wider">Mochi's Vault Settings</p>
-          </div>
+  <div id="modalUserManager" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[80] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalUserManager')">
+    <div id="modalUserManager-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
+      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-4 sticky top-0 bg-inherit backdrop-blur-md z-10">
+        <div>
+          <h3 class="font-extrabold text-main text-base">User Manager</h3>
+          <p class="text-[10px] text-muted">Manage users for transactions & ownership</p>
         </div>
-        <button ontouchstart="vibrate(30)" onclick="closeModal('modalCommandCenter')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
+        <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalUserManager')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
-      <div class="space-y-4">
-        <!-- Profile -->
-        <div class="bg-slate-50 dark:bg-[var(--bg-subtle)] p-4 rounded-2xl border border-[var(--border-color)] flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-full bg-[var(--chip-info-bg)] amount-info flex items-center justify-center font-black text-lg">YF</div>
-            <div>
-              <p class="text-[10px] text-muted font-bold uppercase tracking-wider">Active Users</p>
-              <p class="font-extrabold text-main text-sm">Yosa & Fani</p>
-            </div>
-          </div>
-          <i data-lucide="chevron-right" class="w-4 h-4 text-faint"></i>
+      <div class="mb-4">
+        <label class="font-bold text-main block mb-1 text-xs">Add New User</label>
+        <div class="flex space-x-2">
+          <input type="text" id="new-user-name" placeholder="Name (e.g., Budi)" class="flex-1 ios-input py-2.5">
+          <button onclick="addNewUser()" class="tap-shrink px-4 bg-mochi hover:bg-mochi-dark text-white font-extrabold rounded-xl text-xs transition-colors shadow-sm">Add</button>
         </div>
+      </div>
 
-        <!-- Master Data Shortcuts -->
-        <div>
-          <p class="text-[10px] text-muted font-bold uppercase tracking-wider mb-2 px-1">Master Data Shortcuts</p>
-          <div class="grid grid-cols-2 gap-2">
-            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>openMasterModal('account'), 300)" class="tap-shrink flex items-center p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
-              <div class="w-7 h-7 rounded-lg bg-[var(--bg-subtle-2)] flex items-center justify-center mr-2"><i data-lucide="wallet" class="w-3.5 h-3.5 text-main"></i></div>
-              <span class="text-xs font-extrabold text-main">New Account</span>
-            </button>
-            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>openMasterModal('category'), 300)" class="tap-shrink flex items-center p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
-              <div class="w-7 h-7 rounded-lg bg-[var(--bg-subtle-2)] flex items-center justify-center mr-2"><i data-lucide="tag" class="w-3.5 h-3.5 text-main"></i></div>
-              <span class="text-xs font-extrabold text-main">New Category</span>
-            </button>
-            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>openMasterModal('payable'), 300)" class="tap-shrink flex items-center p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
-              <div class="w-7 h-7 rounded-lg bg-rose-500/10 flex items-center justify-center mr-2"><i data-lucide="credit-card" class="w-3.5 h-3.5 text-rose-500"></i></div>
-              <span class="text-xs font-extrabold text-main">New Payable</span>
-            </button>
-            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>openMasterModal('receivable'), 300)" class="tap-shrink flex items-center p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
-              <div class="w-7 h-7 rounded-lg bg-sky-500/10 flex items-center justify-center mr-2"><i data-lucide="hand-coins" class="w-3.5 h-3.5 text-sky-500"></i></div>
-              <span class="text-xs font-extrabold text-main">New Receivable</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- General Actions -->
-        <div>
-          <p class="text-[10px] text-muted font-bold uppercase tracking-wider mb-2 px-1">General Actions</p>
-          <div class="space-y-2">
-            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>loadAppData(), 300)" class="w-full tap-shrink flex items-center justify-between p-3.5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
-              <div class="flex items-center space-x-3">
-                <i data-lucide="refresh-cw" class="w-4 h-4 text-mochi"></i>
-                <span class="text-xs font-extrabold text-main">Force Sync Data</span>
-              </div>
-              <i data-lucide="chevron-right" class="w-4 h-4 text-faint"></i>
-            </button>
-            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>switchTab('history'), 300)" class="w-full tap-shrink flex items-center justify-between p-3.5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
-              <div class="flex items-center space-x-3">
-                <i data-lucide="printer" class="w-4 h-4 text-mochi"></i>
-                <span class="text-xs font-extrabold text-main">Export PDF Reports</span>
-              </div>
-              <span class="text-[10px] font-bold text-muted bg-[var(--bg-subtle-2)] px-2 py-0.5 rounded-full">In History Tab</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- App Info -->
-        <div class="text-center pt-2">
-          <p class="text-[10px] font-bold text-faint uppercase tracking-widest">Mochi's Vault v28.0</p>
-          <p class="text-[9px] font-semibold text-faint mt-0.5">Core Engine Active</p>
-        </div>
+      <div>
+        <p class="text-[10px] text-muted font-bold uppercase tracking-wider mb-2">Active Users</p>
+        <div id="user-manager-list" class="space-y-2"></div>
       </div>
     </div>
   </div>
@@ -882,7 +799,8 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbwHCQ2m26t3uo1lMDYL_izn5YqALyoxw1gbVNUfTGx68MKaCY9Xvlm3jpt5rJz983as7Q/exec";
 
-    let GLOBAL_DATA = { kpi: {}, transactions: [], accounts: [], categories: [], payables: [], receivables: [] };
+        let GLOBAL_DATA = { kpi: {}, transactions: [], accounts: [], categories: [], payables: [], receivables: [] };
+    let APP_USERS = JSON.parse(localStorage.getItem('mochi_active_users')) || ['Yosa', 'Fani', 'Yosa & Fani'];
     let currentModalBackFn = null;
     let transactionToDelete = null;
 
@@ -905,12 +823,6 @@
         }
       }
     });
-
-    
-    function openCommandCenter() {
-      vibrate(30);
-      openModal('modalCommandCenter');
-    }
 
     function vibrate(ms) {
       if (navigator.vibrate) navigator.vibrate(Math.max(ms, 25));
@@ -1354,6 +1266,8 @@
       document.getElementById('form-transaction-id').value = "";
       document.getElementById('form-date').valueAsDate = new Date();
       document.getElementById('form-amount-value').value = "";
+      document.getElementById('form-user').value = APP_USERS[0];
+      if (document.getElementById('display-form-user')) document.getElementById('display-form-user').innerText = APP_USERS[0];
 
       const catDisplay = document.getElementById('form-category-display');
       catDisplay.innerText = "Select Category...";
@@ -1379,6 +1293,7 @@
       setTimeout(() => {
         document.getElementById('form-transaction-id').value = trx.transactionId;
         document.getElementById('form-user').value = trx.enteredBy;
+        if(document.getElementById('display-form-user')) document.getElementById('display-form-user').innerText = trx.enteredBy;
         document.getElementById('form-date').value = trx.date;
 
         const typeVal = trx.type || "Expense";
@@ -1387,18 +1302,10 @@
 
         handleTypeChange();
 
-        const setField = (id, val) => {
-          document.getElementById('form-' + id).value = val || "";
-          const disp = document.getElementById('display-' + id);
-          if (disp) {
-            disp.innerText = val || "Select...";
-            disp.classList.toggle('text-faint', !val);
-          }
-        };
-        setField('source-account', trx.sourceAccount);
-        setField('target-account', trx.targetAccount);
-        setField('payable', trx.relatedPayable);
-        setField('receivable', trx.relatedReceivable);
+        document.getElementById('form-source-account').value = trx.sourceAccount || "";
+        document.getElementById('form-target-account').value = trx.targetAccount || "";
+        document.getElementById('form-payable').value = trx.relatedPayable || "";
+        document.getElementById('form-receivable').value = trx.relatedReceivable || "";
 
         document.getElementById('form-category').value = trx.category || "";
         const catDisplay = document.getElementById('form-category-display');
@@ -1786,63 +1693,38 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
   setTimeout(() => {
     openNewTransactionForm();
 
-    if (categoryTag === 'RECEIVABLE') {
-      document.getElementById('form-type').value = "Receive Receivable";
-      updateTypeDisplay("Receive Receivable");
-      handleTypeChange();
-      
-      document.getElementById('form-receivable').value = targetName;
-      if (document.getElementById('display-receivable')) {
-        document.getElementById('display-receivable').innerText = targetName;
-        document.getElementById('display-receivable').classList.remove('text-faint');
-      }
-      document.getElementById('form-category').value = "Receive Receivable";
-      const catDisplay = document.getElementById('form-category-display');
-      if (catDisplay) {
-        catDisplay.innerText = "Receive Receivable";
-        catDisplay.classList.remove('text-faint');
-      }
-      document.getElementById('form-description').value = "Payment received from " + targetName;
-    } else if (isAccount) {
+    if (isAccount) {
       document.getElementById('form-type').value = "Internal Transfer";
       updateTypeDisplay("Internal Transfer");
       handleTypeChange();
 
       document.getElementById('form-target-account').value = targetName;
-      if (document.getElementById('display-target-account')) {
-        document.getElementById('display-target-account').innerText = targetName;
-        document.getElementById('display-target-account').classList.remove('text-faint');
-      }
       document.getElementById('form-category').value = "Internal Transfer";
       const catDisplay = document.getElementById('form-category-display');
       if (catDisplay) {
         catDisplay.innerText = "Internal Transfer";
         catDisplay.classList.remove('text-faint');
       }
-      document.getElementById('form-description').value = "Payment of " + targetName;
     } else {
       document.getElementById('form-type').value = "Pay Installment";
       updateTypeDisplay("Pay Installment");
       handleTypeChange();
 
       document.getElementById('form-payable').value = targetName;
-      if (document.getElementById('display-payable')) {
-        document.getElementById('display-payable').innerText = targetName;
-        document.getElementById('display-payable').classList.remove('text-faint');
-      }
       document.getElementById('form-category').value = "Pay Installment";
       const catDisplay = document.getElementById('form-category-display');
       if (catDisplay) {
         catDisplay.innerText = "Pay Installment";
         catDisplay.classList.remove('text-faint');
       }
-      document.getElementById('form-description').value = "Payment of " + targetName;
     }
 
     if (defaultAmount && defaultAmount > 0) {
       document.getElementById('form-amount-value').value = defaultAmount;
       document.getElementById('form-amount-display').value = new Intl.NumberFormat('id-ID').format(defaultAmount);
     }
+
+    document.getElementById('form-description').value = "Pelunasan Tagihan " + targetName;
   }, 350);
 }
     
@@ -2620,9 +2502,13 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
 
       document.getElementById('master-old-name').value = acc.accountName || '';
       document.getElementById('master-name').value = acc.accountName || '';
-      document.getElementById('master-account-type').value = acc.accountType || 'Bank Account';
-      document.getElementById('master-function-category').value = acc.functionCategory || 'Daily Operations';
-      document.getElementById('master-account-owner').value = acc.owner || 'Yosa & Fani';
+      const setPicker = (id, val) => { 
+        document.getElementById(id).value = val; 
+        if(document.getElementById('display-' + id)) document.getElementById('display-' + id).innerText = val; 
+      };
+      setPicker('master-account-type', acc.accountType || 'Bank Account');
+      setPicker('master-function-category', acc.functionCategory || 'Daily Operations');
+      setPicker('master-account-owner', acc.owner || APP_USERS[0]);
       document.getElementById('master-initial-balance').value = acc.initialBalance || 0;
     }
 
@@ -2669,8 +2555,14 @@ function openEditPayableModal(payableName) {
     openMasterModal('payable', true);
     document.getElementById('master-old-name').value = p.payableName || '';
     document.getElementById('master-name').value = p.payableName || '';
-    document.getElementById('master-payable-type').value = p.payableType || 'Personal Loan';
-    if (document.getElementById('master-payable-owner')) document.getElementById('master-payable-owner').value = p.owner || 'Yosa';
+    const setPicker = (id, val) => { 
+      const el = document.getElementById(id);
+      if(el) { el.value = val; }
+      const disp = document.getElementById('display-' + id);
+      if(disp) { disp.innerText = val; }
+    };
+    setPicker('master-payable-type', p.payableType || 'Personal Loan');
+    setPicker('master-payable-owner', p.owner || APP_USERS[0]);
     if (document.getElementById('master-payable-owed-to')) document.getElementById('master-payable-owed-to').value = p.owedTo || '';
     document.getElementById('master-payable-total').value = p.initialAmount || 0;
     if (document.getElementById('master-payable-start')) document.getElementById('master-payable-start').value = p.startDate || '';
@@ -2778,7 +2670,14 @@ async function handleSaveMaster(event) {
         openMasterModal('receivable', true);
         document.getElementById('master-old-name').value = r.receivableName || '';
         document.getElementById('master-name').value = r.receivableName || '';
-        document.getElementById('master-receivable-type').value = r.receivableType || 'Other';
+        const setPicker = (id, val) => { 
+          const el = document.getElementById(id);
+          if(el) { el.value = val; }
+          const disp = document.getElementById('display-' + id);
+          if(disp) { disp.innerText = val; }
+        };
+        setPicker('master-receivable-type', r.receivableType || 'Other');
+        setPicker('master-receivable-owner', r.owner || APP_USERS[0]);
         document.getElementById('master-receivable-total').value = r.initialAmount || 0;
         document.getElementById('master-receivable-notes').value = r.notes || '';
       }, 400);
@@ -3008,30 +2907,9 @@ async function handleSaveMaster(event) {
     receivableEl.innerHTML = emptyStateHtml('party-popper', "All collected!", "Every receivable has been paid back. Nothing left for Mochi to chase.");
   } else {
     activeReceivables.forEach((r, i) => {
-      const initial = Math.abs(Number(r.initialAmount) || 0);
       const rem = Math.abs(Number(r.remainingAmount) || 0);
-      const collected = Math.max(0, initial - rem);
-      const pctCollected = initial > 0 ? Math.min(100, Math.round((collected / initial) * 100)) : 0;
-
-      let dueBadgeHtml = '';
-      if (r.expectedReturn) {
-        const dueDate = new Date(r.expectedReturn);
-        const today = new Date();
-        today.setHours(0,0,0,0);
-        dueDate.setHours(0,0,0,0);
-        const diffDays = Math.round((dueDate - today) / (1000 * 60 * 60 * 24));
-        
-        if (diffDays < 0) {
-          dueBadgeHtml = `<span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/20">Overdue ${Math.abs(diffDays)} Days</span>`;
-        } else if (diffDays === 0) {
-          dueBadgeHtml = `<span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20">Due Today</span>`;
-        } else {
-          dueBadgeHtml = `<span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Due in ${diffDays} Days</span>`;
-        }
-      }
-
       const div = document.createElement('div');
-      div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden select-none space-y-3";
+      div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden select-none space-y-2";
       div.style.animationDelay = `${i * 0.05}s`;
       div.onclick = () => { vibrate(30); showReceivableDetail(r); };
 
@@ -3044,39 +2922,12 @@ async function handleSaveMaster(event) {
               ${r.fromToWhom ? `<span class="text-[10px] text-faint font-extrabold">• ${escapeHtml(r.fromToWhom)}</span>` : ''}
             </div>
           </div>
-          ${dueBadgeHtml}
         </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">REMAINING RECEIVABLE</span>
-            <span class="text-[16px] font-black amount-info block leading-none tracking-tight font-numeric">${formatRupiah(rem)}</span>
-          </div>
-          <div class="text-right">
-            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">TARGET DATE</span>
-            <span class="text-[13px] font-extrabold text-main block leading-none">${r.expectedReturn ? formatDate(r.expectedReturn) : 'No Target'}</span>
-          </div>
+        <div>
+          <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING RECEIVABLE</span>
+          <span class="text-[18px] font-black amount-info block leading-none tracking-tight font-numeric">${formatRupiah(rem)}</span>
         </div>
-
-        <!-- PROGRESS BAR PELUNASAN -->
-        ${initial > 0 ? `
-          <div class="space-y-1 pt-1">
-            <div class="flex justify-between text-[10px] font-extrabold text-muted">
-              <span>Collected: ${pctCollected}%</span>
-              <span>Total Loan: ${formatRupiah(initial)}</span>
-            </div>
-            <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden">
-              <div class="bg-gradient-to-r from-sky-400 to-sky-600 h-full rounded-full transition-all duration-700" style="width: ${pctCollected}%"></div>
-            </div>
-          </div>
-        ` : ''}
-
-        <!-- QUICK-PAY BUTTON -->
-        <div class="pt-2 border-t border-slate-100 dark:border-[var(--border-color)]">
-          <button type="button" onclick="vibrate(30); event.stopPropagation(); quickPayCommitment('${escapeAttr(r.receivableName)}', false, ${rem}, 'RECEIVABLE')" class="w-full py-2 bg-[var(--chip-info-bg)] text-sky-700 dark:text-sky-300 font-extrabold text-xs rounded-xl tap-shrink shadow-sm flex items-center justify-center hover:bg-sky-500/20">
-            <i data-lucide="download" class="w-3.5 h-3.5 mr-1"></i> Receive Payment (${formatRupiah(rem)})
-          </button>
-        </div>
+        ${r.expectedReturn ? `<div class="text-[10px] font-extrabold text-sky-600 dark:text-sky-400 bg-sky-500/10 px-3 py-1 rounded-lg flex items-center justify-between"><span class="flex items-center"><i data-lucide="calendar" class="w-3 h-3 mr-1"></i> Target Date: ${formatDate(r.expectedReturn)}</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></div>` : ''}
       `;
       receivableEl.appendChild(div);
     });
@@ -3201,12 +3052,16 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
 }
 
     function populateFormDropdowns() {
-      // Just resets display on load
+      const fillSelect = (id, items, key) => {
+        const sel = document.getElementById(id);
+        const optionsHtml = items.map(item => `<option value="${escapeAttr(item[key])}">${escapeHtml(item[key])}</option>`).join('');
+        sel.innerHTML = `<option value="">-- Select --</option>` + optionsHtml;
+      };
+      fillSelect('form-source-account', GLOBAL_DATA.accounts, 'accountName');
+      fillSelect('form-target-account', GLOBAL_DATA.accounts, 'accountName');
+      fillSelect('form-payable', GLOBAL_DATA.payables, 'payableName');
+      fillSelect('form-receivable', GLOBAL_DATA.receivables, 'receivableName');
       resetCategoryPicker();
-      ['source-account', 'target-account', 'payable', 'receivable'].forEach(id => {
-        const disp = document.getElementById('display-' + id);
-        if (disp) { disp.innerText = "Select..."; disp.classList.add('text-faint'); }
-      });
       handleTypeChange();
     }
 
@@ -3245,119 +3100,6 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
         groups[main].items.push(c);
       });
       return { groups, order };
-    }
-
-    
-    function openItemPicker(type) {
-      vibrate(30);
-      const listEl = document.getElementById('item-picker-list');
-      const titleEl = document.getElementById('item-picker-title');
-      listEl.innerHTML = '';
-      
-      let html = '';
-      
-      if (type === 'source-account' || type === 'target-account') {
-        titleEl.innerText = type === 'source-account' ? 'Select Source Account' : 'Select Target Account';
-        
-        const groups = { 'Bank Accounts': [], 'E-Wallets': [], 'Physical Cash': [], 'Credit Cards & PayLater': [] };
-        
-        (GLOBAL_DATA.accounts || []).forEach(acc => {
-          const typeLower = (acc.accountType || '').toLowerCase();
-          const meta = getAccountIconMeta(acc.accountName, acc.accountType);
-          acc._meta = meta;
-          
-          if (meta.isLiability || typeLower.includes('credit card') || typeLower.includes('paylater')) {
-            groups['Credit Cards & PayLater'].push(acc);
-          } else if (typeLower.includes('e-wallet')) {
-            groups['E-Wallets'].push(acc);
-          } else if (typeLower.includes('cash') || typeLower.includes('tunai')) {
-            groups['Physical Cash'].push(acc);
-          } else {
-            groups['Bank Accounts'].push(acc);
-          }
-        });
-        
-        Object.entries(groups).forEach(([gName, items]) => {
-          if (items.length > 0) {
-            html += `<div class="mb-2 floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden">
-              <div class="px-4 py-2.5 bg-slate-50 dark:bg-[var(--bg-subtle)] text-[10px] font-bold text-muted uppercase tracking-wider">${gName}</div>
-              <div class="bg-[var(--bg-card)]">`;
-            items.forEach(acc => {
-              html += `
-                <div onclick="selectItemPicker('${type}', '${escapeAttr(acc.accountName)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center border-t border-slate-100 dark:border-[var(--border-color)] first:border-0">
-                  <div class="w-7 h-7 rounded-lg ${acc._meta.bg} flex items-center justify-center mr-3"><i data-lucide="${acc._meta.icon}" class="w-3.5 h-3.5"></i></div>
-                  <div class="flex-1 truncate">
-                    <span class="block truncate">${escapeHtml(acc.accountName)}</span>
-                    <span class="text-[10px] text-faint">${escapeHtml(acc.owner || 'Joint')}</span>
-                  </div>
-                </div>`;
-            });
-            html += `</div></div>`;
-          }
-        });
-        
-      } else if (type === 'payable') {
-        titleEl.innerText = 'Select Payable';
-        const activePayables = (GLOBAL_DATA.payables || []).filter(p => {
-          const st = (p.status || '').toLowerCase().trim();
-          return (st === 'active' || st === 'aktif') && Number(p.remainingAmount) > 0;
-        });
-        
-        if (activePayables.length === 0) {
-          html = `<p class="text-xs text-center text-muted py-4">No active payables found.</p>`;
-        } else {
-          html += `<div class="floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden bg-[var(--bg-card)]">`;
-          activePayables.forEach(p => {
-            html += `
-              <div onclick="selectItemPicker('${type}', '${escapeAttr(p.payableName)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between border-t border-slate-100 dark:border-[var(--border-color)] first:border-0">
-                <div class="flex items-center space-x-3 truncate">
-                  <div class="w-7 h-7 rounded-lg bg-[var(--chip-out-bg)] amount-out flex items-center justify-center"><i data-lucide="credit-card" class="w-3.5 h-3.5"></i></div>
-                  <span class="truncate">${escapeHtml(p.payableName)}</span>
-                </div>
-                <span class="text-[10px] font-bold text-muted">${formatRupiah(p.remainingAmount)}</span>
-              </div>`;
-          });
-          html += `</div>`;
-        }
-      } else if (type === 'receivable') {
-        titleEl.innerText = 'Select Receivable';
-        const activeReceivables = (GLOBAL_DATA.receivables || []).filter(r => {
-          const st = (r.status || '').toLowerCase().trim();
-          return (st === 'active' || st === 'unsettled' || st === 'aktif' || st === 'belum lunas') && Number(r.remainingAmount) > 0;
-        });
-        
-        if (activeReceivables.length === 0) {
-          html = `<p class="text-xs text-center text-muted py-4">No unsettled receivables found.</p>`;
-        } else {
-          html += `<div class="floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden bg-[var(--bg-card)]">`;
-          activeReceivables.forEach(r => {
-            html += `
-              <div onclick="selectItemPicker('${type}', '${escapeAttr(r.receivableName)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between border-t border-slate-100 dark:border-[var(--border-color)] first:border-0">
-                <div class="flex items-center space-x-3 truncate">
-                  <div class="w-7 h-7 rounded-lg bg-[var(--chip-info-bg)] amount-info flex items-center justify-center"><i data-lucide="hand-coins" class="w-3.5 h-3.5"></i></div>
-                  <span class="truncate">${escapeHtml(r.receivableName)}</span>
-                </div>
-                <span class="text-[10px] font-bold text-muted">${formatRupiah(r.remainingAmount)}</span>
-              </div>`;
-          });
-          html += `</div>`;
-        }
-      }
-      
-      listEl.innerHTML = html;
-      lucide.createIcons();
-      openModal('modalItemPicker');
-    }
-
-    function selectItemPicker(type, value) {
-      vibrate(20);
-      document.getElementById('form-' + type).value = value;
-      const displayEl = document.getElementById('display-' + type);
-      if (displayEl) {
-        displayEl.innerText = value;
-        displayEl.classList.remove('text-faint');
-      }
-      closeModal('modalItemPicker');
     }
 
     function openCategoryPicker() {
@@ -4059,28 +3801,28 @@ function openMasterModal(type, isEdit = false) {
     titleEl.innerText = isEdit ? "Edit Account" : "Add New Account";
     extraEl.innerHTML = `
       <div>
-        <label for="master-account-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Type</label>
-        <select id="master-account-type" class="w-full ios-input cursor-pointer py-2.5">
-          <option value="Bank Account">Bank</option>
-          <option value="E-Wallet">E-Wallet</option>
-          <option value="Cash">Cash / Tunai</option>
-          <option value="Credit Card / PayLater">Credit Card / PayLater</option>
-        </select>
+        <label class="font-extrabold text-main block mb-1.5 text-[11px]">Account Type</label>
+        <div ontouchstart="vibrate(30)" onclick="openUniversalPicker('master-account-type', 'Account Type')" class="w-full ios-input py-2.5 flex justify-between items-center cursor-pointer transition tap-shrink">
+          <span id="display-master-account-type" class="font-semibold text-main truncate">Bank Account</span>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
+        </div>
+        <input type="hidden" id="master-account-type" value="Bank Account">
       </div>
       <div>
-        <label for="master-account-owner" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Owner</label>
-        <select id="master-account-owner" class="w-full ios-input cursor-pointer py-2.5">
-          <option value="Yosa">Yosa</option>
-          <option value="Fani">Fani</option>
-          <option value="Yosa & Fani">Yosa & Fani (Joint)</option>
-        </select>
+        <label class="font-extrabold text-main block mb-1.5 text-[11px]">Account Owner</label>
+        <div ontouchstart="vibrate(30)" onclick="openUniversalPicker('master-account-owner', 'Owner')" class="w-full ios-input py-2.5 flex justify-between items-center cursor-pointer transition tap-shrink">
+          <span id="display-master-account-owner" class="font-semibold text-main truncate">${APP_USERS[0]}</span>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
+        </div>
+        <input type="hidden" id="master-account-owner" value="${APP_USERS[0]}">
       </div>
       <div>
-        <label for="master-function-category" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Function</label>
-        <select id="master-function-category" class="w-full ios-input cursor-pointer py-2.5">
-          <option value="Daily Operations">Daily Operations</option>
-          <option value="Emergency Fund & Savings">Emergency Fund & Savings</option>
-        </select>
+        <label class="font-extrabold text-main block mb-1.5 text-[11px]">Account Function</label>
+        <div ontouchstart="vibrate(30)" onclick="openUniversalPicker('master-function-category', 'Function')" class="w-full ios-input py-2.5 flex justify-between items-center cursor-pointer transition tap-shrink">
+          <span id="display-master-function-category" class="font-semibold text-main truncate">Daily Operations</span>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
+        </div>
+        <input type="hidden" id="master-function-category" value="Daily Operations">
       </div>
       <div>
         <label for="master-initial-balance" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Balance / Bill (Rp)</label>
@@ -4095,21 +3837,20 @@ function openMasterModal(type, isEdit = false) {
     extraEl.innerHTML = `
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label for="master-payable-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Payable Type</label>
-          <select id="master-payable-type" class="w-full ios-input cursor-pointer py-2.5">
-            <option value="Personal Loan">Personal Loan / FinTech</option>
-            <option value="Vehicle Installment">Vehicle Installment</option>
-            <option value="Bank Loan">Bank Loan / KTA</option>
-            <option value="Other">Other</option>
-          </select>
+          <label class="font-extrabold text-main block mb-1.5 text-[11px]">Payable Type</label>
+          <div ontouchstart="vibrate(30)" onclick="openUniversalPicker('master-payable-type', 'Payable Type')" class="w-full ios-input py-2.5 flex justify-between items-center cursor-pointer transition tap-shrink">
+            <span id="display-master-payable-type" class="font-semibold text-main truncate">Personal Loan</span>
+            <i data-lucide="chevron-down" class="w-3 h-3 text-faint flex-shrink-0"></i>
+          </div>
+          <input type="hidden" id="master-payable-type" value="Personal Loan">
         </div>
         <div>
-          <label for="master-payable-owner" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Owner</label>
-          <select id="master-payable-owner" class="w-full ios-input cursor-pointer py-2.5">
-            <option value="Yosa">Yosa</option>
-            <option value="Fani">Fani</option>
-            <option value="Yosa & Fani">Yosa & Fani</option>
-          </select>
+          <label class="font-extrabold text-main block mb-1.5 text-[11px]">Owner</label>
+          <div ontouchstart="vibrate(30)" onclick="openUniversalPicker('master-payable-owner', 'Owner')" class="w-full ios-input py-2.5 flex justify-between items-center cursor-pointer transition tap-shrink">
+            <span id="display-master-payable-owner" class="font-semibold text-main truncate">${APP_USERS[0]}</span>
+            <i data-lucide="chevron-down" class="w-3 h-3 text-faint flex-shrink-0"></i>
+          </div>
+          <input type="hidden" id="master-payable-owner" value="${APP_USERS[0]}">
         </div>
       </div>
       <div>
@@ -4187,20 +3928,20 @@ function openMasterModal(type, isEdit = false) {
     extraEl.innerHTML = `
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label for="master-receivable-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Receivable Type</label>
-          <select id="master-receivable-type" class="w-full ios-input cursor-pointer py-2.5">
-            <option value="Shopping Reimbursement">Shopping Reimbursement</option>
-            <option value="Personal Loan">Personal Loan</option>
-            <option value="Other">Other</option>
-          </select>
+          <label class="font-extrabold text-main block mb-1.5 text-[11px]">Receivable Type</label>
+          <div ontouchstart="vibrate(30)" onclick="openUniversalPicker('master-receivable-type', 'Receivable Type')" class="w-full ios-input py-2.5 flex justify-between items-center cursor-pointer transition tap-shrink">
+            <span id="display-master-receivable-type" class="font-semibold text-main truncate">Shopping Reimbursement</span>
+            <i data-lucide="chevron-down" class="w-3 h-3 text-faint flex-shrink-0"></i>
+          </div>
+          <input type="hidden" id="master-receivable-type" value="Shopping Reimbursement">
         </div>
         <div>
-          <label for="master-receivable-owner" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Owner</label>
-          <select id="master-receivable-owner" class="w-full ios-input cursor-pointer py-2.5">
-            <option value="Yosa">Yosa</option>
-            <option value="Fani">Fani</option>
-            <option value="Yosa & Fani">Yosa & Fani</option>
-          </select>
+          <label class="font-extrabold text-main block mb-1.5 text-[11px]">Owner</label>
+          <div ontouchstart="vibrate(30)" onclick="openUniversalPicker('master-receivable-owner', 'Owner')" class="w-full ios-input py-2.5 flex justify-between items-center cursor-pointer transition tap-shrink">
+            <span id="display-master-receivable-owner" class="font-semibold text-main truncate">${APP_USERS[0]}</span>
+            <i data-lucide="chevron-down" class="w-3 h-3 text-faint flex-shrink-0"></i>
+          </div>
+          <input type="hidden" id="master-receivable-owner" value="${APP_USERS[0]}">
         </div>
       </div>
       <div>
