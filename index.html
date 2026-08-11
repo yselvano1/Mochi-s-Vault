@@ -236,7 +236,7 @@
 
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
     <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-3">
-      <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0 self-center">
+      <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0 self-center cursor-pointer tap-shrink" onclick="openCommandCenter()">
         <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Avatar" class="w-full h-full object-contain filter drop-shadow-sm transition-all duration-300">
       </div>
 
@@ -823,6 +823,89 @@
         }
       }
     });
+
+    
+    function openCommandCenter() {
+      vibrate(30);
+      const ccUserDisplay = document.getElementById('cc-active-users-display');
+      if (ccUserDisplay) {
+        ccUserDisplay.innerText = APP_USERS.slice(0,2).join(' & ') + (APP_USERS.length > 2 ? '...' : '');
+      }
+      openModal('modalCommandCenter');
+    }
+
+    function openUserManager() {
+      vibrate(30);
+      renderUserManagerList();
+      openModal('modalUserManager');
+    }
+
+    function renderUserManagerList() {
+      const listEl = document.getElementById('user-manager-list');
+      let html = '';
+      APP_USERS.forEach((user, idx) => {
+        html += `
+          <div class="flex items-center justify-between p-3.5 floating-item border border-slate-100 dark:border-[var(--border-color)] bg-[var(--bg-card)]">
+            <span class="font-extrabold text-main text-sm">${escapeHtml(user)}</span>
+            <button onclick="promptDeleteUser(${idx})" class="p-1.5 text-faint hover:text-rose-500 transition-colors rounded-lg hover:bg-[var(--bg-subtle-2)] tap-shrink">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        `;
+      });
+      listEl.innerHTML = html;
+      lucide.createIcons();
+      
+      const ccUserDisplay = document.getElementById('cc-active-users-display');
+      if (ccUserDisplay) {
+        ccUserDisplay.innerText = APP_USERS.slice(0,2).join(' & ') + (APP_USERS.length > 2 ? '...' : '');
+      }
+    }
+
+    function addNewUser() {
+      const input = document.getElementById('new-user-name');
+      const name = input.value.trim();
+      if (!name) return;
+      
+      if (APP_USERS.map(u => u.toLowerCase()).includes(name.toLowerCase())) {
+        triggerInputError('new-user-name', 'User already exists!');
+        return;
+      }
+      
+      APP_USERS.push(name);
+      localStorage.setItem('mochi_active_users', JSON.stringify(APP_USERS));
+      input.value = '';
+      vibrate(30);
+      renderUserManagerList();
+      showToast('User added successfully!');
+    }
+
+    let userToDeleteIndex = null;
+    function promptDeleteUser(idx) {
+      if (APP_USERS.length <= 1) {
+        showToast("You must have at least one active user.", "error");
+        return;
+      }
+      userToDeleteIndex = idx;
+      vibrate(40);
+      closeModal('modalUserManager');
+      setTimeout(() => {
+        const titleEl = document.getElementById('delete-modal-title');
+        const descEl = document.getElementById('delete-modal-desc');
+        if (titleEl) titleEl.innerText = `Remove "${APP_USERS[idx]}"?`;
+        if (descEl) descEl.innerText = "This user will be hidden from new dropdowns. Past transactions and accounts will NOT be affected (Safe Soft-Delete).";
+        
+        document.getElementById('btn-confirm-delete').onclick = () => {
+          vibrate(30);
+          const removed = APP_USERS.splice(userToDeleteIndex, 1);
+          localStorage.setItem('mochi_active_users', JSON.stringify(APP_USERS));
+          closeModal('modalDelete');
+          showToast(`User ${removed[0]} removed.`);
+          setTimeout(() => openUserManager(), 400);
+        };
+        openModal('modalDelete');
+      }, 400);
+    }
 
     function vibrate(ms) {
       if (navigator.vibrate) navigator.vibrate(Math.max(ms, 25));
@@ -3113,7 +3196,75 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       return { groups, order };
     }
 
-    function openCategoryPicker() {
+    
+    function openUniversalPicker(inputId, typeStr) {
+      vibrate(30);
+      const listEl = document.getElementById('item-picker-list');
+      const titleEl = document.getElementById('item-picker-title');
+      listEl.innerHTML = '';
+      titleEl.innerText = 'Select ' + typeStr;
+      
+      let items = [];
+      if (typeStr === 'Account Type') {
+        items = [
+          { value: 'Bank Account', icon: 'building-2', color: 'text-mochi' },
+          { value: 'E-Wallet', icon: 'smartphone', color: 'text-sky-500' },
+          { value: 'Cash', icon: 'banknote', color: 'text-emerald-500' },
+          { value: 'Credit Card / PayLater', icon: 'credit-card', color: 'text-purple-500' }
+        ];
+      } else if (typeStr === 'Function') {
+        items = [
+          { value: 'Daily Operations', icon: 'zap', color: 'text-amber-500' },
+          { value: 'Emergency Fund & Savings', icon: 'piggy-bank', color: 'text-emerald-500' }
+        ];
+      } else if (typeStr === 'Payable Type') {
+        items = [
+          { value: 'Structured Debt', icon: 'users', color: 'text-main' },
+          { value: 'Vehicle Installment', icon: 'car', color: 'text-main' },
+          { value: 'Bank Loan', icon: 'building', color: 'text-main' },
+          { value: 'Other', icon: 'file-text', color: 'text-main' }
+        ];
+      } else if (typeStr === 'Receivable Type') {
+        items = [
+          { value: 'Shopping Reimbursement', icon: 'shopping-bag', color: 'text-main' },
+          { value: 'Structured Loan', icon: 'users', color: 'text-main' },
+          { value: 'Other', icon: 'file-text', color: 'text-main' }
+        ];
+      } else if (typeStr === 'Owner' || typeStr === 'User') {
+        items = APP_USERS.map(u => ({ value: u, icon: 'user', color: 'text-mochi' }));
+      }
+      
+      let html = `<div class="floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden bg-[var(--bg-card)]">`;
+      items.forEach(item => {
+        html += `
+          <div onclick="selectUniversalPicker('${inputId}', '${escapeAttr(item.value)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center border-t border-slate-100 dark:border-[var(--border-color)] first:border-0">
+            <div class="w-7 h-7 rounded-lg bg-[var(--bg-subtle-2)] flex items-center justify-center mr-3"><i data-lucide="${item.icon}" class="w-3.5 h-3.5 ${item.color}"></i></div>
+            <span class="truncate">${escapeHtml(item.value)}</span>
+          </div>`;
+      });
+      html += `</div>`;
+      
+      listEl.innerHTML = html;
+      lucide.createIcons();
+      openModal('modalItemPicker');
+    }
+
+    function selectUniversalPicker(inputId, value) {
+      vibrate(20);
+      document.getElementById(inputId).value = value;
+      const displayEl = document.getElementById('display-' + inputId);
+      if (displayEl) {
+        displayEl.innerText = value;
+      }
+      if (inputId === 'master-category-type') {
+        handleMasterCategoryTypeChange();
+      } else if (inputId === 'master-receivable-type') {
+        handleReceivableTypeChange();
+      }
+      closeModal('modalItemPicker');
+    }
+
+function openCategoryPicker() {
       try {
         renderCategoryPickerList();
         openModal('modalCategoryPicker');
