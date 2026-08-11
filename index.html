@@ -2010,121 +2010,95 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
     }
 
     function renderCategoryAnalysis() {
-      const el = document.getElementById('dashboard-category-analysis');
-      if (!el) return;
+  const el = document.getElementById('dashboard-category-analysis');
+  if (!el) return;
 
-      const now = new Date();
-      const currentYM = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
-      
-      const prevDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      const prevYM = prevDate.getFullYear() + '-' + String(prevDate.getMonth() + 1).padStart(2, '0');
+  const now = new Date();
+  const currentYM = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  const prevDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const prevYM = prevDate.getFullYear() + '-' + String(prevDate.getMonth() + 1).padStart(2, '0');
 
-      const allTrx = GLOBAL_DATA.transactions || [];
-      const categories = GLOBAL_DATA.categories || [];
+  const allTrx = GLOBAL_DATA.transactions || [];
+  const categories = GLOBAL_DATA.categories || [];
 
-      const trxThisMonth = allTrx.filter(t => t.type === 'Expense' && t.date && t.date.substring(0, 7) === currentYM);
-      const trxLastMonth = allTrx.filter(t => t.type === 'Expense' && t.date && t.date.substring(0, 7) === prevYM);
+  const trxThisMonth = allTrx.filter(t => t.type === 'Expense' && t.date && t.date.substring(0, 7) === currentYM);
+  const trxLastMonth = allTrx.filter(t => t.type === 'Expense' && t.date && t.date.substring(0, 7) === prevYM);
 
-      const totalThisMonth = trxThisMonth.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
-      const totalLastMonth = trxLastMonth.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+  const totalThisMonth = trxThisMonth.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+  const totalLastMonth = trxLastMonth.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
 
-      let trendHtml = "";
-      if (totalLastMonth > 0) {
-        const diffPct = ((totalThisMonth - totalLastMonth) / totalLastMonth) * 100;
-        const isHigher = diffPct > 0;
-        const trendColor = isHigher ? "amount-out bg-[var(--chip-out-bg)]" : "amount-in bg-[var(--chip-in-bg)]";
-        const trendIcon = isHigher ? "trending-up" : "trending-down";
-        const trendText = isHigher 
-          ? `${Math.abs(diffPct).toFixed(0)}% higher than last month` 
-          : `${Math.abs(diffPct).toFixed(0)}% lower than last month`;
+  const donutEl = document.getElementById('dashboard-category-donut');
 
-        trendHtml = `
-          <div class="mb-4 p-3 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-subtle-2)] flex items-center justify-between text-xs">
-            <div class="flex items-center space-x-2">
-              <div class="w-6 h-6 rounded-md flex items-center justify-center ${trendColor}">
-                <i data-lucide="${trendIcon}" class="w-3.5 h-3.5"></i>
-              </div>
-              <span class="font-extrabold text-main">${trendText}</span>
-            </div>
-            <span class="text-[10px] font-bold text-muted">${formatRupiah(totalLastMonth)} prev</span>
-          </div>`;
-      }
+  if (trxThisMonth.length === 0) {
+    el.innerHTML = emptyStateHtml('coffee', "Nothing spent yet this month", "Mochi's tail is still. Log an expense and this space fills in with where it went.");
+    if (donutEl) donutEl.innerHTML = "";
+    return;
+  }
 
-      const donutEl = document.getElementById('dashboard-category-donut');
+  const groups = {};
+  let grandTotal = 0;
 
-      if (trxThisMonth.length === 0) {
-        el.innerHTML = trendHtml + emptyStateHtml('coffee', "Nothing spent yet this month", "Mochi's tail is still. Log an expense and this space fills in with where it went.");
-        if (donutEl) donutEl.innerHTML = "";
-        return;
-      }
+  trxThisMonth.forEach(t => {
+    const categoryName = t.category || '';
+    const catMatch = categories.find(c => c.categoryName === categoryName || c.subCategory === categoryName);
+    const main = (catMatch ? catMatch.mainCategory : null) || t.mainCategory || categoryName || 'Lainnya';
+    const subKey = categoryName || main;
+    const amount = Number(t.amount) || 0;
 
-      const groups = {};
-      let grandTotal = 0;
+    grandTotal += amount;
+    if (!groups[main]) groups[main] = { total: 0, subs: {} };
+    groups[main].total += amount;
+    groups[main].subs[subKey] = (groups[main].subs[subKey] || 0) + amount;
+  });
 
-      trxThisMonth.forEach(t => {
-        const catMatch = categories.find(c => c.categoryName === t.category || c.subCategory === t.category);
-        const main = (catMatch ? catMatch.mainCategory : null) || t.mainCategory || t.category || 'Lainnya';
-        const subKey = t.category || main;
-        const amount = Number(t.amount) || 0;
+  const sortedMain = Object.keys(groups).sort((a, b) => groups[b].total - groups[a].total);
+  if (donutEl) renderCategoryDonut(donutEl, sortedMain, groups, grandTotal);
 
-        grandTotal += amount;
-        if (!groups[main]) groups[main] = { total: 0, subs: {} };
-        groups[main].total += amount;
-        groups[main].subs[subKey] = (groups[main].subs[subKey] || 0) + amount;
+  let html = "";
+  sortedMain.forEach((main, index) => {
+    const g = groups[main];
+    const expensePct = grandTotal > 0 ? (g.total / grandTotal * 100) : 0;
+    const displayText = `${formatRupiah(g.total)} (${expensePct.toFixed(0)}%)`;
+    const barColor = "from-mochi-light to-mochi";
+
+    const isExpanded = !!categoryAnalysisExpanded[main];
+    const subKeys = Object.keys(g.subs).sort((a, b) => g.subs[b] - g.subs[a]);
+    const hasMultipleSubs = subKeys.length > 1 || (subKeys.length === 1 && subKeys[0] !== main);
+
+    html += `<div class="mb-4 last:mb-0 stagger-item" style="animation-delay: ${index * 0.05}s">
+      <div ${hasMultipleSubs ? `onclick="toggleCategoryAnalysis('${escapeAttr(main)}')" class="cursor-pointer group"` : ''}>
+        <div class="flex justify-between items-center mb-1.5 gap-2">
+          <span class="text-xs font-extrabold text-main flex items-center group-hover:text-mochi dark:group-hover:text-mochi-light transition-colors truncate">
+            ${hasMultipleSubs ? `<i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-3.5 h-3.5 mr-1 text-faint flex-shrink-0"></i>` : ''}
+            <span class="truncate">${escapeHtml(main)}</span>
+          </span>
+          <span class="text-xs font-black text-main flex-shrink-0 text-right">${displayText}</span>
+        </div>
+        <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
+          <div class="bg-gradient-to-r ${barColor} h-1.5 rounded-full transition-all duration-1000 ease-out" style="width:0%" data-target-width="${expensePct}%"></div>
+        </div>
+      </div>`;
+
+    if (hasMultipleSubs) {
+      html += `<div class="${isExpanded ? '' : 'hidden'} mt-2.5 pl-4 border-l-2 border-slate-200 dark:border-[var(--border-color)] space-y-1.5">`;
+      subKeys.forEach(sub => {
+        html += `<div class="flex justify-between items-center text-[11px]">
+          <span class="text-muted font-semibold truncate pr-2">${escapeHtml(sub)}</span>
+          <span class="font-extrabold text-main flex-shrink-0">${formatRupiah(g.subs[sub])}</span>
+        </div>`;
       });
-
-      const sortedMain = Object.keys(groups).sort((a, b) => groups[b].total - groups[a].total);
-
-      if (donutEl) renderCategoryDonut(donutEl, sortedMain, groups, grandTotal);
-
-      let html = trendHtml;
-      sortedMain.forEach((main, index) => {
-        const g = groups[main];
-        
-        const expensePct = grandTotal > 0 ? (g.total / grandTotal * 100) : 0;
-        const displayText = `${formatRupiah(g.total)} (${expensePct.toFixed(0)}%)`;
-        const barColor = "from-mochi-light to-mochi";
-
-        const isExpanded = !!categoryAnalysisExpanded[main];
-        const subKeys = Object.keys(g.subs).sort((a, b) => g.subs[b] - g.subs[a]);
-        const hasMultipleSubs = subKeys.length > 1 || (subKeys.length === 1 && subKeys[0] !== main);
-
-        html += `<div class="mb-4 last:mb-0 stagger-item" style="animation-delay: ${index * 0.05}s">`;
-        html += `
-          <div ${hasMultipleSubs ? `onclick="toggleCategoryAnalysis('${escapeAttr(main)}')" class="cursor-pointer group"` : ''}>
-            <div class="flex justify-between items-center mb-1.5 gap-2">
-              <span class="text-xs font-extrabold text-main flex items-center group-hover:text-mochi dark:group-hover:text-mochi-light transition-colors truncate">
-                ${hasMultipleSubs ? `<i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-3.5 h-3.5 mr-1 text-faint flex-shrink-0"></i>` : ''}
-                <span class="truncate">${escapeHtml(main)}</span>
-              </span>
-              <span class="text-xs font-black text-main flex-shrink-0 text-right">${displayText}</span>
-            </div>
-            <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
-              <div class="bg-gradient-to-r ${barColor} h-1.5 rounded-full transition-all duration-1000 ease-out" style="width:0%" data-target-width="${expensePct}%"></div>
-            </div>
-          </div>`;
-
-        if (hasMultipleSubs) {
-          html += `<div class="${isExpanded ? '' : 'hidden'} mt-2.5 pl-4 border-l-2 border-slate-200 dark:border-[var(--border-color)] space-y-1.5">`;
-          subKeys.forEach(sub => {
-            html += `
-              <div class="flex justify-between items-center text-[11px]">
-                <span class="text-muted font-semibold truncate pr-2">${escapeHtml(sub)}</span>
-                <span class="font-extrabold text-main flex-shrink-0">${formatRupiah(g.subs[sub])}</span>
-              </div>`;
-          });
-          html += `</div>`;
-        }
-        html += `</div>`;
-      });
-
-      el.innerHTML = html;
-      lucide.createIcons();
-
-      setTimeout(() => {
-        el.querySelectorAll('[data-target-width]').forEach(bar => { bar.style.width = bar.getAttribute('data-target-width'); });
-      }, 50);
+      html += `</div>`;
     }
+    html += `</div>`;
+  });
+
+  el.innerHTML = html;
+  lucide.createIcons();
+
+  setTimeout(() => {
+    el.querySelectorAll('[data-target-width]').forEach(bar => { bar.style.width = bar.getAttribute('data-target-width'); });
+  }, 50);
+}
     
     function populateYearFilter() {
       const years = [...new Set((GLOBAL_DATA.transactions || []).map(t => (t.date || '').substring(0, 4)).filter(Boolean))].sort().reverse();
