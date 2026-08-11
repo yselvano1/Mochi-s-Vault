@@ -2638,6 +2638,11 @@ async function handleSaveMaster(event) {
     payload.expectedReturn = document.getElementById('master-receivable-return') ? document.getElementById('master-receivable-return').value : "";
     payload.relatedAccount = document.getElementById('master-receivable-account') ? document.getElementById('master-receivable-account').value : "";
     payload.notes = document.getElementById('master-receivable-notes').value;
+    payload.termMonths = Number(document.getElementById('master-receivable-term').value) || "";
+    payload.monthlyInstallment = Number(document.getElementById('master-receivable-installment').value) || "";
+    payload.interestRate = Number(document.getElementById('master-receivable-interest').value) || 0;
+    payload.adminFee = Number(document.getElementById('master-receivable-admin').value) || 0;
+    payload.netPrincipal = Number(document.getElementById('master-receivable-net').value) || 0;
   }
 
   let loadingToast = showToast("Saving master data...", "info");
@@ -2680,6 +2685,12 @@ async function handleSaveMaster(event) {
         setPicker('master-receivable-owner', r.owner || APP_USERS[0]);
         document.getElementById('master-receivable-total').value = r.initialAmount || 0;
         document.getElementById('master-receivable-notes').value = r.notes || '';
+        document.getElementById('master-receivable-term').value = r.termMonths || '';
+        document.getElementById('master-receivable-installment').value = r.monthlyInstallment || '';
+        document.getElementById('master-receivable-interest').value = r.interestRate || '';
+        document.getElementById('master-receivable-admin').value = r.adminFee || '';
+        document.getElementById('master-receivable-net').value = r.netPrincipal || '';
+        handleReceivableTypeChange();
       }, 400);
     }
 
@@ -3692,9 +3703,22 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
               <span>Receivable Type:</span> 
               <span class="font-extrabold text-main">${escapeHtml(type)}</span>
             </div>
+            ${r.fromToWhom ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5 mt-2"><span>Debtor:</span> <span class="font-extrabold text-main">${escapeHtml(r.fromToWhom)}</span></div>` : ''}
+            
+            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5 mt-2">
+              <span>Total Loan / Principal:</span> 
+              <span class="font-extrabold text-main font-numeric">${formatRupiah(r.initialAmount)}</span>
+            </div>
+            
+            ${r.netPrincipal ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5 mt-2"><span>Net Principal:</span> <span class="font-extrabold text-main font-numeric">${formatRupiah(r.netPrincipal)}</span></div>` : ''}
+            ${r.interestRate ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5 mt-2"><span>Interest Rate:</span> <span class="font-extrabold text-main">${r.interestRate}% / mo</span></div>` : ''}
+            ${r.adminFee ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5 mt-2"><span>Admin Fee:</span> <span class="font-extrabold text-main font-numeric">${formatRupiah(r.adminFee)}</span></div>` : ''}
+            ${r.termMonths ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5 mt-2"><span>Term:</span> <span class="font-extrabold text-main">${r.termMonths} Months</span></div>` : ''}
+            ${r.monthlyInstallment ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5 mt-2"><span>Monthly Installment:</span> <span class="font-extrabold amount-info font-numeric">${formatRupiah(r.monthlyInstallment)}/mo</span></div>` : ''}
+            
             <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5 mt-2 items-center">
               <span>Remaining Receivable:</span> 
-              <span class="font-black amount-info text-[15px]">${formatRupiah(amount)}</span>
+              <span class="font-black amount-info text-[15px] font-numeric">${formatRupiah(amount)}</span>
             </div>
             <div class="flex justify-between mt-2">
               <span>Status:</span> 
@@ -3948,11 +3972,41 @@ function openMasterModal(type, isEdit = false) {
         <label for="master-receivable-from" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Debtor / Borrower</label>
         <input type="text" id="master-receivable-from" class="w-full ios-input py-2.5" placeholder="e.g., Mom / Friend">
       </div>
+      
+      <!-- DYNAMIC STRUCTURED LOAN SECTION -->
+      <div id="master-receivable-advanced" class="hidden border-t border-slate-200 dark:border-[var(--border-color)] mt-3 pt-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="master-receivable-net" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Net Principal</label>
+            <input type="number" id="master-receivable-net" class="w-full ios-input py-2.5" placeholder="0" oninput="calcSmartReceivable()">
+          </div>
+          <div>
+            <label for="master-receivable-term" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Term (Months)</label>
+            <input type="number" id="master-receivable-term" class="w-full ios-input py-2.5" placeholder="0" oninput="calcSmartReceivable()">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3 mt-1.5">
+          <div>
+            <label for="master-receivable-interest" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Interest / Month (%)</label>
+            <input type="number" step="0.01" id="master-receivable-interest" class="w-full ios-input py-2.5" placeholder="e.g., 2.5" oninput="calcSmartReceivable()">
+          </div>
+          <div>
+            <label for="master-receivable-admin" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Admin Fee (Rp)</label>
+            <input type="number" id="master-receivable-admin" class="w-full ios-input py-2.5" placeholder="0" oninput="calcSmartReceivable()">
+          </div>
+        </div>
+        <div class="mt-1.5 mb-3">
+          <label for="master-receivable-installment" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Monthly Installment</label>
+          <input type="number" id="master-receivable-installment" class="w-full ios-input py-2.5 font-black text-mochi" placeholder="Auto-calculated (Editable)">
+        </div>
+      </div>
+      
       <div>
         <label for="master-receivable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Total Receivable (Rp)</label>
-        <input type="number" id="master-receivable-total" class="w-full ios-input py-2.5" value="0" required>
+        <input type="number" id="master-receivable-total" class="w-full ios-input py-2.5 font-black text-mochi" value="0" required>
       </div>
-      <div class="grid grid-cols-2 gap-3">
+
+      <div class="grid grid-cols-2 gap-3 mt-2">
         <div>
           <label for="master-receivable-occurred" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Loan Date</label>
           <input type="date" id="master-receivable-occurred" class="w-full ios-input py-2 px-2 text-xs">
@@ -3981,6 +4035,36 @@ function openMasterModal(type, isEdit = false) {
   }
   openModal('modalMaster');
 }
+
+
+    function handleReceivableTypeChange() {
+      const type = document.getElementById('master-receivable-type').value;
+      const advWrap = document.getElementById('master-receivable-advanced');
+      if (advWrap) {
+        if (type.toLowerCase().includes('structured')) {
+          advWrap.classList.remove('hidden');
+        } else {
+          advWrap.classList.add('hidden');
+        }
+      }
+    }
+    
+    function calcSmartReceivable() {
+      const net = Number(document.getElementById('master-receivable-net').value) || 0;
+      const term = Number(document.getElementById('master-receivable-term').value) || 0;
+      const interest = Number(document.getElementById('master-receivable-interest').value) || 0;
+      const admin = Number(document.getElementById('master-receivable-admin').value) || 0;
+
+      if (net > 0) {
+        const totalInterest = net * (interest / 100) * term;
+        const totalDebt = net + totalInterest + admin;
+        
+        document.getElementById('master-receivable-total').value = Math.round(totalDebt);
+        if (term > 0) {
+          document.getElementById('master-receivable-installment').value = Math.round(totalDebt / term);
+        }
+      }
+    }
 
 function calcSmartPayable() {
   const net = Number(document.getElementById('master-payable-net').value) || 0;
