@@ -114,6 +114,9 @@
     .input-error { animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; border: 1px solid var(--amount-out) !important; box-shadow: 0 0 0 3px var(--chip-out-bg), var(--shadow-inset) !important; background-color: var(--bg-card) !important; }
 
     .text-main { color: var(--text-primary); } .text-muted { color: var(--text-secondary); } .text-faint { color: var(--text-tertiary); }
+    .amount-in, .amount-out, .amount-info, .amount-warn {
+      font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif; font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
+    }
     .amount-in { color: var(--amount-in) !important; } .amount-out { color: var(--amount-out) !important; }
     .amount-info { color: var(--amount-info) !important; } .amount-warn { color: var(--amount-warn) !important; }
 
@@ -260,7 +263,7 @@
 
       <div class="flex flex-col justify-center min-w-0 flex-1">
         <div class="flex items-center space-x-2 mb-0.5">
-          <span id="mochi-mood-badge" class="text-[8px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-in-bg)] amount-in">Rich Mochi</span>
+          <span id="mochi-mood-badge" class="text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-in-bg)] amount-in">Rich Mochi</span>
           <span class="text-[10px] text-faint font-semibold">• Live Status</span>
         </div>
         <h1 id="mochi-mood-title" class="text-sm md:text-base font-black text-main leading-tight tracking-tight truncate">
@@ -310,7 +313,7 @@
             <span id="kpi-disposable" class="font-numeric text-lg sm:text-xl font-bold text-amber-100 block tracking-tight truncate">-</span>
           </div>
           <div class="text-right flex-shrink-0">
-            <span class="text-[9px] font-bold text-white/50 block uppercase tracking-wider">VAULT CARD</span>
+            <span class="text-[10px] font-bold text-white/50 block uppercase tracking-wider">VAULT CARD</span>
             <span class="text-[10px] font-black text-white/90 tracking-wider">YOSA & FANI</span>
           </div>
         </div>
@@ -1603,7 +1606,7 @@
       if (subdescEl) subdescEl.innerText = subdesc;
       if (badgeEl) {
         badgeEl.innerText = badgeText;
-        badgeEl.className = `text-[8px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${badgeClass}`;
+        badgeEl.className = `text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${badgeClass}`;
       }
 
       startMochiBlinking();
@@ -1636,12 +1639,7 @@
       const activeBudgets = Object.entries(budgets).filter(([cat, limit]) => Number(limit) > 0);
 
       if (activeBudgets.length === 0) {
-        container.innerHTML = `
-          <div class="text-center py-6 px-4 bg-transparent rounded-2xl border border-[var(--border-color)]">
-            <p class="text-xs text-muted font-bold">No budgets configured yet.</p>
-            <p class="text-[10px] text-faint mt-1">Tap 'Set Budget' to define monthly limits.</p>
-          </div>
-        `;
+        container.innerHTML = emptyStateHtml('piggy-bank', "Mochi hasn't set any limits yet", "Set a monthly budget per category and Mochi will start watching your spending for you.");
         return;
       }
 
@@ -1824,7 +1822,7 @@
       let html = `
         <div class="space-y-5 pt-1">
           <div class="text-center pb-3 border-b border-slate-200/60 dark:border-[var(--border-color)]">
-            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-muted uppercase tracking-wider mb-3 inline-block">Monthly Budget Overview</span>
+            <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-muted uppercase tracking-wider mb-3 inline-block">Monthly Budget Overview</span>
             <h3 class="text-xl font-black text-main leading-tight mb-2">${escapeHtml(catName)}</h3>
             <div class="mt-2">${statusBadge}</div>
           </div>
@@ -1999,7 +1997,7 @@
               ${arcs}
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center px-2">
-              <span class="text-[9px] font-bold text-faint uppercase tracking-wider">Spent</span>
+              <span class="text-[10px] font-bold text-faint uppercase tracking-wider">Spent</span>
               <span class="font-numeric text-sm font-bold text-main text-center leading-tight mt-0.5">${formatRupiah(grandTotal)}</span>
             </div>
           </div>
@@ -2057,7 +2055,7 @@
       const donutEl = document.getElementById('dashboard-category-donut');
 
       if (trxThisMonth.length === 0) {
-        el.innerHTML = trendHtml + `<p class="text-xs text-center text-muted py-4 font-semibold">No expenses recorded this month.</p>`;
+        el.innerHTML = trendHtml + emptyStateHtml('coffee', "Nothing spent yet this month", "Mochi's tail is still. Log an expense and this space fills in with where it went.");
         if (donutEl) donutEl.innerHTML = "";
         return;
       }
@@ -2322,7 +2320,7 @@
       operationalEl.innerHTML = ""; savingsEl.innerHTML = "";
 
       if (!GLOBAL_DATA.accounts || GLOBAL_DATA.accounts.length === 0) {
-        operationalEl.innerHTML = `<p class="text-xs text-muted font-semibold text-center py-4">No accounts added yet.</p>`;
+        operationalEl.innerHTML = emptyStateHtml('wallet', "No wallets in the vault yet", "Add your first account and Mochi will start tracking every rupiah that moves through it.");
         return;
       }
 
@@ -2349,7 +2347,7 @@
               <div class="truncate">
                 <h4 class="text-[13px] font-extrabold text-main leading-tight truncate pr-1">${escapeHtml(acc.accountName)}</h4>
                 <div class="flex items-center space-x-1.5 mt-1">
-                  <span class="text-[8px] font-extrabold px-2 py-0.5 rounded-full uppercase ${badgeBgClass}">${badgeText}</span>
+                  <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase ${badgeBgClass}">${badgeText}</span>
                 </div>
               </div>
             </div>
@@ -2365,7 +2363,7 @@
           </div>
 
           <div onclick="vibrate(30); showAccountHistory('${escapeAttr(acc.accountName)}')">
-            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">${statusLabel}</span>
+            <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">${statusLabel}</span>
             <span class="text-[18px] font-black ${balanceColorClass} block leading-none tracking-tight">${formatRupiah(acc.runningBalance)}</span>
           </div>
         `;
@@ -2454,10 +2452,10 @@
           div.innerHTML = `
             <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
               <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(acc.accountName)}</h4>
-              <span class="text-[9px] amount-out bg-[var(--chip-out-bg)] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${typeBadge}</span>
+              <span class="text-[10px] amount-out bg-[var(--chip-out-bg)] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${typeBadge}</span>
             </div>
             <div>
-              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING PAYABLE</span>
+              <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING PAYABLE</span>
               <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(bal)}</span>
             </div>
           `;
@@ -2484,10 +2482,10 @@
         div.innerHTML = `
           <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
             <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(p.payableName)}</h4>
-            <span class="text-[9px] amount-out bg-[var(--chip-out-bg)] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(p.payableType || 'PAYABLE')}</span>
+            <span class="text-[10px] amount-out bg-[var(--chip-out-bg)] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(p.payableType || 'PAYABLE')}</span>
           </div>
           <div>
-            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING PAYABLE</span>
+            <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING PAYABLE</span>
             <span class="text-[18px] font-black amount-out block leading-none tracking-tight">${formatRupiah(rem)}</span>
           </div>
         `;
@@ -2495,7 +2493,7 @@
       });
 
       if (!hasActivePayables) {
-        payableEl.innerHTML = `<p class="text-xs text-muted font-semibold text-center py-4">All payables and credit card bills are clear!</p>`;
+        payableEl.innerHTML = emptyStateHtml('party-popper', "All clear!", "No payables or credit card bills outstanding. Mochi's tail is doing a happy wiggle.");
       }
 
       // 3. UNPAID RECEIVABLES (PIUTANG)
@@ -2506,7 +2504,7 @@
         });
 
       if (activeReceivables.length === 0) {
-        receivableEl.innerHTML = `<p class="text-xs text-muted font-semibold text-center py-4">All receivables have been collected.</p>`;
+        receivableEl.innerHTML = emptyStateHtml('party-popper', "All collected!", "Every receivable has been paid back. Nothing left for Mochi to chase.");
       } else {
         activeReceivables.forEach((r, i) => {
           const rem = Math.abs(Number(r.remainingAmount) || 0);
@@ -2517,10 +2515,10 @@
           div.innerHTML = `
             <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
               <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(r.receivableName)}</h4>
-              <span class="text-[9px] amount-info bg-[var(--chip-info-bg)] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(r.receivableType || 'RECEIVABLE')}</span>
+              <span class="text-[10px] amount-info bg-[var(--chip-info-bg)] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider mt-2 inline-block">${escapeHtml(r.receivableType || 'RECEIVABLE')}</span>
             </div>
             <div>
-              <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING RECEIVABLE</span>
+              <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING RECEIVABLE</span>
               <span class="text-[18px] font-black amount-info block leading-none tracking-tight">${formatRupiah(rem)}</span>
             </div>
           `;
@@ -2612,7 +2610,7 @@
                 <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
                 <span class="font-extrabold text-main text-[13px]">${escapeHtml(main)}</span>
               </div>
-              <span class="text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badgeColor}">${escapeHtml(group.type)}</span>
+              <span class="text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badgeColor}">${escapeHtml(group.type)}</span>
             </div>`;
         } else {
           html += `
@@ -2715,7 +2713,7 @@
 
       let html = `<div class="space-y-4 pt-1">
           <div class="text-center pb-2">
-            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">KPI Overview</span>
+            <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">KPI Overview</span>
             <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(kpiName)}</h3>
             <p class="text-3xl font-black mt-2 ${kpiColor}">${formatRupiah(displayValue)}</p>
           </div>
@@ -2844,7 +2842,7 @@
 
       let html = `
         <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 mb-4 pr-6">
-          <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-muted uppercase tracking-wider mb-2 inline-block">Account History</span>
+          <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-muted uppercase tracking-wider mb-2 inline-block">Account History</span>
           <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(accountName)}</h3>
         </div>
         <div class="space-y-1.5 max-h-[60vh] overflow-y-auto pr-1">
@@ -2901,7 +2899,7 @@
       let html = `
         <div class="space-y-4 pt-1">
           <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
-            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">Active Payable</span>
+            <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">Active Payable</span>
             <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(name)}</h3>
           </div>
 
@@ -2966,7 +2964,7 @@
       let html = `
         <div class="space-y-4 pt-1">
           <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
-            <span class="text-[9px] font-bold px-3 py-1 rounded-full bg-[var(--chip-info-bg)] amount-info uppercase tracking-wider mb-2 inline-block">Unpaid Receivable</span>
+            <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--chip-info-bg)] amount-info uppercase tracking-wider mb-2 inline-block">Unpaid Receivable</span>
             <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(name)}</h3>
           </div>
 
