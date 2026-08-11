@@ -1,3 +1,585 @@
+
+Gemini
+Percakapan baru
+Telusuri percakapan
+Gambar
+Video
+Koleksi
+Proyek Ekspor Tabung Gas Komposit Irak
+Memperbaiki Tampilan Tagihan Bulanan
+Desain Ulang Mochi's Vault iOS
+Masterdata Lama vs Baru untuk Apps Script
+Ekspresi Kucing Mochi Sangat Bahagia
+Refactoring Mochi's Vault Ecosystem
+Perbaikan Foto dan Ubah Warna Baju
+Mochi Kucing Tertawa Bahagia 100 Persen
+Empty Code Block Received
+Rekomendasi Warna Kartu UI Harmonis
+UI/UX Aplikasi Keuangan Premium
+Dummy Data Transaksi Keuangan Harian
+Perubahan Nama, Logo, dan Fitur
+Ubah Harga PDF ke Google Docs
+Akses AppSheet dan Bantuan Teknis
+Permintaan Ubah Harga PDF
+Ekspor Arang ke Irak: Panduan Lengkap
+Menanyakan Arti Kata atau Kalimat
+Merapikan PDF Hasil Foto Miring
+Gemini Temporary Chat: Cara Mengaktifkan
+Rekomendasi Pijat Dekat Stasiun Gubeng
+Transportasi Jogja ke Surabaya
+Perbandingan Penawaran WO Pernikahan
+Kontak Cavagna Group dan Tabung Komposit
+Tambahkan kucingku di atas bed pasien
+Menunggu Kuotasi Harga CIF
+Percakapan dengan Gemini
+Masalah yang kamu temukan—yaitu tidak adanya angka Nominal Wajib Bayar Bulan Ini (Monthly Amount Due) dan kesan tagihan Shopee PayLater "terputus"—adalah isu krusial dalam pengelolaan cashflow. Tanpa metrik ini, kamu akan mengalami false sense of wealth (merasa punya uang dingin banyak, padahal uang tersebut sudah terikat untuk bayar tagihan beberapa hari lagi).
+
+1. Analisis Pengakuan Waktu: Masuk Bulan Ini atau Bulan Depan?
+
+Dalam standar perencanaan keuangan profesional, pengakuan tagihan menggunakan prinsip Accrual Basis (Pengakuan Kewajiban):
+
+Sangat Direkomendasikan Masuk Bulan Ini (Accrual Basis): Begitu bulan berjalan dimulai atau lembar tagihan (statement) dicetak, nilai cicilan GoPinjam (Rp 2.150.000) dan Shopee PayLater (Rp 827.000) harus langsung diakui sebagai komitmen bulan ini, meskipun tanggal jatuh temponya (due date) baru tiba di tanggal 5 atau tanggal 20.
+
+Mengapa Tidak Boleh Ditunda ke Bulan Depan?: Jika kamu baru memperhitungkannya di tanggal jatuh tempo saat uang kas ditransfer, maka Disposable Income (uang bebas belanja) di awal bulan akan terlihat besar secara semu. Hal ini berisiko membuat uang kas terpakai untuk belanja konsumtif sebelum tanggal jatuh tempo tiba.
+
+2. Karakter Utang: Term Loan vs Revolving Credit
+
+Aplikasi harus membedakan cara menghitung dan menampilkan dua jenis kewajiban ini:
+
+KarakteristikTerm Loan (GoPinjam / Cicilan)Revolving Credit (Shopee PayLater / Kartu Kredit)Sifat TagihanCicilan Tetap (Fixed Installment)Tagihan Fleksibel (Statement Balance)Nominal Wajib BayarRp 2.150.000 (Cicilan 1 dari 3)Rp 827.000 (Full) atau Rp 82.700 (Min. Payment)Pengaruh Sisa UtangMengurangi Pokok Utang (Rp 6.450.000 $\rightarrow$ Rp 4.300.000)Menolkan Saldo Tagihan Lembar Cetak (Statement)Jatuh TempoTanggal tetap bulanan (misal Tgl 10)Statement Date + Grace Period $\rightarrow$ Due Date (Tgl 5 / 20) 3. Riset Opsi Pembayaran Revolving Credit (Kartu Kredit / PayLater)
+
+Pada tanggal jatuh tempo Kartu Kredit atau PayLater (misal Tgl 20), pengguna memiliki dua skema pembayaran:
+
+Skema A: Full Payment (Pelunasan 100%)
+
+Membayar penuh tagihan cetak (Rp 827.000).
+
+Dampak: Bebas bunga (Grace Period berlaku), saldo utang PayLater kembali Rp 0, dan limit kredit pulih 100%.
+
+Skema B: Minimum Payment (Pembayaran Minimal)
+
+Membayar batas minimal, dengan standar fintech global:
+
+$$\text{Minimum Payment} = \max(\text{Rp 50.000}, (10\% \times \text{Pokok Tagihan}) + \text{Denda/Bunga})$$
+
+Dampak: Mencegah akun berstatus Default/Overdue, tetapi sisa utang yang belum terbayar (Rp 744.300) akan dikenakan Bunga Harian (Daily Compounding Interest) pada periode berikutnya. Status akun berubah menjadi PARTIAL_SETTLED.
+
+4. Dampak Terhadap Keseluruhan Metrik Aplikasi
+
+Bagaimana data ini memengaruhi angka-angka utama di Mochi's Vault:
+
+Net Worth (Kekayaan Bersih):
+
+Tidak berubah pada hari jatuh tempo, karena total utang Rp 6.450.000 dan Rp 827.000 sudah memotong Net Worth sejak awal transaksi terjadi.
+
+Saat kamu melakukan pembayaran dari BCA ke PayLater, Cash berkurang dan Liabilities berkurang dalam jumlah yang sama ($\text{Net Effect} = 0$).
+
+Disposable Income (Sisa Uang Dingin Bulan Ini):
+
+Langsung berkurang! Formula ideal yang harus diterapkan di aplikasi:
+
+$$\text{Disposable Income} = \text{Income Bulan Ini} - \text{Expense Konsumtif} - \text{Total Wajib Bayar Bulan Ini}$$
+
+Total Wajib Bayar Bulan Ini = $\text{Rp 2.150.000 (GoPinjam)} + \text{Rp 827.000 (Shopee)} = \mathbf{\text{Rp 2.977.000}}$.
+
+Mochi Mood Indicator:
+
+Mochi akan menghitung Debt Service Ratio (DSR):
+
+$$\text{DSR} = \frac{\text{Total Wajib Bayar Bulan Ini}}{\text{Total Income Bulan Ini}} \times 100\%$$
+
+Jika DSR $> 30\%$, Mochi akan berubah menjadi Anxious Mochi 😿 untuk mengingatkan bahwa gaji bulan ini terlalu banyak terserap untuk membayar kewajiban utang.
+
+5. Rekomendasi Solusi UI/UX & Arsitektur Data Mochi's Vault
+
+Untuk menyambungkan kembali data yang terasa "terputus" dan memperjelas nominal wajib bayar:
+
+A. Ringkasan Komitmen Bulanan di Dashboard (Widget Baru)
+
+Tambahkan kartu "Due This Month" di bagian atas tab AP/R atau Dashboard:
+
+Total Amount Due: Rp 2.977.000
+
+Status Pelunasan Bulanan: [ Terbayar: Rp 0 / Total Tagihan: Rp 2.977.000 ]
+
+B. Penyempurnaan Tampilan Kartu di Tab AP/R
+
+Kartu GoPinjam (Term Loan):
+
+Menampilkan Sisa Total Pokok: Rp 6.450.000 (3 Bulan).
+
+Menampilkan Cicilan Bulan Ini (Due Tgl 10): Rp 2.150.000 (Cicilan 1/3).
+
+Kartu Shopee PayLater / CC (Revolving Credit):
+
+Menampilkan Statement Balance (Due Tgl 5): Rp 827.000.
+
+Menampilkan Minimum Payment: Rp 82.700.
+
+Badge Status: Due in 4 Days (Kuning), Due Today (Merah), atau Settled (Hijau).
+
+C. Tombol Quick-Pay "Pay Due"
+
+Di setiap kartu AP/R, sediakan tombol "Pay Statement":
+
+Saat diklik, modal transaksi langsung terbuka dengan pilihan Internal Transfer / Pay Installment, nominal otomatis terisi Rp 2.150.000 atau Rp 827.000, dan pengguna tinggal memilih Source Account (misal BCA 1).
+
+Setelah disimpan, indikator tagihan bulan ini langsung berubah menjadi SETTLED THIS MONTH.  Koreksi yang sangat tepat. PayLater di Indonesia (seperti Shopee PayLater, GoPay Later) memang merupakan tagihan jatuh tempo mutlak (Full Payment Only di tanggal tertentu, misal tanggal 5) tanpa opsi Minimum Payment. Jika tidak dilunasi penuh, denda harian/bulanan akan langsung berjalan.
+
+Opsi Minimum Payment secara regulasi finansial hanya berlaku pada Kartu Kredit (KK).  
+
+Tidak dikenal
+
+Panduan Lengkap Cara Kerja Kartu Kredit (Untuk Pemula)
+
+Untuk memahami alur kartu kredit sebelum kita menerapkannya di Mochi's Vault, berikut siklus dan istilah kunci yang berlaku pada kartu kredit bank (BCA, Mandiri, BRI, dll.):
+
+Tanggal Cetak Tagihan (Statement Date / Billing Date)
+
+Hari di mana bank "mengunci" seluruh transaksi belanja bulananmu dan menerbitkan lembar tagihan (Billing Statement).
+
+Contoh: Jika Statement Date adalah tanggal 1, maka seluruh belanja dari tanggal 2 bulan lalu sampai tanggal 1 bulan ini akan dikelompokkan menjadi Statement Balance.
+
+Tanggal Jatuh Tempo (Due Date)
+
+Batas akhir pembayaran tagihan, biasanya 15–20 hari setelah tanggal cetak.
+
+Contoh: Statement Date tanggal 1, maka Due Date adalah tanggal 20.
+
+Masa Bebas Bunga (Grace Period)
+
+Jarak waktu antara hari kamu belanja hingga Due Date. Selama kamu melunasi 100% tagihan sebelum Due Date, kamu mendapat pinjaman uang tanpa bunga sama sekali (0%).
+
+Skema Pembayaran di Tanggal Jatuh Tempo (Due Date):
+
+Bayar Penuh (Full Payment): Melunasi 100% Statement Balance. Bebas bunga, Grace Period berlanjut, dan limit kredit kembali utuh.
+
+Bayar Minimal (Minimum Payment): Membayar batas aman minimal yang ditetapkan Bank (di Indonesia umumnya 5% – 10% dari total tagihan atau minimal Rp 50.000 - Rp 100.000).
+
+Dampak: Akun bebas denda keterlambatan (No Late Fee) dan BI Checking/SLIK OJK tetap bersih, tetapi sisa tagihan yang belum terbayar akan dikenakan Bunga Berjalan (Finance Charge ~1.75% per bulan) di periode berikutnya.
+
+Bayar Kurang dari Minimum / Telat: Dikenakan Denda Keterlambatan (Late Fee) + Bunga Berjalan, dan status kolektibilitas rekening menjadi menunggak (Delinquent).
+
+Rencana Implementasi Fitur & Arsitektur di Mochi's Vault
+
+Berdasarkan perbedaan tegas antara Term Loan (GoPinjam), PayLater (Shopee), dan Kartu Kredit, berikut skema baru yang akan kita terapkan:
+
+1. Widget "Monthly Commitment Tracker" (Dashboard & Tab AP/R)
+
+Menampilkan ringkasan Komitmen Wajib Bayar Bulan Ini agar pengguna tidak terkecoh dengan total utang jangka panjang:
+
+GoPinjam (Term Loan): Cicilan ke-1 dari 3 = Rp 2.150.000 (Due Tgl 10).
+
+Shopee PayLater (PayLater): Wajib Lunas = Rp 827.000 (Due Tgl 5 - Strict Full Payment).
+
+Kartu Kredit (Credit Card):
+
+Pilihan Full Payment: Rp 1.000.000 (Bebas Bunga).
+
+Pilihan Minimum Payment: Rp 100.000 (Aman dari Denda).
+
+2. Pengaruh Terhadap Metrik Finansial Utama
+
+Disposable Income (Uang Bebas Belanja):
+
+Sistem akan langsung memotong komitmen bulanan ini dari uang kas di awal bulan:
+
+Disposable Income=Total Income−Total Expense−Total Wajib Bayar Bulan Ini
+
+Mochi Mood (Debt Service Ratio - DSR):
+
+Mochi akan mengukur persentase beban tagihan bulanan terhadap gaji:
+
+DSR=Total Income Bulan Ini
+
+
+
+Total Wajib Bayar Bulan Ini
+
+​×100%
+
+DSR ≤30%: Safe Zone (Rich/Chill Mochi) 😸
+
+DSR >30%: Warning Zone (Anxious Mochi) 😿 (Mochi mengingatkan bahwa porsi gaji bulan ini terlalu banyak terikat tagihan).
+
+3. Antarmuka Modal Pelunasan Cerdas (Smart Repayment Modal)
+
+Saat pengguna menekan tombol bayar di tab AP/R:
+
+Pada PayLater & Pinjaman: Hanya ada 1 opsi nominal (Full Amount atau Cicilan Bulanan Fixed).
+
+Pada Kartu Kredit: Tersedia 2 tombol cepat:
+
+[Pay Full Statement - Rp 1.000.000]: Mengurangi saldo tagihan ke Rp 0 dan mempertahankan Grace Period.
+
+[Pay Minimum - Rp 100.000]: Mengurangi tagihan sebesar Rp 100.000, dan Mochi akan menampilkan catatan transparan: "Sisa tagihan Rp 900.000 akan dikenakan estimasi bunga ~1.75%/bulan pada statement berikutnya."
+
+Bagaimana menurutmu dengan pembagian skema ini? Jika sudah pas, kita bisa mulai menyusun perubahan kode untuk memisahkan logika tampilan Kartu Kredit vs PayLater ini di aplikasi. cek apa kita sudah benar benar implentasikan semua ini? karena aku merasa tidak ada perubahan. checklist yang sudah dan tandai yg belum
+
+Firasatmu sangat tepat—alasan utama aplikasi terasa "tidak berubah" adalah karena adanya duplikasi fungsi di file index.html, di mana versi kode baru tertimpa (overwritten) oleh fungsi versi lama yang berada di bagian bawah skrip.
+
+Checklist Status Implementasi Metrik & Fitur
+
+Fitur & Logika Finansial	Status	Lokasi Kode	Catatan & Realita Tampilan
+Klasifikasi Term Loan vs Revolving	✅ Selesai	Code.gs (L116–128)	Membedakan GoPinjam, PayLater, dan Kartu Kredit secara otomatis.
+Formula Minimum Payment (KK)	✅ Selesai	Code.gs (L150–155)	max(Rp 50.000,10%×Balance). PayLater diset wajib 100%.
+Accrual Basis & Disposable Income	✅ Selesai	Code.gs (L190–200)	Uang dingin terpotong Monthly Amount Due sejak awal periode.
+DSR & Mochi Mood Indicator	✅ Selesai	index.html (L724)	DSR >30% otomatis memicu status Anxious Mochi 😿.
+Widget "Due This Month" (AP/R)	⚠️ Tertimpa	index.html (L2542 & L3749)	Dibuat di L2542, tetapi tertimpa oleh versi lama di L3749.
+Tombol Quick-Pay "Pay Due"	⚠️ Tertimpa	index.html (L2542 & L3749)	Tombol pemanggil quickPayCommitment() ikut terhapus akibat penimpaan.
+Smart Repayment Modal	✅ Selesai	index.html (L781)	Logika pre-fill modal otomatis sudah siap dan berfungsi.
+Widget "Due This Month" di Dashboard	❌ Belum	index.html (Dashboard)	Baru dipasang di Tab AP/R, belum muncul di halaman depan (Home).
+Akar Masalah Utama (Penyebab Fitur Tidak Tampak)
+
+Browser selalu mengeksekusi definisi fungsi JavaScript paling bawah jika terdapat nama fungsi yang sama. Di dalam file index.html:
+
+renderPayablesReceivables(): Versi canggih dengan widget "Due This Month" dan tombol Quick-Pay ada di line 2542. Namun, tertimpa oleh versi lama tanpa widget di line 3749.
+
+showPayableDetail(): Didefinisikan 3 kali (L3233, L3898, L3996). Versi terakhir (L3996) tidak memiliki info box edukasi bunga CC vs PayLater.
+
+handleSaveMaster(): Didefinisikan 3 kali (L2422, L3678, L4094).
+
+Tindakan Perbaikan
+
+Penghapusan Kode Duplikat: Hapus seluruh blok fungsi versi lama yang menumpuk dari line 3655 hingga line 4120 pada file index.html.
+
+Penambahan Widget ke Dashboard Utama: Salin widget "Due This Month" agar tidak hanya tampil di Tab AP/R, tetapi juga muncul tepat di bawah Vault Card di Dashboard utama.
+
+Setelah penumpukan kode lama ini dibersihkan, seluruh visualisasi komitmen bulanan, tombol Quick-Pay, dan peringatan DSR akan langsung aktif 100%.
+
+oke bisakah kamu membantuku buatkan aku data index html baru yang telah diperbarui dan memasukan semua unsur perubahan diatas, untuk code gs sudah siap namun html belum ready ya?
+
+Tentu, saya dengan senang hati akan membantu membuatkan file index.html yang baru!
+
+Namun, karena ini adalah pesan pertama dalam percakapan kita, saya tidak dapat melihat riwayat atau "unsur perubahan di atas" yang kamu maksud. Sebagai AI, saya memulai setiap percakapan dengan kanvas kosong, sehingga saya tidak memiliki konteks dari obrolanmu sebelumnya.
+
+Agar file HTML yang saya buat bisa langsung tersambung dan berfungsi dengan baik dengan code.gs yang sudah kamu siapkan, mohon bagikan beberapa informasi berikut:
+
+Tujuan Utama Halaman: Apakah halaman ini digunakan untuk form pengisian data, menampilkan tabel/dashboard, atau hal lain?
+
+Elemen yang Dibutuhkan: Input atau komponen apa saja yang perlu ada di halaman tersebut (misalnya kotak teks, dropdown, tombol submit, notifikasi loading, dll.)?
+
+Interaksi dengan GS: Nama fungsi di code.gs yang perlu dipanggil oleh HTML (biasanya menggunakan google.script.run).
+
+Kode Sebelumnya (Jika Ada): Jika kamu punya draft HTML sebelumnya, kamu bisa menempelkannya di sini agar saya bisa memperbaruinya sesuai permintaanmu.
+
+Boleh ceritakan lebih detail elemen dan fitur apa saja yang seharusnya dimasukkan ke dalam file index.html tersebut?
+
+Masalah yang kamu temukan—yaitu tidak adanya angka Nominal Wajib Bayar Bulan Ini (Monthly Amount Due) dan kesan tagihan Shopee PayLater "terputus"—adalah isu krusial dalam pengelolaan cashflow. Tanpa metrik ini, kamu akan mengalami false sense of wealth (merasa punya uang dingin banyak, padahal uang tersebut sudah terikat untuk bayar tagihan beberapa hari lagi).
+
+1. Analisis Pengakuan Waktu: Masuk Bulan Ini atau Bulan Depan?
+
+Dalam standar perencanaan keuangan profesional, pengakuan tagihan menggunakan prinsip Accrual Basis (Pengakuan Kewajiban):
+
+Sangat Direkomendasikan Masuk Bulan Ini (Accrual Basis): Begitu bulan berjalan dimulai atau lembar tagihan (statement) dicetak, nilai cicilan GoPinjam (Rp 2.150.000) dan Shopee PayLater (Rp 827.000) harus langsung diakui sebagai komitmen bulan ini, meskipun tanggal jatuh temponya (due date) baru tiba di tanggal 5 atau tanggal 20.
+
+Mengapa Tidak Boleh Ditunda ke Bulan Depan?: Jika kamu baru memperhitungkannya di tanggal jatuh tempo saat uang kas ditransfer, maka Disposable Income (uang bebas belanja) di awal bulan akan terlihat besar secara semu. Hal ini berisiko membuat uang kas terpakai untuk belanja konsumtif sebelum tanggal jatuh tempo tiba.
+
+2. Karakter Utang: Term Loan vs Revolving Credit
+
+Aplikasi harus membedakan cara menghitung dan menampilkan dua jenis kewajiban ini:
+
+KarakteristikTerm Loan (GoPinjam / Cicilan)Revolving Credit (Shopee PayLater / Kartu Kredit)Sifat TagihanCicilan Tetap (Fixed Installment)Tagihan Fleksibel (Statement Balance)Nominal Wajib BayarRp 2.150.000 (Cicilan 1 dari 3)Rp 827.000 (Full) atau Rp 82.700 (Min. Payment)Pengaruh Sisa UtangMengurangi Pokok Utang (Rp 6.450.000 $\rightarrow$ Rp 4.300.000)Menolkan Saldo Tagihan Lembar Cetak (Statement)Jatuh TempoTanggal tetap bulanan (misal Tgl 10)Statement Date + Grace Period $\rightarrow$ Due Date (Tgl 5 / 20) 3. Riset Opsi Pembayaran Revolving Credit (Kartu Kredit / PayLater)
+
+Pada tanggal jatuh tempo Kartu Kredit atau PayLater (misal Tgl 20), pengguna memiliki dua skema pembayaran:
+
+Skema A: Full Payment (Pelunasan 100%)
+
+Membayar penuh tagihan cetak (Rp 827.000).
+
+Dampak: Bebas bunga (Grace Period berlaku), saldo utang PayLater kembali Rp 0, dan limit kredit pulih 100%.
+
+Skema B: Minimum Payment (Pembayaran Minimal)
+
+Membayar batas minimal, dengan standar fintech global:
+
+$$\text{Minimum Payment} = \max(\text{Rp 50.000}, (10\% \times \text{Pokok Tagihan}) + \text{Denda/Bunga})$$
+
+Dampak: Mencegah akun berstatus Default/Overdue, tetapi sisa utang yang belum terbayar (Rp 744.300) akan dikenakan Bunga Harian (Daily Compounding Interest) pada periode berikutnya. Status akun berubah menjadi PARTIAL_SETTLED.
+
+4. Dampak Terhadap Keseluruhan Metrik Aplikasi
+
+Bagaimana data ini memengaruhi angka-angka utama di Mochi's Vault:
+
+Net Worth (Kekayaan Bersih):
+
+Tidak berubah pada hari jatuh tempo, karena total utang Rp 6.450.000 dan Rp 827.000 sudah memotong Net Worth sejak awal transaksi terjadi.
+
+Saat kamu melakukan pembayaran dari BCA ke PayLater, Cash berkurang dan Liabilities berkurang dalam jumlah yang sama ($\text{Net Effect} = 0$).
+
+Disposable Income (Sisa Uang Dingin Bulan Ini):
+
+Langsung berkurang! Formula ideal yang harus diterapkan di aplikasi:
+
+$$\text{Disposable Income} = \text{Income Bulan Ini} - \text{Expense Konsumtif} - \text{Total Wajib Bayar Bulan Ini}$$
+
+Total Wajib Bayar Bulan Ini = $\text{Rp 2.150.000 (GoPinjam)} + \text{Rp 827.000 (Shopee)} = \mathbf{\text{Rp 2.977.000}}$.
+
+Mochi Mood Indicator:
+
+Mochi akan menghitung Debt Service Ratio (DSR):
+
+$$\text{DSR} = \frac{\text{Total Wajib Bayar Bulan Ini}}{\text{Total Income Bulan Ini}} \times 100\%$$
+
+Jika DSR $> 30\%$, Mochi akan berubah menjadi Anxious Mochi 😿 untuk mengingatkan bahwa gaji bulan ini terlalu banyak terserap untuk membayar kewajiban utang.
+
+5. Rekomendasi Solusi UI/UX & Arsitektur Data Mochi's Vault
+
+Untuk menyambungkan kembali data yang terasa "terputus" dan memperjelas nominal wajib bayar:
+
+A. Ringkasan Komitmen Bulanan di Dashboard (Widget Baru)
+
+Tambahkan kartu "Due This Month" di bagian atas tab AP/R atau Dashboard:
+
+Total Amount Due: Rp 2.977.000
+
+Status Pelunasan Bulanan: [ Terbayar: Rp 0 / Total Tagihan: Rp 2.977.000 ]
+
+B. Penyempurnaan Tampilan Kartu di Tab AP/R
+
+Kartu GoPinjam (Term Loan):
+
+Menampilkan Sisa Total Pokok: Rp 6.450.000 (3 Bulan).
+
+Menampilkan Cicilan Bulan Ini (Due Tgl 10): Rp 2.150.000 (Cicilan 1/3).
+
+Kartu Shopee PayLater / CC (Revolving Credit):
+
+Menampilkan Statement Balance (Due Tgl 5): Rp 827.000.
+
+Menampilkan Minimum Payment: Rp 82.700.
+
+Badge Status: Due in 4 Days (Kuning), Due Today (Merah), atau Settled (Hijau).
+
+C. Tombol Quick-Pay "Pay Due"
+
+Di setiap kartu AP/R, sediakan tombol "Pay Statement":
+
+Saat diklik, modal transaksi langsung terbuka dengan pilihan Internal Transfer / Pay Installment, nominal otomatis terisi Rp 2.150.000 atau Rp 827.000, dan pengguna tinggal memilih Source Account (misal BCA 1).
+
+Setelah disimpan, indikator tagihan bulan ini langsung berubah menjadi SETTLED THIS MONTH.  Koreksi yang sangat tepat. PayLater di Indonesia (seperti Shopee PayLater, GoPay Later) memang merupakan tagihan jatuh tempo mutlak (Full Payment Only di tanggal tertentu, misal tanggal 5) tanpa opsi Minimum Payment. Jika tidak dilunasi penuh, denda harian/bulanan akan langsung berjalan.
+
+Opsi Minimum Payment secara regulasi finansial hanya berlaku pada Kartu Kredit (KK).  
+
+Tidak dikenal
+
+Panduan Lengkap Cara Kerja Kartu Kredit (Untuk Pemula)
+
+Untuk memahami alur kartu kredit sebelum kita menerapkannya di Mochi's Vault, berikut siklus dan istilah kunci yang berlaku pada kartu kredit bank (BCA, Mandiri, BRI, dll.):
+
+Tanggal Cetak Tagihan (Statement Date / Billing Date)
+
+Hari di mana bank "mengunci" seluruh transaksi belanja bulananmu dan menerbitkan lembar tagihan (Billing Statement).
+
+Contoh: Jika Statement Date adalah tanggal 1, maka seluruh belanja dari tanggal 2 bulan lalu sampai tanggal 1 bulan ini akan dikelompokkan menjadi Statement Balance.
+
+Tanggal Jatuh Tempo (Due Date)
+
+Batas akhir pembayaran tagihan, biasanya 15–20 hari setelah tanggal cetak.
+
+Contoh: Statement Date tanggal 1, maka Due Date adalah tanggal 20.
+
+Masa Bebas Bunga (Grace Period)
+
+Jarak waktu antara hari kamu belanja hingga Due Date. Selama kamu melunasi 100% tagihan sebelum Due Date, kamu mendapat pinjaman uang tanpa bunga sama sekali (0%).
+
+Skema Pembayaran di Tanggal Jatuh Tempo (Due Date):
+
+Bayar Penuh (Full Payment): Melunasi 100% Statement Balance. Bebas bunga, Grace Period berlanjut, dan limit kredit kembali utuh.
+
+Bayar Minimal (Minimum Payment): Membayar batas aman minimal yang ditetapkan Bank (di Indonesia umumnya 5% – 10% dari total tagihan atau minimal Rp 50.000 - Rp 100.000).
+
+Dampak: Akun bebas denda keterlambatan (No Late Fee) dan BI Checking/SLIK OJK tetap bersih, tetapi sisa tagihan yang belum terbayar akan dikenakan Bunga Berjalan (Finance Charge ~1.75% per bulan) di periode berikutnya.
+
+Bayar Kurang dari Minimum / Telat: Dikenakan Denda Keterlambatan (Late Fee) + Bunga Berjalan, dan status kolektibilitas rekening menjadi menunggak (Delinquent).
+
+Rencana Implementasi Fitur & Arsitektur di Mochi's Vault
+
+Berdasarkan perbedaan tegas antara Term Loan (GoPinjam), PayLater (Shopee), dan Kartu Kredit, berikut skema baru yang akan kita terapkan:
+
+1. Widget "Monthly Commitment Tracker" (Dashboard & Tab AP/R)
+
+Menampilkan ringkasan Komitmen Wajib Bayar Bulan Ini agar pengguna tidak terkecoh dengan total utang jangka panjang:
+
+GoPinjam (Term Loan): Cicilan ke-1 dari 3 = Rp 2.150.000 (Due Tgl 10).
+
+Shopee PayLater (PayLater): Wajib Lunas = Rp 827.000 (Due Tgl 5 - Strict Full Payment).
+
+Kartu Kredit (Credit Card):
+
+Pilihan Full Payment: Rp 1.000.000 (Bebas Bunga).
+
+Pilihan Minimum Payment: Rp 100.000 (Aman dari Denda).
+
+2. Pengaruh Terhadap Metrik Finansial Utama
+
+Disposable Income (Uang Bebas Belanja):
+
+Sistem akan langsung memotong komitmen bulanan ini dari uang kas di awal bulan:
+
+Disposable Income=Total Income−Total Expense−Total Wajib Bayar Bulan Ini
+
+Mochi Mood (Debt Service Ratio - DSR):
+
+Mochi akan mengukur persentase beban tagihan bulanan terhadap gaji:
+
+DSR=Total Income Bulan Ini
+
+
+
+Total Wajib Bayar Bulan Ini
+
+​×100%
+
+DSR ≤30%: Safe Zone (Rich/Chill Mochi) 😸
+
+DSR >30%: Warning Zone (Anxious Mochi) 😿 (Mochi mengingatkan bahwa porsi gaji bulan ini terlalu banyak terikat tagihan).
+
+3. Antarmuka Modal Pelunasan Cerdas (Smart Repayment Modal)
+
+Saat pengguna menekan tombol bayar di tab AP/R:
+
+Pada PayLater & Pinjaman: Hanya ada 1 opsi nominal (Full Amount atau Cicilan Bulanan Fixed).
+
+Pada Kartu Kredit: Tersedia 2 tombol cepat:
+
+[Pay Full Statement - Rp 1.000.000]: Mengurangi saldo tagihan ke Rp 0 dan mempertahankan Grace Period.
+
+[Pay Minimum - Rp 100.000]: Mengurangi tagihan sebesar Rp 100.000, dan Mochi akan menampilkan catatan transparan: "Sisa tagihan Rp 900.000 akan dikenakan estimasi bunga ~1.75%/bulan pada statement berikutnya."
+
+Bagaimana menurutmu dengan pembagian skema ini? Jika sudah pas, kita bisa mulai menyusun perubahan kode untuk memisahkan logika tampilan Kartu Kredit vs PayLater ini di aplikasi. cek apa kita sudah benar benar implentasikan semua ini? karena aku merasa tidak ada perubahan. checklist yang sudah dan tandai yg belum
+
+Wajar jika kamu merasa belum ada perubahan di aplikasi. Dalam pengembangan Progressive Web App (PWA) berbasis Google Apps Script, masalah paling umum yang membuat perubahan kode tidak langsung terlihat adalah Cache PWA yang masih menyimpan versi lama.
+
+Berdasarkan analisis pada source code yang sedang kita gunakan (baik Backend maupun Frontend), sebagian besar logika finansial yang kamu minta sebenarnya sudah terimplementasi di dalam kode.
+
+Berikut adalah checklist detail apa saja yang sudah berhasil ditanamkan di kode, dan apa yang masih kurang/terlewat:
+
+✅ YANG SUDAH DIIMPLEMENTASIKAN
+1. Analisis & Pemotongan Disposable Income (Backend)
+
+Status: Selesai  
+Tidak dikenal
+
+Bukti di Kode: Di baris backend, disposableIncome sudah dihitung dengan formula yang tepat, yaitu memotong totalMonthlyAmountDue (Total Wajib Bayar Bulan Ini) sejak awal bulan.
+
+JavaScript
+const totalMonthlyAmountDue = monthlyPayableDue + monthlyPayLaterDue + monthlyCCFullDue;
+const disposableIncome = monthIncome - monthExpense - totalMonthlyAmountDue;
+2. Mochi Mood & Debt Service Ratio (DSR)
+
+Status: Selesai  
+Tidak dikenal
++ 1
+
+Bukti di Kode: Backend sudah menghitung persentase DSR. Di Frontend, fungsi renderMochiMood() sudah memiliki kondisi: Jika dsr > 30, Mochi berubah menjadi Anxious Mochi 😿 dengan pesan "Debt Service Ratio (DSR) is at X%!".  
+Tidak dikenal
++ 1
+
+3. Diferensiasi UI: Term Loan vs Revolving Credit di Tab AP/R
+
+Status: Selesai  
+HTML
+
+Bukti di Kode: Pada fungsi renderPayablesReceivables(), aplikasi sudah memisahkan deteksi isPayLater dan isCreditCard.  
+HTML
+
+PayLater: Ditampilkan badge "Strict Dated - Wajib Lunas 100%".
+
+Kartu Kredit: Ditampilkan tagihan penuh beserta "MINIMUM PAYMENT" (dihitung 10% dari saldo atau minimal Rp50.000).
+
+GoPinjam/Term Loan: Ditampilkan "Sisa Total Pokok" dan "Cicilan Bulan Ini".
+
+4. Tombol Quick-Pay "Pay Due" (Smart Repayment)
+
+Status: Selesai  
+HTML
+
+Bukti di Kode: Terdapat fungsi quickPayCommitment() yang otomatis membuka modal transaksi. Kartu Kredit memiliki 2 tombol (Pay Full & Pay Min), sedangkan PayLater dan Term Loan hanya memiliki 1 tombol pelunasan pas (Pay Full / Pay Monthly Installment).  
+HTML
++ 1
+
+⚠️ YANG BELUM / MASIH KURANG TEPAT
+1. Widget "Due This Month" Belum Muncul di Dashboard
+
+Status: Setengah Jalan
+
+Analisis: Kita sudah berhasil membuat Widget Monthly Commitments (yang menampilkan DSR, Total Wajib Bayar, dan Opsi Minimum), tetapi widget ini baru di-inject ke dalam Tab AP/R (Payables) di dalam fungsi renderPayablesReceivables(). Kode ini belum disisipkan ke tab Dashboard utama (di dalam renderDashboard()), sehingga wajar jika saat pertama kali membuka aplikasi, bagian depannya terasa tidak ada yang berubah.
+
+2. Versi Cache (Service Worker) Belum Di-Update
+
+Status: Butuh Tindakan  
+JS
+
+Analisis: Di dalam Service Worker Mochi's Vault, konstanta versi cache masih berada di const APP_VERSION = "v23.1";. Jika angka ini tidak kita naikkan (misalnya menjadi v24.0), HP kamu akan terus memuat tampilan HTML/CSS versi lama secara offline meskipun kodenya sudah kita ubah.  
+JS
+
+Tindakan Selanjutnya
+Agar semua fitur baru ini langsung terlihat di layarmu, kita perlu melakukan dua hal:
+
+Menambahkan widget Due This Month ke dalam layar utama (Dashboard).
+
+Memperbarui APP_VERSION agar HP memaksa sinkronisasi cache baru.
+
+Apakah kamu ingin kita memindahkan/menduplikasi widget Due This Month ke Dashboard terlebih dahulu, atau mau langsung fokus melakukan bump version agar fitur Quick-Pay di tab AP/R bisa kamu tes sekarang juga?
+
+apa kamu bisa eksekusinya bersamaan? kirimkan aku 2 file code.gs dan index.html yg sudah diperbarui namun karena index.html memiliki baris yg super panjang 4.000 lines gunakan strategi membagi jadi 3 agar memastikan tidak ada yg terpotong
+
+Tentu saja! Untuk memudahkanmu dan memastikan tidak ada kode yang terpotong akibat limitasi panjang pesan, saya telah menghasilkan file lengkap yang bisa langsung kamu unduh. Jadi, kamu tidak perlu lagi repot-repot menyambung 3 bagian kode secara manual.
+
+Berikut adalah file yang telah diperbarui secara otomatis:
+
+Your HTML file is ready
+
+Ikon HTML
+index_v24
+ HTML 
+Buka
+Your Service Worker (sw.js) file is ready
+
+Ikon JS
+sw_v24
+ JS 
+Buka
+Your Google Apps Script (Code.gs) file is ready
+
+Ikon JS
+Code_v24
+ JS 
+Buka
+Apa Saja yang Berubah di File-File ini?
+index_v24.html:
+
+Duplikasi Dihapus: Saya telah membersihkan seluruh ratusan baris fungsi ganda (duplicate functions) di bagian bawah yang sebelumnya menimpa logika baru.
+
+Widget "Due This Month" di Dashboard: Saya menambahkan <div id="dashboard-due-container"></div> dan logika render dinamis di dalam fungsi renderDashboard(). Sekarang, saat awal bulan, kamu akan langsung disambut oleh ringkasan Monthly Amount Due tepat di bawah Vault Card utama.
+
+Validasi Master Data (Duplikat Akun): Logika cek nama akun kembar (duplicate account check) telah dimasukkan ke dalam handleSaveMaster yang utama.
+
+sw_v24.js (Sangat Penting):
+
+Saya telah mengubah versi cache menjadi const APP_VERSION = "v24.0";. Wajib di-deploy! Pembaruan versi ini akan memaksa HP kamu untuk mengunduh ulang HTML/CSS terbaru (menggugurkan file HTML versi lama yang tersangkut di cache PWA saat ini).
+
+Code_v24.js:
+
+Sesuai permintaanmu, saya sertakan Code.gs (tanpa perubahan signifikan karena backend Code.gs pada dasarnya sudah sempurna sejak sebelumnya).
+
+Langkah Implementasi:
+Unduh ketiga file di atas.
+
+Buka Google Apps Script Editor.
+
+Copy-paste / ganti isi file index.html, sw.html (atau file service worker kamu), dan Code.gs dengan file terbaru ini.
+
+Lakukan Deploy > New Deployment.
+
+Tutup paksa aplikasi Mochi's Vault di HP-mu (di Recent Apps), lalu buka kembali. Berkat sw.js versi 24, tampilan Dashboard dan tombol Quick-Pay akan langsung menyala!
+
+
+
+
+Percakapan cosmosindoalfa.com Anda tidak digunakan untuk meningkatkan kualitas model kami. Gemini adalah AI dan dapat melakukan kesalahan. Privasi Anda & GeminiTerbuka di jendela baru
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -296,6 +878,7 @@
         </div>
       </div>
 
+      <div id="dashboard-due-container"></div>
       <div class="grid grid-cols-2 gap-3">
         <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="floating-item p-5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
           <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-3.5 h-3.5 mr-1.5 amount-in flex-shrink-0"></i> TOTAL CASH</span>
@@ -1453,6 +2036,45 @@
       const totalPayablesAP = Number(kpi['Total Payables']) || 0;
       const calculatedNetWorth = totalCashAssets + totalReceivables - totalLiabilityBalance - totalPayablesAP;
 
+      
+      const monthlyDue = Number(kpi['Monthly Amount Due']) || 0;
+      const monthlyMinDue = Number(kpi['Monthly Amount Due (Min)']) || 0;
+      const dsr = Number(kpi['Debt Service Ratio']) || 0;
+
+      const dueContainer = document.getElementById('dashboard-due-container');
+      if (dueContainer) {
+        if (monthlyDue > 0) {
+          dueContainer.innerHTML = `
+            <div class="floating-card p-5 mb-5 space-y-3.5 bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-subtle-2)] border border-[var(--border-color)] rounded-2xl shadow-sm">
+              <div class="flex justify-between items-center pb-2.5 border-b border-slate-100 dark:border-[var(--border-color)]">
+                <div class="flex items-center space-x-2">
+                  <div class="w-7 h-7 rounded-lg bg-[var(--chip-out-bg)] amount-out flex items-center justify-center">
+                    <i data-lucide="calendar-clock" class="w-4 h-4"></i>
+                  </div>
+                  <h3 class="text-xs font-black uppercase tracking-wider text-main">Due This Month</h3>
+                </div>
+                <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${dsr > 30 ? 'bg-rose-500/15 amount-out' : 'bg-emerald-500/15 amount-in'}">
+                  DSR: ${dsr}%
+                </span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <span class="text-[9px] text-muted font-extrabold uppercase block mb-0.5">Total Wajib Bayar</span>
+                  <span class="text-base font-black amount-out block leading-none font-numeric">${formatRupiah(monthlyDue)}</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-[9px] text-muted font-extrabold uppercase block mb-0.5">Opsi Bayar Min. (KK)</span>
+                  <span class="text-sm font-extrabold text-main block leading-none font-numeric">${formatRupiah(monthlyMinDue)}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          dueContainer.innerHTML = '';
+        }
+      }
+
       animateNumber(document.getElementById('kpi-networth'), calculatedNetWorth);
       animateNumber(document.getElementById('kpi-disposable'), kpi['Disposable Income'] || 0);
       animateNumber(document.getElementById('kpi-cash'), totalCashAssets);
@@ -2429,6 +3051,16 @@ async function handleSaveMaster(event) {
 
   if (type === 'account') {
     if (!name) { triggerInputError('master-name', "Account name is required."); return; }
+
+        const isDuplicate = (GLOBAL_DATA.accounts || []).some(a => 
+          a.accountName.toLowerCase().trim() === name.toLowerCase() && 
+          a.accountName.toLowerCase().trim() !== oldName.toLowerCase().trim()
+        );
+
+        if (isDuplicate) {
+          triggerInputError('master-name', `Account name '${name}' is already in use!`);
+          return;
+        }
     payload.accountName = name;
     payload.accountType = document.getElementById('master-account-type').value;
     payload.owner = document.getElementById('master-account-owner').value;
@@ -3652,515 +4284,7 @@ function calcInstallmentEstimates() {
 }
 
 // ===== 2. OPEN EDIT PAYABLE WITH FULL FIELDS =====
-function openEditPayableModal(payableName) {
-  const p = (GLOBAL_DATA.payables || []).find(x => x.payableName === payableName);
-  if (!p) return;
-
-  closeModal('modalDetail');
-  setTimeout(() => {
-    openMasterModal('payable', true);
-    document.getElementById('master-old-name').value = p.payableName || '';
-    document.getElementById('master-name').value = p.payableName || '';
-    document.getElementById('master-payable-type').value = p.payableType || 'Personal Loan';
-    if (document.getElementById('master-payable-owner')) document.getElementById('master-payable-owner').value = p.owner || 'Yosa';
-    if (document.getElementById('master-payable-owed-to')) document.getElementById('master-payable-owed-to').value = p.owedTo || '';
-    document.getElementById('master-payable-total').value = p.initialAmount || 0;
-    if (document.getElementById('master-payable-start')) document.getElementById('master-payable-start').value = p.startDate || '';
-    if (document.getElementById('master-payable-term')) document.getElementById('master-payable-term').value = p.termMonths || '';
-    if (document.getElementById('master-payable-due')) document.getElementById('master-payable-due').value = p.dueDate || '';
-    if (document.getElementById('master-payable-installment')) document.getElementById('master-payable-installment').value = p.monthlyInstallment || '';
-    if (document.getElementById('master-payable-account')) document.getElementById('master-payable-account').value = p.paymentAccount || '';
-    document.getElementById('master-payable-notes').value = p.notes || '';
-  }, 400);
-}
-
-// ===== 3. SAVE MASTER DATA WITH FULL PAYABLE/RECEIVABLE PAYLOAD =====
-async function handleSaveMaster(event) {
-  event.preventDefault();
-  const type = document.getElementById('master-type').value;
-  const oldName = document.getElementById('master-old-name').value;
-  const name = document.getElementById('master-name').value.trim();
-
-  let payload = { oldName: oldName };
-
-  if (type === 'account') {
-    if (!name) { triggerInputError('master-name', "Account name is required."); return; }
-    payload.accountName = name;
-    payload.accountType = document.getElementById('master-account-type').value;
-    payload.owner = document.getElementById('master-account-owner').value;
-    payload.functionCategory = document.getElementById('master-function-category').value;
-    payload.initialBalance = Number(document.getElementById('master-initial-balance').value) || 0;
-  } else if (type === 'category') {
-    const mainSel = document.getElementById('master-main-category-select').value;
-    const mainCategory = mainSel === '__NEW__' ? document.getElementById('master-main-category-new').value.trim() : mainSel;
-    if (!mainCategory) { triggerInputError('master-main-category-new', "Main category name is required."); return; }
-    payload.mainCategory = mainCategory;
-    payload.subCategory = name;
-    payload.categoryName = name || mainCategory;
-    payload.type = document.getElementById('master-category-type').value;
-  } else if (type === 'payable') {
-    if (!name) { triggerInputError('master-name', "Payable name is required."); return; }
-    payload.payableName = name;
-    payload.payableType = document.getElementById('master-payable-type').value;
-    payload.owner = document.getElementById('master-payable-owner') ? document.getElementById('master-payable-owner').value : "Yosa & Fani";
-    payload.owedTo = document.getElementById('master-payable-owed-to') ? document.getElementById('master-payable-owed-to').value.trim() : "";
-    payload.initialAmount = Number(document.getElementById('master-payable-total').value) || 0;
-    payload.startDate = document.getElementById('master-payable-start') ? document.getElementById('master-payable-start').value : "";
-    payload.termMonths = Number(document.getElementById('master-payable-term').value) || "";
-    payload.monthlyInstallment = Number(document.getElementById('master-payable-installment').value) || "";
-    payload.dueDate = document.getElementById('master-payable-due') ? document.getElementById('master-payable-due').value : "";
-    payload.paymentAccount = document.getElementById('master-payable-account') ? document.getElementById('master-payable-account').value : "";
-    payload.notes = document.getElementById('master-payable-notes').value;
-  } else if (type === 'receivable') {
-    if (!name) { triggerInputError('master-name', "Receivable name is required."); return; }
-    payload.receivableName = name;
-    payload.receivableType = document.getElementById('master-receivable-type').value;
-    payload.owner = document.getElementById('master-receivable-owner') ? document.getElementById('master-receivable-owner').value : "Yosa & Fani";
-    payload.fromToWhom = document.getElementById('master-receivable-from') ? document.getElementById('master-receivable-from').value.trim() : "";
-    payload.initialAmount = Number(document.getElementById('master-receivable-total').value) || 0;
-    payload.dateOccurred = document.getElementById('master-receivable-occurred') ? document.getElementById('master-receivable-occurred').value : "";
-    payload.expectedReturn = document.getElementById('master-receivable-return') ? document.getElementById('master-receivable-return').value : "";
-    payload.relatedAccount = document.getElementById('master-receivable-account') ? document.getElementById('master-receivable-account').value : "";
-    payload.notes = document.getElementById('master-receivable-notes').value;
-  }
-
-  let loadingToast = showToast("Saving master data...", "info");
-  try {
-    const actionType = oldName ? 'editMasterData' : 'addMasterData';
-    const res = await fetch(API_URL, {
-      method: 'POST', redirect: 'follow',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: actionType, type, payload })
-    });
-    const result = await res.json();
-    if (result.status === 'error') throw new Error(result.message);
-
-    if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-    closeModal('modalMaster');
-    showToast(result.message || "Master data saved successfully!");
-    await loadAppData(true);
-  } catch (err) {
-    if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-    showToast("Failed to save: " + err.message, "error");
-  }
-}
-
-// ===== 4. RENDER AP/R TAB WITH PROGRESS BARS & DUE DATES =====
-function renderPayablesReceivables() {
-  const payableEl = document.getElementById('list-payables-active');
-  const receivableEl = document.getElementById('list-receivables-active');
-  payableEl.innerHTML = "";
-  receivableEl.innerHTML = "";
-
-  let hasActivePayables = false;
-
-  // 1. ACTIVE PAYABLES (CREDIT CARD / PAYLATER)
-  (GLOBAL_DATA.accounts || []).forEach((acc, i) => {
-    const meta = getAccountIconMeta(acc.accountName, acc.accountType);
-    const rawBal = Number(acc.runningBalance) || 0;
-    const bal = Math.abs(rawBal);
-
-    if (meta.isLiability && bal > 0) {
-      hasActivePayables = true;
-      const ownerLabel = acc.owner ? escapeHtml(acc.owner) : 'Yosa & Fani';
-      const nameHasOwner = acc.owner && acc.accountName.toLowerCase().includes(acc.owner.toLowerCase());
-      const typeBadge = nameHasOwner ? escapeHtml(acc.accountType) : `${escapeHtml(acc.accountType)} • ${ownerLabel}`;
-
-      const div = document.createElement('div');
-      div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden select-none";
-      div.style.animationDelay = `${i * 0.05}s`;
-      div.onclick = () => { vibrate(30); showPayableDetail(acc, true); };
-      div.innerHTML = `
-        <div class="mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)] flex justify-between items-start">
-          <div>
-            <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(acc.accountName)}</h4>
-            <span class="text-[10px] amount-out bg-[var(--chip-out-bg)] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider mt-1.5 inline-block">${typeBadge}</span>
-          </div>
-          <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[var(--bg-subtle-2)] text-muted">Tagihan Bulanan</span>
-        </div>
-        <div>
-          <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING PAYABLE</span>
-          <span class="text-[18px] font-black amount-out block leading-none tracking-tight font-numeric">${formatRupiah(bal)}</span>
-        </div>
-      `;
-      payableEl.appendChild(div);
-    }
-  });
-
-  // 2. ACTIVE PAYABLES (CICILAN / HUTANG TERSTRUKTUR)
-  const activePayables = (GLOBAL_DATA.payables || [])
-    .filter(p => {
-      const st = (p.status || '').toLowerCase().trim();
-      return (st === 'active' || st === 'aktif') && Number(p.remainingAmount) > 0;
-    })
-    .sort((a, b) => b.remainingAmount - a.remainingAmount);
-
-  activePayables.forEach((p, i) => {
-    hasActivePayables = true;
-    const initial = Number(p.initialAmount) || 0;
-    const rem = Math.abs(Number(p.remainingAmount) || 0);
-    const paid = Math.max(0, initial - rem);
-    const pctPaid = initial > 0 ? Math.min(100, Math.round((paid / initial) * 100)) : 0;
-
-    let installmentText = p.monthlyInstallment > 0 ? `${formatRupiah(p.monthlyInstallment)} / bln` : '';
-    let dueText = p.dueDate ? `Jatuh Tempo: ${formatDate(p.dueDate)}` : '';
-
-    const div = document.createElement('div');
-    div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden select-none space-y-3";
-    div.style.animationDelay = `${i * 0.05}s`;
-    div.onclick = () => { vibrate(30); showPayableDetail(p, false); };
-    div.innerHTML = `
-      <div class="pb-3 border-b border-slate-100 dark:border-[var(--border-color)] flex justify-between items-start">
-        <div>
-          <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(p.payableName)}</h4>
-          <div class="flex items-center space-x-1.5 mt-1.5">
-            <span class="text-[10px] amount-out bg-[var(--chip-out-bg)] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">${escapeHtml(p.payableType || 'PAYABLE')}</span>
-            ${p.owedTo ? `<span class="text-[10px] text-faint font-extrabold">• ${escapeHtml(p.owedTo)}</span>` : ''}
-          </div>
-        </div>
-        ${p.termMonths ? `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main border border-[var(--border-color)]">${p.termMonths} Bulan Tenor</span>` : ''}
-      </div>
-
-      <div class="grid grid-cols-2 gap-2">
-        <div>
-          <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">SISA HUTANG</span>
-          <span class="text-[16px] font-black amount-out block leading-none tracking-tight font-numeric">${formatRupiah(rem)}</span>
-        </div>
-        ${p.monthlyInstallment ? `
-          <div class="text-right">
-            <span class="text-[9px] text-muted font-bold uppercase tracking-wider block mb-0.5">CICILAN</span>
-            <span class="text-[14px] font-extrabold text-main block leading-none font-numeric">${formatRupiah(p.monthlyInstallment)}/bln</span>
-          </div>
-        ` : ''}
-      </div>
-
-      <!-- PROGRESS BAR PELUNASAN -->
-      ${initial > 0 ? `
-        <div class="space-y-1 pt-1">
-          <div class="flex justify-between text-[10px] font-extrabold text-muted">
-            <span>Terbayar: ${pctPaid}%</span>
-            <span>Plafon: ${formatRupiah(initial)}</span>
-          </div>
-          <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden">
-            <div class="bg-gradient-to-r from-mochi-light to-mochi h-full rounded-full transition-all duration-700" style="width: ${pctPaid}%"></div>
-          </div>
-        </div>
-      ` : ''}
-
-      ${dueText ? `<div class="text-[10px] font-extrabold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-3 py-1 rounded-lg flex items-center justify-between"><span class="flex items-center"><i data-lucide="calendar" class="w-3 h-3 mr-1"></i> ${dueText}</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></div>` : ''}
-    `;
-    payableEl.appendChild(div);
-  });
-
-  if (!hasActivePayables) {
-    payableEl.innerHTML = emptyStateHtml('party-popper', "All clear!", "No payables or credit card bills outstanding. Mochi's tail is doing a happy wiggle.");
-  }
-
-  // 3. UNPAID RECEIVABLES (PIUTANG)
-  const activeReceivables = (GLOBAL_DATA.receivables || [])
-    .filter(r => {
-      const st = (r.status || '').toLowerCase().trim();
-      return (st === 'active' || st === 'unsettled' || st === 'aktif' || st === 'belum lunas') && Number(r.remainingAmount) > 0;
-    });
-
-  if (activeReceivables.length === 0) {
-    receivableEl.innerHTML = emptyStateHtml('party-popper', "All collected!", "Every receivable has been paid back. Nothing left for Mochi to chase.");
-  } else {
-    activeReceivables.forEach((r, i) => {
-      const rem = Math.abs(Number(r.remainingAmount) || 0);
-      const div = document.createElement('div');
-      div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item mb-3 overflow-hidden select-none space-y-2";
-      div.style.animationDelay = `${i * 0.05}s`;
-      div.onclick = () => { vibrate(30); showReceivableDetail(r); };
-      div.innerHTML = `
-        <div class="pb-3 border-b border-slate-100 dark:border-[var(--border-color)] flex justify-between items-start">
-          <div>
-            <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(r.receivableName)}</h4>
-            <div class="flex items-center space-x-1.5 mt-1.5">
-              <span class="text-[10px] amount-info bg-[var(--chip-info-bg)] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">${escapeHtml(r.receivableType || 'RECEIVABLE')}</span>
-              ${r.fromToWhom ? `<span class="text-[10px] text-faint font-extrabold">• ${escapeHtml(r.fromToWhom)}</span>` : ''}
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">REMAINING RECEIVABLE</span>
-          <span class="text-[18px] font-black amount-info block leading-none tracking-tight font-numeric">${formatRupiah(rem)}</span>
-        </div>
-        ${r.expectedReturn ? `<div class="text-[10px] font-extrabold text-sky-600 dark:text-sky-400 bg-sky-500/10 px-3 py-1 rounded-lg flex items-center justify-between"><span class="flex items-center"><i data-lucide="calendar" class="w-3 h-3 mr-1"></i> Target Pelunasan: ${formatDate(r.expectedReturn)}</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></div>` : ''}
-      `;
-      receivableEl.appendChild(div);
-    });
-  }
-  lucide.createIcons();
-}
-
-// ===== 5. SHOW PAYABLE DETAIL MODAL WITH FULL METRICS =====
-function showPayableDetail(item, isAccount = false) {
-  if (!item) return;
-  const name = isAccount ? item.accountName : item.payableName;
-  currentModalBackFn = () => showPayableDetail(item, isAccount);
-  window.isNestedModalView = false;
-
-  const type = isAccount ? item.accountType : (item.payableType || 'Payable');
-  const rawAmt = isAccount ? item.runningBalance : item.remainingAmount;
-  const amount = Math.abs(Number(rawAmt) || 0);
-  const status = isAccount ? 'Active' : (item.status || 'Active');
-
-  const initial = isAccount ? amount : (Number(item.initialAmount) || amount);
-  const paid = Math.max(0, initial - amount);
-  const pctPaid = initial > 0 ? Math.min(100, Math.round((paid / initial) * 100)) : 0;
-
-  const relatedTrx = isAccount 
-    ? (GLOBAL_DATA.transactions || []).filter(t => t.sourceAccount === name || t.targetAccount === name)
-    : (GLOBAL_DATA.transactions || []).filter(t => t.relatedPayable === name);
-
-  let html = `
-    <div class="space-y-4 pt-1">
-      <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
-        <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">Active Payable Detail</span>
-        <h3 class="text-xl font-black text-main leading-tight">${escapeHtml(name)}</h3>
-      </div>
-
-      <div class="ios-input space-y-2.5 text-xs font-semibold text-muted py-4 px-5 bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
-        <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
-          <span>Kategori Pinjaman:</span> 
-          <span class="font-extrabold text-main">${escapeHtml(type)}</span>
-        </div>
-        ${!isAccount && item.owedTo ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Kreditur / Provider:</span> <span class="font-extrabold text-main">${escapeHtml(item.owedTo)}</span></div>` : ''}
-        ${!isAccount && item.owner ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Pemilik Pinjaman:</span> <span class="font-extrabold text-main">${escapeHtml(item.owner)}</span></div>` : ''}
-        
-        <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
-          <span>Total Plafon / Hutang Awal:</span> 
-          <span class="font-extrabold text-main font-numeric">${formatRupiah(initial)}</span>
-        </div>
-        
-        ${!isAccount && item.termMonths ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Tenor Pinjaman:</span> <span class="font-extrabold text-main">${item.termMonths} Bulan</span></div>` : ''}
-        ${!isAccount && item.monthlyInstallment ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Cicilan Bulanan:</span> <span class="font-extrabold amount-out font-numeric">${formatRupiah(item.monthlyInstallment)}/bln</span></div>` : ''}
-        ${!isAccount && item.dueDate ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Tanggal Jatuh Tempo:</span> <span class="font-extrabold text-main">${formatDate(item.dueDate)}</span></div>` : ''}
-        ${!isAccount && item.paymentAccount ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Rekening Pemotong:</span> <span class="font-extrabold text-main">${escapeHtml(item.paymentAccount)}</span></div>` : ''}
-
-        <div class="flex justify-between pt-1 items-center">
-          <span>Sisa Hutang:</span> 
-          <span class="font-black amount-out text-[16px] font-numeric">${formatRupiah(amount)}</span>
-        </div>
-      </div>
-
-      <!-- PROGRESS BAR METRIC -->
-      ${!isAccount && initial > 0 ? `
-        <div class="space-y-1.5 p-4 rounded-2xl bg-card border border-[var(--border-color)]">
-          <div class="flex justify-between text-xs font-extrabold">
-            <span class="text-muted">Status Pelunasan</span>
-            <span class="text-mochi">${pctPaid}% Terbayar</span>
-          </div>
-          <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2.5 overflow-hidden">
-            <div class="bg-gradient-to-r from-mochi-light to-mochi h-full rounded-full" style="width: ${pctPaid}%"></div>
-          </div>
-        </div>
-      ` : ''}
-
-      <div>
-        <p class="font-bold text-[10px] text-muted mb-2.5 uppercase tracking-wider">Riwayat Pembayaran & Transaksi Terkait</p>
-        <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-  `;
-
-  if (relatedTrx.length === 0) {
-    html += `<p class="text-xs text-center text-muted py-6 font-semibold flex flex-col items-center"><i data-lucide="inbox" class="w-5 h-5 mb-2 text-faint"></i>Belum ada transaksi cicilan tercatat.</p>`;
-  } else {
-    relatedTrx.forEach(t => {
-      const meta = getTypeMeta(t.type);
-      html += `
-        <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-          <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
-            <div class="truncate">
-              <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
-              <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
-            </div>
-          </div>
-          <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] font-numeric pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
-        </div>
-      `;
-    });
-  }
-
-  html += `</div></div></div>`;
-  html += `
-    <div class="flex space-x-3 pt-4">
-      <button onclick="${isAccount ? `openEditAccountModal('${escapeAttr(name)}')` : `openEditPayableModal('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit Detail</button>
-      <button onclick="${isAccount ? `promptDeleteAccount('${escapeAttr(name)}')` : `promptDeletePayable('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
-    </div>`;
-  document.getElementById('modal-detail-inner').innerHTML = html;
-  openModal('modalDetail');
-  lucide.createIcons();
-}
-    
-// ===== 5. SHOW PAYABLE DETAIL MODAL WITH FULL METRICS =====
-function showPayableDetail(item, isAccount = false) {
-  if (!item) return;
-  const name = isAccount ? item.accountName : item.payableName;
-  currentModalBackFn = () => showPayableDetail(item, isAccount);
-  window.isNestedModalView = false;
-
-  const type = isAccount ? item.accountType : (item.payableType || 'Payable');
-  const rawAmt = isAccount ? item.runningBalance : item.remainingAmount;
-  const amount = Math.abs(Number(rawAmt) || 0);
-  const status = isAccount ? 'Active' : (item.status || 'Active');
-
-  const initial = isAccount ? amount : (Number(item.initialAmount) || amount);
-  const paid = Math.max(0, initial - amount);
-  const pctPaid = initial > 0 ? Math.min(100, Math.round((paid / initial) * 100)) : 0;
-
-  const relatedTrx = isAccount 
-    ? (GLOBAL_DATA.transactions || []).filter(t => t.sourceAccount === name || t.targetAccount === name)
-    : (GLOBAL_DATA.transactions || []).filter(t => t.relatedPayable === name);
-
-  let html = `
-    <div class="space-y-4 pt-1">
-      <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
-        <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">Active Payable Detail</span>
-        <h3 class="text-xl font-black text-main leading-tight">${escapeHtml(name)}</h3>
-      </div>
-
-      <div class="ios-input space-y-2.5 text-xs font-semibold text-muted py-4 px-5 bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
-        <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
-          <span>Kategori Pinjaman:</span> 
-          <span class="font-extrabold text-main">${escapeHtml(type)}</span>
-        </div>
-        ${!isAccount && item.owedTo ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Kreditur / Provider:</span> <span class="font-extrabold text-main">${escapeHtml(item.owedTo)}</span></div>` : ''}
-        ${!isAccount && item.owner ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Pemilik Pinjaman:</span> <span class="font-extrabold text-main">${escapeHtml(item.owner)}</span></div>` : ''}
-        
-        <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
-          <span>Total Plafon / Hutang Awal:</span> 
-          <span class="font-extrabold text-main font-numeric">${formatRupiah(initial)}</span>
-        </div>
-        
-        ${!isAccount && item.termMonths ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Tenor Pinjaman:</span> <span class="font-extrabold text-main">${item.termMonths} Bulan</span></div>` : ''}
-        ${!isAccount && item.monthlyInstallment ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Cicilan Bulanan:</span> <span class="font-extrabold amount-out font-numeric">${formatRupiah(item.monthlyInstallment)}/bln</span></div>` : ''}
-        ${!isAccount && item.dueDate ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Tanggal Jatuh Tempo:</span> <span class="font-extrabold text-main">${formatDate(item.dueDate)}</span></div>` : ''}
-        ${!isAccount && item.paymentAccount ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Rekening Pemotong:</span> <span class="font-extrabold text-main">${escapeHtml(item.paymentAccount)}</span></div>` : ''}
-
-        <div class="flex justify-between pt-1 items-center">
-          <span>Sisa Hutang:</span> 
-          <span class="font-black amount-out text-[16px] font-numeric">${formatRupiah(amount)}</span>
-        </div>
-      </div>
-
-      <!-- PROGRESS BAR METRIC -->
-      ${!isAccount && initial > 0 ? `
-        <div class="space-y-1.5 p-4 rounded-2xl bg-card border border-[var(--border-color)]">
-          <div class="flex justify-between text-xs font-extrabold">
-            <span class="text-muted">Status Pelunasan</span>
-            <span class="text-mochi">${pctPaid}% Terbayar</span>
-          </div>
-          <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2.5 overflow-hidden">
-            <div class="bg-gradient-to-r from-mochi-light to-mochi h-full rounded-full" style="width: ${pctPaid}%"></div>
-          </div>
-        </div>
-      ` : ''}
-
-      <div>
-        <p class="font-bold text-[10px] text-muted mb-2.5 uppercase tracking-wider">Riwayat Pembayaran & Transaksi Terkait</p>
-        <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-  `;
-
-  if (relatedTrx.length === 0) {
-    html += `<p class="text-xs text-center text-muted py-6 font-semibold flex flex-col items-center"><i data-lucide="inbox" class="w-5 h-5 mb-2 text-faint"></i>Belum ada transaksi cicilan tercatat.</p>`;
-  } else {
-    relatedTrx.forEach(t => {
-      const meta = getTypeMeta(t.type);
-      html += `
-        <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-          <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
-            <div class="truncate">
-              <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
-              <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
-            </div>
-          </div>
-          <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] font-numeric pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
-        </div>
-      `;
-    });
-  }
-
-  html += `</div></div></div>`;
-  html += `
-    <div class="flex space-x-3 pt-4">
-      <button onclick="${isAccount ? `openEditAccountModal('${escapeAttr(name)}')` : `openEditPayableModal('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit Detail</button>
-      <button onclick="${isAccount ? `promptDeleteAccount('${escapeAttr(name)}')` : `promptDeletePayable('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
-    </div>`;
-  document.getElementById('modal-detail-inner').innerHTML = html;
-  openModal('modalDetail');
-  lucide.createIcons();
-}
-    async function handleSaveMaster(event) {
-      event.preventDefault();
-      const type = document.getElementById('master-type').value;
-      const oldName = document.getElementById('master-old-name').value;
-      const name = document.getElementById('master-name').value.trim();
-
-      let payload = { oldName: oldName };
-
-      if (type === 'account') {
-        if (!name) { triggerInputError('master-name', "Account name is required."); return; }
-
-        const isDuplicate = (GLOBAL_DATA.accounts || []).some(a => 
-          a.accountName.toLowerCase().trim() === name.toLowerCase() && 
-          a.accountName.toLowerCase().trim() !== oldName.toLowerCase().trim()
-        );
-
-        if (isDuplicate) {
-          triggerInputError('master-name', `Account name '${name}' is already in use!`);
-          return;
-        }
-
-        payload.accountName = name;
-        payload.accountType = document.getElementById('master-account-type').value;
-        payload.owner = document.getElementById('master-account-owner').value;
-        payload.functionCategory = document.getElementById('master-function-category').value;
-        payload.initialBalance = Number(document.getElementById('master-initial-balance').value) || 0;
-      } else if (type === 'category') {
-        const mainSel = document.getElementById('master-main-category-select').value;
-        const mainCategory = mainSel === '__NEW__' ? document.getElementById('master-main-category-new').value.trim() : mainSel;
-        if (!mainCategory) { triggerInputError('master-main-category-new', "Main category name is required."); return; }
-        payload.mainCategory = mainCategory;
-        payload.subCategory = name;
-        payload.categoryName = name || mainCategory;
-        payload.type = document.getElementById('master-category-type').value;
-      } else if (type === 'payable') {
-        if (!name) { triggerInputError('master-name', "Payable name is required."); return; }
-        payload.payableName = name;
-        payload.payableType = document.getElementById('master-payable-type').value;
-        payload.initialAmount = Number(document.getElementById('master-payable-total').value) || 0;
-        payload.notes = document.getElementById('master-payable-notes').value;
-      } else if (type === 'receivable') {
-        if (!name) { triggerInputError('master-name', "Receivable name is required."); return; }
-        payload.receivableName = name;
-        payload.receivableType = document.getElementById('master-receivable-type').value;
-        payload.initialAmount = Number(document.getElementById('master-receivable-total').value) || 0;
-        payload.notes = document.getElementById('master-receivable-notes').value;
-      }
-
-      let loadingToast = showToast("Saving master data...", "info");
-      try {
-        const actionType = oldName ? 'editMasterData' : 'addMasterData';
-        const res = await fetch(API_URL, {
-          method: 'POST', redirect: 'follow',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: actionType, type, payload })
-        });
-        const result = await res.json();
-        if (result.status === 'error') throw new Error(result.message);
-
-        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        closeModal('modalMaster');
-        showToast(result.message || "Master data saved successfully!");
-        await loadAppData(true);
-      } catch (err) {
-        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Failed to save: " + err.message, "error");
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', () => {
       applyDarkModePref();
       lucide.createIcons();
       document.getElementById('form-date').valueAsDate = new Date();
