@@ -296,8 +296,7 @@
         </div>
       </div>
 
-      <div id="dashboard-due-container"></div>
-      <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-3">
         <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="floating-item p-5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
           <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-3.5 h-3.5 mr-1.5 amount-in flex-shrink-0"></i> TOTAL CASH</span>
           <span id="kpi-cash" class="font-numeric text-sm sm:text-base font-bold amount-in block truncate w-full">-</span>
@@ -334,16 +333,17 @@
             <div class="w-7 h-7 rounded-lg bg-[var(--chip-info-bg)] text-mochi dark:text-mochi-light flex items-center justify-center">
               <i data-lucide="sliders" class="w-4 h-4"></i>
             </div>
-            <h3 class="text-sm font-extrabold text-main">Monthly Category Budgets</h3>
+            <h3 class="text-sm font-extrabold text-main">Monthly Budgets</h3>
           </div>
           <button type="button" onclick="vibrate(30); openBudgetEditorModal()" class="tap-shrink text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider bg-mochi-light/20 text-mochi dark:text-mochi-light border border-mochi/20 flex items-center">
-            <i data-lucide="sliders-horizontal" class="w-3 h-3 mr-1"></i> Set Budget
+            <i data-lucide="sliders-horizontal" class="w-3 h-3 mr-1"></i> Set
           </button>
         </div>
         
         <div id="dashboard-budget-summary" class="space-y-3"></div>
       </div>
 
+<div id="dashboard-due-container"></div>
       <div class="floating-card p-5 mb-12">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <h3 class="text-sm font-extrabold text-main">Recent Transactions</h3>
@@ -421,17 +421,17 @@
           <input type="text" id="filter-search" oninput="renderHistory()" placeholder="Search description..." class="w-full text-sm ios-input pl-10 pr-4 py-2.5">
         </div>
 
-        <div id="statement-summary" class="floating-item p-5 pb-5 mt-3 flex flex-col space-y-3.5 border border-slate-100 dark:border-[var(--border-color)]">
-          <div class="flex justify-between items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
-            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">TOTAL INCOME</span>
+        <div id="statement-summary" class="floating-item pb-1 mt-3 flex flex-col border border-slate-100 dark:border-[var(--border-color)]">
+          <div onclick="vibrate(30); showIncomeDetail()" class="flex justify-between items-center border-b border-slate-100 dark:border-[var(--border-color)] py-4 px-5 cursor-pointer card-hover transition tap-shrink">
+            <span class="text-muted text-[10px] uppercase font-bold tracking-wider flex items-center"><i data-lucide="trending-up" class="w-3.5 h-3.5 mr-1.5 amount-in"></i> REAL INCOME</span>
             <span id="sum-income" class="font-extrabold amount-in text-[15px]">+Rp 0</span>
           </div>
-          <div class="flex justify-between items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
-            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">TOTAL EXPENSES</span>
+          <div onclick="vibrate(30); showExpenseDetail()" class="flex justify-between items-center border-b border-slate-100 dark:border-[var(--border-color)] py-4 px-5 cursor-pointer card-hover transition tap-shrink">
+            <span class="text-muted text-[10px] uppercase font-bold tracking-wider flex items-center"><i data-lucide="arrow-up-right" class="w-3.5 h-3.5 mr-1.5 amount-out"></i> REAL EXPENSE</span>
             <span id="sum-expense" class="font-extrabold amount-out text-[15px]">-Rp 0</span>
           </div>
-          <div class="flex justify-between items-center pt-1">
-            <span class="text-muted text-[10px] uppercase font-bold tracking-wider">NET SURPLUS / DEFICIT</span>
+          <div onclick="vibrate(30); showNetSurplusDetail()" class="flex justify-between items-center py-4 px-5 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer card-hover transition tap-shrink">
+            <span class="text-main text-[10px] uppercase font-black tracking-wider flex items-center"><i data-lucide="scale" class="w-3.5 h-3.5 mr-1.5 text-mochi"></i> NET SURPLUS</span>
             <span id="sum-net" class="font-black text-main text-[16px]">Rp 0</span>
           </div>
         </div>
@@ -441,20 +441,50 @@
     </section>
 
     <section id="page-wallets" class="hidden space-y-6 page-animate pb-8">
-      <div class="floating-card p-5">
+      <div class="floating-card p-5" id="wallet-group-bank">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
-            <i data-lucide="briefcase" class="w-4 h-4 mr-2"></i> Operational Accounts
+            <i data-lucide="building-2" class="w-4 h-4 mr-2"></i> Bank Accounts
           </h3>
-          <button type="button" onclick="vibrate(30); openMasterModal('account')" class="text-xs font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New Account</button>
+          <button type="button" onclick="vibrate(30); openMasterModal('account')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New</button>
         </div>
-        <div id="list-accounts-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+        <div id="list-bank-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 empty:hidden"></div>
+        <div id="divider-bank" class="hidden border-t border-dashed border-slate-200 dark:border-[var(--border-color)] my-3"></div>
+        <div id="list-bank-savings" class="grid grid-cols-1 md:grid-cols-2 gap-3 empty:hidden"></div>
       </div>
-      <div class="floating-card p-5">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
-          <i data-lucide="piggy-bank" class="w-4 h-4 mr-2"></i> Emergency & Savings
-        </h3>
-        <div id="list-accounts-savings" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+
+      <div class="floating-card p-5" id="wallet-group-ewallet">
+        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
+            <i data-lucide="smartphone" class="w-4 h-4 mr-2"></i> E-Wallets
+          </h3>
+          <button type="button" onclick="vibrate(30); openMasterModal('account')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New</button>
+        </div>
+        <div id="list-ewallet-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 empty:hidden"></div>
+        <div id="divider-ewallet" class="hidden border-t border-dashed border-slate-200 dark:border-[var(--border-color)] my-3"></div>
+        <div id="list-ewallet-savings" class="grid grid-cols-1 md:grid-cols-2 gap-3 empty:hidden"></div>
+      </div>
+
+      <div class="floating-card p-5" id="wallet-group-cash">
+        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
+            <i data-lucide="banknote" class="w-4 h-4 mr-2"></i> Physical Cash
+          </h3>
+          <button type="button" onclick="vibrate(30); openMasterModal('account')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New</button>
+        </div>
+        <div id="list-cash-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 empty:hidden"></div>
+        <div id="divider-cash" class="hidden border-t border-dashed border-slate-200 dark:border-[var(--border-color)] my-3"></div>
+        <div id="list-cash-savings" class="grid grid-cols-1 md:grid-cols-2 gap-3 empty:hidden"></div>
+      </div>
+
+      <div class="floating-card p-5" id="wallet-group-cc">
+        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
+            <i data-lucide="credit-card" class="w-4 h-4 mr-2"></i> Credit Cards & PayLater
+          </h3>
+          <button type="button" onclick="vibrate(30); openMasterModal('account')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New</button>
+        </div>
+        <div id="list-cc-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3 empty:hidden"></div>
       </div>
     </section>
 
@@ -2185,11 +2215,13 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
       });
 
       let totalIncome = 0, totalExpense = 0;
+      window.currentFilteredHistory = filtered; // Store for modals
+      
       filtered.forEach(trx => {
-        const direction = getTypeMeta(trx.type).direction;
         const val = Number(trx.amount) || 0;
-        if (direction === 'in') totalIncome += val;
-        else if (direction === 'out') totalExpense += val;
+        // Strict P&L Logic
+        if (trx.type === 'Income') totalIncome += val;
+        else if (trx.type === 'Expense') totalExpense += val;
       });
       document.getElementById('sum-income').innerText = '+' + formatRupiah(totalIncome);
       document.getElementById('sum-expense').innerText = '-' + formatRupiah(totalExpense);
@@ -2333,14 +2365,20 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
     }
 
     function renderWallets() {
-      const operationalEl = document.getElementById('list-accounts-operational');
-      const savingsEl = document.getElementById('list-accounts-savings');
-      operationalEl.innerHTML = ""; savingsEl.innerHTML = "";
+      const lists = [
+        'list-bank-operational', 'list-bank-savings', 
+        'list-ewallet-operational', 'list-ewallet-savings',
+        'list-cash-operational', 'list-cash-savings',
+        'list-cc-operational'
+      ];
+      lists.forEach(id => document.getElementById(id).innerHTML = "");
 
       if (!GLOBAL_DATA.accounts || GLOBAL_DATA.accounts.length === 0) {
-        operationalEl.innerHTML = emptyStateHtml('wallet', "No wallets in the vault yet", "Add your first account and Mochi will start tracking every rupiah that moves through it.");
+        document.getElementById('list-bank-operational').innerHTML = emptyStateHtml('wallet', "No wallets in the vault yet", "Add your first account and Mochi will start tracking every rupiah that moves through it.");
         return;
       }
+
+      let counts = { bank_op: 0, bank_sv: 0, ewallet_op: 0, ewallet_sv: 0, cash_op: 0, cash_sv: 0 };
 
       GLOBAL_DATA.accounts.forEach((acc, i) => {
         const meta = getAccountIconMeta(acc.accountName, acc.accountType);
@@ -2348,13 +2386,17 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
         const badgeBgClass = meta.isLiability ? "bg-[var(--chip-out-bg)] amount-out" : "bg-[var(--chip-in-bg)] amount-in";
         const statusLabel = "RUNNING BALANCE";
         const ownerLabel = acc.owner ? escapeHtml(acc.owner) : 'Yosa & Fani';
+        
+        const typeLower = (acc.accountType || '').toLowerCase();
+        const funcLower = (acc.functionCategory || '').toLowerCase();
+        const isOp = funcLower.includes('daily') || funcLower.includes('operation');
 
         const nameHasOwner = acc.owner && acc.accountName.toLowerCase().includes(acc.owner.toLowerCase());
         const badgeText = nameHasOwner ? escapeHtml(acc.accountType) : `${escapeHtml(acc.accountType)} • ${ownerLabel}`;
 
         const div = document.createElement('div');
         div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item flex flex-col justify-between";
-        div.style.animationDelay = `${i * 0.05}s`;
+        div.style.animationDelay = `${(i % 10) * 0.05}s`;
         
         div.innerHTML = `
           <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
@@ -2386,12 +2428,37 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
           </div>
         `;
 
-        if ((acc.functionCategory || '').toLowerCase().includes('daily') || (acc.functionCategory || '').toLowerCase().includes('operation')) {
-          operationalEl.appendChild(div);
+        if (meta.isLiability || typeLower.includes('credit card') || typeLower.includes('paylater')) {
+          document.getElementById('list-cc-operational').appendChild(div);
+        } else if (typeLower.includes('e-wallet')) {
+          if (isOp) { document.getElementById('list-ewallet-operational').appendChild(div); counts.ewallet_op++; }
+          else { document.getElementById('list-ewallet-savings').appendChild(div); counts.ewallet_sv++; }
+        } else if (typeLower.includes('cash') || typeLower.includes('tunai')) {
+          if (isOp) { document.getElementById('list-cash-operational').appendChild(div); counts.cash_op++; }
+          else { document.getElementById('list-cash-savings').appendChild(div); counts.cash_sv++; }
         } else {
-          savingsEl.appendChild(div);
+          if (isOp) { document.getElementById('list-bank-operational').appendChild(div); counts.bank_op++; }
+          else { document.getElementById('list-bank-savings').appendChild(div); counts.bank_sv++; }
         }
       });
+
+      // Manage Dividers and Group Visibility
+      const toggleDivider = (id, countOp, countSv) => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('hidden', !(countOp > 0 && countSv > 0));
+      };
+      toggleDivider('divider-bank', counts.bank_op, counts.bank_sv);
+      toggleDivider('divider-ewallet', counts.ewallet_op, counts.ewallet_sv);
+      toggleDivider('divider-cash', counts.cash_op, counts.cash_sv);
+      
+      const hideGroup = (id, totalCount) => {
+        document.getElementById(id).classList.toggle('hidden', totalCount === 0);
+      };
+      hideGroup('wallet-group-bank', counts.bank_op + counts.bank_sv);
+      hideGroup('wallet-group-ewallet', counts.ewallet_op + counts.ewallet_sv);
+      hideGroup('wallet-group-cash', counts.cash_op + counts.cash_sv);
+      hideGroup('wallet-group-cc', document.getElementById('list-cc-operational').children.length);
+
       lucide.createIcons();
     }
 
@@ -3246,6 +3313,149 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       openModal('modalDetail');
       lucide.createIcons();
     }
+
+        function showIncomeDetail() {
+      currentModalBackFn = null;
+      window.isNestedModalView = false;
+      const history = window.currentFilteredHistory || [];
+      const incomes = history.filter(t => t.type === 'Income');
+      const total = incomes.reduce((s, t) => s + (Number(t.amount)||0), 0);
+
+      let html = `<div class="space-y-4 pt-1">
+        <div class="text-center pb-2">
+          <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--chip-in-bg)] amount-in uppercase tracking-wider mb-2 inline-block">Real Income Insight</span>
+          <h3 class="text-lg font-extrabold text-main leading-tight">Total Pemasukan</h3>
+          <p class="text-3xl font-black mt-2 amount-in">+${formatRupiah(total)}</p>
+        </div>
+        <p class="text-xs text-muted font-semibold text-center px-4 mb-2">Hanya menghitung uang masuk yang benar-benar merupakan pendapatan (gaji, bonus, bunga, dll).</p>
+        <div class="space-y-1.5 max-h-60 overflow-y-auto pr-1">`;
+      
+      if (incomes.length === 0) {
+        html += `<p class="text-xs text-center text-muted py-6 font-semibold">Tidak ada pemasukan tercatat di periode ini.</p>`;
+      } else {
+        incomes.forEach(t => {
+          html += `<div class="flex justify-between items-center text-xs p-3.5 floating-item border border-slate-100 dark:border-[var(--border-color)] select-none">
+            <div class="truncate pr-2">
+              <p class="font-bold text-main truncate">${escapeHtml(t.category)}</p>
+              <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${escapeHtml(t.description)}</p>
+            </div>
+            <span class="font-black amount-in whitespace-nowrap text-[13px] font-numeric">+${formatRupiah(t.amount)}</span>
+          </div>`;
+        });
+      }
+      html += `</div></div>`;
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+    }
+
+    function showExpenseDetail() {
+      currentModalBackFn = null;
+      window.isNestedModalView = false;
+      const history = window.currentFilteredHistory || [];
+      const expenses = history.filter(t => t.type === 'Expense');
+      const total = expenses.reduce((s, t) => s + (Number(t.amount)||0), 0);
+
+      const groups = {};
+      expenses.forEach(t => {
+        const cat = t.category || 'Lainnya';
+        groups[cat] = (groups[cat] || 0) + (Number(t.amount) || 0);
+      });
+      const sorted = Object.entries(groups).sort((a,b) => b[1] - a[1]);
+
+      let html = `<div class="space-y-4 pt-1">
+        <div class="text-center pb-2">
+          <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">Real Expense Insight</span>
+          <h3 class="text-lg font-extrabold text-main leading-tight">Total Pengeluaran</h3>
+          <p class="text-3xl font-black mt-2 amount-out">-${formatRupiah(total)}</p>
+        </div>
+        <p class="text-xs text-muted font-semibold text-center px-4 mb-2">Hanya menghitung pengeluaran konsumtif. (Membayar hutang cicilan / memberi piutang tidak dihitung di sini).</p>
+        <div class="space-y-1.5 max-h-60 overflow-y-auto pr-1">`;
+      
+      if (sorted.length === 0) {
+        html += `<p class="text-xs text-center text-muted py-6 font-semibold">Tidak ada pengeluaran tercatat di periode ini.</p>`;
+      } else {
+        sorted.forEach(([cat, amt]) => {
+          const pct = total > 0 ? ((amt / total) * 100).toFixed(0) : 0;
+          html += `<div class="flex justify-between items-center text-xs p-3.5 floating-item border border-slate-100 dark:border-[var(--border-color)] select-none">
+            <div class="truncate pr-2">
+              <p class="font-bold text-main truncate">${escapeHtml(cat)}</p>
+              <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${pct}% dari total pengeluaran</p>
+            </div>
+            <span class="font-black amount-out whitespace-nowrap text-[13px] font-numeric">${formatRupiah(amt)}</span>
+          </div>`;
+        });
+      }
+      html += `</div></div>`;
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+    }
+
+    function showNetSurplusDetail() {
+      currentModalBackFn = null;
+      window.isNestedModalView = false;
+      const history = window.currentFilteredHistory || [];
+      let realIncome = 0, realExpense = 0, otherIn = 0, otherOut = 0;
+      
+      history.forEach(t => {
+        const amt = Number(t.amount) || 0;
+        const dir = getTypeMeta(t.type).direction;
+        
+        if (t.type === 'Income') realIncome += amt;
+        else if (t.type === 'Expense') realExpense += amt;
+        else if (dir === 'in') otherIn += amt;
+        else if (dir === 'out') otherOut += amt;
+      });
+
+      const netSurplus = realIncome - realExpense;
+      const physicalCashChange = netSurplus + otherIn - otherOut;
+      const pColor = physicalCashChange >= 0 ? 'amount-in' : 'amount-out';
+
+      let html = `<div class="space-y-4 pt-1">
+        <div class="text-center pb-2">
+          <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main uppercase tracking-wider mb-2 inline-block">Cashflow Bridge</span>
+          <h3 class="text-lg font-extrabold text-main leading-tight">Jembatan Arus Kas</h3>
+        </div>
+        
+        <div class="ios-input p-5 space-y-3 bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-muted font-bold">Real Income:</span>
+            <span class="font-black amount-in font-numeric">+${formatRupiah(realIncome)}</span>
+          </div>
+          <div class="flex justify-between items-center text-xs pb-3 border-b border-slate-200/50 dark:border-[var(--border-color)]">
+            <span class="text-muted font-bold">Real Expense:</span>
+            <span class="font-black amount-out font-numeric">-${formatRupiah(realExpense)}</span>
+          </div>
+          <div class="flex justify-between items-center text-[13px] pt-1">
+            <span class="text-main font-black">Net Surplus:</span>
+            <span class="font-black text-main font-numeric">${formatRupiah(netSurplus)}</span>
+          </div>
+        </div>
+
+        <div class="px-2">
+          <p class="text-xs text-muted font-semibold text-center mb-4 leading-relaxed">Walaupun Real Surplus kamu <strong>${formatRupiah(netSurplus)}</strong>, wujud fisik uang (di dompet/bank) bertambah/berkurang sesuai angka di bawah, karena adanya transaksi non-P&L (seperti bayar hutang/terima talangan).</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-2">
+          <div class="p-3.5 bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-xl border border-slate-100 dark:border-[var(--border-color)]">
+            <span class="text-[9px] text-muted font-bold block mb-1 uppercase tracking-wider">Transaksi Fisik Masuk</span>
+            <span class="text-sm font-black amount-in font-numeric">+${formatRupiah(otherIn)}</span>
+          </div>
+          <div class="p-3.5 bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-xl border border-slate-100 dark:border-[var(--border-color)]">
+            <span class="text-[9px] text-muted font-bold block mb-1 uppercase tracking-wider">Transaksi Fisik Keluar</span>
+            <span class="text-sm font-black amount-out font-numeric">-${formatRupiah(otherOut)}</span>
+          </div>
+        </div>
+        
+        <div class="flex justify-between items-center p-4 bg-[var(--bg-card)] rounded-2xl border border-[var(--border-color)] shadow-sm">
+          <span class="text-[11px] font-black text-main uppercase tracking-wider">Perubahan Kas Fisik</span>
+          <span class="text-lg font-black ${pColor} font-numeric">${physicalCashChange >= 0 ? '+' : ''}${formatRupiah(physicalCashChange)}</span>
+        </div>
+
+      </div>`;
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      openModal('modalDetail');
+    }
+
 
     function showAccountHistory(accountName) {
       currentModalBackFn = () => showAccountHistory(accountName);
