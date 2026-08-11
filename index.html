@@ -31,7 +31,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap');
 
     :root {
       --bg-app: #FAF8F5; --bg-card: #FFFFFF; --bg-subtle: #F3ECE4; --bg-subtle-2: #EFE6DC;
@@ -77,6 +77,26 @@
 
     * { font-variant-numeric: tabular-nums; -webkit-tap-highlight-color: transparent; }
 
+    /* ===== NUMERIC / MONEY TYPOGRAPHY =====
+       Distinct face for figures so amounts read as precise, "engineered" data —
+       not just slightly-bigger body text. Used on every rupiah amount. */
+    .font-numeric {
+      font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.01em;
+    }
+
+    /* ===== AMBIENT BACKGROUND DEPTH =====
+       Two soft, low-opacity color blobs anchored behind the content. Fixed +
+       z-index -1 so they never intercept taps and never shift on scroll. */
+    .ambient-blob {
+      position: fixed; z-index: -1; border-radius: 9999px; pointer-events: none;
+      filter: blur(70px); opacity: 0.35; transition: opacity 0.3s ease;
+    }
+    html.dark .ambient-blob { opacity: 0.18; }
+    .ambient-blob-1 { top: -8%; right: -18%; width: 60vw; height: 60vw; max-width: 420px; max-height: 420px; background: radial-gradient(circle, var(--mochi-light, #E8A87C) 0%, transparent 70%); }
+    .ambient-blob-2 { bottom: 10%; left: -22%; width: 55vw; height: 55vw; max-width: 380px; max-height: 380px; background: radial-gradient(circle, #C87A4B 0%, transparent 70%); }
+
     .floating-card { background-color: var(--bg-card); box-shadow: var(--shadow-card); border-radius: 1.5rem; border: 1px solid var(--border-color); overflow: hidden; }
     .floating-item { background-color: var(--bg-card); box-shadow: var(--shadow-item); border-radius: 1.25rem; border: 1px solid var(--border-color); overflow: hidden; }
 
@@ -115,6 +135,29 @@
     @keyframes pawPulse { 0% { box-shadow: 0 0 0 0 rgba(200, 122, 75, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(200, 122, 75, 0); } 100% { box-shadow: 0 0 0 0 rgba(200, 122, 75, 0); } }
     .paw-fab { animation: pawPulse 2.5s ease-out 3; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .paw-fab:active { transform: scale(0.9); }
+
+    /* ===== VAULT CARD — premium metal-card treatment ===== */
+    .vault-card { isolation: isolate; }
+    /* Fine grain so the gradient reads as brushed metal, not a flat CSS gradient */
+    .vault-texture {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: 0.5; mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+    }
+    /* Diagonal light sweep — plays once on load, replays briefly on tap */
+    .vault-sheen { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+    .vault-sheen::after {
+      content: ""; position: absolute; top: -50%; left: -60%; width: 45%; height: 200%;
+      background: linear-gradient(75deg, transparent 0%, rgba(255,255,255,0.16) 45%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0.16) 55%, transparent 100%);
+      transform: translateX(-120%) rotate(8deg); animation: vaultSheenSweep 2.6s cubic-bezier(0.22, 1, 0.36, 1) 0.4s 1;
+    }
+    .vault-card.replay-sheen .vault-sheen::after { animation: vaultSheenSweep 1.4s cubic-bezier(0.22, 1, 0.36, 1) 1; }
+    @keyframes vaultSheenSweep { to { transform: translateX(220%) rotate(8deg); } }
+    /* Embossed gold chip — inset highlight/shadow instead of a flat fill */
+    .vault-chip {
+      background: linear-gradient(145deg, #F4D690 0%, #D9A94E 45%, #B8842E 100%);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.7), inset 0 -1.5px 2px rgba(120,80,20,0.5), 0 1px 2px rgba(0,0,0,0.25);
+    }
+    .vault-chip-inner { border: 1px solid rgba(120, 80, 20, 0.45); background: linear-gradient(145deg, rgba(255,255,255,0.35), transparent 60%); }
 
     .glass-modal-content { background-color: var(--glass-modal-bg) !important; backdrop-filter: blur(25px); box-shadow: var(--shadow-premium); border: 1px solid var(--glass-border); }
     .card-hover { transition: transform 0.3s, box-shadow 0.3s; }
@@ -169,6 +212,10 @@
   </style>
 </head>
 <body class="min-h-screen">
+
+  <!-- AMBIENT DEPTH — soft fixed color blobs, purely atmospheric -->
+  <div class="ambient-blob ambient-blob-1" aria-hidden="true"></div>
+  <div class="ambient-blob ambient-blob-2" aria-hidden="true"></div>
 
   <!-- TOP PROGRESS BAR (background sync, sits above the status bar area, never crowds header content) -->
   <div id="top-progress-bar" class="fixed top-0 left-0 right-0 h-[3px] z-[160] pointer-events-none">
@@ -239,11 +286,13 @@
     <section id="page-dashboard" class="space-y-6 page-animate pt-2">
       
       <!-- NET WORTH CARD -->
-      <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Worth')" class="floating-card p-6 cursor-pointer card-hover relative overflow-hidden bg-gradient-to-br from-obsidian via-[#2C201A] to-coffee-darkest dark:from-mochi-dark dark:via-[#3E2519] dark:to-obsidian text-white border border-white/10 shadow-xl rounded-[2rem]">
+      <div id="vault-card" ontouchstart="vibrate(30); pulseVaultSheen()" onclick="showKpiDetail('Net Worth')" class="vault-card floating-card p-6 cursor-pointer card-hover relative overflow-hidden bg-gradient-to-br from-obsidian via-[#2C201A] to-coffee-darkest dark:from-mochi-dark dark:via-[#3E2519] dark:to-obsidian text-white border border-white/10 shadow-xl rounded-[2rem]">
+        <div class="vault-texture"></div>
+        <div class="vault-sheen"></div>
         <div class="flex justify-between items-center mb-6 relative z-10">
           <div class="flex items-center space-x-2.5">
-            <div class="w-9 h-7 rounded-md bg-gradient-to-tr from-amber-200 via-amber-300 to-yellow-500 p-0.5 shadow-sm flex items-center justify-center">
-              <div class="w-full h-full border border-amber-600/40 rounded-[3px]"></div>
+            <div class="vault-chip w-9 h-7 rounded-md p-0.5 flex items-center justify-center">
+              <div class="vault-chip-inner w-full h-full rounded-[3px]"></div>
             </div>
             <span class="text-[10px] font-black tracking-widest uppercase text-white/80">MOCHI BANK • VAULT</span>
           </div>
@@ -251,17 +300,17 @@
         </div>
 
         <div class="mb-6 relative z-10">
-          <span class="text-[9px] font-black tracking-widest uppercase text-white/60 block mb-1">TOTAL NET WORTH</span>
-          <div id="kpi-networth" class="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-md truncate max-w-full">-</div>
+          <span class="text-[10px] font-black tracking-widest uppercase text-white/60 block mb-1">TOTAL NET WORTH</span>
+          <div id="kpi-networth" class="font-numeric text-3xl sm:text-4xl font-bold tracking-tight text-white drop-shadow-md truncate max-w-full">-</div>
         </div>
 
         <div ontouchstart="vibrate(30); event.stopPropagation(); showKpiDetail('Disposable Income')" class="relative z-10 bg-white/10 dark:bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/15 flex items-center justify-between">
           <div class="min-w-0 flex-1 pr-2">
-            <span class="text-[9px] font-extrabold tracking-widest uppercase text-amber-200/90 block mb-0.5">DISPOSABLE INCOME</span>
-            <span id="kpi-disposable" class="text-lg sm:text-xl font-black text-amber-100 block tracking-tight truncate">-</span>
+            <span class="text-[10px] font-extrabold tracking-widest uppercase text-amber-200/90 block mb-0.5">DISPOSABLE INCOME</span>
+            <span id="kpi-disposable" class="font-numeric text-lg sm:text-xl font-bold text-amber-100 block tracking-tight truncate">-</span>
           </div>
           <div class="text-right flex-shrink-0">
-            <span class="text-[8px] font-bold text-white/50 block uppercase tracking-wider">VAULT CARD</span>
+            <span class="text-[9px] font-bold text-white/50 block uppercase tracking-wider">VAULT CARD</span>
             <span class="text-[10px] font-black text-white/90 tracking-wider">YOSA & FANI</span>
           </div>
         </div>
@@ -270,23 +319,23 @@
       <!-- KPI GRID DENGAN PADDING AMAN TAILWIND (P-5) -->
       <div class="grid grid-cols-2 gap-3">
         <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="floating-item p-5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-3.5 h-3.5 mr-1.5 amount-in flex-shrink-0"></i> TOTAL CASH</span>
-          <span id="kpi-cash" class="text-sm sm:text-base font-extrabold amount-in block truncate w-full">-</span>
+          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-3.5 h-3.5 mr-1.5 amount-in flex-shrink-0"></i> TOTAL CASH</span>
+          <span id="kpi-cash" class="font-numeric text-sm sm:text-base font-bold amount-in block truncate w-full">-</span>
         </div>
 
         <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="floating-item p-5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="piggy-bank" class="w-3.5 h-3.5 mr-1.5 amount-in flex-shrink-0"></i> NET SAVINGS</span>
-          <span id="kpi-savings" class="text-sm sm:text-base font-extrabold amount-in block truncate w-full">-</span>
+          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="piggy-bank" class="w-3.5 h-3.5 mr-1.5 amount-in flex-shrink-0"></i> NET SAVINGS</span>
+          <span id="kpi-savings" class="font-numeric text-sm sm:text-base font-bold amount-in block truncate w-full">-</span>
         </div>
 
         <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="floating-item p-5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="hand-coins" class="w-3.5 h-3.5 mr-1.5 amount-info flex-shrink-0"></i> RECEIVABLES</span>
-          <span id="kpi-receivables" class="text-sm sm:text-base font-extrabold amount-info block truncate w-full">-</span>
+          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="hand-coins" class="w-3.5 h-3.5 mr-1.5 amount-info flex-shrink-0"></i> RECEIVABLES</span>
+          <span id="kpi-receivables" class="font-numeric text-sm sm:text-base font-bold amount-info block truncate w-full">-</span>
         </div>
 
         <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="floating-item p-5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
-          <span class="text-[9px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="credit-card" class="w-3.5 h-3.5 mr-1.5 amount-out flex-shrink-0"></i> PAYABLES</span>
-          <span id="kpi-payables" class="text-sm sm:text-base font-extrabold amount-out block truncate w-full">-</span>
+          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="credit-card" class="w-3.5 h-3.5 mr-1.5 amount-out flex-shrink-0"></i> PAYABLES</span>
+          <span id="kpi-payables" class="font-numeric text-sm sm:text-base font-bold amount-out block truncate w-full">-</span>
         </div>
       </div>
 
@@ -294,8 +343,9 @@
       <div class="floating-card p-5 relative overflow-hidden">
         <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <h3 class="text-sm font-extrabold text-main">Expense Analysis</h3>
-          <span class="text-[9px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">THIS MONTH</span>
+          <span class="text-[10px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">THIS MONTH</span>
         </div>
+        <div id="dashboard-category-donut" class="relative z-10"></div>
         <div id="dashboard-category-analysis" class="space-y-3 relative z-10"></div>
       </div>
 
@@ -1153,6 +1203,15 @@
       }
     }
 
+    function pulseVaultSheen() {
+      const card = document.getElementById('vault-card');
+      if (!card) return;
+      card.classList.remove('replay-sheen');
+      // Force reflow so the animation can be retriggered on consecutive taps
+      void card.offsetWidth;
+      card.classList.add('replay-sheen');
+    }
+
     function animateNumber(el, targetValue, duration = 700) {
       const start = 0;
       const startTime = performance.now();
@@ -1437,11 +1496,11 @@
 
       animateNumber(document.getElementById('kpi-networth'), calculatedNetWorth);
       animateNumber(document.getElementById('kpi-disposable'), kpi['Disposable Income'] || 0);
-      document.getElementById('kpi-cash').innerText = formatRupiah(totalCashAssets);
-      document.getElementById('kpi-receivables').innerText = formatRupiah(totalReceivables);
+      animateNumber(document.getElementById('kpi-cash'), totalCashAssets);
+      animateNumber(document.getElementById('kpi-receivables'), totalReceivables);
       
-      document.getElementById('kpi-payables').innerText = formatRupiah(Math.abs(totalPayablesAP + totalLiabilityBalance));
-      document.getElementById('kpi-savings').innerText = formatRupiah(kpi['Net Operating Savings']);
+      animateNumber(document.getElementById('kpi-payables'), Math.abs(totalPayablesAP + totalLiabilityBalance));
+      animateNumber(document.getElementById('kpi-savings'), kpi['Net Operating Savings'] || 0);
 
       const hasPayableActive = (GLOBAL_DATA.payables || []).some(p => (p.status || '').toLowerCase() === 'active' && Number(p.remainingAmount) > 0);
       document.getElementById('badge-payables-nav').classList.toggle('hidden', !hasPayableActive);
@@ -1890,6 +1949,70 @@
       }
     }
     
+    // Tonal ramp derived from the mochi palette — warmest/most-spent category first,
+    // fading toward the muted border tone so a 7th+ "Other" slice reads as background.
+    const DONUT_PALETTE = ['#A45D33', '#C87A4B', '#DB9563', '#E8A87C', '#F0C29E', '#F3D5BC', '#D8CBC0'];
+
+    function renderCategoryDonut(container, sortedMain, groups, grandTotal) {
+      if (!grandTotal || grandTotal <= 0) { container.innerHTML = ""; return; }
+
+      const MAX_SLICES = 6;
+      let slices = sortedMain.slice(0, MAX_SLICES).map(main => ({ label: main, value: groups[main].total }));
+      if (sortedMain.length > MAX_SLICES) {
+        const otherTotal = sortedMain.slice(MAX_SLICES).reduce((s, m) => s + groups[m].total, 0);
+        slices.push({ label: 'Other', value: otherTotal });
+      }
+
+      const size = 168, stroke = 20, r = (size - stroke) / 2, cx = size / 2, cy = size / 2;
+      const circumference = 2 * Math.PI * r;
+
+      let cumulative = 0;
+      const arcs = slices.map((s, i) => {
+        const frac = s.value / grandTotal;
+        const len = frac * circumference;
+        const offset = circumference - cumulative;
+        cumulative += len;
+        const color = DONUT_PALETTE[i % DONUT_PALETTE.length];
+        return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}"
+                  stroke-dasharray="${len} ${circumference - len}" stroke-dashoffset="${circumference}"
+                  data-final-offset="${offset}" stroke-linecap="butt"
+                  style="transition: stroke-dashoffset 1s cubic-bezier(0.16,1,0.3,1); transition-delay:${i * 70}ms"></circle>`;
+      }).join('');
+
+      const legend = slices.map((s, i) => {
+        const pct = grandTotal > 0 ? (s.value / grandTotal * 100) : 0;
+        return `
+          <div class="flex items-center justify-between text-[11px] py-0.5">
+            <span class="flex items-center min-w-0 pr-2">
+              <span class="w-2.5 h-2.5 rounded-full mr-2 flex-shrink-0" style="background:${DONUT_PALETTE[i % DONUT_PALETTE.length]}"></span>
+              <span class="text-muted font-semibold truncate">${escapeHtml(s.label)}</span>
+            </span>
+            <span class="font-numeric font-extrabold text-main flex-shrink-0">${pct.toFixed(0)}%</span>
+          </div>`;
+      }).join('');
+
+      container.innerHTML = `
+        <div class="flex items-center gap-5 mb-5">
+          <div class="relative flex-shrink-0" style="width:${size}px;height:${size}px">
+            <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="transform: rotate(-90deg)">
+              <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--bg-subtle-2)" stroke-width="${stroke}"></circle>
+              ${arcs}
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center px-2">
+              <span class="text-[9px] font-bold text-faint uppercase tracking-wider">Spent</span>
+              <span class="font-numeric text-sm font-bold text-main text-center leading-tight mt-0.5">${formatRupiah(grandTotal)}</span>
+            </div>
+          </div>
+          <div class="flex-1 min-w-0">${legend}</div>
+        </div>`;
+
+      requestAnimationFrame(() => {
+        container.querySelectorAll('[data-final-offset]').forEach(c => {
+          c.style.strokeDashoffset = c.getAttribute('data-final-offset');
+        });
+      });
+    }
+
     function renderCategoryAnalysis() {
       const el = document.getElementById('dashboard-category-analysis');
       if (!el) return;
@@ -1931,8 +2054,11 @@
           </div>`;
       }
 
+      const donutEl = document.getElementById('dashboard-category-donut');
+
       if (trxThisMonth.length === 0) {
         el.innerHTML = trendHtml + `<p class="text-xs text-center text-muted py-4 font-semibold">No expenses recorded this month.</p>`;
+        if (donutEl) donutEl.innerHTML = "";
         return;
       }
 
@@ -1952,6 +2078,8 @@
       });
 
       const sortedMain = Object.keys(groups).sort((a, b) => groups[b].total - groups[a].total);
+
+      if (donutEl) renderCategoryDonut(donutEl, sortedMain, groups, grandTotal);
 
       let html = trendHtml;
       sortedMain.forEach((main, index) => {
