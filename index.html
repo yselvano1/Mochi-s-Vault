@@ -460,16 +460,16 @@
 
     <section id="page-payables" class="hidden space-y-6 page-animate pb-8">
       <div class="floating-card p-5">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider amount-out mb-4 flex items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
-          <i data-lucide="credit-card" class="w-4 h-4 mr-2"></i> Active Payables
-        </h3>
-        <div id="list-payables-active" class="space-y-3"></div>
-      </div>
-      <div class="floating-card p-5">
         <h3 class="text-xs font-extrabold uppercase tracking-wider amount-info mb-4 flex items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
           <i data-lucide="hand-coins" class="w-4 h-4 mr-2"></i> Unpaid Receivables
         </h3>
         <div id="list-receivables-active" class="space-y-3"></div>
+      </div>
+      <div class="floating-card p-5">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider amount-out mb-4 flex items-center border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+          <i data-lucide="credit-card" class="w-4 h-4 mr-2"></i> Active Payables
+        </h3>
+        <div id="list-payables-active" class="space-y-3"></div>
       </div>
     </section>
   </main>
@@ -494,7 +494,7 @@
       <button ontouchstart="vibrate(30)" onclick="switchTab('payables')" id="tab-payables" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
         <div class="relative flex-shrink-0">
           <i data-lucide="credit-card" class="w-5 h-5"></i>
-          <span id="badge-payables-nav" class="hidden absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-[var(--amount-out)] ring-2 ring-[var(--glass-bg)]"></span>
+
         </div>
         <span class="nav-text text-[12px] font-extrabold tracking-wide">AP/R</span>
       </button>
@@ -1502,7 +1502,7 @@
       animateNumber(document.getElementById('kpi-savings'), kpi['Net Operating Savings'] || 0);
 
       const hasPayableActive = (GLOBAL_DATA.payables || []).some(p => (p.status || '').toLowerCase() === 'active' && Number(p.remainingAmount) > 0);
-      document.getElementById('badge-payables-nav').classList.toggle('hidden', !hasPayableActive);
+      // badge-payables-nav removed
 
       const trxList = GLOBAL_DATA.transactions || [];
       const dashListEl = document.getElementById('dashboard-transaction-list');
@@ -2455,6 +2455,9 @@ function openEditPayableModal(payableName) {
     if (document.getElementById('master-payable-installment')) document.getElementById('master-payable-installment').value = p.monthlyInstallment || '';
     if (document.getElementById('master-payable-account')) document.getElementById('master-payable-account').value = p.paymentAccount || '';
     document.getElementById('master-payable-notes').value = p.notes || '';
+    if (document.getElementById('master-payable-interest')) document.getElementById('master-payable-interest').value = p.interestRate || '';
+    if (document.getElementById('master-payable-admin')) document.getElementById('master-payable-admin').value = p.adminFee || '';
+    if (document.getElementById('master-payable-net')) document.getElementById('master-payable-net').value = p.netPrincipal || '';
   }, 400);
 }
 
@@ -2505,6 +2508,9 @@ async function handleSaveMaster(event) {
     payload.dueDate = document.getElementById('master-payable-due') ? document.getElementById('master-payable-due').value : "";
     payload.paymentAccount = document.getElementById('master-payable-account') ? document.getElementById('master-payable-account').value : "";
     payload.notes = document.getElementById('master-payable-notes').value;
+    payload.interestRate = Number(document.getElementById('master-payable-interest').value) || 0;
+    payload.adminFee = Number(document.getElementById('master-payable-admin').value) || 0;
+    payload.netPrincipal = Number(document.getElementById('master-payable-net').value) || 0;
   } else if (type === 'receivable') {
     if (!name) { triggerInputError('master-name', "Receivable name is required."); return; }
     payload.receivableName = name;
@@ -3586,33 +3592,52 @@ function openMasterModal(type, isEdit = false) {
         <label for="master-payable-owed-to" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Kreditur / Pihak Pemberi Pinjaman</label>
         <input type="text" id="master-payable-owed-to" class="w-full ios-input py-2.5" placeholder="Contoh: GoPinjam / Kredivo / BCA">
       </div>
+      
+      <!-- SMART HYBRID CALCULATOR -->
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label for="master-payable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Total Plafon / Hutang (Rp)</label>
-          <input type="number" id="master-payable-total" class="w-full ios-input py-2.5" value="0" required oninput="calcInstallmentEstimates()">
+          <label for="master-payable-net" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Pokok Pinjaman Bersih</label>
+          <input type="number" id="master-payable-net" class="w-full ios-input py-2.5" placeholder="0" oninput="calcSmartPayable()">
         </div>
         <div>
-          <label for="master-payable-disbursed" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Terima Bersih (Pencairan)</label>
-          <input type="number" id="master-payable-disbursed" class="w-full ios-input py-2.5" placeholder="Opsional (setelah admin)">
+          <label for="master-payable-term" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Tenor (Bulan)</label>
+          <input type="number" id="master-payable-term" class="w-full ios-input py-2.5" placeholder="0" oninput="calcSmartPayable()">
         </div>
       </div>
-      <div class="grid grid-cols-3 gap-2">
+      <div class="grid grid-cols-2 gap-3 mt-1.5">
+        <div>
+          <label for="master-payable-interest" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Bunga / Bulan (%)</label>
+          <input type="number" step="0.01" id="master-payable-interest" class="w-full ios-input py-2.5" placeholder="Misal: 2.5" oninput="calcSmartPayable()">
+        </div>
+        <div>
+          <label for="master-payable-admin" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Biaya Admin (Rp)</label>
+          <input type="number" id="master-payable-admin" class="w-full ios-input py-2.5" placeholder="0" oninput="calcSmartPayable()">
+        </div>
+      </div>
+
+      <div class="border-t border-slate-200 dark:border-[var(--border-color)] my-3 pt-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="master-payable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Total Hutang (Plafon)</label>
+            <input type="number" id="master-payable-total" class="w-full ios-input py-2.5 font-black text-mochi" placeholder="Bisa diedit manual" required>
+          </div>
+          <div>
+            <label for="master-payable-installment" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Cicilan per Bulan</label>
+            <input type="number" id="master-payable-installment" class="w-full ios-input py-2.5 font-black text-mochi" placeholder="Bisa diedit manual">
+          </div>
+        </div>
+      </div>
+      <!-- END SMART HYBRID CALCULATOR -->
+
+      <div class="grid grid-cols-2 gap-3 mt-2">
         <div>
           <label for="master-payable-start" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Tgl Cair</label>
           <input type="date" id="master-payable-start" class="w-full ios-input py-2 px-2 text-xs">
         </div>
         <div>
-          <label for="master-payable-term" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Tenor (Bulan)</label>
-          <input type="number" id="master-payable-term" class="w-full ios-input py-2 px-2 text-xs" placeholder="3" oninput="calcInstallmentEstimates()">
-        </div>
-        <div>
           <label for="master-payable-due" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Jatuh Tempo</label>
           <input type="date" id="master-payable-due" class="w-full ios-input py-2 px-2 text-xs">
         </div>
-      </div>
-      <div>
-        <label for="master-payable-installment" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Cicilan Per Bulan (Rp)</label>
-        <input type="number" id="master-payable-installment" class="w-full ios-input py-2.5" placeholder="Otomatis terhitung jika tenor diisi">
       </div>
       <div>
         <label for="master-payable-account" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Rekening Pemotong Cicilan</label>
@@ -3623,7 +3648,7 @@ function openMasterModal(type, isEdit = false) {
       </div>
       <div>
         <label for="master-payable-notes" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Notes</label>
-        <input type="text" id="master-payable-notes" class="w-full ios-input py-2.5" placeholder="Rincian bunga/admin...">
+        <input type="text" id="master-payable-notes" class="w-full ios-input py-2.5" placeholder="Catatan tambahan...">
       </div>
     `;
 
@@ -3692,12 +3717,20 @@ function openMasterModal(type, isEdit = false) {
   openModal('modalMaster');
 }
 
-function calcInstallmentEstimates() {
-  const total = Number(document.getElementById('master-payable-total').value) || 0;
+function calcSmartPayable() {
+  const net = Number(document.getElementById('master-payable-net').value) || 0;
   const term = Number(document.getElementById('master-payable-term').value) || 0;
-  const installmentEl = document.getElementById('master-payable-installment');
-  if (total > 0 && term > 0 && installmentEl) {
-    installmentEl.value = Math.round(total / term);
+  const interest = Number(document.getElementById('master-payable-interest').value) || 0;
+  const admin = Number(document.getElementById('master-payable-admin').value) || 0;
+
+  if (net > 0) {
+    const totalInterest = net * (interest / 100) * term;
+    const totalDebt = net + totalInterest + admin;
+    
+    document.getElementById('master-payable-total').value = Math.round(totalDebt);
+    if (term > 0) {
+      document.getElementById('master-payable-installment').value = Math.round(totalDebt / term);
+    }
   }
 }
 
