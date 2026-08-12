@@ -465,7 +465,7 @@
         <div class="relative">
           <label for="filter-search" class="sr-only">Search Transactions</label>
           <i data-lucide="search" class="w-4 h-4 text-faint absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-          <input type="text" id="filter-search" oninput="renderHistory()" placeholder="Search description..." class="w-full text-sm ios-input pl-10 pr-4 py-2.5">
+          <input type="text" id="filter-search" oninput="debouncedRenderHistory()" placeholder="Search description..." class="w-full text-sm ios-input pl-10 pr-4 py-2.5">
         </div>
 
         <div id="statement-summary" class="floating-item pb-1 mt-3 flex flex-col border border-[var(--border-color)]">
@@ -994,31 +994,40 @@
     // safe to retry freely.
     async function fetchJsonSafe(url, options, retries = 0, retryDelay = 1500) {
       for (let attempt = 0; attempt <= retries; attempt++) {
+        let res;
         try {
-          const res = await fetch(url, options);
-          const raw = await res.text();
-          try {
-            return JSON.parse(raw);
-          } catch (parseErr) {
-            if (attempt < retries) {
-              await new Promise(r => setTimeout(r, retryDelay));
-              continue;
-            }
-            throw new Error("UNCONFIRMED_RESPONSE");
-          }
-        } catch (err) {
-          if (err.message === "UNCONFIRMED_RESPONSE") throw err;
+          res = await fetch(url, options);
+        } catch (networkErr) {
+          // fetch() itself threw, meaning the request never reached the
+          // server (offline, DNS failure, connection dropped mid-request).
+          // Unlike UNCONFIRMED_RESPONSE below, this case is safe to know as
+          // "definitely did not happen" — flagged so callers can queue
+          // writes for retry instead of treating them as ambiguous.
           if (attempt < retries) {
             await new Promise(r => setTimeout(r, retryDelay));
             continue;
           }
-          throw err;
+          const e = new Error("NETWORK_UNREACHABLE");
+          e.isNetworkError = true;
+          throw e;
+        }
+        const raw = await res.text();
+        try {
+          return JSON.parse(raw);
+        } catch (parseErr) {
+          if (attempt < retries) {
+            await new Promise(r => setTimeout(r, retryDelay));
+            continue;
+          }
+          throw new Error("UNCONFIRMED_RESPONSE");
         }
       }
     }
 
     // Single-attempt by design — see fetchJsonSafe's note on why writes
-    // should never be silently auto-retried.
+    // should never be silently auto-retried within a single call. A separate,
+    // explicit offline queue (below) handles the one case where retrying is
+    // actually safe: a request that never left the device.
     async function postApi(action, payload, extra = {}) {
       let result;
       try {
@@ -1031,11 +1040,96 @@
         if (err.message === "UNCONFIRMED_RESPONSE") {
           throw new Error("Couldn't confirm this went through — it may still be processing. Check History in a few seconds before trying again.");
         }
+        if (err.isNetworkError) {
+          const e = new Error("You're offline — this will sync automatically once you're back online.");
+          e.isNetworkError = true;
+          throw e;
+        }
         throw err;
       }
       if (result.status === 'error') throw new Error(result.message);
       return result;
     }
+
+    // --- Offline outbox -----------------------------------------------
+    // Only ever holds writes that failed with a confirmed NETWORK_UNREACHABLE
+    // error (see fetchJsonSafe) — i.e. we know for certain they never reached
+    // the server, so replaying them later cannot create a duplicate. Ambiguous
+    // failures (UNCONFIRMED_RESPONSE, server-side errors) are deliberately
+    // NOT queued here; those still surface as an error for the user to check
+    // manually, exactly as before.
+    const PENDING_QUEUE_KEY = 'mochi_vault_pending_queue';
+
+    function getPendingQueue() {
+      try { return JSON.parse(localStorage.getItem(PENDING_QUEUE_KEY)) || []; }
+      catch (e) { return []; }
+    }
+
+    function savePendingQueue(queue) {
+      localStorage.setItem(PENDING_QUEUE_KEY, JSON.stringify(queue));
+      updatePendingBadge(queue.length);
+    }
+
+    function enqueuePending(action, payload, extra = {}) {
+      const queue = getPendingQueue();
+      queue.push({ id: 'PEND-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7), action, payload, extra, queuedAt: Date.now() });
+      savePendingQueue(queue);
+    }
+
+    function updatePendingBadge(count) {
+      const badge = document.getElementById('pending-sync-badge');
+      if (!badge) return;
+      if (count > 0) {
+        badge.textContent = count;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    let isFlushingQueue = false;
+    async function flushPendingQueue() {
+      if (isFlushingQueue || !navigator.onLine) return;
+      const queue = getPendingQueue();
+      if (queue.length === 0) return;
+
+      isFlushingQueue = true;
+      showSyncIndicator(true);
+      let synced = 0;
+
+      while (true) {
+        const current = getPendingQueue();
+        if (current.length === 0) break;
+        const item = current[0];
+        try {
+          const result = await postApi(item.action, item.payload, item.extra);
+          if (result && result.data) {
+            GLOBAL_DATA = result.data;
+            localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+          }
+          current.shift();
+          savePendingQueue(current);
+          synced++;
+        } catch (err) {
+          // Still offline, or the item failed for a non-network reason —
+          // either way, stop here and leave the rest of the queue intact
+          // for the next trigger (online event / app foreground).
+          break;
+        }
+      }
+
+      isFlushingQueue = false;
+      showSyncIndicator(false);
+      if (synced > 0) {
+        showToast(synced === 1 ? "1 offline change synced." : `${synced} offline changes synced.`, "success");
+        renderAllViews();
+      }
+    }
+
+    window.addEventListener('online', flushPendingQueue);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') flushPendingQueue();
+    });
 
 
     let GLOBAL_DATA = { kpi: {}, transactions: [], accounts: [], categories: [], payables: [], receivables: [] };
@@ -1071,6 +1165,17 @@
     function vibrate(ms) {
       if (navigator.vibrate) navigator.vibrate(Math.max(ms, 25));
     }
+
+    // Generic debounce helper — used to stop expensive re-renders (like the
+    // history search filter) from firing on every single keystroke.
+    function debounce(fn, delay = 250) {
+      let timer = null;
+      return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), delay);
+      };
+    }
+    const debouncedRenderHistory = debounce(() => renderHistory(), 250);
 
     function handleBackdropClick(event, modalId) {
       if (event.target.id === modalId) closeModal(modalId);
@@ -1138,6 +1243,44 @@
           setTimeout(() => toast.remove(), 500);
         }, 3000);
       }
+      return toast;
+    }
+
+    // Toast variant with an inline action button (e.g. "Undo"). Stays up
+    // longer than a normal toast since it needs to be read and acted on.
+    function showActionToast(message, actionLabel, onAction, duration = 5000) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `pointer-events-auto flex items-center px-4 py-3 rounded-2xl shadow-xl text-xs font-bold transform transition-all duration-500 translate-y-[-20px] opacity-0 w-full max-w-sm bg-coffee-darkest dark:bg-white text-white dark:text-coffee-darkest`;
+      toast.innerHTML = `
+        <i data-lucide="check-circle" class="w-4 h-4 mr-2.5 flex-shrink-0"></i>
+        <span class="flex-1">${escapeHtml(message)}</span>
+        <button type="button" class="ml-3 uppercase tracking-wider text-mochi-light dark:text-mochi-dark font-black px-2 py-1 -mr-2 tap-shrink">${escapeHtml(actionLabel)}</button>
+      `;
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      let dismissed = false;
+      const dismiss = () => {
+        if (dismissed) return;
+        dismissed = true;
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-[-20px]', 'opacity-0');
+        setTimeout(() => toast.remove(), 500);
+      };
+
+      toast.querySelector('button').onclick = () => {
+        vibrate(30);
+        dismiss();
+        onAction();
+      };
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-[-20px]', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+      });
+
+      setTimeout(dismiss, duration);
       return toast;
     }
 
@@ -1667,11 +1810,23 @@
       vibrate(40);
       transactionToDelete = transactionId;
       closeModal('modalDetail');
-      
+
+      const trx = GLOBAL_DATA.transactions.find(t => t.transactionId === transactionId);
+
       const titleEl = document.getElementById('delete-modal-title');
       const descEl = document.getElementById('delete-modal-desc');
       if (titleEl) titleEl.innerText = "Delete Transaction?";
-      if (descEl) descEl.innerText = "This action cannot be undone. Data will be permanently removed.";
+      if (descEl) {
+        if (trx) {
+          // Show exactly what's about to be deleted so the confirmation
+          // isn't a blind click — description was already off-screen since
+          // the detail modal just closed above.
+          const parts = [trx.category, formatRupiah(trx.amount), formatDate(trx.date)].filter(Boolean);
+          descEl.innerHTML = `<span class="font-bold text-main">${escapeHtml(trx.description || trx.type || 'This transaction')}</span><br>${escapeHtml(parts.join(' · '))}<br><span class="text-[11px]">This action cannot be undone once confirmed.</span>`;
+        } else {
+          descEl.innerText = "This action cannot be undone. Data will be permanently removed.";
+        }
+      }
 
       document.getElementById('btn-confirm-delete').onclick = async () => {
         if (!transactionToDelete) return;
@@ -1684,26 +1839,47 @@
 
     async function handleDeleteTransaction(transactionId) {
       closeModal('modalDelete');
-      
+
+      // Keep a copy so we can restore it locally if the user hits Undo, or
+      // if the background sync fails outright.
+      const idx = GLOBAL_DATA.transactions.findIndex(t => t.transactionId === transactionId);
+      const removedTrx = idx !== -1 ? GLOBAL_DATA.transactions[idx] : null;
+      const removedIdx = idx;
+
       // OPTIMISTIC UI: Hapus dari lokal instan
       GLOBAL_DATA.transactions = GLOBAL_DATA.transactions.filter(t => t.transactionId !== transactionId);
       renderHistory();
       renderDashboard();
-      
-      showRewardAnimation("Transaction Deleted");
-      
-      // Lakukan sync di background
-      postApi('deleteTransaction', { transactionId })
-        .then(result => {
-          if (result && result.data) {
-            GLOBAL_DATA = result.data;
-            localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
-          }
-        })
-        .catch(err => {
-          showToast("Koneksi gagal! Gagal menghapus dari server.", "error");
-          loadAppData(true); // Rollback
-        });
+
+      let undone = false;
+
+      showActionToast("Transaction deleted", "Undo", () => {
+        undone = true;
+        if (removedTrx) {
+          const restoreAt = Math.min(removedIdx, GLOBAL_DATA.transactions.length);
+          GLOBAL_DATA.transactions.splice(restoreAt, 0, removedTrx);
+          renderHistory();
+          renderDashboard();
+        }
+      });
+
+      // Give the Undo toast a moment to be seen/clicked before we actually
+      // sync the delete to the server — avoids deleting-then-recreating on
+      // the backend for the common case where the user changes their mind.
+      setTimeout(() => {
+        if (undone) return;
+        postApi('deleteTransaction', { transactionId })
+          .then(result => {
+            if (result && result.data) {
+              GLOBAL_DATA = result.data;
+              localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+            }
+          })
+          .catch(err => {
+            showToast("Connection failed! Couldn't delete from server.", "error");
+            loadAppData(true); // Rollback
+          });
+      }, 1200);
     }
 
     async function handleSaveTransaction(event) {
@@ -1782,7 +1958,7 @@
           }
         })
         .catch(err => {
-          showToast("Koneksi gagal! Transaksi batal disimpan ke server.", "error");
+          showToast("Connection failed! Transaction wasn't saved to server.", "error");
           loadAppData(true); // Rollback state
         })
         .finally(() => {
@@ -2931,7 +3107,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
             }
           })
           .catch(err => {
-            showToast("Gagal menghapus akun di server!", "error");
+            showToast("Couldn't delete account on server!", "error");
             loadAppData(true);
           });
       };
@@ -3054,7 +3230,7 @@ async function handleSaveMaster(event) {
       }
     })
     .catch(err => {
-      showToast("Gagal menyimpan ke server!", "error");
+      showToast("Couldn't save to server!", "error");
       loadAppData(true);
     });
 }
@@ -3103,7 +3279,7 @@ async function handleSaveMaster(event) {
             }
           })
           .catch(err => {
-            showToast("Gagal menghapus di server!", "error");
+            showToast("Couldn't delete on server!", "error");
             loadAppData(true);
           });
       };
