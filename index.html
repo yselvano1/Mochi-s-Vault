@@ -63,10 +63,9 @@
       transition: background-color 0.3s ease, color 0.3s ease;
       padding-bottom: max(6rem, env(safe-area-inset-bottom));
       /* Stops Chrome/Android's own native pull-to-refresh spinner from
-         showing up alongside our custom #ptr-indicator. Without this,
-         e.preventDefault() in touchmove isn't enough — the browser still
-         arms its own overscroll affordance on top of ours, which is why
-         two loading icons were appearing at once. */
+         showing up during our own pull gesture — e.preventDefault() in
+         touchmove alone isn't enough, the browser still arms its own
+         overscroll affordance on top of ours otherwise. */
       overscroll-behavior-y: none;
     }
 
@@ -264,30 +263,6 @@
     #top-progress-bar { opacity: 0; transition: opacity 0.25s ease; }
     #top-progress-bar.show { opacity: 1; }
 
-    /* Custom pull-to-refresh indicator — needed because iOS Safari (and
-       standalone/home-screen PWAs on both platforms) don't reliably support
-       the browser's native pull-to-refresh gesture. */
-    #ptr-indicator {
-      position: fixed;
-      top: max(0.85rem, env(safe-area-inset-top));
-      left: 50%;
-      width: 42px; height: 42px;
-      transform: translate(-50%, -90px);
-      z-index: 155;
-      border-radius: 9999px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      box-shadow: var(--shadow-card);
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
-    }
-    #ptr-indicator.ptr-visible { opacity: 1; }
-    #ptr-indicator i { width: 18px; height: 18px; color: var(--mochi, #B8925A); }
-    #ptr-indicator.ptr-dragging i { transition: transform 0.05s linear; }
-    #ptr-indicator.ptr-loading i { animation: ptrSpin 0.7s linear infinite; }
-    @keyframes ptrSpin { to { transform: rotate(360deg); } }
     #top-progress-fill {
       background: linear-gradient(90deg, transparent, var(--mochi, #B8925A) 40%, var(--mochi, #B8925A) 60%, transparent);
       background-size: 60% 100%;
@@ -315,10 +290,6 @@
 
   <div id="top-progress-bar" class="fixed top-0 left-0 right-0 h-[3px] z-[160] pointer-events-none">
     <div id="top-progress-fill" class="h-full w-full"></div>
-  </div>
-
-  <div id="ptr-indicator" aria-hidden="true">
-    <i data-lucide="refresh-cw"></i>
   </div>
 
   <div id="skeleton-screen" class="fixed inset-0 z-[140] hidden bg-[var(--bg-app)] px-5 pt-16 max-w-3xl mx-auto">
@@ -902,8 +873,8 @@
     </div>
   </div>
 
-  <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
-    <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
+  <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
+    <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] p-6 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center border-b border-[var(--border-color)] pb-3 mb-3">
         <h4 id="master-title" class="font-extrabold text-main text-base">Add Master Data</h4>
         <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalMaster')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]"><i data-lucide="x" class="w-4 h-4"></i></button>
@@ -959,8 +930,8 @@
     </div>
   </div>
 
-  <div id="modalBudgetEditor" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalBudgetEditor')">
-    <div id="modalBudgetEditor-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center max-h-[85vh] overflow-y-auto">
+  <div id="modalBudgetEditor" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalBudgetEditor')">
+    <div id="modalBudgetEditor-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] p-6 shadow-2xl modal-content-bottom md:modal-content-center">
       <div class="flex justify-between items-center border-b border-[var(--border-color)] pb-3 mb-4">
         <h4 class="font-extrabold text-main text-base flex items-center">
           <i data-lucide="sliders" class="w-4 h-4 mr-2 text-mochi"></i> Set Category Budgets
@@ -1341,18 +1312,16 @@
       renderHistory();
     }
 
-    // ===== CUSTOM PULL-TO-REFRESH =====
+    // ===== PULL-TO-REFRESH (gesture only, no icon) =====
     // Chrome on Android reloads the page on a native pull gesture, but iOS
     // Safari (and standalone/home-screen PWAs on either platform) don't
     // reliably support that native gesture — so we roll our own that works
     // the same everywhere and refreshes data without a full page reload.
+    // Deliberately no visual indicator here (no circle/spinner) — the gold
+    // #top-progress-bar that loadAppData() already shows during the fetch
+    // is the only loading feedback we want, at both the browser and app level.
     (function initPullToRefresh() {
-      const el = document.getElementById('ptr-indicator');
-      if (!el) return;
-      const icon = el.querySelector('i');
       const THRESHOLD = 68;   // px of drag needed to release-to-refresh
-      const MAX_PULL = 100;   // visual cap so it doesn't drag forever
-      const REST_Y = -90;     // resting (hidden) translateY
 
       let startY = 0;
       let currentPull = 0;
@@ -1362,21 +1331,6 @@
 
       function atTop() {
         return (window.scrollY || document.documentElement.scrollTop || 0) <= 2;
-      }
-
-      function setPull(px) {
-        currentPull = px;
-        const progress = Math.min(px / THRESHOLD, 1);
-        el.style.transform = `translate(-50%, ${REST_Y + px}px)`;
-        el.classList.toggle('ptr-visible', px > 4);
-        icon.style.transform = `rotate(${progress * 200}deg)`;
-      }
-
-      function reset() {
-        el.style.transform = `translate(-50%, ${REST_Y}px)`;
-        el.classList.remove('ptr-visible', 'ptr-dragging');
-        icon.style.transform = '';
-        currentPull = 0;
       }
 
       document.addEventListener('touchstart', (e) => {
@@ -1391,52 +1345,44 @@
         if (!armed || refreshing) return;
         const dy = e.touches[0].clientY - startY;
         if (dy <= 0 || !atTop()) {
-          if (dragging) reset();
           armed = false;
           dragging = false;
+          currentPull = 0;
           return;
         }
         dragging = true;
-        el.classList.add('ptr-dragging');
-        e.preventDefault(); // stop rubber-banding while we drive our own indicator
-        setPull(Math.min(dy * 0.45, MAX_PULL));
+        currentPull = dy;
+        e.preventDefault(); // stop rubber-banding — we're handling the refresh ourselves
       }, { passive: false });
 
       document.addEventListener('touchend', () => {
         if (!armed) return;
         armed = false;
-        el.classList.remove('ptr-dragging');
         if (!dragging) return;
         dragging = false;
         if (currentPull >= THRESHOLD) {
           triggerRefresh();
-        } else {
-          reset();
         }
+        currentPull = 0;
       }, { passive: true });
 
       document.addEventListener('touchcancel', () => {
         armed = false;
         dragging = false;
-        if (!refreshing) reset();
+        currentPull = 0;
       }, { passive: true });
 
       async function triggerRefresh() {
         refreshing = true;
         vibrate(30);
-        el.style.transform = `translate(-50%, 6px)`;
-        el.classList.add('ptr-visible', 'ptr-loading');
         try {
-          await loadAppData(true);
+          await loadAppData(true); // shows the gold top-progress-bar itself
         } finally {
-          setTimeout(() => {
-            el.classList.remove('ptr-loading');
-            reset();
-            refreshing = false;
-          }, 300);
+          refreshing = false;
         }
       }
     })();
+
 
     // Generic debounce helper — used to stop expensive re-renders (like the
     // history search filter) from firing on every single keystroke.
