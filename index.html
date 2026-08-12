@@ -1004,13 +1004,21 @@
       if (navigator.vibrate) navigator.vibrate(Math.max(ms, 25));
     }
 
+    // Distinct haptic patterns so success and error *feel* different, not just look different.
+    function vibrateSuccess() {
+      if (navigator.vibrate) navigator.vibrate([15, 45, 25]); // light double-tap, ascending
+    }
+
+    function vibrateError() {
+      if (navigator.vibrate) navigator.vibrate([40, 70, 40, 70, 40]); // sharp insistent triple-buzz
+    }
+
     function handleBackdropClick(event, modalId) {
       if (event.target.id === modalId) closeModal(modalId);
     }
 
     function triggerInputError(elementId, message) {
-      vibrate(40);
-      showToast(message, "error");
+      showToast(message, "error"); // showToast() already fires vibrateError()
       const el = document.getElementById(elementId);
       if (el) {
         el.classList.add('input-error');
@@ -1046,6 +1054,10 @@
       const toast = document.createElement('div');
       const isError = type === 'error';
       const isInfo = type === 'info';
+
+      // Loading/info toasts stay silent — only the final outcome should buzz.
+      if (isError) vibrateError();
+      else if (!isInfo) vibrateSuccess();
 
       let bgClass = isError ? 'bg-rose-500' : (isInfo ? 'bg-slate-600' : 'bg-coffee-darkest dark:bg-white');
       let textClass = (isInfo || isError) ? 'text-white' : 'text-white dark:text-coffee-darkest';
@@ -1090,7 +1102,7 @@
           bg.classList.add('opacity-100');
           content.classList.remove('scale-50', 'opacity-0');
           content.classList.add('scale-100', 'opacity-100');
-          vibrate(50);
+          vibrateSuccess();
         });
 
         setTimeout(() => {
@@ -1254,6 +1266,27 @@
       const d = formatDate(iso);
       const t = formatTime(iso);
       return t ? `${d} \u2022 ${t}` : d;
+    }
+
+    // Returns "Today" / "Yesterday" / "Wed, 10 Aug" (or with year if not this year) for a divider label.
+    function getDateDividerLabel(iso) {
+      const datePart = String(iso || '').split('T')[0];
+      const parts = datePart.split('-');
+      if (parts.length < 3) return datePart || '-';
+
+      const trxDate = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const yesterday = new Date(today);
+      yesterday.setDate(today.getDate() - 1);
+
+      if (trxDate.getTime() === today.getTime()) return 'Today';
+      if (trxDate.getTime() === yesterday.getTime()) return 'Yesterday';
+
+      const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const label = `${weekdays[trxDate.getDay()]}, ${trxDate.getDate()} ${months[trxDate.getMonth()]}`;
+      return trxDate.getFullYear() !== today.getFullYear() ? `${label} ${trxDate.getFullYear()}` : label;
     }
 
     function updateScalingText(el, value) {
@@ -2531,14 +2564,27 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
         return;
       }
 
+      let lastDateKey = null;
       listEl.innerHTML = filtered.map((trx, i) => {
         const meta = getTypeMeta(trx.type);
+
+        const dateKey = String(trx.date || '').split('T')[0];
+        let dividerHtml = '';
+        if (dateKey !== lastDateKey) {
+          dividerHtml = `
+            <div class="date-divider flex items-center gap-2.5 px-1 ${lastDateKey === null ? 'pb-1' : 'pt-3 pb-1'}">
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-faint whitespace-nowrap">${getDateDividerLabel(trx.date)}</span>
+              <span class="flex-1 h-px bg-[var(--border-color)]"></span>
+            </div>`;
+          lastDateKey = dateKey;
+        }
 
         let accountFlowText = trx.sourceAccount || '';
         if (trx.sourceAccount && trx.targetAccount) accountFlowText += ` ➔ ${trx.targetAccount}`;
         else if (trx.targetAccount) accountFlowText = trx.targetAccount;
 
         return `
+          ${dividerHtml}
           <div onclick="vibrate(30); currentModalBackFn = null; showTransactionDetail('${trx.transactionId}')" class="floating-item p-3.5 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item select-none" style="animation-delay:${Math.min(i, 10) * 0.04}s">
             <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
               ${iconChipHtml(trx.type, trx.category)}
