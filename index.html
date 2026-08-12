@@ -3282,6 +3282,56 @@ async function handleSaveMaster(event) {
   if (activeReceivables.length === 0) {
     receivableEl.innerHTML = emptyStateHtml('party-popper', "All collected!", "Every receivable has been paid back. Nothing left for Mochi to chase.");
   } else {
+    let monthlyReceivableDue = 0;
+    let expectedCount = 0;
+    const currentYM = new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0');
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    activeReceivables.forEach(r => {
+      const isStructured = r.receivableType === 'Structured Loan' || r.termMonths > 0;
+      const rem = Math.abs(Number(r.remainingAmount) || 0);
+
+      if (isStructured) {
+        const initial = Math.abs(Number(r.initialAmount) || 0);
+        const instAmt = r.monthlyInstallment > 0 ? r.monthlyInstallment : (r.termMonths > 0 ? Math.min(rem, Math.round(initial / r.termMonths)) : rem);
+        monthlyReceivableDue += Math.min(rem, instAmt);
+        expectedCount++;
+      } else if (r.expectedReturn) {
+        const dueDate = new Date(r.expectedReturn);
+        dueDate.setHours(0,0,0,0);
+        const dueYM = dueDate.getFullYear() + '-' + String(dueDate.getMonth() + 1).padStart(2, '0');
+        if (dueYM === currentYM || dueDate < today) {
+          monthlyReceivableDue += rem;
+          expectedCount++;
+        }
+      }
+    });
+
+    if (monthlyReceivableDue > 0) {
+      const recWidgetHtml = `
+        <div class="floating-card p-5 mb-5 space-y-3.5 bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-subtle-2)] border border-[var(--border-color)] rounded-2xl shadow-sm">
+          <div class="flex justify-between items-center pb-2.5 border-b border-[var(--border-color)]">
+            <div class="flex items-center space-x-2">
+              <div class="w-7 h-7 rounded-lg bg-[var(--chip-info-bg)] amount-info flex items-center justify-center">
+                <i data-lucide="hand-coins" class="w-4 h-4"></i>
+              </div>
+              <h3 class="text-xs font-black uppercase tracking-wider text-main">Expected Inflow This Month</h3>
+            </div>
+            <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-info-bg)] amount-info">
+              ${expectedCount} Bills
+            </span>
+          </div>
+
+          <div>
+            <span class="text-[9px] text-muted font-extrabold uppercase block mb-0.5">Total Receivable Due</span>
+            <span class="text-base font-black amount-info block leading-none font-numeric">${formatRupiah(monthlyReceivableDue)}</span>
+          </div>
+        </div>
+      `;
+      receivableEl.insertAdjacentHTML('beforeend', recWidgetHtml);
+    }
+
     activeReceivables.forEach((r, i) => {
       const initial = Math.abs(Number(r.initialAmount) || 0);
       const rem = Math.abs(Number(r.remainingAmount) || 0);
