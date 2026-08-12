@@ -1317,11 +1317,18 @@
     // is the only loading feedback we want, at both the browser and app level.
     (function initPullToRefresh() {
       const THRESHOLD = 68;   // px of drag needed to release-to-refresh
+      const DEAD_ZONE = 12;   // px of downward movement to ignore before
+                               // committing to the gesture — without this,
+                               // ordinary hand jitter during a normal
+                               // scroll-up swipe (a tiny accidental dip
+                               // downward before the swipe "catches") was
+                               // triggering preventDefault() and locking
+                               // scroll for the rest of that touch.
 
       let startY = 0;
       let currentPull = 0;
       let armed = false;      // gesture started at the top of the page
-      let dragging = false;   // actually moved enough to count as a drag
+      let dragging = false;   // confirmed as a deliberate pull, past DEAD_ZONE
       let refreshing = false;
 
       function atTop() {
@@ -1340,9 +1347,18 @@
         if (!armed || refreshing) return;
         const dy = e.touches[0].clientY - startY;
         if (dy <= 0 || !atTop()) {
+          // Moving up (normal scroll) or no longer at the top — this was
+          // never a pull gesture. Bail out without ever touching
+          // preventDefault so native scrolling stays completely untouched.
           armed = false;
           dragging = false;
           currentPull = 0;
+          return;
+        }
+        if (dy < DEAD_ZONE) {
+          // Still inside the dead zone — could just be hand jitter before
+          // an upward scroll swipe. Track it, but don't commit yet.
+          currentPull = dy;
           return;
         }
         dragging = true;
