@@ -557,23 +557,23 @@
       <form id="formTransaction" onsubmit="handleSaveTransaction(event)" class="space-y-3 text-sm">
         <input type="hidden" id="form-transaction-id">
 
+        <div>
+          <label for="form-user" class="font-bold text-main block mb-1 text-xs cursor-pointer">By</label>
+          <select id="form-user" class="w-full ios-input cursor-pointer">
+            <option value="Yosa">Yosa</option>
+            <option value="Fani">Fani</option>
+          </select>
+        </div>
+
         <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label for="form-user" class="font-bold text-main block mb-1 text-xs cursor-pointer">By</label>
-            <select id="form-user" class="w-full ios-input cursor-pointer">
-              <option value="Yosa">Yosa</option>
-              <option value="Fani">Fani</option>
-            </select>
-          </div>
           <div>
             <label for="form-date" class="font-bold text-main block mb-1 text-xs cursor-pointer">Date</label>
             <input type="date" id="form-date" class="w-full ios-input" required>
           </div>
-        </div>
-
-        <div>
-          <label for="form-time" class="font-bold text-main block mb-1 text-xs cursor-pointer">Time</label>
-          <input type="time" id="form-time" class="w-full ios-input" required>
+          <div>
+            <label for="form-time" class="font-bold text-main block mb-1 text-xs cursor-pointer">Time</label>
+            <input type="time" id="form-time" class="w-full ios-input" required>
+          </div>
         </div>
 
         <div>
@@ -890,6 +890,9 @@
     let GLOBAL_DATA = { kpi: {}, transactions: [], accounts: [], categories: [], payables: [], receivables: [] };
     let currentModalBackFn = null;
     let transactionToDelete = null;
+    let pendingDeleteIds = new Set();
+    let pendingDeleteTimers = {};
+    let swipeState = null;
 
     let activeModals = [];
     history.replaceState({ modal: null }, '');
@@ -919,6 +922,86 @@
 
     function vibrate(ms) {
       if (navigator.vibrate) navigator.vibrate(Math.max(ms, 25));
+    }
+
+    // Distinct haptic patterns so success/error/delete feel different, not just "a buzz"
+    function vibrateSuccess() { if (navigator.vibrate) navigator.vibrate([20, 40, 20]); }
+    function vibrateError() { if (navigator.vibrate) navigator.vibrate([40, 60, 40, 60, 40]); }
+
+    function attachSwipeHandlers() {
+      const list = document.getElementById('history-transaction-list');
+      if (!list || list.dataset.swipeBound) return;
+      list.dataset.swipeBound = "1";
+      list.addEventListener('touchstart', onSwipeStart, { passive: true });
+      list.addEventListener('touchmove', onSwipeMove, { passive: false });
+      list.addEventListener('touchend', onSwipeEnd, { passive: false });
+      list.addEventListener('touchcancel', onSwipeEnd, { passive: false });
+    }
+
+    function onSwipeStart(e) {
+      const wrap = e.target.closest('.history-swipe-wrap');
+      if (!wrap) return;
+      const content = wrap.querySelector('.history-swipe-content');
+      swipeState = {
+        wrap, content, trxId: wrap.dataset.trxId,
+        startX: e.touches[0].clientX, startY: e.touches[0].clientY,
+        dx: 0, locked: null, longPressFired: false
+      };
+      content.style.transition = 'none';
+      swipeState.longPressTimer = setTimeout(() => {
+        if (swipeState && swipeState.locked === null) {
+          swipeState.longPressFired = true;
+          vibrate(50);
+          duplicateTransaction(swipeState.trxId);
+        }
+      }, 550);
+    }
+
+    function onSwipeMove(e) {
+      if (!swipeState) return;
+      const touch = e.touches[0];
+      const dx = touch.clientX - swipeState.startX;
+      const dy = touch.clientY - swipeState.startY;
+
+      if (swipeState.locked === null) {
+        if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+          swipeState.locked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+          clearTimeout(swipeState.longPressTimer);
+        }
+      }
+      if (swipeState.locked !== 'x') return;
+
+      e.preventDefault();
+      const clamped = Math.max(-96, Math.min(96, dx));
+      swipeState.dx = clamped;
+      swipeState.content.style.transform = `translateX(${clamped}px)`;
+    }
+
+    function onSwipeEnd(e) {
+      if (!swipeState) return;
+      clearTimeout(swipeState.longPressTimer);
+
+      if (swipeState.longPressFired) {
+        e.preventDefault();
+        swipeState.content.style.transition = 'transform 0.2s ease';
+        swipeState.content.style.transform = 'translateX(0)';
+        swipeState = null;
+        return;
+      }
+
+      const { content, trxId, dx } = swipeState;
+      content.style.transition = 'transform 0.25s ease';
+      content.style.transform = 'translateX(0)';
+
+      const THRESHOLD = 64;
+      if (dx <= -THRESHOLD) {
+        vibrate(35);
+        softDeleteTransaction(trxId);
+      } else if (dx >= THRESHOLD) {
+        vibrate(30);
+        handleEditTransaction(trxId);
+      }
+      swipeState = null;
     }
 
     function handleBackdropClick(event, modalId) {
@@ -1004,7 +1087,7 @@
           bg.classList.add('opacity-100');
           content.classList.remove('scale-50', 'opacity-0');
           content.classList.add('scale-100', 'opacity-100');
-          vibrate(50);
+          vibrateSuccess();
         });
 
         setTimeout(() => {
@@ -1151,6 +1234,18 @@
       const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       const m = parseInt(parts[1], 10);
       return `${parseInt(parts[2], 10)} ${months[m - 1] || ''} ${parts[0]}`;
+    }
+
+    function formatDateGroupLabel(iso) {
+      if (!iso) return '';
+      const pad = n => String(n).padStart(2, '0');
+      const toKey = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+      const today = new Date();
+      const yesterday = new Date();
+      yesterday.setDate(today.getDate() - 1);
+      if (iso === toKey(today)) return 'Today';
+      if (iso === toKey(yesterday)) return 'Yesterday';
+      return formatDate(iso);
     }
 
     function updateScalingText(el, value) {
@@ -1431,6 +1526,60 @@
       }, 400);
     }
 
+    function duplicateTransaction(transactionId) {
+      const trx = GLOBAL_DATA.transactions.find(t => t.transactionId === transactionId);
+      if (!trx) return;
+
+      document.getElementById('formTransaction').reset();
+      document.getElementById('form-transaction-id').value = "";
+
+      const now = new Date();
+      document.getElementById('form-date').valueAsDate = now;
+      document.getElementById('form-time').value = now.toTimeString().slice(0, 5);
+
+      document.getElementById('form-user').value = trx.enteredBy || 'Yosa';
+
+      const typeVal = trx.type || 'Expense';
+      document.getElementById('form-type').value = typeVal;
+      updateTypeDisplay(typeVal);
+      handleTypeChange();
+
+      const setField = (id, val) => {
+        document.getElementById('form-' + id).value = val || "";
+        const disp = document.getElementById('display-' + id);
+        if (disp) {
+          disp.innerText = val || "Select...";
+          disp.classList.toggle('text-faint', !val);
+        }
+      };
+      setField('source-account', trx.sourceAccount);
+      setField('target-account', trx.targetAccount);
+      setField('payable', trx.relatedPayable);
+      setField('receivable', trx.relatedReceivable);
+
+      document.getElementById('form-category').value = trx.category || "";
+      const catDisplay = document.getElementById('form-category-display');
+      if (trx.category) {
+        catDisplay.innerText = trx.category;
+        catDisplay.classList.remove('text-faint');
+      } else {
+        catDisplay.innerText = "Select Category...";
+        catDisplay.classList.add('text-faint');
+      }
+
+      // Amount left empty on purpose — user fills the new amount in
+      document.getElementById('form-amount-value').value = "";
+      document.getElementById('form-amount-display').value = "";
+
+      document.getElementById('form-description').value = trx.description || "";
+      document.getElementById('form-notes').value = trx.notes || "";
+
+      document.getElementById('modal-title-transaction').innerText = "Duplicate Transaction";
+      document.getElementById('btn-submit-transaction').innerText = "Save Transaction";
+
+      openModal('modalTransactionForm');
+    }
+
     function promptDeleteTransaction(transactionId) {
       vibrate(40);
       transactionToDelete = transactionId;
@@ -1441,19 +1590,69 @@
       if (titleEl) titleEl.innerText = "Delete Transaction?";
       if (descEl) descEl.innerText = "This action cannot be undone. Data will be permanently removed.";
 
-      document.getElementById('btn-confirm-delete').onclick = async () => {
+      document.getElementById('btn-confirm-delete').onclick = () => {
         if (!transactionToDelete) return;
         vibrate(30);
-        await handleDeleteTransaction(transactionToDelete);
+        closeModal('modalDelete');
+        softDeleteTransaction(transactionToDelete);
+        transactionToDelete = null;
       };
 
       setTimeout(() => openModal('modalDelete'), 400);
     }
 
-    async function handleDeleteTransaction(transactionId) {
-      closeModal('modalDelete');
-      let loadingToast = showToast("Deleting transaction...", "info");
+    function showUndoToast(message, onUndo) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = "flex items-center px-4 py-3 rounded-2xl shadow-xl text-xs font-bold transform transition-all duration-500 translate-y-[-20px] opacity-0 w-full max-w-sm bg-coffee-darkest dark:bg-white text-white dark:text-coffee-darkest";
+      toast.innerHTML = `<i data-lucide="trash-2" class="w-4 h-4 mr-2.5 flex-shrink-0"></i> <span class="flex-1">${escapeHtml(message)}</span> <button type="button" class="ml-3 font-extrabold underline underline-offset-2 tap-shrink flex-shrink-0">Undo</button>`;
 
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-[-20px]', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+      });
+
+      let dismissed = false;
+      const dismiss = () => {
+        if (dismissed) return;
+        dismissed = true;
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-[-20px]', 'opacity-0');
+        setTimeout(() => toast.remove(), 500);
+      };
+
+      toast.querySelector('button').onclick = () => {
+        if (dismissed) return;
+        dismiss();
+        onUndo();
+      };
+
+      setTimeout(dismiss, 4800);
+      return toast;
+    }
+
+    function softDeleteTransaction(transactionId) {
+      pendingDeleteIds.add(transactionId);
+      renderHistory();
+
+      showUndoToast("Transaksi dihapus", () => {
+        clearTimeout(pendingDeleteTimers[transactionId]);
+        delete pendingDeleteTimers[transactionId];
+        pendingDeleteIds.delete(transactionId);
+        vibrate(25);
+        renderHistory();
+      });
+
+      pendingDeleteTimers[transactionId] = setTimeout(() => {
+        delete pendingDeleteTimers[transactionId];
+        performBackendDelete(transactionId);
+      }, 5000);
+    }
+
+    async function performBackendDelete(transactionId) {
       try {
         const res = await fetch(API_URL, {
           method: 'POST', redirect: 'follow',
@@ -1462,14 +1661,12 @@
         });
         const result = await res.json();
         if (result.status === 'error') throw new Error(result.message);
-
-        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-
-        await showRewardAnimation("Transaction Deleted");
         await loadAppData(true);
       } catch (err) {
-        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Failed to delete: " + err.message, "error");
+        pendingDeleteIds.delete(transactionId);
+        renderHistory();
+        vibrateError();
+        showToast("Gagal menghapus: " + err.message, "error");
       }
     }
 
@@ -1524,6 +1721,7 @@
         }, 300);
       } catch (err) {
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+        vibrateError();
         showToast("Failed to save: " + err.message, "error");
       } finally {
         btn.disabled = false;
@@ -2363,6 +2561,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
       const searchTerm = (document.getElementById('filter-search').value || '').toLowerCase().trim();
 
       const filtered = (GLOBAL_DATA.transactions || []).filter(trx => {
+        if (pendingDeleteIds.has(trx.transactionId)) return false;
         const d = trx.date || "";
         const year = d.length >= 4 ? d.substring(0, 4) : "";
         const month = d.length >= 7 ? d.substring(5, 7) : "";
@@ -2393,27 +2592,48 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
         return;
       }
 
-      listEl.innerHTML = filtered.map((trx, i) => {
+      let lastDateKey = null;
+      let html = '';
+      filtered.forEach((trx, i) => {
         const meta = getTypeMeta(trx.type);
 
         let accountFlowText = trx.sourceAccount || '';
         if (trx.sourceAccount && trx.targetAccount) accountFlowText += ` ➔ ${trx.targetAccount}`;
         else if (trx.targetAccount) accountFlowText = trx.targetAccount;
 
-        return `
-          <div onclick="vibrate(30); currentModalBackFn = null; showTransactionDetail('${trx.transactionId}')" class="floating-item p-3.5 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item select-none" style="animation-delay:${Math.min(i, 10) * 0.04}s">
-            <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
-              ${iconChipHtml(trx.type, trx.category)}
-              <div class="truncate">
-                <p class="text-[13px] font-bold text-main truncate">${escapeHtml(trx.description || trx.category)}</p>
-                <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${accountFlowText ? escapeHtml(accountFlowText) + ' • ' : ''}${formatDate(trx.date)} • ${escapeHtml(trx.enteredBy)}</p>
-              </div>
+        const dateKey = trx.date || '';
+        if (dateKey !== lastDateKey) {
+          lastDateKey = dateKey;
+          html += `
+            <div class="flex items-center px-1 pt-3 pb-1 first:pt-0">
+              <span class="text-[10px] font-extrabold text-faint uppercase tracking-wider whitespace-nowrap">${escapeHtml(formatDateGroupLabel(dateKey))}</span>
+              <div class="flex-1 h-px bg-slate-200/70 dark:bg-[var(--border-color)] ml-2.5"></div>
             </div>
-            <span class="text-[13px] font-extrabold ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.amount)}</span>
+          `;
+        }
+
+        html += `
+          <div class="history-swipe-wrap relative overflow-hidden rounded-[1.25rem] select-none" data-trx-id="${trx.transactionId}">
+            <div class="absolute inset-0 flex pointer-events-none">
+              <div class="w-1/2 h-full flex items-center pl-5 bg-sky-500 text-white font-extrabold text-xs"><i data-lucide="edit-3" class="w-4 h-4 mr-1.5 flex-shrink-0"></i> Edit</div>
+              <div class="w-1/2 h-full flex items-center justify-end pr-5 bg-rose-500 text-white font-extrabold text-xs">Delete <i data-lucide="trash-2" class="w-4 h-4 ml-1.5 flex-shrink-0"></i></div>
+            </div>
+            <div onclick="vibrate(30); currentModalBackFn = null; showTransactionDetail('${trx.transactionId}')" class="history-swipe-content floating-item p-3.5 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item select-none" style="animation-delay:${Math.min(i, 10) * 0.04}s; touch-action: pan-y;">
+              <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
+                ${iconChipHtml(trx.type, trx.category)}
+                <div class="truncate">
+                  <p class="text-[13px] font-bold text-main truncate">${escapeHtml(trx.description || trx.category)}</p>
+                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${accountFlowText ? escapeHtml(accountFlowText) + ' • ' : ''}${formatDate(trx.date)}${trx.time ? ' ' + escapeHtml(trx.time) : ''} • ${escapeHtml(trx.enteredBy)}</p>
+                </div>
+              </div>
+              <span class="text-[13px] font-extrabold ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.amount)}</span>
+            </div>
           </div>
         `;
-      }).join('');
+      });
+      listEl.innerHTML = html;
       lucide.createIcons();
+      attachSwipeHandlers();
     }
 
     function exportPDFStatement() {
