@@ -62,6 +62,12 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
       transition: background-color 0.3s ease, color 0.3s ease;
       padding-bottom: max(6rem, env(safe-area-inset-bottom));
+      /* Stops Chrome/Android's own native pull-to-refresh spinner from
+         showing up alongside our custom #ptr-indicator. Without this,
+         e.preventDefault() in touchmove isn't enough — the browser still
+         arms its own overscroll affordance on top of ours, which is why
+         two loading icons were appearing at once. */
+      overscroll-behavior-y: none;
     }
 
     html.dark {
@@ -220,6 +226,19 @@
     .modal-content-bottom.show { transform: translateY(0); }
     .modal-content-center { transform: scale(0.9) translateY(20px); opacity: 0; transition: all 0.3s; }
     .modal-content-center.show { transform: scale(1) translateY(0); opacity: 1; }
+
+    /* General rule: any modal content box (bottom-sheet or centered) caps
+       itself to the visible viewport and scrolls internally instead of
+       overflowing past the top/bottom edge. Applies automatically to
+       every current and future modal — no per-modal fix needed. */
+    .modal-content-bottom,
+    .modal-content-center {
+      max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2rem);
+      max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2rem);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
 
     @keyframes floatIdle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
     .animate-float { animation: floatIdle 3s ease-in-out infinite; }
@@ -396,27 +415,33 @@
       </div>
       </div>
 
-      <div class="floating-card overflow-hidden">
-        <div class="grid grid-cols-2 divide-x divide-[var(--border-color)]">
-          <div class="divide-y divide-[var(--border-color)]">
-            <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="tap-shrink cursor-pointer px-4 py-4 sm:py-5">
-              <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5"><i data-lucide="coins" class="w-3.5 h-3.5 amount-in flex-shrink-0"></i>Cash</span>
-              <span id="kpi-cash" class="font-numeric text-xs sm:text-sm font-bold amount-in block truncate">-</span>
-            </div>
-            <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="tap-shrink cursor-pointer px-4 py-4 sm:py-5">
-              <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5"><i data-lucide="hand-coins" class="w-3.5 h-3.5 amount-info flex-shrink-0"></i>Receivables</span>
-              <span id="kpi-receivables" class="font-numeric text-xs sm:text-sm font-bold amount-info block truncate">-</span>
-            </div>
+      <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="tap-shrink cursor-pointer floating-item p-4 flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[var(--chip-in-bg)] flex items-center justify-center flex-shrink-0"><i data-lucide="coins" class="w-4 h-4 amount-in"></i></div>
+          <div class="min-w-0 flex-1">
+            <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-0.5">Cash</span>
+            <span id="kpi-cash" class="font-numeric text-sm font-bold amount-in block truncate">-</span>
           </div>
-          <div class="divide-y divide-[var(--border-color)]">
-            <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="tap-shrink cursor-pointer px-4 py-4 sm:py-5">
-              <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5"><i data-lucide="piggy-bank" class="w-3.5 h-3.5 amount-in flex-shrink-0"></i>Savings</span>
-              <span id="kpi-savings" class="font-numeric text-xs sm:text-sm font-bold amount-in block truncate">-</span>
-            </div>
-            <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="tap-shrink cursor-pointer px-4 py-4 sm:py-5">
-              <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5"><i data-lucide="credit-card" class="w-3.5 h-3.5 amount-out flex-shrink-0"></i>Payables</span>
-              <span id="kpi-payables" class="font-numeric text-xs sm:text-sm font-bold amount-out block truncate">-</span>
-            </div>
+        </div>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="tap-shrink cursor-pointer floating-item p-4 flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[var(--chip-in-bg)] flex items-center justify-center flex-shrink-0"><i data-lucide="piggy-bank" class="w-4 h-4 amount-in"></i></div>
+          <div class="min-w-0 flex-1">
+            <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-0.5">Savings</span>
+            <span id="kpi-savings" class="font-numeric text-sm font-bold amount-in block truncate">-</span>
+          </div>
+        </div>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="tap-shrink cursor-pointer floating-item p-4 flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[var(--chip-info-bg)] flex items-center justify-center flex-shrink-0"><i data-lucide="hand-coins" class="w-4 h-4 amount-info"></i></div>
+          <div class="min-w-0 flex-1">
+            <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-0.5">Receivables</span>
+            <span id="kpi-receivables" class="font-numeric text-sm font-bold amount-info block truncate">-</span>
+          </div>
+        </div>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="tap-shrink cursor-pointer floating-item p-4 flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[var(--chip-out-bg)] flex items-center justify-center flex-shrink-0"><i data-lucide="credit-card" class="w-4 h-4 amount-out"></i></div>
+          <div class="min-w-0 flex-1">
+            <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-0.5">Payables</span>
+            <span id="kpi-payables" class="font-numeric text-sm font-bold amount-out block truncate">-</span>
           </div>
         </div>
       </div>
@@ -506,43 +531,28 @@
           </div>
         </div>
 
-        <div>
-          <label class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5">Transaction Type</label>
-          <select id="filter-type" onchange="renderHistory()" class="hidden">
-            <option value="ALL">All Types</option>
-            <option value="Income">Income (+)</option>
-            <option value="Expense">Expense (-)</option>
-            <option value="Internal Transfer">Internal Transfer</option>
-            <option value="External Transfer">External Transfer (-)</option>
-            <option value="Give Receivable">Give Receivable</option>
-            <option value="Receive Receivable">Receive Receivable (+)</option>
-            <option value="Receive Payable">Receive Payable (+)</option>
-            <option value="Pay Installment">Pay Installment (-)</option>
-          </select>
-          <div class="chip-filter-row flex gap-1.5 overflow-x-auto -mx-1 px-1">
-            <button type="button" onclick="setChipFilter('filter-type', 'ALL', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-mochi-light/20 text-mochi dark:text-mochi-light border-mochi/40">All Types</button>
-            <button type="button" onclick="setChipFilter('filter-type', 'Income', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Income</button>
-            <button type="button" onclick="setChipFilter('filter-type', 'Expense', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Expense</button>
-            <button type="button" onclick="setChipFilter('filter-type', 'Internal Transfer', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Internal Transfer</button>
-            <button type="button" onclick="setChipFilter('filter-type', 'External Transfer', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">External Transfer</button>
-            <button type="button" onclick="setChipFilter('filter-type', 'Give Receivable', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Give Receivable</button>
-            <button type="button" onclick="setChipFilter('filter-type', 'Receive Receivable', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Receive Receivable</button>
-            <button type="button" onclick="setChipFilter('filter-type', 'Receive Payable', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Receive Payable</button>
-            <button type="button" onclick="setChipFilter('filter-type', 'Pay Installment', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Pay Installment</button>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="filter-type" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Transaction Type</label>
+            <select id="filter-type" onchange="renderHistory()" class="w-full text-xs ios-input cursor-pointer">
+              <option value="ALL">All Types</option>
+              <option value="Income">Income (+)</option>
+              <option value="Expense">Expense (-)</option>
+              <option value="Internal Transfer">Internal Transfer</option>
+              <option value="External Transfer">External Transfer (-)</option>
+              <option value="Give Receivable">Give Receivable</option>
+              <option value="Receive Receivable">Receive Receivable (+)</option>
+              <option value="Receive Payable">Receive Payable (+)</option>
+              <option value="Pay Installment">Pay Installment (-)</option>
+            </select>
           </div>
-        </div>
-
-        <div>
-          <label class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5">User</label>
-          <select id="filter-user" onchange="renderHistory()" class="hidden">
-            <option value="ALL">All Users</option>
-            <option value="Yosa">Yosa</option>
-            <option value="Fani">Fani</option>
-          </select>
-          <div class="chip-filter-row flex gap-1.5 overflow-x-auto -mx-1 px-1">
-            <button type="button" onclick="setChipFilter('filter-user', 'ALL', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-mochi-light/20 text-mochi dark:text-mochi-light border-mochi/40">All Users</button>
-            <button type="button" onclick="setChipFilter('filter-user', 'Yosa', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Yosa</button>
-            <button type="button" onclick="setChipFilter('filter-user', 'Fani', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Fani</button>
+          <div>
+            <label for="filter-user" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">User</label>
+            <select id="filter-user" onchange="renderHistory()" class="w-full text-xs ios-input cursor-pointer">
+              <option value="ALL">All Users</option>
+              <option value="Yosa">Yosa</option>
+              <option value="Fani">Fani</option>
+            </select>
           </div>
         </div>
 
