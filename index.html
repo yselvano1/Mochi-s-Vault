@@ -397,18 +397,37 @@
       </div>
       </div>
 
-      <div class="floating-card overflow-hidden">
-        <div class="grid grid-cols-2 divide-x divide-[var(--border-color)]">
-          <div class="divide-y divide-[var(--border-color)]">
-            <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="tap-shrink cursor-pointer px-4 py-4 sm:py-5">
-              <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5"><i data-lucide="coins" class="w-3.5 h-3.5 amount-in flex-shrink-0"></i>Cash</span>
-              <span id="kpi-cash" class="font-numeric text-xs sm:text-sm font-bold amount-in block truncate">-</span>
-            </div>
-            <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="tap-shrink cursor-pointer px-4 py-4 sm:py-5">
-              <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5"><i data-lucide="hand-coins" class="w-3.5 h-3.5 amount-info flex-shrink-0"></i>Receivables</span>
-              <span id="kpi-receivables" class="font-numeric text-xs sm:text-sm font-bold amount-info block truncate">-</span>
-            </div>
-          </div>
+      <!-- 4 KPI Cards Dashboard -->
+      <div class="grid grid-cols-2 gap-3">
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="floating-card p-4 cursor-pointer card-hover tap-shrink flex flex-col justify-between">
+          <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1.5 mb-2">
+            <i data-lucide="coins" class="w-3.5 h-3.5 amount-in flex-shrink-0"></i> Cash
+          </span>
+          <span id="kpi-cash" class="font-numeric text-sm sm:text-base font-extrabold amount-in block truncate">-</span>
+        </div>
+      
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="floating-card p-4 cursor-pointer card-hover tap-shrink flex flex-col justify-between">
+          <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1.5 mb-2">
+            <i data-lucide="piggy-bank" class="w-3.5 h-3.5 amount-in flex-shrink-0"></i> Savings
+          </span>
+          <span id="kpi-savings" class="font-numeric text-sm sm:text-base font-extrabold amount-in block truncate">-</span>
+        </div>
+      
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="floating-card p-4 cursor-pointer card-hover tap-shrink flex flex-col justify-between">
+          <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1.5 mb-2">
+            <i data-lucide="hand-coins" class="w-3.5 h-3.5 amount-info flex-shrink-0"></i> Receivables
+          </span>
+          <span id="kpi-receivables" class="font-numeric text-sm sm:text-base font-extrabold amount-info block truncate">-</span>
+        </div>
+      
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="floating-card p-4 cursor-pointer card-hover tap-shrink flex flex-col justify-between">
+          <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1.5 mb-2">
+            <i data-lucide="credit-card" class="w-3.5 h-3.5 amount-out flex-shrink-0"></i> Payables
+          </span>
+          <span id="kpi-payables" class="font-numeric text-sm sm:text-base font-extrabold amount-out block truncate">-</span>
+        </div>
+      </div>
+      
           <div class="divide-y divide-[var(--border-color)]">
             <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="tap-shrink cursor-pointer px-4 py-4 sm:py-5">
               <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5"><i data-lucide="piggy-bank" class="w-3.5 h-3.5 amount-in flex-shrink-0"></i>Savings</span>
