@@ -62,11 +62,6 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
       transition: background-color 0.3s ease, color 0.3s ease;
       padding-bottom: max(6rem, env(safe-area-inset-bottom));
-      /* Stops Chrome/Android's own native pull-to-refresh spinner from
-         showing up during our own pull gesture — e.preventDefault() in
-         touchmove alone isn't enough, the browser still arms its own
-         overscroll affordance on top of ours otherwise. */
-      overscroll-behavior-y: none;
     }
 
     html.dark {
