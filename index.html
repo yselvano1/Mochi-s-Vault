@@ -975,11 +975,15 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbwHCQ2m26t3uo1lMDYL_izn5YqALyoxw1gbVNUfTGx68MKaCY9Xvlm3jpt5rJz983as7Q/exec";
 
     // Google Apps Script occasionally returns an HTML error/interstitial page
-    // instead of JSON (cold start, quota hiccup, brief overload) — this reads
-    // the response as text first and retries once before giving up, so
-    // "sometimes fails with unexpected token <" turns into a quiet auto-retry
-    // instead of a hard failure.
-    async function fetchJsonSafe(url, options, retries = 1, retryDelay = 1200) {
+    // instead of JSON (cold start, quota hiccup, brief overload) instead of
+    // waiting for the script to actually finish. `retries` controls how many
+    // EXTRA attempts are made after a parse/network failure — pass 0 for
+    // anything that writes data (create/update/delete), since retrying a
+    // write that may have already succeeded server-side just fires a
+    // duplicate request that then queues up behind the still-running
+    // original and times out with a false "busy" error. Reads (GET) are
+    // safe to retry freely.
+    async function fetchJsonSafe(url, options, retries = 0, retryDelay = 1500) {
       for (let attempt = 0; attempt <= retries; attempt++) {
         try {
           const res = await fetch(url, options);
@@ -991,10 +995,10 @@
               await new Promise(r => setTimeout(r, retryDelay));
               continue;
             }
-            throw new Error("Server is busy right now — please try again in a few seconds.");
+            throw new Error("UNCONFIRMED_RESPONSE");
           }
         } catch (err) {
-          if (String(err.message || '').startsWith("Server is busy")) throw err;
+          if (err.message === "UNCONFIRMED_RESPONSE") throw err;
           if (attempt < retries) {
             await new Promise(r => setTimeout(r, retryDelay));
             continue;
@@ -1004,15 +1008,26 @@
       }
     }
 
+    // Single-attempt by design — see fetchJsonSafe's note on why writes
+    // should never be silently auto-retried.
     async function postApi(action, payload, extra = {}) {
-      const result = await fetchJsonSafe(API_URL, {
-        method: 'POST', redirect: 'follow',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action, payload, ...extra })
-      }, 1);
+      let result;
+      try {
+        result = await fetchJsonSafe(API_URL, {
+          method: 'POST', redirect: 'follow',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action, payload, ...extra })
+        }, 0);
+      } catch (err) {
+        if (err.message === "UNCONFIRMED_RESPONSE") {
+          throw new Error("Couldn't confirm this went through — it may still be processing. Check History in a few seconds before trying again.");
+        }
+        throw err;
+      }
       if (result.status === 'error') throw new Error(result.message);
       return result;
     }
+
 
     let GLOBAL_DATA = { kpi: {}, transactions: [], accounts: [], categories: [], payables: [], receivables: [] };
     let currentModalBackFn = null;
@@ -1761,7 +1776,10 @@
       const fetchStart = performance.now();
 
       try {
-        const result = await fetchJsonSafe(API_URL, { redirect: 'follow' }, 1);
+        // GET is idempotent, so it's safe to retry a couple of times —
+        // important here since this runs right after a save and the user
+        // is expecting to see their change reflected without a manual pull.
+        const result = await fetchJsonSafe(API_URL, { redirect: 'follow' }, 2, 1500);
         if (result.status === 'error') throw new Error(result.message);
 
         GLOBAL_DATA = result.data || result;
@@ -1781,6 +1799,11 @@
         if (!hadCache) {
           showToast("Failed to load data: " + err.message, "error");
           dismissSplashScreen();
+        } else if (isSilentReload) {
+          // The save/delete itself already succeeded (or its own error was
+          // already shown) — this is just the follow-up view refresh
+          // failing, so keep it low-key rather than an alarming error.
+          showToast("Saved, but couldn't refresh the view — pull down to refresh.", "info");
         }
       }
     }
