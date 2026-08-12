@@ -1741,6 +1741,17 @@
       catDisplay.innerText = "Select Category...";
       catDisplay.classList.add('text-faint');
 
+      // --- TAMBAHAN FIX 1: Hapus "Sisa Ingatan" Akun ---
+      ['source-account', 'target-account', 'payable', 'receivable'].forEach(id => {
+        document.getElementById('form-' + id).value = "";
+        const disp = document.getElementById('display-' + id);
+        if (disp) {
+          disp.innerText = "Select...";
+          disp.classList.add('text-faint');
+        }
+      });
+      // --------------------------------------------------
+
       document.getElementById('modal-title-transaction').innerText = "New Transaction";
       document.getElementById('btn-submit-transaction').innerText = "Save Transaction";
 
@@ -1909,6 +1920,21 @@
       if (!meta.showTarget) targetAcc = "";
       if (!meta.showPayable) relatedPay = "";
       if (!meta.showReceivable) relatedRec = "";
+
+      // --- TAMBAHAN FIX 2: Cegah Transaksi Bodong (Tanpa Akun) ---
+      if (meta.showSource && !sourceAcc) {
+        triggerInputError('wrap-source-account', "Please select a Source Account."); return;
+      }
+      if (meta.showTarget && !targetAcc) {
+        triggerInputError('wrap-target-account', "Please select a Target Account."); return;
+      }
+      if (meta.showPayable && !relatedPay) {
+        triggerInputError('wrap-payable', "Please select a Related Payable."); return;
+      }
+      if (meta.showReceivable && !relatedRec) {
+        triggerInputError('wrap-receivable', "Please select a Related Receivable."); return;
+      }
+      // -------------------------------------------------------------
 
       // 4. Susun Payload yang sudah bersih dari "data siluman"
       const payload = {
