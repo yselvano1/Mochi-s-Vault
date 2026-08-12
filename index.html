@@ -974,6 +974,46 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbwHCQ2m26t3uo1lMDYL_izn5YqALyoxw1gbVNUfTGx68MKaCY9Xvlm3jpt5rJz983as7Q/exec";
 
+    // Google Apps Script occasionally returns an HTML error/interstitial page
+    // instead of JSON (cold start, quota hiccup, brief overload) — this reads
+    // the response as text first and retries once before giving up, so
+    // "sometimes fails with unexpected token <" turns into a quiet auto-retry
+    // instead of a hard failure.
+    async function fetchJsonSafe(url, options, retries = 1, retryDelay = 1200) {
+      for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+          const res = await fetch(url, options);
+          const raw = await res.text();
+          try {
+            return JSON.parse(raw);
+          } catch (parseErr) {
+            if (attempt < retries) {
+              await new Promise(r => setTimeout(r, retryDelay));
+              continue;
+            }
+            throw new Error("Server is busy right now — please try again in a few seconds.");
+          }
+        } catch (err) {
+          if (String(err.message || '').startsWith("Server is busy")) throw err;
+          if (attempt < retries) {
+            await new Promise(r => setTimeout(r, retryDelay));
+            continue;
+          }
+          throw err;
+        }
+      }
+    }
+
+    async function postApi(action, payload, extra = {}) {
+      const result = await fetchJsonSafe(API_URL, {
+        method: 'POST', redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action, payload, ...extra })
+      }, 1);
+      if (result.status === 'error') throw new Error(result.message);
+      return result;
+    }
+
     let GLOBAL_DATA = { kpi: {}, transactions: [], accounts: [], categories: [], payables: [], receivables: [] };
     let currentModalBackFn = null;
     let transactionToDelete = null;
@@ -1622,13 +1662,7 @@
       let loadingToast = showToast("Deleting transaction...", "info");
 
       try {
-        const res = await fetch(API_URL, {
-          method: 'POST', redirect: 'follow',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'deleteTransaction', payload: { transactionId } })
-        });
-        const result = await res.json();
-        if (result.status === 'error') throw new Error(result.message);
+        await postApi('deleteTransaction', { transactionId });
 
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
 
@@ -1674,13 +1708,7 @@
       let loadingToast = showToast(isEdit ? "Updating transaction..." : "Saving transaction...", "info");
 
       try {
-        const res = await fetch(API_URL, {
-          method: 'POST', redirect: 'follow',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: isEdit ? 'updateTransaction' : 'createTransaction', payload })
-        });
-        const result = await res.json();
-        if (result.status === 'error') throw new Error(result.message);
+        await postApi(isEdit ? 'updateTransaction' : 'createTransaction', payload);
 
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         closeModal('modalTransactionForm');
@@ -1733,8 +1761,7 @@
       const fetchStart = performance.now();
 
       try {
-        const res = await fetch(API_URL, { redirect: 'follow' });
-        const result = await res.json();
+        const result = await fetchJsonSafe(API_URL, { redirect: 'follow' }, 1);
         if (result.status === 'error') throw new Error(result.message);
 
         GLOBAL_DATA = result.data || result;
@@ -2328,13 +2355,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
       let loadingToast = showToast("Saving budgets...", "info");
 
       try {
-        const res = await fetch(API_URL, {
-          method: 'POST', redirect: 'follow',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'updateBudgets', payload: updatedBudgets })
-        });
-        const result = await res.json();
-        if (result.status === 'error') throw new Error(result.message);
+        await postApi('updateBudgets', updatedBudgets);
 
         GLOBAL_DATA.budgets = updatedBudgets;
         localStorage.setItem('mochi_custom_budgets', JSON.stringify(updatedBudgets));
@@ -2829,13 +2850,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
         let loadingToast = showToast("Deleting account...", "info");
 
         try {
-          const res = await fetch(API_URL, {
-            method: 'POST', redirect: 'follow',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action: 'deleteMasterData', type: 'account', payload: { accountName } })
-          });
-          const result = await res.json();
-          if (result.status === 'error') throw new Error(result.message);
+          await postApi('deleteMasterData', { accountName }, { type: 'account' });
 
           if (loadingToast && loadingToast.parentNode) loadingToast.remove();
           showToast("Account deleted successfully!");
@@ -2941,13 +2956,7 @@ async function handleSaveMaster(event) {
   let loadingToast = showToast("Saving master data...", "info");
   try {
     const actionType = oldName ? 'editMasterData' : 'addMasterData';
-    const res = await fetch(API_URL, {
-      method: 'POST', redirect: 'follow',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: actionType, type, payload })
-    });
-    const result = await res.json();
-    if (result.status === 'error') throw new Error(result.message);
+    const result = await postApi(actionType, payload, { type });
 
     if (loadingToast && loadingToast.parentNode) loadingToast.remove();
     closeModal('modalMaster');
@@ -2989,13 +2998,7 @@ async function handleSaveMaster(event) {
         let loadingToast = showToast("Deleting receivable...", "info");
 
         try {
-          const res = await fetch(API_URL, {
-            method: 'POST', redirect: 'follow',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action: 'deleteMasterData', type: 'receivable', payload: { receivableName } })
-          });
-          const result = await res.json();
-          if (result.status === 'error') throw new Error(result.message);
+          await postApi('deleteMasterData', { receivableName }, { type: 'receivable' });
 
           if (loadingToast && loadingToast.parentNode) loadingToast.remove();
           showToast("Receivable deleted successfully!");
