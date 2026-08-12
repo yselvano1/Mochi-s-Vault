@@ -1674,18 +1674,30 @@
 
     async function handleDeleteTransaction(transactionId) {
       closeModal('modalDelete');
-      let loadingToast = showToast("Deleting transaction...", "info");
+      
+      // OPTIMISTIC UI: Hapus dari lokal instan
+      GLOBAL_DATA.transactions = GLOBAL_DATA.transactions.filter(t => t.transactionId !== transactionId);
+      renderHistory();
+      renderDashboard();
+      
+      let loadingToast = showToast("Deleting in background...", "info");
 
       try {
-        await postApi('deleteTransaction', { transactionId });
+        const result = await postApi('deleteTransaction', { transactionId });
 
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+        
+        if (result && result.data) {
+            GLOBAL_DATA = result.data;
+            localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+            renderAllViews();
+        }
 
-        await showRewardAnimation("Transaction Deleted");
-        await loadAppData(true);
+        showRewardAnimation("Transaction Deleted");
       } catch (err) {
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
         showToast("Failed to delete: " + err.message, "error");
+        loadAppData(true); // Rollback
       }
     }
 
@@ -1720,21 +1732,58 @@
 
       const btn = document.getElementById('btn-submit-transaction');
       btn.disabled = true;
-      let loadingToast = showToast(isEdit ? "Updating transaction..." : "Saving transaction...", "info");
+      
+      // OPTIMISTIC UI: Update lokal instan
+      const exactTime = payload.time && /^\d{1,2}:\d{2}$/.test(payload.time) ? payload.time : "00:00";
+      const newTrx = {
+        transactionId: isEdit ? transactionId : "TRX-TEMP-" + Date.now(),
+        date: payload.date + "T" + exactTime + ":00",
+        month: payload.date.substring(0, 7),
+        type: payload.type,
+        sourceAccount: payload.sourceAccount,
+        targetAccount: payload.targetAccount,
+        category: payload.category,
+        description: payload.description,
+        amount: payload.amount,
+        enteredBy: payload.enteredBy,
+        relatedPayable: payload.relatedPayable,
+        relatedReceivable: payload.relatedReceivable,
+        notes: payload.notes,
+        mainCategory: payload.category 
+      };
+
+      if (isEdit) {
+        const idx = GLOBAL_DATA.transactions.findIndex(t => t.transactionId === transactionId);
+        if (idx !== -1) GLOBAL_DATA.transactions[idx] = newTrx;
+      } else {
+        GLOBAL_DATA.transactions.unshift(newTrx);
+      }
+      GLOBAL_DATA.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      // Tutup modal dan render history secara instan
+      closeModal('modalTransactionForm');
+      renderHistory();
+      renderDashboard();
+      
+      let loadingToast = showToast("Syncing in background...", "info");
 
       try {
-        await postApi(isEdit ? 'updateTransaction' : 'createTransaction', payload);
+        const result = await postApi(isEdit ? 'updateTransaction' : 'createTransaction', payload);
 
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        closeModal('modalTransactionForm');
-
-        setTimeout(async () => {
-          await showRewardAnimation(isEdit ? "Transaction Updated" : "Saved");
-          await loadAppData(true);
-        }, 300);
+        
+        // Update GLOBAL_DATA dengan state authoritative dari server (1 round-trip)
+        if (result && result.data) {
+            GLOBAL_DATA = result.data;
+            localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+            renderAllViews();
+        }
+        
+        showRewardAnimation(isEdit ? "Transaction Updated" : "Saved");
       } catch (err) {
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        showToast("Failed to save: " + err.message, "error");
+        showToast("Failed to sync: " + err.message, "error");
+        loadAppData(true); // Rollback state jika gagal
       } finally {
         btn.disabled = false;
       }
@@ -2873,11 +2922,15 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
         let loadingToast = showToast("Deleting account...", "info");
 
         try {
-          await postApi('deleteMasterData', { accountName }, { type: 'account' });
+          const result = await postApi('deleteMasterData', { accountName }, { type: 'account' });
 
           if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+          if (result && result.data) {
+              GLOBAL_DATA = result.data;
+              localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+              renderAllViews();
+          }
           showToast("Account deleted successfully!");
-          await loadAppData(true);
         } catch (err) {
           if (loadingToast && loadingToast.parentNode) loadingToast.remove();
           showToast("Failed to delete account: " + err.message, "error");
@@ -2983,8 +3036,12 @@ async function handleSaveMaster(event) {
 
     if (loadingToast && loadingToast.parentNode) loadingToast.remove();
     closeModal('modalMaster');
+    if (result && result.data) {
+        GLOBAL_DATA = result.data;
+        localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+        renderAllViews();
+    }
     showToast(result.message || "Master data saved successfully!");
-    await loadAppData(true);
   } catch (err) {
     if (loadingToast && loadingToast.parentNode) loadingToast.remove();
     showToast("Failed to save: " + err.message, "error");
@@ -3021,11 +3078,15 @@ async function handleSaveMaster(event) {
         let loadingToast = showToast("Deleting receivable...", "info");
 
         try {
-          await postApi('deleteMasterData', { receivableName }, { type: 'receivable' });
+          const result = await postApi('deleteMasterData', { receivableName }, { type: 'receivable' });
 
           if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+          if (result && result.data) {
+              GLOBAL_DATA = result.data;
+              localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+              renderAllViews();
+          }
           showToast("Receivable deleted successfully!");
-          await loadAppData(true);
         } catch (err) {
           if (loadingToast && loadingToast.parentNode) loadingToast.remove();
           showToast("Failed to delete receivable: " + err.message, "error");
