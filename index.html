@@ -3017,11 +3017,19 @@ async function handleSaveMaster(event) {
     payload.expectedReturn = document.getElementById('master-receivable-return') ? document.getElementById('master-receivable-return').value : "";
     payload.relatedAccount = document.getElementById('master-receivable-account') ? document.getElementById('master-receivable-account').value : "";
     payload.notes = document.getElementById('master-receivable-notes').value;
-    payload.termMonths = Number(document.getElementById('master-receivable-term').value) || "";
-    payload.monthlyInstallment = Number(document.getElementById('master-receivable-installment').value) || "";
-    payload.interestRate = Number(document.getElementById('master-receivable-interest').value) || 0;
-    payload.adminFee = Number(document.getElementById('master-receivable-admin').value) || 0;
-    payload.netPrincipal = Number(document.getElementById('master-receivable-net').value) || 0;
+    if (payload.receivableType === 'Structured Loan') {
+      payload.termMonths = Number(document.getElementById('master-receivable-term').value) || "";
+      payload.monthlyInstallment = Number(document.getElementById('master-receivable-installment').value) || "";
+      payload.interestRate = Number(document.getElementById('master-receivable-interest').value) || 0;
+      payload.adminFee = Number(document.getElementById('master-receivable-admin').value) || 0;
+      payload.netPrincipal = Number(document.getElementById('master-receivable-net').value) || 0;
+    } else {
+      payload.termMonths = "";
+      payload.monthlyInstallment = "";
+      payload.interestRate = 0;
+      payload.adminFee = 0;
+      payload.netPrincipal = 0;
+    }
   }
 
   closeModal('modalMaster');
