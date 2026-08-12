@@ -622,7 +622,7 @@
             <input type="time" id="form-time" value="00:00" class="w-full ios-input">
           </div>
         </div>
-        <p class="text-[10px] text-faint font-medium -mt-2 px-1">Leave the time as 12:00 AM if you don't know the exact time — it just won't be used for precise ordering.</p>
+        <p class="text-[10px] text-faint font-medium -mt-2 px-1">Auto-filled with the current date & time — feel free to adjust if this transaction happened earlier.</p>
 
         <div class="field-group">
           <label class="field-label mb-1.5">
@@ -1524,8 +1524,9 @@
     function openNewTransactionForm() {
       document.getElementById('formTransaction').reset();
       document.getElementById('form-transaction-id').value = "";
-      document.getElementById('form-date').valueAsDate = new Date();
-      document.getElementById('form-time').value = "00:00";
+      const now = new Date();
+      document.getElementById('form-date').valueAsDate = now;
+      document.getElementById('form-time').value = now.toTimeString().slice(0, 5);
       document.getElementById('form-amount-value').value = "";
 
       const catDisplay = document.getElementById('form-category-display');
