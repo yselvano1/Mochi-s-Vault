@@ -221,19 +221,6 @@
     .modal-content-center { transform: scale(0.9) translateY(20px); opacity: 0; transition: all 0.3s; }
     .modal-content-center.show { transform: scale(1) translateY(0); opacity: 1; }
 
-    /* General rule: any modal content box (bottom-sheet or centered) caps
-       itself to the visible viewport and scrolls internally instead of
-       overflowing past the top/bottom edge. Applies automatically to
-       every current and future modal — no per-modal fix needed. */
-    .modal-content-bottom,
-    .modal-content-center {
-      max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2rem);
-      max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2rem);
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
-    }
-
     @keyframes floatIdle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
     .animate-float { animation: floatIdle 3s ease-in-out infinite; }
 
@@ -258,6 +245,30 @@
     #top-progress-bar { opacity: 0; transition: opacity 0.25s ease; }
     #top-progress-bar.show { opacity: 1; }
 
+    /* Custom pull-to-refresh indicator — needed because iOS Safari (and
+       standalone/home-screen PWAs on both platforms) don't reliably support
+       the browser's native pull-to-refresh gesture. */
+    #ptr-indicator {
+      position: fixed;
+      top: max(0.85rem, env(safe-area-inset-top));
+      left: 50%;
+      width: 42px; height: 42px;
+      transform: translate(-50%, -90px);
+      z-index: 155;
+      border-radius: 9999px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-card);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+    }
+    #ptr-indicator.ptr-visible { opacity: 1; }
+    #ptr-indicator i { width: 18px; height: 18px; color: var(--mochi, #B8925A); }
+    #ptr-indicator.ptr-dragging i { transition: transform 0.05s linear; }
+    #ptr-indicator.ptr-loading i { animation: ptrSpin 0.7s linear infinite; }
+    @keyframes ptrSpin { to { transform: rotate(360deg); } }
     #top-progress-fill {
       background: linear-gradient(90deg, transparent, var(--mochi, #B8925A) 40%, var(--mochi, #B8925A) 60%, transparent);
       background-size: 60% 100%;
@@ -285,6 +296,10 @@
 
   <div id="top-progress-bar" class="fixed top-0 left-0 right-0 h-[3px] z-[160] pointer-events-none">
     <div id="top-progress-fill" class="h-full w-full"></div>
+  </div>
+
+  <div id="ptr-indicator" aria-hidden="true">
+    <i data-lucide="refresh-cw"></i>
   </div>
 
   <div id="skeleton-screen" class="fixed inset-0 z-[140] hidden bg-[var(--bg-app)] px-5 pt-16 max-w-3xl mx-auto">
@@ -381,33 +396,27 @@
       </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="tap-shrink cursor-pointer floating-item p-4 flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-[var(--chip-in-bg)] flex items-center justify-center flex-shrink-0"><i data-lucide="coins" class="w-4 h-4 amount-in"></i></div>
-          <div class="min-w-0 flex-1">
-            <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-0.5">Cash</span>
-            <span id="kpi-cash" class="font-numeric text-sm font-bold amount-in block truncate">-</span>
+      <div class="floating-card overflow-hidden">
+        <div class="grid grid-cols-2 divide-x divide-[var(--border-color)]">
+          <div class="divide-y divide-[var(--border-color)]">
+            <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="tap-shrink cursor-pointer px-4 py-4 sm:py-5">
+              <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5"><i data-lucide="coins" class="w-3.5 h-3.5 amount-in flex-shrink-0"></i>Cash</span>
+              <span id="kpi-cash" class="font-numeric text-xs sm:text-sm font-bold amount-in block truncate">-</span>
+            </div>
+            <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="tap-shrink cursor-pointer px-4 py-4 sm:py-5">
+              <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5"><i data-lucide="hand-coins" class="w-3.5 h-3.5 amount-info flex-shrink-0"></i>Receivables</span>
+              <span id="kpi-receivables" class="font-numeric text-xs sm:text-sm font-bold amount-info block truncate">-</span>
+            </div>
           </div>
-        </div>
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="tap-shrink cursor-pointer floating-item p-4 flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-[var(--chip-in-bg)] flex items-center justify-center flex-shrink-0"><i data-lucide="piggy-bank" class="w-4 h-4 amount-in"></i></div>
-          <div class="min-w-0 flex-1">
-            <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-0.5">Savings</span>
-            <span id="kpi-savings" class="font-numeric text-sm font-bold amount-in block truncate">-</span>
-          </div>
-        </div>
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="tap-shrink cursor-pointer floating-item p-4 flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-[var(--chip-info-bg)] flex items-center justify-center flex-shrink-0"><i data-lucide="hand-coins" class="w-4 h-4 amount-info"></i></div>
-          <div class="min-w-0 flex-1">
-            <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-0.5">Receivables</span>
-            <span id="kpi-receivables" class="font-numeric text-sm font-bold amount-info block truncate">-</span>
-          </div>
-        </div>
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="tap-shrink cursor-pointer floating-item p-4 flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-[var(--chip-out-bg)] flex items-center justify-center flex-shrink-0"><i data-lucide="credit-card" class="w-4 h-4 amount-out"></i></div>
-          <div class="min-w-0 flex-1">
-            <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-0.5">Payables</span>
-            <span id="kpi-payables" class="font-numeric text-sm font-bold amount-out block truncate">-</span>
+          <div class="divide-y divide-[var(--border-color)]">
+            <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="tap-shrink cursor-pointer px-4 py-4 sm:py-5">
+              <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5"><i data-lucide="piggy-bank" class="w-3.5 h-3.5 amount-in flex-shrink-0"></i>Savings</span>
+              <span id="kpi-savings" class="font-numeric text-xs sm:text-sm font-bold amount-in block truncate">-</span>
+            </div>
+            <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="tap-shrink cursor-pointer px-4 py-4 sm:py-5">
+              <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1.5"><i data-lucide="credit-card" class="w-3.5 h-3.5 amount-out flex-shrink-0"></i>Payables</span>
+              <span id="kpi-payables" class="font-numeric text-xs sm:text-sm font-bold amount-out block truncate">-</span>
+            </div>
           </div>
         </div>
       </div>
@@ -497,28 +506,43 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label for="filter-type" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">Transaction Type</label>
-            <select id="filter-type" onchange="renderHistory()" class="w-full text-xs ios-input cursor-pointer">
-              <option value="ALL">All Types</option>
-              <option value="Income">Income (+)</option>
-              <option value="Expense">Expense (-)</option>
-              <option value="Internal Transfer">Internal Transfer</option>
-              <option value="External Transfer">External Transfer (-)</option>
-              <option value="Give Receivable">Give Receivable</option>
-              <option value="Receive Receivable">Receive Receivable (+)</option>
-              <option value="Receive Payable">Receive Payable (+)</option>
-              <option value="Pay Installment">Pay Installment (-)</option>
-            </select>
+        <div>
+          <label class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5">Transaction Type</label>
+          <select id="filter-type" onchange="renderHistory()" class="hidden">
+            <option value="ALL">All Types</option>
+            <option value="Income">Income (+)</option>
+            <option value="Expense">Expense (-)</option>
+            <option value="Internal Transfer">Internal Transfer</option>
+            <option value="External Transfer">External Transfer (-)</option>
+            <option value="Give Receivable">Give Receivable</option>
+            <option value="Receive Receivable">Receive Receivable (+)</option>
+            <option value="Receive Payable">Receive Payable (+)</option>
+            <option value="Pay Installment">Pay Installment (-)</option>
+          </select>
+          <div class="chip-filter-row flex gap-1.5 overflow-x-auto -mx-1 px-1">
+            <button type="button" onclick="setChipFilter('filter-type', 'ALL', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-mochi-light/20 text-mochi dark:text-mochi-light border-mochi/40">All Types</button>
+            <button type="button" onclick="setChipFilter('filter-type', 'Income', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Income</button>
+            <button type="button" onclick="setChipFilter('filter-type', 'Expense', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Expense</button>
+            <button type="button" onclick="setChipFilter('filter-type', 'Internal Transfer', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Internal Transfer</button>
+            <button type="button" onclick="setChipFilter('filter-type', 'External Transfer', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">External Transfer</button>
+            <button type="button" onclick="setChipFilter('filter-type', 'Give Receivable', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Give Receivable</button>
+            <button type="button" onclick="setChipFilter('filter-type', 'Receive Receivable', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Receive Receivable</button>
+            <button type="button" onclick="setChipFilter('filter-type', 'Receive Payable', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Receive Payable</button>
+            <button type="button" onclick="setChipFilter('filter-type', 'Pay Installment', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Pay Installment</button>
           </div>
-          <div>
-            <label for="filter-user" class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5 cursor-pointer">User</label>
-            <select id="filter-user" onchange="renderHistory()" class="w-full text-xs ios-input cursor-pointer">
-              <option value="ALL">All Users</option>
-              <option value="Yosa">Yosa</option>
-              <option value="Fani">Fani</option>
-            </select>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5">User</label>
+          <select id="filter-user" onchange="renderHistory()" class="hidden">
+            <option value="ALL">All Users</option>
+            <option value="Yosa">Yosa</option>
+            <option value="Fani">Fani</option>
+          </select>
+          <div class="chip-filter-row flex gap-1.5 overflow-x-auto -mx-1 px-1">
+            <button type="button" onclick="setChipFilter('filter-user', 'ALL', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-mochi-light/20 text-mochi dark:text-mochi-light border-mochi/40">All Users</button>
+            <button type="button" onclick="setChipFilter('filter-user', 'Yosa', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Yosa</button>
+            <button type="button" onclick="setChipFilter('filter-user', 'Fani', this)" class="chip-filter tap-shrink text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wide border bg-[var(--bg-subtle)] text-muted border-[var(--border-color)]">Fani</button>
           </div>
         </div>
 
@@ -868,8 +892,8 @@
     </div>
   </div>
 
-  <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
-    <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] p-6 shadow-2xl modal-content-bottom md:modal-content-center">
+  <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
+    <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
       <div class="flex justify-between items-center border-b border-[var(--border-color)] pb-3 mb-3">
         <h4 id="master-title" class="font-extrabold text-main text-base">Add Master Data</h4>
         <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalMaster')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]"><i data-lucide="x" class="w-4 h-4"></i></button>
@@ -925,8 +949,8 @@
     </div>
   </div>
 
-  <div id="modalBudgetEditor" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalBudgetEditor')">
-    <div id="modalBudgetEditor-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] p-6 shadow-2xl modal-content-bottom md:modal-content-center">
+  <div id="modalBudgetEditor" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalBudgetEditor')">
+    <div id="modalBudgetEditor-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center max-h-[85vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-[var(--border-color)] pb-3 mb-4">
         <h4 class="font-extrabold text-main text-base flex items-center">
           <i data-lucide="sliders" class="w-4 h-4 mr-2 text-mochi"></i> Set Category Budgets
@@ -1307,32 +1331,42 @@
       renderHistory();
     }
 
-    // ===== PULL-TO-REFRESH (gesture only, no icon) =====
+    // ===== CUSTOM PULL-TO-REFRESH =====
     // Chrome on Android reloads the page on a native pull gesture, but iOS
     // Safari (and standalone/home-screen PWAs on either platform) don't
     // reliably support that native gesture — so we roll our own that works
     // the same everywhere and refreshes data without a full page reload.
-    // Deliberately no visual indicator here (no circle/spinner) — the gold
-    // #top-progress-bar that loadAppData() already shows during the fetch
-    // is the only loading feedback we want, at both the browser and app level.
     (function initPullToRefresh() {
+      const el = document.getElementById('ptr-indicator');
+      if (!el) return;
+      const icon = el.querySelector('i');
       const THRESHOLD = 68;   // px of drag needed to release-to-refresh
-      const DEAD_ZONE = 12;   // px of downward movement to ignore before
-                               // committing to the gesture — without this,
-                               // ordinary hand jitter during a normal
-                               // scroll-up swipe (a tiny accidental dip
-                               // downward before the swipe "catches") was
-                               // triggering preventDefault() and locking
-                               // scroll for the rest of that touch.
+      const MAX_PULL = 100;   // visual cap so it doesn't drag forever
+      const REST_Y = -90;     // resting (hidden) translateY
 
       let startY = 0;
       let currentPull = 0;
       let armed = false;      // gesture started at the top of the page
-      let dragging = false;   // confirmed as a deliberate pull, past DEAD_ZONE
+      let dragging = false;   // actually moved enough to count as a drag
       let refreshing = false;
 
       function atTop() {
         return (window.scrollY || document.documentElement.scrollTop || 0) <= 2;
+      }
+
+      function setPull(px) {
+        currentPull = px;
+        const progress = Math.min(px / THRESHOLD, 1);
+        el.style.transform = `translate(-50%, ${REST_Y + px}px)`;
+        el.classList.toggle('ptr-visible', px > 4);
+        icon.style.transform = `rotate(${progress * 200}deg)`;
+      }
+
+      function reset() {
+        el.style.transform = `translate(-50%, ${REST_Y}px)`;
+        el.classList.remove('ptr-visible', 'ptr-dragging');
+        icon.style.transform = '';
+        currentPull = 0;
       }
 
       document.addEventListener('touchstart', (e) => {
@@ -1347,53 +1381,52 @@
         if (!armed || refreshing) return;
         const dy = e.touches[0].clientY - startY;
         if (dy <= 0 || !atTop()) {
-          // Moving up (normal scroll) or no longer at the top — this was
-          // never a pull gesture. Bail out without ever touching
-          // preventDefault so native scrolling stays completely untouched.
+          if (dragging) reset();
           armed = false;
           dragging = false;
-          currentPull = 0;
-          return;
-        }
-        if (dy < DEAD_ZONE) {
-          // Still inside the dead zone — could just be hand jitter before
-          // an upward scroll swipe. Track it, but don't commit yet.
-          currentPull = dy;
           return;
         }
         dragging = true;
-        currentPull = dy;
-        e.preventDefault(); // stop rubber-banding — we're handling the refresh ourselves
+        el.classList.add('ptr-dragging');
+        e.preventDefault(); // stop rubber-banding while we drive our own indicator
+        setPull(Math.min(dy * 0.45, MAX_PULL));
       }, { passive: false });
 
       document.addEventListener('touchend', () => {
         if (!armed) return;
         armed = false;
+        el.classList.remove('ptr-dragging');
         if (!dragging) return;
         dragging = false;
         if (currentPull >= THRESHOLD) {
           triggerRefresh();
+        } else {
+          reset();
         }
-        currentPull = 0;
       }, { passive: true });
 
       document.addEventListener('touchcancel', () => {
         armed = false;
         dragging = false;
-        currentPull = 0;
+        if (!refreshing) reset();
       }, { passive: true });
 
       async function triggerRefresh() {
         refreshing = true;
         vibrate(30);
+        el.style.transform = `translate(-50%, 6px)`;
+        el.classList.add('ptr-visible', 'ptr-loading');
         try {
-          await loadAppData(true); // shows the gold top-progress-bar itself
+          await loadAppData(true);
         } finally {
-          refreshing = false;
+          setTimeout(() => {
+            el.classList.remove('ptr-loading');
+            reset();
+            refreshing = false;
+          }, 300);
         }
       }
     })();
-
 
     // Generic debounce helper — used to stop expensive re-renders (like the
     // history search filter) from firing on every single keystroke.
