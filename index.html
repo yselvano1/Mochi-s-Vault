@@ -1895,20 +1895,37 @@
       const transactionId = document.getElementById('form-transaction-id').value;
       const isEdit = !!transactionId;
 
+      // 1. Ambil aturan meta (aturan mana yang boleh tampil dan mana yang tidak)
+      const meta = getTypeMeta(type);
+
+      // 2. Ambil nilai dari form
+      let sourceAcc = document.getElementById('form-source-account').value;
+      let targetAcc = document.getElementById('form-target-account').value;
+      let relatedPay = document.getElementById('form-payable').value;
+      let relatedRec = document.getElementById('form-receivable').value;
+
+      // 3. GERBANG PENJAGA MUTLAK: Kosongkan paksa jika tidak sesuai dengan tipenya!
+      if (!meta.showSource) sourceAcc = "";
+      if (!meta.showTarget) targetAcc = "";
+      if (!meta.showPayable) relatedPay = "";
+      if (!meta.showReceivable) relatedRec = "";
+
+      // 4. Susun Payload yang sudah bersih dari "data siluman"
       const payload = {
         date: document.getElementById('form-date').value,
         time: document.getElementById('form-time').value || "00:00",
         type: type,
-        sourceAccount: document.getElementById('form-source-account').value,
-        targetAccount: document.getElementById('form-target-account').value,
+        sourceAccount: sourceAcc,
+        targetAccount: targetAcc,
         category: category,
         description: document.getElementById('form-description').value,
         amount: amount,
         enteredBy: document.getElementById('form-user').value,
-        relatedPayable: document.getElementById('form-payable').value,
-        relatedReceivable: document.getElementById('form-receivable').value,
+        relatedPayable: relatedPay,
+        relatedReceivable: relatedRec,
         notes: document.getElementById('form-notes').value
       };
+      
       if (isEdit) payload.transactionId = transactionId;
 
       const btn = document.getElementById('btn-submit-transaction');
@@ -1954,11 +1971,10 @@
           if (result && result.data) {
             GLOBAL_DATA = result.data;
             localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
-            // renderAllViews() disembunyikan agar UI tidak berkedip, data sudah benar secara lokal.
           }
         })
         .catch(err => {
-          showToast("Connection failed! Transaction wasn't saved to server.", "error");
+          showToast("Koneksi gagal! Transaksi batal disimpan ke server.", "error");
           loadAppData(true); // Rollback state
         })
         .finally(() => {
