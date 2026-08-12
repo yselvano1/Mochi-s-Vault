@@ -6,7 +6,7 @@
   <title>Mochi's Vault — Keuangan Yosa & Fani</title>
 
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" id="meta-theme-color" content="#FAF8F5">
+  <meta name="theme-color" id="meta-theme-color" content="#F7F4EE">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
   <link rel="apple-touch-icon" href="mochi-logo-new.png">
@@ -19,9 +19,12 @@
       theme: {
         extend: {
           colors: {
-            mochi: { light: '#E8A87C', DEFAULT: '#C87A4B', dark: '#A45D33' },
-            coffee: { darkest: '#181412', dark: '#221C19', subtle: '#2D2520' },
-            obsidian: '#231A15'
+            mochi: { light: '#DFC08A', DEFAULT: '#B8925A', dark: '#8C6C3E' },
+            coffee: { darkest: '#141110', dark: '#1E1916', subtle: '#282019' },
+            obsidian: '#100D0B'
+          },
+          fontFamily: {
+            display: ['Fraunces', 'serif']
           }
         }
       }
@@ -31,12 +34,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap');
 
     :root {
-      --bg-app: #FAF8F5; --bg-card: #FFFFFF; --bg-subtle: #F3ECE4; --bg-subtle-2: #EFE6DC;
-      --text-primary: #2D241E; --text-secondary: #80736B; --text-tertiary: #A89B91;
-      --border-color: rgba(45, 36, 30, 0.07);
+      --bg-app: #F7F4EE; --bg-card: #FCFAF7; --bg-subtle: #F0EAE0; --bg-subtle-2: #E9E0D2;
+      --text-primary: #241C16; --text-secondary: #7C6F63; --text-tertiary: #A69A8C;
+      --border-color: rgba(36, 28, 22, 0.08);
 
       --amount-in: #2E6F40; --amount-out: #B93838; --amount-info: #1D63B8; --amount-warn: #B93838;
       --chip-in-bg: rgba(46, 111, 64, 0.12); --chip-out-bg: rgba(185, 56, 56, 0.12);
@@ -46,8 +49,9 @@
       --glass-modal-bg: rgba(250, 248, 245, 0.92);
       --shadow-card: 0 10px 30px -6px rgba(45, 36, 30, 0.05), 0 2px 8px -2px rgba(45, 36, 30, 0.03);
       --shadow-item: 0 2px 10px -2px rgba(45, 36, 30, 0.03);
-      --shadow-premium: 0 12px 35px -8px rgba(200, 122, 75, 0.15);
+      --shadow-premium: 0 12px 35px -8px rgba(184, 146, 90, 0.15);
       --shadow-inset: inset 0 2px 4px rgba(45, 36, 30, 0.03);
+      --chip-accent-bg: rgba(184, 146, 90, 0.16);
     }
 
     html, body {
@@ -61,9 +65,9 @@
     }
 
     html.dark {
-      --bg-app: #181412; --bg-card: #221C19; --bg-subtle: #2D2520; --bg-subtle-2: #382F2A;
-      --text-primary: #FAF8F5; --text-secondary: #A89B91; --text-tertiary: #786C64;
-      --border-color: rgba(250, 248, 245, 0.06);
+      --bg-app: #14100E; --bg-card: #1C1613; --bg-subtle: #241D19; --bg-subtle-2: #2E251F;
+      --text-primary: #F7F4EE; --text-secondary: #A69A8C; --text-tertiary: #7C6F63;
+      --border-color: rgba(247, 244, 238, 0.07);
 
       --amount-in: #52B788; --amount-out: #E57373; --amount-info: #64B5F6; --amount-warn: #E57373;
       --chip-in-bg: rgba(82, 183, 136, 0.15); --chip-out-bg: rgba(229, 115, 115, 0.15);
@@ -73,6 +77,7 @@
       --glass-modal-bg: rgba(24, 20, 18, 0.95);
       --shadow-card: 0 10px 30px -6px rgba(0, 0, 0, 0.4); --shadow-item: 0 2px 10px -2px rgba(0, 0, 0, 0.25);
       --shadow-premium: 0 12px 35px -8px rgba(0, 0, 0, 0.6); --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.25);
+      --chip-accent-bg: rgba(223, 192, 138, 0.18);
     }
 
     * { font-variant-numeric: tabular-nums; -webkit-tap-highlight-color: transparent; }
@@ -83,13 +88,21 @@
       letter-spacing: -0.01em;
     }
 
+    .font-display {
+      font-family: 'Fraunces', serif;
+      font-optical-sizing: auto;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.015em;
+      font-weight: 600;
+    }
+
     .ambient-blob {
       position: fixed; z-index: -1; border-radius: 9999px; pointer-events: none;
       filter: blur(70px); opacity: 0.35; transition: opacity 0.3s ease;
     }
     html.dark .ambient-blob { opacity: 0.18; }
-    .ambient-blob-1 { top: -8%; right: -18%; width: 60vw; height: 60vw; max-width: 420px; max-height: 420px; background: radial-gradient(circle, var(--mochi-light, #E8A87C) 0%, transparent 70%); }
-    .ambient-blob-2 { bottom: 10%; left: -22%; width: 55vw; height: 55vw; max-width: 380px; max-height: 380px; background: radial-gradient(circle, #C87A4B 0%, transparent 70%); }
+    .ambient-blob-1 { top: -8%; right: -18%; width: 60vw; height: 60vw; max-width: 420px; max-height: 420px; background: radial-gradient(circle, #DFC08A 0%, transparent 70%); }
+    .ambient-blob-2 { bottom: 10%; left: -22%; width: 55vw; height: 55vw; max-width: 380px; max-height: 380px; background: radial-gradient(circle, #B8925A 0%, transparent 70%); }
 
     .floating-card { background-color: var(--bg-card); box-shadow: var(--shadow-card); border-radius: 1.5rem; border: 1px solid var(--border-color); overflow: hidden; }
     .floating-item { background-color: var(--bg-card); box-shadow: var(--shadow-item); border-radius: 1.25rem; border: 1px solid var(--border-color); overflow: hidden; }
@@ -100,12 +113,26 @@
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .ios-input:focus {
-      outline: none; border: 1px solid rgba(200, 122, 75, 0.4);
-      box-shadow: 0 0 0 3px rgba(200, 122, 75, 0.15), var(--shadow-inset); background-color: var(--bg-card);
+      outline: none; border: 1px solid rgba(184, 146, 90, 0.4);
+      box-shadow: 0 0 0 3px rgba(184, 146, 90, 0.15), var(--shadow-inset); background-color: var(--bg-card);
     }
 
     @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
     .input-error { animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; border: 1px solid var(--amount-out) !important; box-shadow: 0 0 0 3px var(--chip-out-bg), var(--shadow-inset) !important; background-color: var(--bg-card) !important; }
+
+    /* Standardized field component: icon-labeled inputs with focus animation */
+    .field-group { position: relative; }
+    .field-label { display: flex; align-items: center; gap: 0.4rem; }
+    .field-label-icon {
+      width: 20px; height: 20px; border-radius: 7px; display: flex; align-items: center; justify-content: center;
+      background: var(--bg-subtle-2); color: var(--text-tertiary); flex-shrink: 0;
+      transition: background 0.25s cubic-bezier(0.4,0,0.2,1), color 0.25s ease, transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .field-label-icon i { width: 12px; height: 12px; }
+    .field-label-text { font-size: 11px; font-weight: 800; color: var(--text-secondary); transition: color 0.2s ease; }
+    .field-group:focus-within .field-label-icon { background: var(--chip-accent-bg); color: var(--mochi, #B8925A); transform: scale(1.12) rotate(-6deg); }
+    .field-group:focus-within .field-label-text { color: var(--text-primary); }
+    .ios-input[tabindex]:focus { outline: none; }
 
     .text-main { color: var(--text-primary); } .text-muted { color: var(--text-secondary); } .text-faint { color: var(--text-tertiary); }
     .amount-in, .amount-out, .amount-info, .amount-warn {
@@ -129,11 +156,13 @@
     }
     .nav-text.nav-text-active { max-width: 80px; opacity: 1; margin-left: 0.35rem; }
 
-    @keyframes pawPulse { 0% { box-shadow: 0 0 0 0 rgba(200, 122, 75, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(200, 122, 75, 0); } 100% { box-shadow: 0 0 0 0 rgba(200, 122, 75, 0); } }
+    @keyframes pawPulse { 0% { box-shadow: 0 0 0 0 rgba(184, 146, 90, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(184, 146, 90, 0); } 100% { box-shadow: 0 0 0 0 rgba(184, 146, 90, 0); } }
     .paw-fab { animation: pawPulse 2.5s ease-out 3; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .paw-fab:active { transform: scale(0.9); }
 
-    .vault-card { isolation: isolate; }
+    .vault-card { isolation: isolate; transform: perspective(900px) rotateX(0deg) rotateY(0deg); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease; will-change: transform; }
+    .vault-card.tilting { transition: transform 0.08s linear; }
+    .vault-card-number { letter-spacing: 0.28em; }
     .vault-texture {
       position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: 0.5; mix-blend-mode: overlay;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
@@ -189,7 +218,7 @@
     #top-progress-bar { opacity: 0; transition: opacity 0.25s ease; }
     #top-progress-bar.show { opacity: 1; }
     #top-progress-fill {
-      background: linear-gradient(90deg, transparent, var(--mochi, #C87A4B) 40%, var(--mochi, #C87A4B) 60%, transparent);
+      background: linear-gradient(90deg, transparent, var(--mochi, #B8925A) 40%, var(--mochi, #B8925A) 60%, transparent);
       background-size: 60% 100%;
       animation: progressSlide 1.1s ease-in-out infinite;
     }
@@ -225,7 +254,7 @@
     <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="reward-content">
       <div class="relative">
         <div class="absolute inset-0 bg-mochi-light/50 rounded-full animate-ping opacity-75 blur-md"></div>
-        <img src="assets/cat-paw-3d.png" alt="Purrfect Paw" class="w-28 h-28 object-contain relative z-10 filter drop-shadow-[0_12px_25px_rgba(200,122,75,0.6)]">
+        <img src="assets/cat-paw-3d.png" alt="Purrfect Paw" class="w-28 h-28 object-contain relative z-10 filter drop-shadow-[0_12px_25px_rgba(184,146,90,0.6)]">
       </div>
       <h2 class="text-white text-3xl font-black mt-4 drop-shadow-lg tracking-tight">Purr-fect! 🐾</h2>
       <p id="reward-subtitle" class="text-mochi-light font-bold mt-1.5 drop-shadow-md text-sm bg-coffee-dark/50 px-4 py-1 rounded-full">Saved</p>
@@ -266,7 +295,7 @@
   <main id="main-content" class="max-w-3xl mx-auto px-5 py-2 hidden">
     <section id="page-dashboard" class="space-y-6 page-animate pt-2">
       
-      <div id="vault-card" ontouchstart="vibrate(30); pulseVaultSheen()" onclick="showKpiDetail('Net Worth')" class="vault-card floating-card p-6 cursor-pointer card-hover relative overflow-hidden bg-gradient-to-br from-obsidian via-[#2C201A] to-coffee-darkest dark:from-mochi-dark dark:via-[#3E2519] dark:to-obsidian text-white border border-white/10 shadow-xl rounded-[2rem]">
+      <div id="vault-card" ontouchstart="vibrate(30); pulseVaultSheen()" onclick="showKpiDetail('Net Worth')" class="vault-card floating-card p-6 cursor-pointer relative overflow-hidden bg-gradient-to-br from-obsidian via-[#2C201A] to-coffee-darkest dark:from-mochi-dark dark:via-[#3E2519] dark:to-obsidian text-white border border-white/10 shadow-xl rounded-[2rem]">
         <div class="vault-texture"></div>
         <div class="vault-sheen"></div>
         <div class="flex justify-between items-center mb-6 relative z-10">
@@ -279,10 +308,12 @@
           <i data-lucide="nfc" class="w-5 h-5 text-white/60"></i>
         </div>
 
-        <div class="mb-6 relative z-10">
+        <div class="mb-4 relative z-10">
           <span class="text-[10px] font-black tracking-widest uppercase text-white/60 block mb-1">TOTAL NET WORTH</span>
-          <div id="kpi-networth" class="font-numeric text-3xl sm:text-4xl font-bold tracking-tight text-white drop-shadow-md truncate max-w-full">-</div>
+          <div id="kpi-networth" class="font-display text-4xl sm:text-5xl tracking-tight text-white drop-shadow-md truncate max-w-full">-</div>
         </div>
+
+        <div class="mb-6 relative z-10 vault-card-number font-numeric text-[11px] text-white/35">•••• •••• •••• 4471</div>
 
         <div ontouchstart="vibrate(30); event.stopPropagation(); showKpiDetail('Disposable Income')" class="relative z-10 bg-white/10 dark:bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/15 flex items-center justify-between">
           <div class="min-w-0 flex-1 pr-2">
@@ -296,30 +327,33 @@
         </div>
       </div>
 
-            <div class="grid grid-cols-2 gap-3">
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="floating-item p-5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
-          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="coins" class="w-3.5 h-3.5 mr-1.5 amount-in flex-shrink-0"></i> TOTAL CASH</span>
-          <span id="kpi-cash" class="font-numeric text-sm sm:text-base font-bold amount-in block truncate w-full">-</span>
-        </div>
-
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="floating-item p-5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
-          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="piggy-bank" class="w-3.5 h-3.5 mr-1.5 amount-in flex-shrink-0"></i> NET SAVINGS</span>
-          <span id="kpi-savings" class="font-numeric text-sm sm:text-base font-bold amount-in block truncate w-full">-</span>
-        </div>
-
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="floating-item p-5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
-          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="hand-coins" class="w-3.5 h-3.5 mr-1.5 amount-info flex-shrink-0"></i> RECEIVABLES</span>
-          <span id="kpi-receivables" class="font-numeric text-sm sm:text-base font-bold amount-info block truncate w-full">-</span>
-        </div>
-
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="floating-item p-5 cursor-pointer card-hover flex flex-col justify-center bg-card rounded-2xl">
-          <span class="text-[10px] text-muted font-bold block uppercase tracking-wider mb-1.5 flex items-center"><i data-lucide="credit-card" class="w-3.5 h-3.5 mr-1.5 amount-out flex-shrink-0"></i> PAYABLES</span>
-          <span id="kpi-payables" class="font-numeric text-sm sm:text-base font-bold amount-out block truncate w-full">-</span>
+      <div class="floating-card overflow-hidden">
+        <div class="grid grid-cols-2 divide-x divide-[var(--border-color)]">
+          <div class="divide-y divide-[var(--border-color)]">
+            <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="tap-shrink cursor-pointer px-4 py-3.5 flex items-center justify-between gap-2">
+              <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center flex-shrink-0"><i data-lucide="coins" class="w-3.5 h-3.5 mr-1.5 amount-in flex-shrink-0"></i>Cash</span>
+              <span id="kpi-cash" class="font-numeric text-xs sm:text-sm font-bold amount-in truncate text-right">-</span>
+            </div>
+            <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="tap-shrink cursor-pointer px-4 py-3.5 flex items-center justify-between gap-2">
+              <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center flex-shrink-0"><i data-lucide="hand-coins" class="w-3.5 h-3.5 mr-1.5 amount-info flex-shrink-0"></i>Receivables</span>
+              <span id="kpi-receivables" class="font-numeric text-xs sm:text-sm font-bold amount-info truncate text-right">-</span>
+            </div>
+          </div>
+          <div class="divide-y divide-[var(--border-color)]">
+            <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="tap-shrink cursor-pointer px-4 py-3.5 flex items-center justify-between gap-2">
+              <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center flex-shrink-0"><i data-lucide="piggy-bank" class="w-3.5 h-3.5 mr-1.5 amount-in flex-shrink-0"></i>Savings</span>
+              <span id="kpi-savings" class="font-numeric text-xs sm:text-sm font-bold amount-in truncate text-right">-</span>
+            </div>
+            <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="tap-shrink cursor-pointer px-4 py-3.5 flex items-center justify-between gap-2">
+              <span class="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center flex-shrink-0"><i data-lucide="credit-card" class="w-3.5 h-3.5 mr-1.5 amount-out flex-shrink-0"></i>Payables</span>
+              <span id="kpi-payables" class="font-numeric text-xs sm:text-sm font-bold amount-out truncate text-right">-</span>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="floating-card p-5 relative overflow-hidden">
-        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+        <div class="flex justify-between items-center mb-4 border-b border-[var(--border-color)] pb-3">
           <h3 class="text-sm font-extrabold text-main">Expense Analysis</h3>
           <span class="text-[10px] font-bold bg-mochi-light/20 text-mochi dark:text-mochi-light px-2.5 py-1 rounded-full uppercase tracking-wider">THIS MONTH</span>
         </div>
@@ -328,7 +362,7 @@
       </div>
 
       <div class="floating-card p-5 relative overflow-hidden">
-        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+        <div class="flex justify-between items-center mb-4 border-b border-[var(--border-color)] pb-3">
           <div class="flex items-center space-x-2">
             <div class="w-7 h-7 rounded-lg bg-[var(--chip-info-bg)] text-mochi dark:text-mochi-light flex items-center justify-center">
               <i data-lucide="sliders" class="w-4 h-4"></i>
@@ -345,7 +379,7 @@
 
 <div id="dashboard-due-container"></div>
       <div class="floating-card p-5 mb-12">
-        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+        <div class="flex justify-between items-center mb-4 border-b border-[var(--border-color)] pb-3">
           <h3 class="text-sm font-extrabold text-main">Recent Transactions</h3>
           <button ontouchstart="vibrate(30)" onclick="switchTab('history')" class="text-xs font-bold text-mochi hover:text-mochi-dark dark:text-mochi-light bg-mochi-light/10 px-3 py-1.5 rounded-full transition-colors">See All</button>
         </div>
@@ -355,13 +389,13 @@
 
     <section id="page-history" class="hidden space-y-4 page-animate">
       <div class="floating-card p-5 space-y-4">
-        <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 dark:border-[var(--border-color)] pb-4 gap-3">
+        <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-[var(--border-color)] pb-4 gap-3">
           <div class="flex items-center space-x-2 text-main">
             <div class="w-8 h-8 rounded-full bg-mochi-light/20 dark:bg-mochi-light/10 flex items-center justify-center text-mochi dark:text-mochi-light"><i data-lucide="file-text" class="w-4 h-4"></i></div>
             <span class="text-sm font-extrabold uppercase tracking-wider">e-Statement & Mutasi</span>
           </div>
           
-          <button ontouchstart="vibrate(30)" onclick="exportPDFStatement()" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-4 py-2 rounded-full text-xs font-bold flex items-center shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] justify-center transition-colors">
+          <button ontouchstart="vibrate(30)" onclick="exportPDFStatement()" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-4 py-2 rounded-full text-xs font-bold flex items-center shadow-[0_4px_14px_0_rgba(184,146,90,0.25)] justify-center transition-colors">
             <i data-lucide="printer" class="w-3.5 h-3.5 mr-1.5"></i> Export PDF Report
           </button>
         </div>
@@ -421,16 +455,16 @@
           <input type="text" id="filter-search" oninput="renderHistory()" placeholder="Search description..." class="w-full text-sm ios-input pl-10 pr-4 py-2.5">
         </div>
 
-        <div id="statement-summary" class="floating-item pb-1 mt-3 flex flex-col border border-slate-100 dark:border-[var(--border-color)]">
-          <div onclick="vibrate(30); showIncomeDetail()" class="flex justify-between items-center border-b border-slate-100 dark:border-[var(--border-color)] py-4 px-5 cursor-pointer card-hover transition tap-shrink">
+        <div id="statement-summary" class="floating-item pb-1 mt-3 flex flex-col border border-[var(--border-color)]">
+          <div onclick="vibrate(30); showIncomeDetail()" class="flex justify-between items-center border-b border-[var(--border-color)] py-4 px-5 cursor-pointer card-hover transition tap-shrink">
             <span class="text-muted text-[10px] uppercase font-bold tracking-wider flex items-center"><i data-lucide="trending-up" class="w-3.5 h-3.5 mr-1.5 amount-in"></i> REAL INCOME</span>
             <span id="sum-income" class="font-extrabold amount-in text-[15px]">+Rp 0</span>
           </div>
-          <div onclick="vibrate(30); showExpenseDetail()" class="flex justify-between items-center border-b border-slate-100 dark:border-[var(--border-color)] py-4 px-5 cursor-pointer card-hover transition tap-shrink">
+          <div onclick="vibrate(30); showExpenseDetail()" class="flex justify-between items-center border-b border-[var(--border-color)] py-4 px-5 cursor-pointer card-hover transition tap-shrink">
             <span class="text-muted text-[10px] uppercase font-bold tracking-wider flex items-center"><i data-lucide="arrow-up-right" class="w-3.5 h-3.5 mr-1.5 amount-out"></i> REAL EXPENSE</span>
             <span id="sum-expense" class="font-extrabold amount-out text-[15px]">-Rp 0</span>
           </div>
-          <div onclick="vibrate(30); showNetSurplusDetail()" class="flex justify-between items-center py-4 px-5 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer card-hover transition tap-shrink">
+          <div onclick="vibrate(30); showNetSurplusDetail()" class="flex justify-between items-center py-4 px-5 bg-[var(--bg-subtle)] dark:bg-[var(--bg-subtle)] cursor-pointer card-hover transition tap-shrink">
             <span class="text-main text-[10px] uppercase font-black tracking-wider flex items-center"><i data-lucide="scale" class="w-3.5 h-3.5 mr-1.5 text-mochi"></i> NET SURPLUS</span>
             <span id="sum-net" class="font-black text-main text-[16px]">Rp 0</span>
           </div>
@@ -442,43 +476,43 @@
 
     <section id="page-wallets" class="hidden space-y-6 page-animate pb-8">
       <div class="floating-card p-5" id="wallet-group-bank">
-        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+        <div class="flex justify-between items-center mb-4 border-b border-[var(--border-color)] pb-3">
           <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
             <i data-lucide="building-2" class="w-4 h-4 mr-2"></i> Bank Accounts
           </h3>
           <button type="button" onclick="vibrate(30); openMasterModal('account')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New</button>
         </div>
         <div id="list-bank-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 empty:hidden"></div>
-        <div id="divider-bank" class="hidden border-t border-dashed border-slate-200 dark:border-[var(--border-color)] my-3"></div>
+        <div id="divider-bank" class="hidden border-t border-dashed border-[var(--border-color)] my-3"></div>
         <div id="list-bank-savings" class="grid grid-cols-1 md:grid-cols-2 gap-3 empty:hidden"></div>
       </div>
 
       <div class="floating-card p-5" id="wallet-group-ewallet">
-        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+        <div class="flex justify-between items-center mb-4 border-b border-[var(--border-color)] pb-3">
           <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
             <i data-lucide="smartphone" class="w-4 h-4 mr-2"></i> E-Wallets
           </h3>
           <button type="button" onclick="vibrate(30); openMasterModal('account')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New</button>
         </div>
         <div id="list-ewallet-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 empty:hidden"></div>
-        <div id="divider-ewallet" class="hidden border-t border-dashed border-slate-200 dark:border-[var(--border-color)] my-3"></div>
+        <div id="divider-ewallet" class="hidden border-t border-dashed border-[var(--border-color)] my-3"></div>
         <div id="list-ewallet-savings" class="grid grid-cols-1 md:grid-cols-2 gap-3 empty:hidden"></div>
       </div>
 
       <div class="floating-card p-5" id="wallet-group-cash">
-        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+        <div class="flex justify-between items-center mb-4 border-b border-[var(--border-color)] pb-3">
           <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
             <i data-lucide="banknote" class="w-4 h-4 mr-2"></i> Physical Cash
           </h3>
           <button type="button" onclick="vibrate(30); openMasterModal('account')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New</button>
         </div>
         <div id="list-cash-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 empty:hidden"></div>
-        <div id="divider-cash" class="hidden border-t border-dashed border-slate-200 dark:border-[var(--border-color)] my-3"></div>
+        <div id="divider-cash" class="hidden border-t border-dashed border-[var(--border-color)] my-3"></div>
         <div id="list-cash-savings" class="grid grid-cols-1 md:grid-cols-2 gap-3 empty:hidden"></div>
       </div>
 
       <div class="floating-card p-5" id="wallet-group-cc">
-        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+        <div class="flex justify-between items-center mb-4 border-b border-[var(--border-color)] pb-3">
           <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
             <i data-lucide="credit-card" class="w-4 h-4 mr-2"></i> Credit Cards & PayLater
           </h3>
@@ -490,7 +524,7 @@
 
     <section id="page-payables" class="hidden space-y-6 page-animate pb-8">
       <div class="floating-card p-5">
-        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+        <div class="flex justify-between items-center mb-4 border-b border-[var(--border-color)] pb-3">
           <h3 class="text-xs font-extrabold uppercase tracking-wider amount-info flex items-center">
             <i data-lucide="hand-coins" class="w-4 h-4 mr-2"></i> Unpaid Receivables
           </h3>
@@ -499,7 +533,7 @@
         <div id="list-receivables-active" class="space-y-3"></div>
       </div>
       <div class="floating-card p-5">
-        <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-[var(--border-color)] pb-3">
+        <div class="flex justify-between items-center mb-4 border-b border-[var(--border-color)] pb-3">
           <h3 class="text-xs font-extrabold uppercase tracking-wider amount-out flex items-center">
             <i data-lucide="credit-card" class="w-4 h-4 mr-2"></i> Active Payables
           </h3>
@@ -510,24 +544,24 @@
     </section>
   </main>
 
-  <nav class="fixed bottom-0 left-0 right-0 nav-bar-bottom z-40 rounded-t-3xl border-t border-slate-200/50 dark:border-[var(--border-color)]">
+  <nav class="fixed bottom-0 left-0 right-0 nav-bar-bottom z-40 rounded-t-3xl border-t border-[var(--border-color)]">
     <div class="flex justify-between items-center w-full max-w-md mx-auto px-6 py-3 relative">
       <button ontouchstart="vibrate(30)" onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-item bg-mochi-light/20 text-mochi dark:text-mochi-light px-4 py-2.5 rounded-2xl flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="layout-dashboard" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text nav-text-active text-[12px] font-extrabold tracking-wide">Home</span>
       </button>
 
-      <button ontouchstart="vibrate(30)" onclick="switchTab('history')" id="tab-history" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
+      <button ontouchstart="vibrate(30)" onclick="switchTab('history')" id="tab-history" class="nav-item text-faint hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="list" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text text-[12px] font-extrabold tracking-wide">History</span>
       </button>
 
-      <button ontouchstart="vibrate(30)" onclick="switchTab('wallets')" id="tab-wallets" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
+      <button ontouchstart="vibrate(30)" onclick="switchTab('wallets')" id="tab-wallets" class="nav-item text-faint hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
         <i data-lucide="wallet" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-text text-[12px] font-extrabold tracking-wide">Wallets</span>
       </button>
 
-      <button ontouchstart="vibrate(30)" onclick="switchTab('payables')" id="tab-payables" class="nav-item text-slate-400 dark:text-[#A89B91] hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
+      <button ontouchstart="vibrate(30)" onclick="switchTab('payables')" id="tab-payables" class="nav-item text-faint hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
         <div class="relative flex-shrink-0">
           <i data-lucide="credit-card" class="w-5 h-5"></i>
 
@@ -539,7 +573,7 @@
 
   <div class="fixed bottom-[5.5rem] left-0 right-0 z-50 pointer-events-none">
     <div class="max-w-3xl mx-auto px-5 relative h-full">
-      <button ontouchstart="vibrate(35)" onclick="openNewTransactionForm()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-[var(--bg-card)] rounded-full shadow-[0_8px_20px_-4px_rgba(200,122,75,0.3)] flex items-center justify-center pointer-events-auto border-2 border-mochi-light/40 group p-2.5">
+      <button ontouchstart="vibrate(35)" onclick="openNewTransactionForm()" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-[var(--bg-card)] rounded-full shadow-[0_8px_20px_-4px_rgba(184,146,90,0.3)] flex items-center justify-center pointer-events-auto border-2 border-mochi-light/40 group p-2.5">
         <img src="assets/cat-paw-3d.png" alt="Add Transaction" class="w-full h-full object-contain filter drop-shadow-sm transition-transform group-active:scale-90">
       </button>
     </div>
@@ -547,7 +581,7 @@
 
   <div id="modalTransactionForm" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[60] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalTransactionForm')">
     <div id="modalTransactionForm-content" class="glass-modal-content w-full max-w-lg rounded-t-[2rem] md:rounded-[2rem] max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl modal-content-bottom md:modal-content-center">
-      <div class="flex justify-between items-center border-b border-slate-200 dark:border-[var(--border-color)] pb-4 mb-4">
+      <div class="flex justify-between items-center border-b border-[var(--border-color)] pb-4 mb-4">
         <h3 id="modal-title-transaction" class="font-extrabold text-main text-base">New Transaction</h3>
         <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalTransactionForm')" class="tap-shrink text-faint hover:text-main bg-[var(--bg-subtle-2)] p-2 rounded-full transition-colors border border-[var(--border-color)]">
           <i data-lucide="x" class="w-4 h-4"></i>
@@ -557,8 +591,11 @@
       <form id="formTransaction" onsubmit="handleSaveTransaction(event)" class="space-y-3 text-sm">
         <input type="hidden" id="form-transaction-id">
 
-        <div>
-          <label for="form-user" class="font-bold text-main block mb-1 text-xs cursor-pointer">By</label>
+        <div class="field-group">
+          <label for="form-user" class="field-label mb-1.5 cursor-pointer">
+            <span class="field-label-icon"><i data-lucide="user"></i></span>
+            <span class="field-label-text">By</span>
+          </label>
           <select id="form-user" class="w-full ios-input cursor-pointer">
             <option value="Yosa">Yosa</option>
             <option value="Fani">Fani</option>
@@ -566,105 +603,139 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label for="form-date" class="font-bold text-main block mb-1 text-xs cursor-pointer">Date</label>
+          <div class="field-group">
+            <label for="form-date" class="field-label mb-1.5 cursor-pointer">
+              <span class="field-label-icon"><i data-lucide="calendar"></i></span>
+              <span class="field-label-text">Date</span>
+            </label>
             <input type="date" id="form-date" class="w-full ios-input" required>
           </div>
-          <div>
-            <label for="form-time" class="font-bold text-main block mb-1 text-xs cursor-pointer">Time</label>
-            <input type="time" id="form-time" class="w-full ios-input" required>
+          <div class="field-group">
+            <label for="form-time" class="field-label mb-1.5 cursor-pointer">
+              <span class="field-label-icon"><i data-lucide="clock"></i></span>
+              <span class="field-label-text">Time</span>
+            </label>
+            <input type="time" id="form-time" value="00:00" class="w-full ios-input">
           </div>
         </div>
+        <p class="text-[10px] text-faint font-medium -mt-2 px-1">Leave the time as 12:00 AM if you don't know the exact time — it just won't be used for precise ordering.</p>
 
-        <div>
-          <label class="font-bold text-main block mb-1 text-xs">Transaction Type</label>
-          <div ontouchstart="vibrate(30)" onclick="openTypePicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+        <div class="field-group">
+          <label class="field-label mb-1.5">
+            <span class="field-label-icon"><i data-lucide="shuffle"></i></span>
+            <span class="field-label-text">Transaction Type</span>
+          </label>
+          <div tabindex="0" ontouchstart="vibrate(30)" onclick="openTypePicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
             <div id="form-type-display" class="flex items-center space-x-2.5"></div>
             <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
           </div>
           <input type="hidden" id="form-type" value="Expense">
         </div>
 
-        <div id="wrap-source-account" class="space-y-1">
+        <div id="wrap-source-account" class="field-group space-y-1">
           <div class="flex justify-between items-center">
-            <label class="font-bold text-main text-xs">Source Account</label>
+            <label class="field-label mb-0">
+              <span class="field-label-icon"><i data-lucide="wallet"></i></span>
+              <span class="field-label-text">Source Account</span>
+            </label>
             <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
           </div>
-          <div ontouchstart="vibrate(30)" onclick="openItemPicker('source-account')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+          <div tabindex="0" ontouchstart="vibrate(30)" onclick="openItemPicker('source-account')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
             <span id="display-source-account" class="font-semibold text-faint truncate">Select Account...</span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
           </div>
           <input type="hidden" id="form-source-account">
         </div>
 
-        <div id="wrap-target-account" class="space-y-1 hidden">
+        <div id="wrap-target-account" class="field-group space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label class="font-bold text-main text-xs">Target Account</label>
+            <label class="field-label mb-0">
+              <span class="field-label-icon"><i data-lucide="wallet"></i></span>
+              <span class="field-label-text">Target Account</span>
+            </label>
             <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
           </div>
-          <div ontouchstart="vibrate(30)" onclick="openItemPicker('target-account')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+          <div tabindex="0" ontouchstart="vibrate(30)" onclick="openItemPicker('target-account')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
             <span id="display-target-account" class="font-semibold text-faint truncate">Select Account...</span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
           </div>
           <input type="hidden" id="form-target-account">
         </div>
 
-        <div class="space-y-1">
+        <div class="field-group space-y-1">
           <div class="flex justify-between items-center">
-            <label class="font-bold text-main text-xs">Category</label>
+            <label class="field-label mb-0">
+              <span class="field-label-icon"><i data-lucide="shapes"></i></span>
+              <span class="field-label-text">Category</span>
+            </label>
             <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('category')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Category</button>
           </div>
-          <div ontouchstart="vibrate(30)" onclick="openCategoryPicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+          <div tabindex="0" ontouchstart="vibrate(30)" onclick="openCategoryPicker()" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
             <span id="form-category-display" class="font-semibold text-faint truncate">Select Category...</span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
           </div>
           <input type="hidden" id="form-category">
         </div>
 
-        <div id="wrap-payable" class="space-y-1 hidden">
+        <div id="wrap-payable" class="field-group space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label class="font-bold text-main text-xs">Related Payable</label>
+            <label class="field-label mb-0">
+              <span class="field-label-icon"><i data-lucide="credit-card"></i></span>
+              <span class="field-label-text">Related Payable</span>
+            </label>
             <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('payable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Payable</button>
           </div>
-          <div ontouchstart="vibrate(30)" onclick="openItemPicker('payable')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+          <div tabindex="0" ontouchstart="vibrate(30)" onclick="openItemPicker('payable')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
             <span id="display-payable" class="font-semibold text-faint truncate">Select Payable...</span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
           </div>
           <input type="hidden" id="form-payable">
         </div>
 
-        <div id="wrap-receivable" class="space-y-1 hidden">
+        <div id="wrap-receivable" class="field-group space-y-1 hidden">
           <div class="flex justify-between items-center">
-            <label class="font-bold text-main text-xs">Related Receivable</label>
+            <label class="field-label mb-0">
+              <span class="field-label-icon"><i data-lucide="hand-coins"></i></span>
+              <span class="field-label-text">Related Receivable</span>
+            </label>
             <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('receivable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Receivable</button>
           </div>
-          <div ontouchstart="vibrate(30)" onclick="openItemPicker('receivable')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
+          <div tabindex="0" ontouchstart="vibrate(30)" onclick="openItemPicker('receivable')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
             <span id="display-receivable" class="font-semibold text-faint truncate">Select Receivable...</span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-faint flex-shrink-0"></i>
           </div>
           <input type="hidden" id="form-receivable">
         </div>
 
-        <div>
-          <label for="form-amount-display" class="font-bold text-main block mb-1 text-xs cursor-pointer">Amount (Rp)</label>
+        <div class="field-group">
+          <label for="form-amount-display" class="field-label mb-1.5 cursor-pointer">
+            <span class="field-label-icon"><i data-lucide="banknote"></i></span>
+            <span class="field-label-text">Amount (Rp)</span>
+          </label>
           <div class="relative">
             <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-sm">Rp</span>
-            <input type="text" inputmode="numeric" id="form-amount-display" oninput="formatInputRupiah(this)" placeholder="0" class="w-full ios-input pl-10 text-base font-extrabold text-main" required>
+            <input type="text" inputmode="numeric" id="form-amount-display" oninput="formatInputRupiah(this, 'form-amount-value')" placeholder="0" class="w-full ios-input pl-10 text-base font-extrabold text-main" required>
           </div>
           <input type="hidden" id="form-amount-value">
         </div>
 
-        <div>
-          <label for="form-description" class="font-bold text-main block mb-1 text-xs cursor-pointer">Description</label>
+        <div class="field-group">
+          <label for="form-description" class="field-label mb-1.5 cursor-pointer">
+            <span class="field-label-icon"><i data-lucide="pen-line"></i></span>
+            <span class="field-label-text">Description</span>
+          </label>
           <input type="text" id="form-description" placeholder="e.g. Monthly Groceries" class="w-full ios-input">
         </div>
-        <div>
-          <label for="form-notes" class="font-bold text-main block mb-1 text-xs cursor-pointer">Notes (Optional)</label>
+        <div class="field-group">
+          <label for="form-notes" class="field-label mb-1.5 cursor-pointer">
+            <span class="field-label-icon"><i data-lucide="align-left"></i></span>
+            <span class="field-label-text">Notes (Optional)</span>
+          </label>
           <textarea id="form-notes" rows="2" placeholder="Optional notes..." class="w-full ios-input"></textarea>
         </div>
 
         <div class="pt-3 pb-1">
-          <button type="submit" id="btn-submit-transaction" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] transition-colors">
+          <button type="submit" id="btn-submit-transaction" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(184,146,90,0.25)] transition-colors">
             Save Transaction
           </button>
         </div>
@@ -683,7 +754,7 @@
 
   <div id="modalTypePicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[75] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalTypePicker')">
     <div id="modalTypePicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
-      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
+      <div class="flex justify-between items-center border-b border-[var(--border-color)] pb-3 mb-3 sticky top-0 bg-inherit backdrop-blur-md z-10">
         <h3 class="font-extrabold text-main text-sm">Select Transaction Type</h3>
         <button ontouchstart="vibrate(30)" onclick="closeModal('modalTypePicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]">
           <i data-lucide="x" class="w-4 h-4"></i>
@@ -696,7 +767,7 @@
   
   <div id="modalItemPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalItemPicker')">
     <div id="modalItemPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
-      <div class="flex justify-between items-center pb-3 mb-3 border-b border-slate-200/50 dark:border-[var(--border-color)] sticky top-0 bg-inherit backdrop-blur-md z-10">
+      <div class="flex justify-between items-center pb-3 mb-3 border-b border-[var(--border-color)] sticky top-0 bg-inherit backdrop-blur-md z-10">
         <h3 id="item-picker-title" class="font-extrabold text-main text-sm">Select Item</h3>
         <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalItemPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
           <i data-lucide="x" class="w-4 h-4"></i>
@@ -708,7 +779,7 @@
 
   <div id="modalCategoryPicker" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-end md:items-center justify-center p-0 md:p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalCategoryPicker')">
     <div id="modalCategoryPicker-content" class="glass-modal-content w-full max-w-sm rounded-t-[2rem] md:rounded-[2rem] max-h-[85vh] overflow-y-auto p-5 shadow-2xl modal-content-bottom md:modal-content-center">
-      <div class="flex justify-between items-center pb-3 mb-3 border-b border-slate-200/50 dark:border-[var(--border-color)]">
+      <div class="flex justify-between items-center pb-3 mb-3 border-b border-[var(--border-color)]">
         <h3 class="font-extrabold text-main text-base">Select Category</h3>
         <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalCategoryPicker')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)] text-main">
           <i data-lucide="x" class="w-4 h-4"></i>
@@ -720,7 +791,7 @@
 
   <div id="modalMaster" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMaster')">
     <div id="modalMaster-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center">
-      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-3">
+      <div class="flex justify-between items-center border-b border-[var(--border-color)] pb-3 mb-3">
         <h4 id="master-title" class="font-extrabold text-main text-base">Add Master Data</h4>
         <button type="button" ontouchstart="vibrate(30)" onclick="closeModal('modalMaster')" class="tap-shrink bg-[var(--bg-subtle-2)] p-2 rounded-full transition border border-[var(--border-color)]"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
@@ -729,7 +800,10 @@
         <input type="hidden" id="master-old-name">
 
         <div id="master-category-type-wrap" class="hidden">
-          <label for="master-category-type" class="font-extrabold text-main block mb-1 text-xs cursor-pointer">Category Type</label>
+          <label for="master-category-type" class="field-label mb-1.5 cursor-pointer">
+            <span class="field-label-icon"><i data-lucide="shapes"></i></span>
+            <span class="field-label-text">Category Type</span>
+          </label>
           <select id="master-category-type" onchange="handleMasterCategoryTypeChange()" class="w-full ios-input cursor-pointer py-2.5">
             <option value="Expense">Expense</option>
             <option value="Income">Income</option>
@@ -740,24 +814,33 @@
         </div>
 
         <div id="master-main-category-wrap" class="hidden">
-          <label for="master-main-category-select" class="font-bold text-main block mb-1 text-xs cursor-pointer">Main Category</label>
+          <label for="master-main-category-select" class="field-label mb-1.5 cursor-pointer">
+            <span class="field-label-icon"><i data-lucide="folder-tree"></i></span>
+            <span class="field-label-text">Main Category</span>
+          </label>
           <select id="master-main-category-select" onchange="handleMainCategorySelectChange()" class="w-full ios-input cursor-pointer"></select>
         </div>
 
         <div id="master-main-category-new-wrap" class="hidden">
-          <label for="master-main-category-new" class="font-bold text-main block mb-1 text-xs cursor-pointer">New Main Category Name</label>
+          <label for="master-main-category-new" class="field-label mb-1.5 cursor-pointer">
+            <span class="field-label-icon"><i data-lucide="folder-plus"></i></span>
+            <span class="field-label-text">New Main Category Name</span>
+          </label>
           <input type="text" id="master-main-category-new" placeholder="e.g. Investment" class="w-full ios-input">
         </div>
 
-        <div>
-          <label for="master-name" class="font-bold text-main block mb-1 text-xs cursor-pointer" id="master-name-label">Name</label>
+        <div class="field-group">
+          <label for="master-name" class="field-label mb-1.5 cursor-pointer">
+            <span class="field-label-icon"><i data-lucide="tag"></i></span>
+            <span class="field-label-text" id="master-name-label">Name</span>
+          </label>
           <input type="text" id="master-name" class="w-full ios-input" required>
         </div>
 
         <div id="master-extra-field" class="space-y-3"></div>
 
         <div class="pt-3">
-          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(200,122,75,0.25)] transition-colors">Save Master Data</button>
+          <button type="submit" class="tap-shrink w-full bg-mochi hover:bg-mochi-dark text-white font-extrabold py-3 rounded-2xl shadow-[0_4px_14px_0_rgba(184,146,90,0.25)] transition-colors">Save Master Data</button>
         </div>
       </form>
     </div>
@@ -765,7 +848,7 @@
 
   <div id="modalBudgetEditor" class="fixed inset-0 bg-coffee-darkest/50 dark:bg-coffee-darkest/90 z-[70] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalBudgetEditor')">
     <div id="modalBudgetEditor-content" class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl modal-content-center max-h-[85vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b border-slate-200/50 dark:border-[var(--border-color)] pb-3 mb-4">
+      <div class="flex justify-between items-center border-b border-[var(--border-color)] pb-3 mb-4">
         <h4 class="font-extrabold text-main text-base flex items-center">
           <i data-lucide="sliders" class="w-4 h-4 mr-2 text-mochi"></i> Set Category Budgets
         </h4>
@@ -805,7 +888,7 @@
 
       <div class="space-y-4">
         <!-- Profile -->
-        <div class="bg-slate-50 dark:bg-[var(--bg-subtle)] p-4 rounded-2xl border border-[var(--border-color)] flex items-center justify-between">
+        <div class="bg-[var(--bg-subtle)] dark:bg-[var(--bg-subtle)] p-4 rounded-2xl border border-[var(--border-color)] flex items-center justify-between">
           <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-full bg-[var(--chip-info-bg)] amount-info flex items-center justify-center font-black text-lg">YF</div>
             <div>
@@ -890,9 +973,6 @@
     let GLOBAL_DATA = { kpi: {}, transactions: [], accounts: [], categories: [], payables: [], receivables: [] };
     let currentModalBackFn = null;
     let transactionToDelete = null;
-    let pendingDeleteIds = new Set();
-    let pendingDeleteTimers = {};
-    let swipeState = null;
 
     let activeModals = [];
     history.replaceState({ modal: null }, '');
@@ -924,86 +1004,6 @@
       if (navigator.vibrate) navigator.vibrate(Math.max(ms, 25));
     }
 
-    // Distinct haptic patterns so success/error/delete feel different, not just "a buzz"
-    function vibrateSuccess() { if (navigator.vibrate) navigator.vibrate([20, 40, 20]); }
-    function vibrateError() { if (navigator.vibrate) navigator.vibrate([40, 60, 40, 60, 40]); }
-
-    function attachSwipeHandlers() {
-      const list = document.getElementById('history-transaction-list');
-      if (!list || list.dataset.swipeBound) return;
-      list.dataset.swipeBound = "1";
-      list.addEventListener('touchstart', onSwipeStart, { passive: true });
-      list.addEventListener('touchmove', onSwipeMove, { passive: false });
-      list.addEventListener('touchend', onSwipeEnd, { passive: false });
-      list.addEventListener('touchcancel', onSwipeEnd, { passive: false });
-    }
-
-    function onSwipeStart(e) {
-      const wrap = e.target.closest('.history-swipe-wrap');
-      if (!wrap) return;
-      const content = wrap.querySelector('.history-swipe-content');
-      swipeState = {
-        wrap, content, trxId: wrap.dataset.trxId,
-        startX: e.touches[0].clientX, startY: e.touches[0].clientY,
-        dx: 0, locked: null, longPressFired: false
-      };
-      content.style.transition = 'none';
-      swipeState.longPressTimer = setTimeout(() => {
-        if (swipeState && swipeState.locked === null) {
-          swipeState.longPressFired = true;
-          vibrate(50);
-          duplicateTransaction(swipeState.trxId);
-        }
-      }, 550);
-    }
-
-    function onSwipeMove(e) {
-      if (!swipeState) return;
-      const touch = e.touches[0];
-      const dx = touch.clientX - swipeState.startX;
-      const dy = touch.clientY - swipeState.startY;
-
-      if (swipeState.locked === null) {
-        if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-          swipeState.locked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
-          clearTimeout(swipeState.longPressTimer);
-        }
-      }
-      if (swipeState.locked !== 'x') return;
-
-      e.preventDefault();
-      const clamped = Math.max(-96, Math.min(96, dx));
-      swipeState.dx = clamped;
-      swipeState.content.style.transform = `translateX(${clamped}px)`;
-    }
-
-    function onSwipeEnd(e) {
-      if (!swipeState) return;
-      clearTimeout(swipeState.longPressTimer);
-
-      if (swipeState.longPressFired) {
-        e.preventDefault();
-        swipeState.content.style.transition = 'transform 0.2s ease';
-        swipeState.content.style.transform = 'translateX(0)';
-        swipeState = null;
-        return;
-      }
-
-      const { content, trxId, dx } = swipeState;
-      content.style.transition = 'transform 0.25s ease';
-      content.style.transform = 'translateX(0)';
-
-      const THRESHOLD = 64;
-      if (dx <= -THRESHOLD) {
-        vibrate(35);
-        softDeleteTransaction(trxId);
-      } else if (dx >= THRESHOLD) {
-        vibrate(30);
-        handleEditTransaction(trxId);
-      }
-      swipeState = null;
-    }
-
     function handleBackdropClick(event, modalId) {
       if (event.target.id === modalId) closeModal(modalId);
     }
@@ -1027,10 +1027,13 @@
     function emptyStateHtml(icon, title, subtitle) {
       return `
         <div class="flex flex-col items-center justify-center text-center py-10 px-6">
-          <div class="w-16 h-16 rounded-full bg-[var(--bg-subtle-2)] flex items-center justify-center mb-4">
-            <i data-lucide="${icon}" class="w-7 h-7 text-mochi"></i>
+          <div class="relative w-16 h-16 mb-4">
+            <div class="absolute inset-0 rounded-full opacity-70" style="background: radial-gradient(circle at 35% 30%, rgba(184,146,90,0.22), transparent 70%);"></div>
+            <div class="relative w-16 h-16 rounded-full bg-[var(--bg-subtle-2)] flex items-center justify-center border border-[var(--border-color)]">
+              <i data-lucide="${icon}" class="w-6 h-6 text-mochi"></i>
+            </div>
           </div>
-          <p class="text-sm font-extrabold text-main mb-1">${title}</p>
+          <p class="font-display text-base text-main mb-1">${title}</p>
           <p class="text-xs font-semibold text-muted max-w-[220px]">${subtitle}</p>
         </div>
       `;
@@ -1087,7 +1090,7 @@
           bg.classList.add('opacity-100');
           content.classList.remove('scale-50', 'opacity-0');
           content.classList.add('scale-100', 'opacity-100');
-          vibrateSuccess();
+          vibrate(50);
         });
 
         setTimeout(() => {
@@ -1147,14 +1150,14 @@
       currentTab = tabId;
       document.querySelectorAll('.nav-item').forEach(el => {
         el.classList.remove('bg-mochi-light/20', 'text-mochi', 'dark:text-mochi-light', 'px-4', 'py-2.5', 'rounded-2xl');
-        el.classList.add('text-slate-400', 'dark:text-[#A89B91]', 'p-2.5');
+        el.classList.add('text-faint', 'dark:text-[#A89B91]', 'p-2.5');
         const textSpan = el.querySelector('.nav-text');
         if (textSpan) textSpan.classList.remove('nav-text-active');
       });
 
       const activeBtn = document.getElementById('tab-' + tabId);
       if (activeBtn) {
-        activeBtn.classList.remove('text-slate-400', 'dark:text-[#A89B91]', 'p-2.5');
+        activeBtn.classList.remove('text-faint', 'dark:text-[#A89B91]', 'p-2.5');
         activeBtn.classList.add('bg-mochi-light/20', 'text-mochi', 'dark:text-mochi-light', 'px-4', 'py-2.5', 'rounded-2xl');
         const textSpan = activeBtn.querySelector('.nav-text');
         if (textSpan) textSpan.classList.add('nav-text-active');
@@ -1195,7 +1198,7 @@
       document.documentElement.classList.toggle('dark', isDark);
       updateDarkModeIcon(isDark);
       
-      const themeColor = isDark ? "#181412" : "#FAF8F5";
+      const themeColor = isDark ? "#14100E" : "#F7F4EE";
       const metaTheme = document.getElementById('meta-theme-color');
       if (metaTheme) metaTheme.setAttribute("content", themeColor);
     }
@@ -1205,7 +1208,7 @@
       localStorage.setItem('yf-theme', isDark ? 'dark' : 'light');
       updateDarkModeIcon(isDark);
       
-      const themeColor = isDark ? "#181412" : "#FAF8F5";
+      const themeColor = isDark ? "#14100E" : "#F7F4EE";
       const metaTheme = document.getElementById('meta-theme-color');
       if (metaTheme) metaTheme.setAttribute("content", themeColor);
     }
@@ -1220,32 +1223,37 @@
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(number);
     }
 
-    function formatInputRupiah(input) {
+    function formatInputRupiah(input, hiddenTargetId) {
       let val = input.value.replace(/[^0-9]/g, '');
       let numberVal = Number(val) || 0;
-      document.getElementById('form-amount-value').value = numberVal > 0 ? numberVal : "";
+      input.dataset.rawValue = numberVal;
+      if (hiddenTargetId) {
+        const hidden = document.getElementById(hiddenTargetId);
+        if (hidden) hidden.value = numberVal > 0 ? numberVal : "";
+      }
       input.value = numberVal > 0 ? new Intl.NumberFormat('id-ID').format(numberVal) : "";
     }
 
     function formatDate(iso) {
       if (!iso) return '-';
-      const parts = String(iso).split('-');
+      const datePart = String(iso).split('T')[0];
+      const parts = datePart.split('-');
       if (parts.length < 3) return String(iso);
       const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       const m = parseInt(parts[1], 10);
       return `${parseInt(parts[2], 10)} ${months[m - 1] || ''} ${parts[0]}`;
     }
 
-    function formatDateGroupLabel(iso) {
-      if (!iso) return '';
-      const pad = n => String(n).padStart(2, '0');
-      const toKey = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-      const today = new Date();
-      const yesterday = new Date();
-      yesterday.setDate(today.getDate() - 1);
-      if (iso === toKey(today)) return 'Today';
-      if (iso === toKey(yesterday)) return 'Yesterday';
-      return formatDate(iso);
+    function formatTime(iso) {
+      if (!iso || String(iso).indexOf('T') === -1) return '';
+      const timePart = String(iso).split('T')[1] || '';
+      return timePart.substring(0, 5);
+    }
+
+    function formatDateWithTime(iso) {
+      const d = formatDate(iso);
+      const t = formatTime(iso);
+      return t ? `${d} \u2022 ${t}` : d;
     }
 
     function updateScalingText(el, value) {
@@ -1384,7 +1392,7 @@
 
       container.innerHTML = TRANSACTION_TYPE_OPTIONS.map(opt => {
         const isSelected = opt.value === currentVal;
-        const borderCls = isSelected ? 'border-mochi ring-2 ring-mochi/20' : 'border-slate-100 dark:border-[var(--border-color)]';
+        const borderCls = isSelected ? 'border-mochi ring-2 ring-mochi/20' : 'border-[var(--border-color)]';
         return `
           <div onclick="vibrate(30); selectType('${opt.value}')" class="floating-item flex justify-between items-center px-4 py-3 cursor-pointer tap-shrink border ${borderCls} transition-all">
             <div class="flex items-center space-x-3">
@@ -1429,6 +1437,42 @@
       card.classList.add('replay-sheen');
     }
 
+    function initVaultTilt() {
+      const card = document.getElementById('vault-card');
+      if (!card || card.dataset.tiltBound) return;
+      card.dataset.tiltBound = '1';
+      const MAX_TILT = 7;
+      let resetTimer = null;
+
+      function applyTilt(clientX, clientY) {
+        const rect = card.getBoundingClientRect();
+        const px = (clientX - rect.left) / rect.width;
+        const py = (clientY - rect.top) / rect.height;
+        const rotateY = (px - 0.5) * MAX_TILT * 2;
+        const rotateX = (0.5 - py) * MAX_TILT * 2;
+        card.classList.add('tilting');
+        card.style.transform = `perspective(900px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.01,1.01,1.01)`;
+        card.style.boxShadow = `${(-rotateY * 1.6).toFixed(1)}px ${(rotateX * 1.6 + 14).toFixed(1)}px 34px -10px rgba(16,13,11,0.45)`;
+      }
+
+      function resetTilt() {
+        card.classList.remove('tilting');
+        card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
+        card.style.boxShadow = '';
+      }
+
+      card.addEventListener('touchmove', (e) => {
+        if (!e.touches || !e.touches[0]) return;
+        applyTilt(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+
+      card.addEventListener('touchend', () => { clearTimeout(resetTimer); resetTimer = setTimeout(resetTilt, 60); }, { passive: true });
+      card.addEventListener('touchcancel', resetTilt, { passive: true });
+
+      card.addEventListener('mousemove', (e) => applyTilt(e.clientX, e.clientY));
+      card.addEventListener('mouseleave', resetTilt);
+    }
+
     function animateNumber(el, targetValue, duration = 700) {
       const start = 0;
       const startTime = performance.now();
@@ -1452,9 +1496,8 @@
     function openNewTransactionForm() {
       document.getElementById('formTransaction').reset();
       document.getElementById('form-transaction-id').value = "";
-      const now = new Date();
-      document.getElementById('form-date').valueAsDate = now;
-      document.getElementById('form-time').value = now.toTimeString().slice(0, 5);
+      document.getElementById('form-date').valueAsDate = new Date();
+      document.getElementById('form-time').value = "00:00";
       document.getElementById('form-amount-value').value = "";
 
       const catDisplay = document.getElementById('form-category-display');
@@ -1481,8 +1524,8 @@
       setTimeout(() => {
         document.getElementById('form-transaction-id').value = trx.transactionId;
         document.getElementById('form-user').value = trx.enteredBy;
-        document.getElementById('form-date').value = trx.date;
-        document.getElementById('form-time').value = trx.time || "";
+        document.getElementById('form-date').value = (trx.date || "").split('T')[0];
+        document.getElementById('form-time').value = formatTime(trx.date) || "00:00";
 
         const typeVal = trx.type || "Expense";
         document.getElementById('form-type').value = typeVal;
@@ -1526,60 +1569,6 @@
       }, 400);
     }
 
-    function duplicateTransaction(transactionId) {
-      const trx = GLOBAL_DATA.transactions.find(t => t.transactionId === transactionId);
-      if (!trx) return;
-
-      document.getElementById('formTransaction').reset();
-      document.getElementById('form-transaction-id').value = "";
-
-      const now = new Date();
-      document.getElementById('form-date').valueAsDate = now;
-      document.getElementById('form-time').value = now.toTimeString().slice(0, 5);
-
-      document.getElementById('form-user').value = trx.enteredBy || 'Yosa';
-
-      const typeVal = trx.type || 'Expense';
-      document.getElementById('form-type').value = typeVal;
-      updateTypeDisplay(typeVal);
-      handleTypeChange();
-
-      const setField = (id, val) => {
-        document.getElementById('form-' + id).value = val || "";
-        const disp = document.getElementById('display-' + id);
-        if (disp) {
-          disp.innerText = val || "Select...";
-          disp.classList.toggle('text-faint', !val);
-        }
-      };
-      setField('source-account', trx.sourceAccount);
-      setField('target-account', trx.targetAccount);
-      setField('payable', trx.relatedPayable);
-      setField('receivable', trx.relatedReceivable);
-
-      document.getElementById('form-category').value = trx.category || "";
-      const catDisplay = document.getElementById('form-category-display');
-      if (trx.category) {
-        catDisplay.innerText = trx.category;
-        catDisplay.classList.remove('text-faint');
-      } else {
-        catDisplay.innerText = "Select Category...";
-        catDisplay.classList.add('text-faint');
-      }
-
-      // Amount left empty on purpose — user fills the new amount in
-      document.getElementById('form-amount-value').value = "";
-      document.getElementById('form-amount-display').value = "";
-
-      document.getElementById('form-description').value = trx.description || "";
-      document.getElementById('form-notes').value = trx.notes || "";
-
-      document.getElementById('modal-title-transaction').innerText = "Duplicate Transaction";
-      document.getElementById('btn-submit-transaction').innerText = "Save Transaction";
-
-      openModal('modalTransactionForm');
-    }
-
     function promptDeleteTransaction(transactionId) {
       vibrate(40);
       transactionToDelete = transactionId;
@@ -1590,69 +1579,19 @@
       if (titleEl) titleEl.innerText = "Delete Transaction?";
       if (descEl) descEl.innerText = "This action cannot be undone. Data will be permanently removed.";
 
-      document.getElementById('btn-confirm-delete').onclick = () => {
+      document.getElementById('btn-confirm-delete').onclick = async () => {
         if (!transactionToDelete) return;
         vibrate(30);
-        closeModal('modalDelete');
-        softDeleteTransaction(transactionToDelete);
-        transactionToDelete = null;
+        await handleDeleteTransaction(transactionToDelete);
       };
 
       setTimeout(() => openModal('modalDelete'), 400);
     }
 
-    function showUndoToast(message, onUndo) {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      toast.className = "flex items-center px-4 py-3 rounded-2xl shadow-xl text-xs font-bold transform transition-all duration-500 translate-y-[-20px] opacity-0 w-full max-w-sm bg-coffee-darkest dark:bg-white text-white dark:text-coffee-darkest";
-      toast.innerHTML = `<i data-lucide="trash-2" class="w-4 h-4 mr-2.5 flex-shrink-0"></i> <span class="flex-1">${escapeHtml(message)}</span> <button type="button" class="ml-3 font-extrabold underline underline-offset-2 tap-shrink flex-shrink-0">Undo</button>`;
+    async function handleDeleteTransaction(transactionId) {
+      closeModal('modalDelete');
+      let loadingToast = showToast("Deleting transaction...", "info");
 
-      container.appendChild(toast);
-      lucide.createIcons();
-
-      requestAnimationFrame(() => {
-        toast.classList.remove('translate-y-[-20px]', 'opacity-0');
-        toast.classList.add('translate-y-0', 'opacity-100');
-      });
-
-      let dismissed = false;
-      const dismiss = () => {
-        if (dismissed) return;
-        dismissed = true;
-        toast.classList.remove('translate-y-0', 'opacity-100');
-        toast.classList.add('translate-y-[-20px]', 'opacity-0');
-        setTimeout(() => toast.remove(), 500);
-      };
-
-      toast.querySelector('button').onclick = () => {
-        if (dismissed) return;
-        dismiss();
-        onUndo();
-      };
-
-      setTimeout(dismiss, 4800);
-      return toast;
-    }
-
-    function softDeleteTransaction(transactionId) {
-      pendingDeleteIds.add(transactionId);
-      renderHistory();
-
-      showUndoToast("Transaksi dihapus", () => {
-        clearTimeout(pendingDeleteTimers[transactionId]);
-        delete pendingDeleteTimers[transactionId];
-        pendingDeleteIds.delete(transactionId);
-        vibrate(25);
-        renderHistory();
-      });
-
-      pendingDeleteTimers[transactionId] = setTimeout(() => {
-        delete pendingDeleteTimers[transactionId];
-        performBackendDelete(transactionId);
-      }, 5000);
-    }
-
-    async function performBackendDelete(transactionId) {
       try {
         const res = await fetch(API_URL, {
           method: 'POST', redirect: 'follow',
@@ -1661,12 +1600,14 @@
         });
         const result = await res.json();
         if (result.status === 'error') throw new Error(result.message);
+
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+
+        await showRewardAnimation("Transaction Deleted");
         await loadAppData(true);
       } catch (err) {
-        pendingDeleteIds.delete(transactionId);
-        renderHistory();
-        vibrateError();
-        showToast("Gagal menghapus: " + err.message, "error");
+        if (loadingToast && loadingToast.parentNode) loadingToast.remove();
+        showToast("Failed to delete: " + err.message, "error");
       }
     }
 
@@ -1685,7 +1626,7 @@
 
       const payload = {
         date: document.getElementById('form-date').value,
-        time: document.getElementById('form-time').value,
+        time: document.getElementById('form-time').value || "00:00",
         type: type,
         sourceAccount: document.getElementById('form-source-account').value,
         targetAccount: document.getElementById('form-target-account').value,
@@ -1721,7 +1662,6 @@
         }, 300);
       } catch (err) {
         if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-        vibrateError();
         showToast("Failed to save: " + err.message, "error");
       } finally {
         btn.disabled = false;
@@ -1833,7 +1773,7 @@
         if (monthlyDue > 0) {
           dueContainer.innerHTML = `
             <div onclick="vibrate(30); switchTab('payables')" class="floating-card p-5 mb-5 space-y-3.5 bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-subtle-2)] border border-[var(--border-color)] rounded-2xl shadow-sm cursor-pointer tap-shrink">
-              <div class="flex justify-between items-center pb-2.5 border-b border-slate-100 dark:border-[var(--border-color)]">
+              <div class="flex justify-between items-center pb-2.5 border-b border-[var(--border-color)]">
                 <div class="flex items-center space-x-2">
                   <div class="w-7 h-7 rounded-lg bg-[var(--chip-out-bg)] amount-out flex items-center justify-center">
                     <i data-lucide="calendar-clock" class="w-4 h-4"></i>
@@ -1899,7 +1839,7 @@
             ${iconChipHtml(trx.type, trx.category)}
             <div class="truncate">
               <p class="text-[13px] font-bold text-main truncate">${escapeHtml(trx.description || trx.category)}</p>
-              <p class="text-[10px] text-faint font-medium mt-0.5 truncate">${accountFlowText ? escapeHtml(accountFlowText) + ' • ' : ''}${formatDate(trx.date)}</p>
+              <p class="text-[10px] text-faint font-medium mt-0.5 truncate">${accountFlowText ? escapeHtml(accountFlowText) + ' • ' : ''}${formatDateWithTime(trx.date)}</p>
             </div>
           </div>
           <span class="text-[13px] font-extrabold ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.amount)}</span>
@@ -2135,7 +2075,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
 
         return `
           <div onclick="vibrate(30); showBudgetDetail('${escapeAttr(cat)}')" class="p-5 bg-transparent rounded-2xl border border-[var(--border-color)] cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3.5 select-none">
-            <div class="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
+            <div class="flex justify-between items-center pb-3 border-b border-[var(--border-color)]">
               <div class="flex items-center space-x-3 min-w-0 pr-2">
                 <div class="w-9 h-9 rounded-xl bg-[var(--bg-subtle-2)] flex items-center justify-center flex-shrink-0 border border-[var(--border-color)]">
                   <i data-lucide="${catMeta.icon}" class="w-4.5 h-4.5 text-mochi dark:text-mochi-light"></i>
@@ -2158,12 +2098,12 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
             </div>
 
             <div class="space-y-1">
-              <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2.5 overflow-hidden">
+              <div class="w-full bg-[var(--bg-subtle-2)] rounded-full h-2.5 overflow-hidden">
                 <div class="bg-gradient-to-r ${barColor} h-full rounded-full transition-all duration-1000 ease-out" style="width: ${pct}%"></div>
               </div>
             </div>
 
-            <div class="flex justify-between items-center text-xs font-bold pt-3 border-t border-slate-100 dark:border-[var(--border-color)]">
+            <div class="flex justify-between items-center text-xs font-bold pt-3 border-t border-[var(--border-color)]">
               <div class="flex items-center space-x-3 text-muted">
                 <span class="text-[11px]">
                   Spent: <strong class="text-main font-black">${formatRupiah(spent)}</strong>
@@ -2229,7 +2169,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
         subBreakdownHtml = subEntries.map(([sub, amt]) => {
           const subPct = totalSpent > 0 ? ((amt / totalSpent) * 100).toFixed(0) : 0;
           return `
-            <div class="flex justify-between items-center text-xs py-2 border-b border-slate-100 dark:border-[var(--border-color)] last:border-0">
+            <div class="flex justify-between items-center text-xs py-2 border-b border-[var(--border-color)] last:border-0">
               <div class="truncate pr-2">
                 <span class="font-extrabold text-main block truncate">${escapeHtml(sub)}</span>
                 <span class="text-[10px] text-faint font-semibold">${subPct}% of total spent</span>
@@ -2248,7 +2188,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
           <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 rounded-xl bg-[var(--bg-subtle-2)] cursor-pointer card-hover transition mb-1.5 last:mb-0">
             <div class="truncate pr-2">
               <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
-              <p class="text-[10px] text-faint font-medium mt-0.5">${formatDate(t.date)} • ${escapeHtml(t.sourceAccount || '-')}</p>
+              <p class="text-[10px] text-faint font-medium mt-0.5">${formatDateWithTime(t.date)} • ${escapeHtml(t.sourceAccount || '-')}</p>
             </div>
             <span class="font-extrabold amount-out whitespace-nowrap">-${formatRupiah(t.amount)}</span>
           </div>
@@ -2257,7 +2197,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
 
       let html = `
         <div class="space-y-5 pt-1">
-          <div class="text-center pb-3 border-b border-slate-200/60 dark:border-[var(--border-color)]">
+          <div class="text-center pb-3 border-b border-[var(--border-color)]/60 dark:border-[var(--border-color)]">
             <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-muted uppercase tracking-wider mb-3 inline-block">Monthly Budget Overview</span>
             <h3 class="text-xl font-black text-main leading-tight mb-2">${escapeHtml(catName)}</h3>
             <div class="mt-2">${statusBadge}</div>
@@ -2272,7 +2212,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
               <span class="text-muted font-bold">Budget Limit:</span>
               <span class="font-extrabold text-main">${formatRupiah(limit)}</span>
             </div>
-            <div class="w-full bg-slate-200 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden mt-1">
+            <div class="w-full bg-[var(--bg-subtle-2)] rounded-full h-2 overflow-hidden mt-1">
               <div class="bg-mochi h-2 rounded-full" style="width: ${pct}%"></div>
             </div>
           </div>
@@ -2383,7 +2323,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
       }
     }
 
-    const DONUT_PALETTE = ['#A45D33', '#C87A4B', '#DB9563', '#E8A87C', '#F0C29E', '#F3D5BC', '#D8CBC0'];
+    const DONUT_PALETTE = ['#8C6C3E', '#B8925A', '#CBA671', '#DFC08A', '#EAD3A6', '#F1E1C3', '#DDD2C0'];
 
     function renderCategoryDonut(container, sortedMain, groups, grandTotal) {
       if (!grandTotal || grandTotal <= 0) { container.innerHTML = ""; return; }
@@ -2508,13 +2448,13 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
           </span>
           <span class="text-xs font-black text-main flex-shrink-0 text-right">${displayText}</span>
         </div>
-        <div class="w-full bg-slate-200/50 dark:bg-[var(--border-color)] rounded-full h-1.5 overflow-hidden">
+        <div class="w-full bg-[var(--bg-subtle-2)] rounded-full h-1.5 overflow-hidden">
           <div class="bg-gradient-to-r ${barColor} h-1.5 rounded-full transition-all duration-1000 ease-out" style="width:0%" data-target-width="${expensePct}%"></div>
         </div>
       </div>`;
 
     if (hasMultipleSubs) {
-      html += `<div class="${isExpanded ? '' : 'hidden'} mt-2.5 pl-4 border-l-2 border-slate-200 dark:border-[var(--border-color)] space-y-1.5">`;
+      html += `<div class="${isExpanded ? '' : 'hidden'} mt-2.5 pl-4 border-l-2 border-[var(--border-color)] space-y-1.5">`;
       subKeys.forEach(sub => {
         html += `<div class="flex justify-between items-center text-[11px]">
           <span class="text-muted font-semibold truncate pr-2">${escapeHtml(sub)}</span>
@@ -2561,7 +2501,6 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
       const searchTerm = (document.getElementById('filter-search').value || '').toLowerCase().trim();
 
       const filtered = (GLOBAL_DATA.transactions || []).filter(trx => {
-        if (pendingDeleteIds.has(trx.transactionId)) return false;
         const d = trx.date || "";
         const year = d.length >= 4 ? d.substring(0, 4) : "";
         const month = d.length >= 7 ? d.substring(5, 7) : "";
@@ -2592,48 +2531,27 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
         return;
       }
 
-      let lastDateKey = null;
-      let html = '';
-      filtered.forEach((trx, i) => {
+      listEl.innerHTML = filtered.map((trx, i) => {
         const meta = getTypeMeta(trx.type);
 
         let accountFlowText = trx.sourceAccount || '';
         if (trx.sourceAccount && trx.targetAccount) accountFlowText += ` ➔ ${trx.targetAccount}`;
         else if (trx.targetAccount) accountFlowText = trx.targetAccount;
 
-        const dateKey = trx.date || '';
-        if (dateKey !== lastDateKey) {
-          lastDateKey = dateKey;
-          html += `
-            <div class="flex items-center px-1 pt-3 pb-1 first:pt-0">
-              <span class="text-[10px] font-extrabold text-faint uppercase tracking-wider whitespace-nowrap">${escapeHtml(formatDateGroupLabel(dateKey))}</span>
-              <div class="flex-1 h-px bg-slate-200/70 dark:bg-[var(--border-color)] ml-2.5"></div>
-            </div>
-          `;
-        }
-
-        html += `
-          <div class="history-swipe-wrap relative overflow-hidden rounded-[1.25rem] select-none" data-trx-id="${trx.transactionId}">
-            <div class="absolute inset-0 flex pointer-events-none">
-              <div class="w-1/2 h-full flex items-center pl-5 bg-sky-500 text-white font-extrabold text-xs"><i data-lucide="edit-3" class="w-4 h-4 mr-1.5 flex-shrink-0"></i> Edit</div>
-              <div class="w-1/2 h-full flex items-center justify-end pr-5 bg-rose-500 text-white font-extrabold text-xs">Delete <i data-lucide="trash-2" class="w-4 h-4 ml-1.5 flex-shrink-0"></i></div>
-            </div>
-            <div onclick="vibrate(30); currentModalBackFn = null; showTransactionDetail('${trx.transactionId}')" class="history-swipe-content floating-item p-3.5 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item select-none" style="animation-delay:${Math.min(i, 10) * 0.04}s; touch-action: pan-y;">
-              <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
-                ${iconChipHtml(trx.type, trx.category)}
-                <div class="truncate">
-                  <p class="text-[13px] font-bold text-main truncate">${escapeHtml(trx.description || trx.category)}</p>
-                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${accountFlowText ? escapeHtml(accountFlowText) + ' • ' : ''}${formatDate(trx.date)}${trx.time ? ' ' + escapeHtml(trx.time) : ''} • ${escapeHtml(trx.enteredBy)}</p>
-                </div>
+        return `
+          <div onclick="vibrate(30); currentModalBackFn = null; showTransactionDetail('${trx.transactionId}')" class="floating-item p-3.5 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item select-none" style="animation-delay:${Math.min(i, 10) * 0.04}s">
+            <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
+              ${iconChipHtml(trx.type, trx.category)}
+              <div class="truncate">
+                <p class="text-[13px] font-bold text-main truncate">${escapeHtml(trx.description || trx.category)}</p>
+                <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${accountFlowText ? escapeHtml(accountFlowText) + ' • ' : ''}${formatDateWithTime(trx.date)} • ${escapeHtml(trx.enteredBy)}</p>
               </div>
-              <span class="text-[13px] font-extrabold ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.amount)}</span>
             </div>
+            <span class="text-[13px] font-extrabold ${meta.cls} whitespace-nowrap flex-shrink-0 pointer-events-none">${meta.prefix}${formatRupiah(trx.amount)}</span>
           </div>
         `;
-      });
-      listEl.innerHTML = html;
+      }).join('');
       lucide.createIcons();
-      attachSwipeHandlers();
     }
 
     function exportPDFStatement() {
@@ -2669,29 +2587,29 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
       const printContainer = document.createElement('div');
       printContainer.style.padding = '20px';
       printContainer.style.fontFamily = 'Arial, sans-serif';
-      printContainer.style.color = '#181412';
+      printContainer.style.color = '#241C16';
 
       printContainer.innerHTML = `
-        <div style="border-bottom: 2px solid #C87A4B; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-between: space-between; align-items: center;">
+        <div style="border-bottom: 2px solid #B8925A; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-between: space-between; align-items: center;">
           <div>
-            <h1 style="font-size: 20px; font-weight: 900; margin: 0; color: #C87A4B;">MOCHI'S VAULT</h1>
-            <p style="font-size: 11px; color: #80736B; margin: 4px 0 0 0;">Official Financial Statement — Yosa & Fani</p>
+            <h1 style="font-size: 20px; font-weight: 900; margin: 0; color: #8C6C3E; font-family: Georgia, serif;">MOCHI'S VAULT</h1>
+            <p style="font-size: 11px; color: #7C6F63; margin: 4px 0 0 0;">Official Financial Statement — Yosa & Fani</p>
           </div>
-          <div style="text-align: right; font-size: 10px; color: #80736B;">
+          <div style="text-align: right; font-size: 10px; color: #7C6F63;">
             <p style="margin:0;">Period: <strong>${filterMonth === 'ALL' ? 'All Months' : filterMonth} / ${filterYear}</strong></p>
             <p style="margin:2px 0 0 0;">Exported: ${new Date().toLocaleDateString('en-US')}</p>
           </div>
         </div>
 
-        <div style="background-color: #F3ECE4; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; font-size: 11px;">
+        <div style="background-color: #F0EAE0; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; font-size: 11px;">
           <div><span>Total Income:</span> <strong style="color: #2E6F40; display: block; font-size: 13px;">+${formatRupiah(totalIn)}</strong></div>
           <div><span>Total Expenses:</span> <strong style="color: #B93838; display: block; font-size: 13px;">-${formatRupiah(totalOut)}</strong></div>
-          <div><span>Net Surplus / Deficit:</span> <strong style="color: #181412; display: block; font-size: 13px;">${formatRupiah(totalIn - totalOut)}</strong></div>
+          <div><span>Net Surplus / Deficit:</span> <strong style="color: #241C16; display: block; font-size: 13px;">${formatRupiah(totalIn - totalOut)}</strong></div>
         </div>
 
         <table style="width: 100%; border-collapse: collapse; font-size: 10px; text-align: left;">
           <thead>
-            <tr style="background-color: #221C19; color: #FAF8F5;">
+            <tr style="background-color: #1E1916; color: #F7F4EE;">
               <th style="padding: 8px; border: 1px solid #ddd;">Date</th>
               <th style="padding: 8px; border: 1px solid #ddd;">By</th>
               <th style="padding: 8px; border: 1px solid #ddd;">Category / Description</th>
@@ -2702,21 +2620,21 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
           <tbody>
             ${filtered.map((t, idx) => {
               const meta = getTypeMeta(t.type);
-              const bg = idx % 2 === 0 ? '#FFFFFF' : '#FAF8F5';
+              const bg = idx % 2 === 0 ? '#FFFFFF' : '#F7F4EE';
               let acc = t.sourceAccount || '';
               if (t.sourceAccount && t.targetAccount) acc += ` -> ${t.targetAccount}`;
               else if (t.targetAccount) acc = t.targetAccount;
 
               return `
                 <tr style="background-color: ${bg};">
-                  <td style="padding: 6px 8px; border: 1px solid #eee;">${formatDate(t.date)}</td>
+                  <td style="padding: 6px 8px; border: 1px solid #eee;">${formatDateWithTime(t.date)}</td>
                   <td style="padding: 6px 8px; border: 1px solid #eee;">${escapeHtml(t.enteredBy)}</td>
                   <td style="padding: 6px 8px; border: 1px solid #eee;">
                     <strong>${escapeHtml(t.description || t.category)}</strong>
-                    <div style="font-size: 8px; color: #80736B;">${escapeHtml(t.category)}</div>
+                    <div style="font-size: 8px; color: #7C6F63;">${escapeHtml(t.category)}</div>
                   </td>
                   <td style="padding: 6px 8px; border: 1px solid #eee;">${escapeHtml(acc || '-')}</td>
-                  <td style="padding: 6px 8px; border: 1px solid #eee; text-align: right; font-weight: bold; color: ${meta.direction === 'in' ? '#2E6F40' : (meta.direction === 'out' ? '#B93838' : '#181412')};">
+                  <td style="padding: 6px 8px; border: 1px solid #eee; text-align: right; font-weight: bold; color: ${meta.direction === 'in' ? '#2E6F40' : (meta.direction === 'out' ? '#B93838' : '#241C16')};">
                     ${meta.prefix}${formatRupiah(t.amount)}
                   </td>
                 </tr>
@@ -2778,7 +2696,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
         div.style.animationDelay = `${(i % 10) * 0.05}s`;
         
         div.innerHTML = `
-          <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
+          <div class="flex items-center justify-between mb-3 pb-3 border-b border-[var(--border-color)]">
             <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2" onclick="vibrate(30); showAccountHistory('${escapeAttr(acc.accountName)}')">
               <div class="w-9 h-9 rounded-xl ${meta.bg} flex items-center justify-center flex-shrink-0 shadow-sm">
                 <i data-lucide="${meta.icon}" class="w-4.5 h-4.5"></i>
@@ -3062,7 +2980,7 @@ async function handleSaveMaster(event) {
   // --- A. WIDGET "DUE THIS MONTH" (MONTHLY COMMITMENTS) ---
   const widgetHtml = `
     <div class="floating-card p-5 mb-5 space-y-3.5 bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-subtle-2)] border border-[var(--border-color)] rounded-2xl shadow-sm">
-      <div class="flex justify-between items-center pb-2.5 border-b border-slate-100 dark:border-[var(--border-color)]">
+      <div class="flex justify-between items-center pb-2.5 border-b border-[var(--border-color)]">
         <div class="flex items-center space-x-2">
           <div class="w-7 h-7 rounded-lg bg-[var(--chip-out-bg)] amount-out flex items-center justify-center">
             <i data-lucide="calendar-clock" class="w-4 h-4"></i>
@@ -3111,14 +3029,14 @@ async function handleSaveMaster(event) {
       div.onclick = () => { vibrate(30); showPayableDetail(acc, true); };
 
       div.innerHTML = `
-        <div class="pb-3 border-b border-slate-100 dark:border-[var(--border-color)] flex justify-between items-start">
+        <div class="pb-3 border-b border-[var(--border-color)] flex justify-between items-start">
           <div>
             <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(accName)}</h4>
             <span class="text-[10px] ${isPayLater ? 'amount-warn bg-orange-500/15' : 'amount-out bg-[var(--chip-out-bg)]'} px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider mt-1.5 inline-block">
               ${isPayLater ? 'PayLater • Full Payment' : 'Credit Card • Revolving'}
             </span>
           </div>
-          <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[var(--bg-subtle-2)] text-muted">This Month's Bill</span>
+          <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-[var(--bg-subtle-2)] dark:bg-[var(--bg-subtle-2)] text-muted">This Month's Bill</span>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
@@ -3140,12 +3058,12 @@ async function handleSaveMaster(event) {
         </div>
 
         <!-- QUICK-PAY BUTTONS -->
-        <div class="pt-2 flex space-x-2 border-t border-slate-100 dark:border-[var(--border-color)]">
+        <div class="pt-2 flex space-x-2 border-t border-[var(--border-color)]">
           <button type="button" onclick="vibrate(30); event.stopPropagation(); quickPayCommitment('${escapeAttr(accName)}', true, ${bal}, 'FULL')" class="flex-1 py-2 bg-mochi hover:bg-mochi-dark text-white font-extrabold text-xs rounded-xl tap-shrink shadow-sm flex items-center justify-center">
             <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mr-1"></i> Pay Full (${formatRupiah(bal)})
           </button>
           ${isCreditCard ? `
-            <button type="button" onclick="vibrate(30); event.stopPropagation(); quickPayCommitment('${escapeAttr(accName)}', true, ${minPay}, 'MIN')" class="py-2 px-3 bg-[var(--bg-subtle-2)] text-main font-bold text-xs rounded-xl tap-shrink border border-[var(--border-color)] hover:bg-slate-200">
+            <button type="button" onclick="vibrate(30); event.stopPropagation(); quickPayCommitment('${escapeAttr(accName)}', true, ${minPay}, 'MIN')" class="py-2 px-3 bg-[var(--bg-subtle-2)] text-main font-bold text-xs rounded-xl tap-shrink border border-[var(--border-color)] hover:bg-[var(--bg-subtle-2)]">
               Pay Min (${formatRupiah(minPay)})
             </button>
           ` : ''}
@@ -3177,7 +3095,7 @@ async function handleSaveMaster(event) {
     div.onclick = () => { vibrate(30); showPayableDetail(p, false); };
 
     div.innerHTML = `
-      <div class="pb-3 border-b border-slate-100 dark:border-[var(--border-color)] flex justify-between items-start">
+      <div class="pb-3 border-b border-[var(--border-color)] flex justify-between items-start">
         <div>
           <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(p.payableName)}</h4>
           <div class="flex items-center space-x-1.5 mt-1.5">
@@ -3206,14 +3124,14 @@ async function handleSaveMaster(event) {
             <span>Paid: ${pctPaid}%</span>
             <span>Principal: ${formatRupiah(initial)}</span>
           </div>
-          <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden">
+          <div class="w-full bg-[var(--bg-subtle-2)] rounded-full h-2 overflow-hidden">
             <div class="bg-gradient-to-r from-mochi-light to-mochi h-full rounded-full transition-all duration-700" style="width: ${pctPaid}%"></div>
           </div>
         </div>
       ` : ''}
 
       <!-- QUICK-PAY BUTTON -->
-      <div class="pt-2 border-t border-slate-100 dark:border-[var(--border-color)]">
+      <div class="pt-2 border-t border-[var(--border-color)]">
         <button type="button" onclick="vibrate(30); event.stopPropagation(); quickPayCommitment('${escapeAttr(p.payableName)}', false, ${instAmt}, 'INSTALLMENT')" class="w-full py-2 bg-mochi hover:bg-mochi-dark text-white font-extrabold text-xs rounded-xl tap-shrink shadow-sm flex items-center justify-center">
           <i data-lucide="credit-card" class="w-3.5 h-3.5 mr-1"></i> Pay Monthly Installment (${formatRupiah(instAmt)})
         </button>
@@ -3265,7 +3183,7 @@ async function handleSaveMaster(event) {
       div.onclick = () => { vibrate(30); showReceivableDetail(r); };
 
       div.innerHTML = `
-        <div class="pb-3 border-b border-slate-100 dark:border-[var(--border-color)] flex justify-between items-start">
+        <div class="pb-3 border-b border-[var(--border-color)] flex justify-between items-start">
           <div>
             <h4 class="text-[13px] font-extrabold text-main leading-snug pr-1">${escapeHtml(r.receivableName)}</h4>
             <div class="flex items-center space-x-1.5 mt-1.5">
@@ -3294,14 +3212,14 @@ async function handleSaveMaster(event) {
               <span>Collected: ${pctCollected}%</span>
               <span>Total Loan: ${formatRupiah(initial)}</span>
             </div>
-            <div class="w-full bg-slate-200/60 dark:bg-[var(--border-color)] rounded-full h-2 overflow-hidden">
+            <div class="w-full bg-[var(--bg-subtle-2)] rounded-full h-2 overflow-hidden">
               <div class="bg-gradient-to-r from-sky-400 to-sky-600 h-full rounded-full transition-all duration-700" style="width: ${pctCollected}%"></div>
             </div>
           </div>
         ` : ''}
 
         <!-- QUICK-PAY BUTTON -->
-        <div class="pt-2 border-t border-slate-100 dark:border-[var(--border-color)]">
+        <div class="pt-2 border-t border-[var(--border-color)]">
           <button type="button" onclick="vibrate(30); event.stopPropagation(); quickPayCommitment('${escapeAttr(r.receivableName)}', false, ${rem}, 'RECEIVABLE')" class="w-full py-2 bg-[var(--chip-info-bg)] text-sky-700 dark:text-sky-300 font-extrabold text-xs rounded-xl tap-shrink shadow-sm flex items-center justify-center hover:bg-sky-500/20">
             <i data-lucide="download" class="w-3.5 h-3.5 mr-1"></i> Receive Payment (${formatRupiah(rem)})
           </button>
@@ -3329,7 +3247,7 @@ function renderRevolvingStatementCard(acc) {
   
   return `
     <div class="floating-card p-5 space-y-4 border border-[var(--border-color)] bg-card rounded-2xl">
-      <div class="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-[var(--border-color)]">
+      <div class="flex justify-between items-center pb-3 border-b border-[var(--border-color)]">
         <div>
           <h4 class="text-sm font-black text-main">${escapeHtml(acc.accountName)}</h4>
           <span class="text-[10px] font-bold text-muted uppercase">Statement Overview</span>
@@ -3353,7 +3271,7 @@ function renderRevolvingStatementCard(acc) {
           <span>Available Credit Limit:</span>
           <span class="font-bold text-main font-numeric">${formatRupiah(availCredit)}</span>
         </div>
-        <div class="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-[var(--border-color)]">
+        <div class="flex justify-between items-center pt-2 border-t border-[var(--border-color)]">
           <span class="font-bold text-rose-600 dark:text-rose-400">Minimum Payment Due:</span>
           <span class="font-black text-rose-600 dark:text-rose-400 font-numeric text-sm">${formatRupiah(minPayment)}</span>
         </div>
@@ -3381,7 +3299,7 @@ function renderWaterfallProgressBar(lateFeePaid, lateFeeDue, interestPaid, inter
       </div>
       
       <!-- Multi-Color Segmented Progress Bar -->
-      <div class="w-full bg-slate-200 dark:bg-[var(--border-color)] rounded-full h-3 overflow-hidden flex">
+      <div class="w-full bg-[var(--bg-subtle-2)] rounded-full h-3 overflow-hidden flex">
         <div class="bg-rose-500 h-full transition-all" style="width: ${lateFeePct}%" title="Late Fees Paid"></div>
         <div class="bg-amber-500 h-full transition-all" style="width: ${interestPct}%" title="Interest/Admin Paid"></div>
         <div class="bg-emerald-500 h-full transition-all" style="width: ${principalPct}%" title="Principal Paid"></div>
@@ -3508,12 +3426,12 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
         
         Object.entries(groups).forEach(([gName, items]) => {
           if (items.length > 0) {
-            html += `<div class="mb-2 floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden">
-              <div class="px-4 py-2.5 bg-slate-50 dark:bg-[var(--bg-subtle)] text-[10px] font-bold text-muted uppercase tracking-wider">${gName}</div>
+            html += `<div class="mb-2 floating-item border border-[var(--border-color)] overflow-hidden">
+              <div class="px-4 py-2.5 bg-[var(--bg-subtle)] dark:bg-[var(--bg-subtle)] text-[10px] font-bold text-muted uppercase tracking-wider">${gName}</div>
               <div class="bg-[var(--bg-card)]">`;
             items.forEach(acc => {
               html += `
-                <div onclick="selectItemPicker('${type}', '${escapeAttr(acc.accountName)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center border-t border-slate-100 dark:border-[var(--border-color)] first:border-0">
+                <div onclick="selectItemPicker('${type}', '${escapeAttr(acc.accountName)}')" class="px-4 py-3 hover:bg-[var(--bg-subtle-2)]/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center border-t border-[var(--border-color)] first:border-0">
                   <div class="w-7 h-7 rounded-lg ${acc._meta.bg} flex items-center justify-center mr-3"><i data-lucide="${acc._meta.icon}" class="w-3.5 h-3.5"></i></div>
                   <div class="flex-1 truncate">
                     <span class="block truncate">${escapeHtml(acc.accountName)}</span>
@@ -3535,10 +3453,10 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
         if (activePayables.length === 0) {
           html = `<p class="text-xs text-center text-muted py-4">No active payables found.</p>`;
         } else {
-          html += `<div class="floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden bg-[var(--bg-card)]">`;
+          html += `<div class="floating-item border border-[var(--border-color)] overflow-hidden bg-[var(--bg-card)]">`;
           activePayables.forEach(p => {
             html += `
-              <div onclick="selectItemPicker('${type}', '${escapeAttr(p.payableName)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between border-t border-slate-100 dark:border-[var(--border-color)] first:border-0">
+              <div onclick="selectItemPicker('${type}', '${escapeAttr(p.payableName)}')" class="px-4 py-3 hover:bg-[var(--bg-subtle-2)]/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between border-t border-[var(--border-color)] first:border-0">
                 <div class="flex items-center space-x-3 truncate">
                   <div class="w-7 h-7 rounded-lg bg-[var(--chip-out-bg)] amount-out flex items-center justify-center"><i data-lucide="credit-card" class="w-3.5 h-3.5"></i></div>
                   <span class="truncate">${escapeHtml(p.payableName)}</span>
@@ -3558,10 +3476,10 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
         if (activeReceivables.length === 0) {
           html = `<p class="text-xs text-center text-muted py-4">No unsettled receivables found.</p>`;
         } else {
-          html += `<div class="floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden bg-[var(--bg-card)]">`;
+          html += `<div class="floating-item border border-[var(--border-color)] overflow-hidden bg-[var(--bg-card)]">`;
           activeReceivables.forEach(r => {
             html += `
-              <div onclick="selectItemPicker('${type}', '${escapeAttr(r.receivableName)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between border-t border-slate-100 dark:border-[var(--border-color)] first:border-0">
+              <div onclick="selectItemPicker('${type}', '${escapeAttr(r.receivableName)}')" class="px-4 py-3 hover:bg-[var(--bg-subtle-2)]/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between border-t border-[var(--border-color)] first:border-0">
                 <div class="flex items-center space-x-3 truncate">
                   <div class="w-7 h-7 rounded-lg bg-[var(--chip-info-bg)] amount-info flex items-center justify-center"><i data-lucide="hand-coins" class="w-3.5 h-3.5"></i></div>
                   <span class="truncate">${escapeHtml(r.receivableName)}</span>
@@ -3615,7 +3533,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
 
         if (onlyMainItem) {
           html += `
-            <div onclick="vibrate(30); selectCategory('${escapeAttr(group.items[0].categoryName)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-slate-100 dark:border-[var(--border-color)] transition-colors">
+            <div onclick="vibrate(30); selectCategory('${escapeAttr(group.items[0].categoryName)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-[var(--border-color)] transition-colors">
               <div class="flex items-center space-x-3">
                 <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
                 <span class="font-extrabold text-main text-[13px]">${escapeHtml(main)}</span>
@@ -3624,23 +3542,23 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
             </div>`;
         } else {
           html += `
-            <div class="mb-2 floating-item border border-slate-100 dark:border-[var(--border-color)] overflow-hidden">
-              <div onclick="vibrate(30); toggleCategoryGroup('${escapeAttr(main)}')" class="flex justify-between items-center px-4 py-3 bg-slate-50 dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
+            <div class="mb-2 floating-item border border-[var(--border-color)] overflow-hidden">
+              <div onclick="vibrate(30); toggleCategoryGroup('${escapeAttr(main)}')" class="flex justify-between items-center px-4 py-3 bg-[var(--bg-subtle)] dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
                 <div class="flex items-center space-x-3">
                   <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
                   <span class="font-extrabold text-main text-[13px]">${escapeHtml(main)}</span>
                 </div>
                 <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="w-4 h-4 text-faint"></i>
               </div>
-              <div class="${isExpanded ? '' : 'hidden'} border-t border-slate-100 dark:border-[var(--border-color)] bg-[var(--bg-card)]">`;
+              <div class="${isExpanded ? '' : 'hidden'} border-t border-[var(--border-color)] bg-[var(--bg-card)]">`;
 
           group.items.forEach((item, idx) => {
             const label = (item.subCategory && item.subCategory !== item.categoryName) ? item.subCategory : item.categoryName;
-            const borderCls = idx !== group.items.length - 1 ? 'border-b border-slate-100 dark:border-[var(--border-color)]' : '';
+            const borderCls = idx !== group.items.length - 1 ? 'border-b border-[var(--border-color)]' : '';
             const mSub = getCategoryIconMeta(label, group.type);
 
             html += `
-              <div onclick="vibrate(30); selectCategory('${escapeAttr(item.categoryName)}')" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between ${borderCls}">
+              <div onclick="vibrate(30); selectCategory('${escapeAttr(item.categoryName)}')" class="px-4 py-3 hover:bg-[var(--bg-subtle-2)]/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between ${borderCls}">
                 <div class="flex items-center space-x-3">
                   <div class="icon-chip ${mSub.chip} w-7 h-7"><i data-lucide="${mSub.icon}" class="w-3.5 h-3.5"></i></div>
                   <span class="text-main">${escapeHtml(label)}</span>
@@ -3738,10 +3656,10 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       if (kpiName === 'Net Worth') {
         html += `
           <p class="font-extrabold text-main mb-3 text-[13px]">Net Worth Breakdown:</p>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Total Cash & Savings:</span> <span class="font-extrabold amount-in">${formatRupiah(calcTotalCash)}</span></div>
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2 mt-2"><span>Total Receivables:</span> <span class="font-extrabold amount-info">${formatRupiah(calcTotalReceivables)}</span></div>
+          <div class="flex justify-between border-b border-[var(--border-color)] pb-2"><span>Total Cash & Savings:</span> <span class="font-extrabold amount-in">${formatRupiah(calcTotalCash)}</span></div>
+          <div class="flex justify-between border-b border-[var(--border-color)] pb-2 mt-2"><span>Total Receivables:</span> <span class="font-extrabold amount-info">${formatRupiah(calcTotalReceivables)}</span></div>
           <div class="flex justify-between amount-out pb-2 mt-2"><span>Total Liabilities (-):</span> <span class="font-extrabold">${formatRupiah(calcTotalLiabilities)}</span></div>
-          <div class="flex justify-between font-black text-main pt-3 mt-1 border-t border-slate-200/50 dark:border-[var(--border-color)] text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(calcNetWorth)}</span></div>
+          <div class="flex justify-between font-black text-main pt-3 mt-1 border-t border-[var(--border-color)] text-[13px]"><span>Net Worth:</span> <span>${formatRupiah(calcNetWorth)}</span></div>
         `;
       } else if (kpiName === 'Disposable Income') {
         html += `<p class="font-extrabold text-main mb-2 text-[13px]">Note:</p><p class="text-muted leading-relaxed font-semibold">Remaining daily operational cash available for consumption and savings after deducting monthly commitments.</p>`;
@@ -3751,13 +3669,13 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
           const meta = getAccountIconMeta(a.accountName, a.accountType);
           if (!meta.isLiability) {
             const cls = a.runningBalance < 0 ? "amount-out" : "amount-in";
-            html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${escapeHtml(a.accountName)} (${escapeHtml(a.owner)}):</span> <span class="font-extrabold ${cls}">${formatRupiah(a.runningBalance)}</span></div>`; 
+            html += `<div class="flex justify-between border-b border-[var(--border-color)] pb-2"><span>${escapeHtml(a.accountName)} (${escapeHtml(a.owner)}):</span> <span class="font-extrabold ${cls}">${formatRupiah(a.runningBalance)}</span></div>`; 
           }
         });
         html += `</div>`;
       } else if (kpiName === 'Total Receivables') {
         html += `<p class="font-extrabold text-main mb-3 text-[13px]">Receivables Breakdown:</p><div class="space-y-3 max-h-48 overflow-y-auto pr-1">`;
-        (GLOBAL_DATA.receivables || []).forEach(r => { html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>${escapeHtml(r.receivableName)}:</span> <span class="font-extrabold amount-info">${formatRupiah(r.remainingAmount)}</span></div>`; });
+        (GLOBAL_DATA.receivables || []).forEach(r => { html += `<div class="flex justify-between border-b border-[var(--border-color)] pb-2"><span>${escapeHtml(r.receivableName)}:</span> <span class="font-extrabold amount-info">${formatRupiah(r.remainingAmount)}</span></div>`; });
         html += `</div>`;
       } else if (kpiName === 'Total Payables') {
         html += `<p class="font-extrabold text-main mb-3 text-[13px]">Payables & Credit Card Bills:</p><div class="space-y-3 max-h-56 overflow-y-auto pr-1">`;
@@ -3776,7 +3694,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
               ownerTag = ` (${escapeHtml(a.owner)})`;
             }
 
-            html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+            html += `<div class="flex justify-between border-b border-[var(--border-color)] pb-2">
               <span>${escapeHtml(a.accountName)}${ownerTag}:</span> 
               <span class="font-extrabold amount-out">${formatRupiah(bal)}</span>
             </div>`;
@@ -3788,7 +3706,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
           const rem = Math.abs(Number(p.remainingAmount) || 0);
           if ((st === 'active' || st === 'aktif') && rem > 0) {
             hasPayables = true;
-            html += `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+            html += `<div class="flex justify-between border-b border-[var(--border-color)] pb-2">
               <span>${escapeHtml(p.payableName)} (Installment):</span> 
               <span class="font-extrabold amount-out">${formatRupiah(rem)}</span>
             </div>`;
@@ -3823,21 +3741,21 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       } else { window.isNestedModalView = false; }
 
       html += `
-        <div class="text-center flex flex-col items-center mb-5 pb-4 border-b border-slate-200/60 dark:border-[var(--border-color)]">
-          <span class="text-[10px] font-mono font-black tracking-wider px-3 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mb-4 shadow-sm border border-[var(--border-color)]">REF: ${escapeHtml(trx.transactionId)}</span>
-          <div class="icon-chip ${m.chip} w-14 h-14 rounded-2xl mb-3 shadow-sm border border-slate-100 dark:border-[var(--border-color)]"><i data-lucide="${m.icon}" class="w-6 h-6"></i></div>
+        <div class="text-center flex flex-col items-center mb-5 pb-4 border-b border-[var(--border-color)]/60 dark:border-[var(--border-color)]">
+          <span class="text-[10px] font-mono font-black tracking-wider px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] dark:bg-[var(--bg-subtle)] text-main mb-4 shadow-sm border border-[var(--border-color)]">REF: ${escapeHtml(trx.transactionId)}</span>
+          <div class="icon-chip ${m.chip} w-14 h-14 rounded-2xl mb-3 shadow-sm border border-[var(--border-color)]"><i data-lucide="${m.icon}" class="w-6 h-6"></i></div>
           <h3 class="text-base font-extrabold text-main leading-snug px-4">${escapeHtml(trx.description || trx.category)}</h3>
           <p class="text-3xl font-black mt-1.5 tracking-tight ${meta.cls}">${meta.prefix}${formatRupiah(trx.amount)}</p>
-          <span class="text-[10px] font-black px-3.5 py-1 rounded-full bg-slate-200 dark:bg-[var(--bg-subtle)] text-main mt-2.5 uppercase tracking-wider shadow-sm border border-[var(--border-color)]">${escapeHtml(trx.type)}</span>
+          <span class="text-[10px] font-black px-3.5 py-1 rounded-full bg-[var(--bg-subtle-2)] dark:bg-[var(--bg-subtle)] text-main mt-2.5 uppercase tracking-wider shadow-sm border border-[var(--border-color)]">${escapeHtml(trx.type)}</span>
         </div>
 
-        <div class="bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-2xl p-5 border border-slate-200/60 dark:border-[var(--border-color)] space-y-2.5 text-xs font-semibold">
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Date</span><span class="font-extrabold text-main">${formatDate(trx.date)}${trx.time ? ' • ' + escapeHtml(trx.time) : ''}</span></div>
-          <div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Category</span><span class="font-extrabold text-main">${escapeHtml(trx.category)}</span></div>
-          ${trx.sourceAccount ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Source Account</span><span class="font-extrabold text-main">${escapeHtml(trx.sourceAccount)}</span></div>` : ''}
-          ${trx.targetAccount ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Target Account</span><span class="font-extrabold text-main">${escapeHtml(trx.targetAccount)}</span></div>` : ''}
-          ${trx.relatedPayable ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Payable</span><span class="font-extrabold text-main">${escapeHtml(trx.relatedPayable)}</span></div>` : ''}
-          ${trx.relatedReceivable ? `<div class="flex justify-between items-center pb-2 border-b border-slate-200/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Receivable</span><span class="font-extrabold text-main">${escapeHtml(trx.relatedReceivable)}</span></div>` : ''}
+        <div class="bg-[var(--bg-subtle)] dark:bg-[var(--bg-subtle)] rounded-2xl p-5 border border-[var(--border-color)]/60 dark:border-[var(--border-color)] space-y-2.5 text-xs font-semibold">
+          <div class="flex justify-between items-center pb-2 border-b border-[var(--border-color)]/40 dark:border-[var(--border-color)]"><span class="text-muted">Date</span><span class="font-extrabold text-main">${formatDateWithTime(trx.date)}</span></div>
+          <div class="flex justify-between items-center pb-2 border-b border-[var(--border-color)]/40 dark:border-[var(--border-color)]"><span class="text-muted">Category</span><span class="font-extrabold text-main">${escapeHtml(trx.category)}</span></div>
+          ${trx.sourceAccount ? `<div class="flex justify-between items-center pb-2 border-b border-[var(--border-color)]/40 dark:border-[var(--border-color)]"><span class="text-muted">Source Account</span><span class="font-extrabold text-main">${escapeHtml(trx.sourceAccount)}</span></div>` : ''}
+          ${trx.targetAccount ? `<div class="flex justify-between items-center pb-2 border-b border-[var(--border-color)]/40 dark:border-[var(--border-color)]"><span class="text-muted">Target Account</span><span class="font-extrabold text-main">${escapeHtml(trx.targetAccount)}</span></div>` : ''}
+          ${trx.relatedPayable ? `<div class="flex justify-between items-center pb-2 border-b border-[var(--border-color)]/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Payable</span><span class="font-extrabold text-main">${escapeHtml(trx.relatedPayable)}</span></div>` : ''}
+          ${trx.relatedReceivable ? `<div class="flex justify-between items-center pb-2 border-b border-[var(--border-color)]/40 dark:border-[var(--border-color)]"><span class="text-muted">Related Receivable</span><span class="font-extrabold text-main">${escapeHtml(trx.relatedReceivable)}</span></div>` : ''}
           <div class="flex justify-between items-center pt-0.5"><span class="text-muted">Input By</span><span class="font-extrabold text-main">${escapeHtml(trx.enteredBy)}</span></div>
         </div>
 
@@ -3874,7 +3792,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
         html += `<p class="text-xs text-center text-muted py-6 font-semibold">No income recorded in this period.</p>`;
       } else {
         incomes.forEach(t => {
-          html += `<div class="flex justify-between items-center text-xs p-3.5 floating-item border border-slate-100 dark:border-[var(--border-color)] select-none">
+          html += `<div class="flex justify-between items-center text-xs p-3.5 floating-item border border-[var(--border-color)] select-none">
             <div class="truncate pr-2">
               <p class="font-bold text-main truncate">${escapeHtml(t.category)}</p>
               <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${escapeHtml(t.description)}</p>
@@ -3916,7 +3834,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       } else {
         sorted.forEach(([cat, amt]) => {
           const pct = total > 0 ? ((amt / total) * 100).toFixed(0) : 0;
-          html += `<div class="flex justify-between items-center text-xs p-3.5 floating-item border border-slate-100 dark:border-[var(--border-color)] select-none">
+          html += `<div class="flex justify-between items-center text-xs p-3.5 floating-item border border-[var(--border-color)] select-none">
             <div class="truncate pr-2">
               <p class="font-bold text-main truncate">${escapeHtml(cat)}</p>
               <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${pct}% of total expenses</p>
@@ -3961,7 +3879,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
             <span class="text-muted font-bold">Real Income:</span>
             <span class="font-black amount-in font-numeric">+${formatRupiah(realIncome)}</span>
           </div>
-          <div class="flex justify-between items-center text-xs pb-3 border-b border-slate-200/50 dark:border-[var(--border-color)]">
+          <div class="flex justify-between items-center text-xs pb-3 border-b border-[var(--border-color)]">
             <span class="text-muted font-bold">Real Expense:</span>
             <span class="font-black amount-out font-numeric">-${formatRupiah(realExpense)}</span>
           </div>
@@ -3976,11 +3894,11 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
         </div>
 
         <div class="grid grid-cols-2 gap-3 mb-2">
-          <div class="p-3.5 bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-xl border border-slate-100 dark:border-[var(--border-color)]">
+          <div class="p-3.5 bg-[var(--bg-subtle)] dark:bg-[var(--bg-subtle)] rounded-xl border border-[var(--border-color)]">
             <span class="text-[9px] text-muted font-bold block mb-1 uppercase tracking-wider">Physical Cash In</span>
             <span class="text-sm font-black amount-in font-numeric">+${formatRupiah(otherIn)}</span>
           </div>
-          <div class="p-3.5 bg-slate-50 dark:bg-[var(--bg-subtle)] rounded-xl border border-slate-100 dark:border-[var(--border-color)]">
+          <div class="p-3.5 bg-[var(--bg-subtle)] dark:bg-[var(--bg-subtle)] rounded-xl border border-[var(--border-color)]">
             <span class="text-[9px] text-muted font-bold block mb-1 uppercase tracking-wider">Physical Cash Out</span>
             <span class="text-sm font-black amount-out font-numeric">-${formatRupiah(otherOut)}</span>
           </div>
@@ -4004,7 +3922,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       const historyItems = fullHistory.slice(0, 50);
 
       let html = `
-        <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 mb-4 pr-6">
+        <div class="border-b border-[var(--border-color)] pb-4 mb-4 pr-6">
           <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--bg-subtle-2)] text-muted uppercase tracking-wider mb-2 inline-block">Account History</span>
           <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(accountName)}</h3>
         </div>
@@ -4029,7 +3947,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
               <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
                 <div class="truncate">
                   <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
-                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
+                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDateWithTime(t.date)}</p>
                 </div>
               </div>
               <span class="font-black flex-shrink-0 whitespace-nowrap text-[13px] ${meta.cls} pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
@@ -4067,7 +3985,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
 
   let html = `
     <div class="space-y-4 pt-1">
-      <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
+      <div class="border-b border-[var(--border-color)] pb-4 pr-6">
         <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">
           ${isCreditCard ? 'Kartu Kredit' : (isPayLater ? 'PayLater • Full Payment' : 'Term Loan / Cicilan')}
         </span>
@@ -4075,27 +3993,27 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       </div>
 
       <div class="ios-input space-y-2.5 text-xs font-semibold text-muted py-4 px-5 bg-[var(--bg-subtle-2)] border border-[var(--border-color)]">
-        <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+        <div class="flex justify-between border-b border-[var(--border-color)] pb-2">
           <span>Liability Category:</span> 
           <span class="font-extrabold text-main">${escapeHtml(type)}</span>
         </div>
-        ${!isAccount && item.owedTo ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Creditor / Provider:</span> <span class="font-extrabold text-main">${escapeHtml(item.owedTo)}</span></div>` : ''}
+        ${!isAccount && item.owedTo ? `<div class="flex justify-between border-b border-[var(--border-color)] pb-2"><span>Creditor / Provider:</span> <span class="font-extrabold text-main">${escapeHtml(item.owedTo)}</span></div>` : ''}
         
-        <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+        <div class="flex justify-between border-b border-[var(--border-color)] pb-2">
           <span>${isAccount ? 'Statement Balance Cetak:' : 'Total Principal / Initial Debt:'}</span> 
           <span class="font-extrabold text-main font-numeric">${formatRupiah(isAccount ? amount : initial)}</span>
         </div>
 
         ${isCreditCard ? `
-          <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2">
+          <div class="flex justify-between border-b border-[var(--border-color)] pb-2">
             <span>Minimum Payment Due:</span> 
             <span class="font-extrabold text-main font-numeric">${formatRupiah(minPay)}</span>
           </div>
         ` : ''}
         
-        ${!isAccount && item.termMonths ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Loan Term:</span> <span class="font-extrabold text-main">${item.termMonths} Months</span></div>` : ''}
-        ${!isAccount && item.monthlyInstallment ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Monthly Installment:</span> <span class="font-extrabold amount-out font-numeric">${formatRupiah(item.monthlyInstallment)}/mo</span></div>` : ''}
-        ${!isAccount && item.dueDate ? `<div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2"><span>Tanggal Due Date:</span> <span class="font-extrabold text-main">${formatDate(item.dueDate)}</span></div>` : ''}
+        ${!isAccount && item.termMonths ? `<div class="flex justify-between border-b border-[var(--border-color)] pb-2"><span>Loan Term:</span> <span class="font-extrabold text-main">${item.termMonths} Months</span></div>` : ''}
+        ${!isAccount && item.monthlyInstallment ? `<div class="flex justify-between border-b border-[var(--border-color)] pb-2"><span>Monthly Installment:</span> <span class="font-extrabold amount-out font-numeric">${formatRupiah(item.monthlyInstallment)}/mo</span></div>` : ''}
+        ${!isAccount && item.dueDate ? `<div class="flex justify-between border-b border-[var(--border-color)] pb-2"><span>Tanggal Due Date:</span> <span class="font-extrabold text-main">${formatDate(item.dueDate)}</span></div>` : ''}
 
         <div class="flex justify-between pt-1 items-center">
           <span>Remaining Bill:</span> 
@@ -4140,7 +4058,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
           <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
             <div class="truncate">
               <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
-              <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
+              <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDateWithTime(t.date)}</p>
             </div>
           </div>
           <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] font-numeric pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
@@ -4173,17 +4091,17 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
 
       let html = `
         <div class="space-y-4 pt-1">
-          <div class="border-b border-slate-100 dark:border-[var(--border-color)] pb-4 pr-6">
+          <div class="border-b border-[var(--border-color)] pb-4 pr-6">
             <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--chip-info-bg)] amount-info uppercase tracking-wider mb-2 inline-block">Unpaid Receivable</span>
             <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(name)}</h3>
           </div>
 
           <div class="ios-input space-y-2.5 text-xs font-semibold text-muted py-4 px-5">
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5">
+            <div class="flex justify-between border-b border-[var(--border-color)] pb-2.5">
               <span>Receivable Type:</span> 
               <span class="font-extrabold text-main">${escapeHtml(type)}</span>
             </div>
-            <div class="flex justify-between border-b border-slate-200/50 dark:border-[var(--border-color)] pb-2.5 mt-2 items-center">
+            <div class="flex justify-between border-b border-[var(--border-color)] pb-2.5 mt-2 items-center">
               <span>Remaining Receivable:</span> 
               <span class="font-black amount-info text-[15px]">${formatRupiah(amount)}</span>
             </div>
@@ -4208,7 +4126,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
               <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
                 <div class="truncate">
                   <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
-                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDate(t.date)}</p>
+                  <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDateWithTime(t.date)}</p>
                 </div>
               </div>
               <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
@@ -4292,7 +4210,7 @@ function openMasterModal(type, isEdit = false) {
     titleEl.innerText = isEdit ? "Edit Account" : "Add New Account";
     extraEl.innerHTML = `
       <div>
-        <label for="master-account-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Type</label>
+        <label for="master-account-type" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="layers"></i></span><span class="field-label-text">Account Type</span></label>
         <select id="master-account-type" class="w-full ios-input cursor-pointer py-2.5">
           <option value="Bank Account">Bank</option>
           <option value="E-Wallet">E-Wallet</option>
@@ -4301,7 +4219,7 @@ function openMasterModal(type, isEdit = false) {
         </select>
       </div>
       <div>
-        <label for="master-account-owner" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Owner</label>
+        <label for="master-account-owner" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="user"></i></span><span class="field-label-text">Account Owner</span></label>
         <select id="master-account-owner" class="w-full ios-input cursor-pointer py-2.5">
           <option value="Yosa">Yosa</option>
           <option value="Fani">Fani</option>
@@ -4309,14 +4227,14 @@ function openMasterModal(type, isEdit = false) {
         </select>
       </div>
       <div>
-        <label for="master-function-category" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Account Function</label>
+        <label for="master-function-category" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="target"></i></span><span class="field-label-text">Account Function</span></label>
         <select id="master-function-category" class="w-full ios-input cursor-pointer py-2.5">
           <option value="Daily Operations">Daily Operations</option>
           <option value="Emergency Fund & Savings">Emergency Fund & Savings</option>
         </select>
       </div>
       <div>
-        <label for="master-initial-balance" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Initial Balance / Bill (Rp)</label>
+        <label for="master-initial-balance" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="banknote"></i></span><span class="field-label-text">Initial Balance / Bill (Rp)</span></label>
         <input type="number" id="master-initial-balance" class="w-full ios-input py-2.5" value="0">
       </div>
     `;
@@ -4328,7 +4246,7 @@ function openMasterModal(type, isEdit = false) {
     extraEl.innerHTML = `
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label for="master-payable-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Payable Type</label>
+          <label for="master-payable-type" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="credit-card"></i></span><span class="field-label-text">Payable Type</span></label>
           <select id="master-payable-type" class="w-full ios-input cursor-pointer py-2.5">
             <option value="Personal Loan">Personal Loan / FinTech</option>
             <option value="Vehicle Installment">Vehicle Installment</option>
@@ -4337,7 +4255,7 @@ function openMasterModal(type, isEdit = false) {
           </select>
         </div>
         <div>
-          <label for="master-payable-owner" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Owner</label>
+          <label for="master-payable-owner" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="user"></i></span><span class="field-label-text">Owner</span></label>
           <select id="master-payable-owner" class="w-full ios-input cursor-pointer py-2.5">
             <option value="Yosa">Yosa</option>
             <option value="Fani">Fani</option>
@@ -4346,40 +4264,40 @@ function openMasterModal(type, isEdit = false) {
         </div>
       </div>
       <div>
-        <label for="master-payable-owed-to" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Creditor / Lender</label>
+        <label for="master-payable-owed-to" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="landmark"></i></span><span class="field-label-text">Creditor / Lender</span></label>
         <input type="text" id="master-payable-owed-to" class="w-full ios-input py-2.5" placeholder="e.g., GoPinjam / Kredivo / BCA">
       </div>
       
       <!-- SMART HYBRID CALCULATOR -->
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label for="master-payable-net" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Net Principal</label>
+          <label for="master-payable-net" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="banknote"></i></span><span class="field-label-text">Net Principal</span></label>
           <input type="number" id="master-payable-net" class="w-full ios-input py-2.5" placeholder="0" oninput="calcSmartPayable()">
         </div>
         <div>
-          <label for="master-payable-term" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Tenor (Months)</label>
+          <label for="master-payable-term" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="clock"></i></span><span class="field-label-text">Tenor (Months)</span></label>
           <input type="number" id="master-payable-term" class="w-full ios-input py-2.5" placeholder="0" oninput="calcSmartPayable()">
         </div>
       </div>
       <div class="grid grid-cols-2 gap-3 mt-1.5">
         <div>
-          <label for="master-payable-interest" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Interest / Month (%)</label>
+          <label for="master-payable-interest" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="percent"></i></span><span class="field-label-text">Interest / Month (%)</span></label>
           <input type="number" step="0.01" id="master-payable-interest" class="w-full ios-input py-2.5" placeholder="e.g., 2.5" oninput="calcSmartPayable()">
         </div>
         <div>
-          <label for="master-payable-admin" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Admin Fee (Rp)</label>
+          <label for="master-payable-admin" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="receipt"></i></span><span class="field-label-text">Admin Fee (Rp)</span></label>
           <input type="number" id="master-payable-admin" class="w-full ios-input py-2.5" placeholder="0" oninput="calcSmartPayable()">
         </div>
       </div>
 
-      <div class="border-t border-slate-200 dark:border-[var(--border-color)] my-3 pt-3">
+      <div class="border-t border-[var(--border-color)] my-3 pt-3">
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label for="master-payable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Total Debt (Principal)</label>
+            <label for="master-payable-total" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="banknote"></i></span><span class="field-label-text">Total Debt (Principal)</span></label>
             <input type="number" id="master-payable-total" class="w-full ios-input py-2.5 font-black text-mochi" placeholder="Can be manually edited" required>
           </div>
           <div>
-            <label for="master-payable-installment" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Monthly Installment</label>
+            <label for="master-payable-installment" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="repeat"></i></span><span class="field-label-text">Monthly Installment</span></label>
             <input type="number" id="master-payable-installment" class="w-full ios-input py-2.5 font-black text-mochi" placeholder="Can be manually edited">
           </div>
         </div>
@@ -4388,23 +4306,23 @@ function openMasterModal(type, isEdit = false) {
 
       <div class="grid grid-cols-2 gap-3 mt-2">
         <div>
-          <label for="master-payable-start" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Disbursed Date</label>
+          <label for="master-payable-start" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="calendar"></i></span><span class="field-label-text">Disbursed Date</span></label>
           <input type="date" id="master-payable-start" class="w-full ios-input py-2 px-2 text-xs">
         </div>
         <div>
-          <label for="master-payable-due" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Jatuh Tempo</label>
+          <label for="master-payable-due" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="calendar-clock"></i></span><span class="field-label-text">Jatuh Tempo</span></label>
           <input type="date" id="master-payable-due" class="w-full ios-input py-2 px-2 text-xs">
         </div>
       </div>
       <div>
-        <label for="master-payable-account" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Payment Account</label>
+        <label for="master-payable-account" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="wallet"></i></span><span class="field-label-text">Payment Account</span></label>
         <select id="master-payable-account" class="w-full ios-input cursor-pointer py-2.5">
           <option value="">-- Select Account --</option>
           ${accountOptions}
         </select>
       </div>
       <div>
-        <label for="master-payable-notes" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Notes</label>
+        <label for="master-payable-notes" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="align-left"></i></span><span class="field-label-text">Notes</span></label>
         <input type="text" id="master-payable-notes" class="w-full ios-input py-2.5" placeholder="Additional notes...">
       </div>
     `;
@@ -4420,7 +4338,7 @@ function openMasterModal(type, isEdit = false) {
     extraEl.innerHTML = `
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label for="master-receivable-type" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Receivable Type</label>
+          <label for="master-receivable-type" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="hand-coins"></i></span><span class="field-label-text">Receivable Type</span></label>
           <select id="master-receivable-type" class="w-full ios-input cursor-pointer py-2.5">
             <option value="Shopping Reimbursement">Shopping Reimbursement</option>
             <option value="Personal Loan">Personal Loan</option>
@@ -4428,7 +4346,7 @@ function openMasterModal(type, isEdit = false) {
           </select>
         </div>
         <div>
-          <label for="master-receivable-owner" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Owner</label>
+          <label for="master-receivable-owner" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="user"></i></span><span class="field-label-text">Owner</span></label>
           <select id="master-receivable-owner" class="w-full ios-input cursor-pointer py-2.5">
             <option value="Yosa">Yosa</option>
             <option value="Fani">Fani</option>
@@ -4437,32 +4355,32 @@ function openMasterModal(type, isEdit = false) {
         </div>
       </div>
       <div>
-        <label for="master-receivable-from" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Debtor / Borrower</label>
+        <label for="master-receivable-from" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="user-round"></i></span><span class="field-label-text">Debtor / Borrower</span></label>
         <input type="text" id="master-receivable-from" class="w-full ios-input py-2.5" placeholder="e.g., Mom / Friend">
       </div>
       <div>
-        <label for="master-receivable-total" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Total Receivable (Rp)</label>
+        <label for="master-receivable-total" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="banknote"></i></span><span class="field-label-text">Total Receivable (Rp)</span></label>
         <input type="number" id="master-receivable-total" class="w-full ios-input py-2.5" value="0" required>
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label for="master-receivable-occurred" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Loan Date</label>
+          <label for="master-receivable-occurred" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="calendar"></i></span><span class="field-label-text">Loan Date</span></label>
           <input type="date" id="master-receivable-occurred" class="w-full ios-input py-2 px-2 text-xs">
         </div>
         <div>
-          <label for="master-receivable-return" class="font-extrabold text-main block mb-1.5 text-[10px] cursor-pointer">Target Date</label>
+          <label for="master-receivable-return" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="calendar-check"></i></span><span class="field-label-text">Target Date</span></label>
           <input type="date" id="master-receivable-return" class="w-full ios-input py-2 px-2 text-xs">
         </div>
       </div>
       <div>
-        <label for="master-receivable-account" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Source / Receiving Account</label>
+        <label for="master-receivable-account" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="wallet"></i></span><span class="field-label-text">Source / Receiving Account</span></label>
         <select id="master-receivable-account" class="w-full ios-input cursor-pointer py-2.5">
           <option value="">-- Select Account --</option>
           ${accountOptions}
         </select>
       </div>
       <div>
-        <label for="master-receivable-notes" class="font-extrabold text-main block mb-1.5 text-[11px] cursor-pointer">Notes</label>
+        <label for="master-receivable-notes" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="align-left"></i></span><span class="field-label-text">Notes</span></label>
         <textarea id="master-receivable-notes" rows="2" class="w-full ios-input py-2.5" placeholder="Reimbursement notes..."></textarea>
       </div>
     `;
@@ -4495,6 +4413,7 @@ function calcSmartPayable() {
 window.addEventListener('DOMContentLoaded', () => {
       applyDarkModePref();
       lucide.createIcons();
+      initVaultTilt();
       document.getElementById('form-date').valueAsDate = new Date();
 
       loadAppData().then(() => {
