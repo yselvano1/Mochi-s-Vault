@@ -280,6 +280,7 @@
     <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-3">
       <div class="relative w-14 h-14 rounded-2xl bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0 self-center cursor-pointer tap-shrink" onclick="openCommandCenter()">
         <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Avatar" class="w-full h-full object-contain filter drop-shadow-sm transition-all duration-300">
+        <span id="pending-sync-badge" title="Changes waiting to sync" class="hidden absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-amber-500 text-white text-[10px] font-black flex items-center justify-center shadow-sm border-2 border-[var(--bg-app)]"></span>
       </div>
 
       <div class="flex flex-col justify-center min-w-0 flex-1">
@@ -469,15 +470,15 @@
         </div>
 
         <div id="statement-summary" class="floating-item pb-1 mt-3 flex flex-col border border-[var(--border-color)]">
-          <div onclick="vibrate(30); showIncomeDetail()" class="flex justify-between items-center border-b border-[var(--border-color)] py-4 px-5 cursor-pointer card-hover transition tap-shrink">
+          <div onclick="vibrate(30); showIncomeDetail()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="flex justify-between items-center border-b border-[var(--border-color)] py-4 px-5 cursor-pointer card-hover transition tap-shrink">
             <span class="text-muted text-[10px] uppercase font-bold tracking-wider flex items-center"><i data-lucide="trending-up" class="w-3.5 h-3.5 mr-1.5 amount-in"></i> REAL INCOME</span>
             <span id="sum-income" class="font-extrabold amount-in text-[15px]">+Rp 0</span>
           </div>
-          <div onclick="vibrate(30); showExpenseDetail()" class="flex justify-between items-center border-b border-[var(--border-color)] py-4 px-5 cursor-pointer card-hover transition tap-shrink">
+          <div onclick="vibrate(30); showExpenseDetail()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="flex justify-between items-center border-b border-[var(--border-color)] py-4 px-5 cursor-pointer card-hover transition tap-shrink">
             <span class="text-muted text-[10px] uppercase font-bold tracking-wider flex items-center"><i data-lucide="arrow-up-right" class="w-3.5 h-3.5 mr-1.5 amount-out"></i> REAL EXPENSE</span>
             <span id="sum-expense" class="font-extrabold amount-out text-[15px]">-Rp 0</span>
           </div>
-          <div onclick="vibrate(30); showNetSurplusDetail()" class="flex justify-between items-center py-4 px-5 bg-[var(--bg-subtle)] dark:bg-[var(--bg-subtle)] cursor-pointer card-hover transition tap-shrink">
+          <div onclick="vibrate(30); showNetSurplusDetail()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="flex justify-between items-center py-4 px-5 bg-[var(--bg-subtle)] dark:bg-[var(--bg-subtle)] cursor-pointer card-hover transition tap-shrink">
             <span class="text-main text-[10px] uppercase font-black tracking-wider flex items-center"><i data-lucide="scale" class="w-3.5 h-3.5 mr-1.5 text-mochi"></i> NET SURPLUS</span>
             <span id="sum-net" class="font-black text-main text-[16px]">Rp 0</span>
           </div>
@@ -1070,10 +1071,42 @@
       updatePendingBadge(queue.length);
     }
 
-    function enqueuePending(action, payload, extra = {}) {
+    function enqueuePending(action, payload, extra = {}, clientTempId = null) {
       const queue = getPendingQueue();
-      queue.push({ id: 'PEND-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7), action, payload, extra, queuedAt: Date.now() });
+      // clientTempId links a queued 'createTransaction' back to the local
+      // TRX-TEMP-* id shown in the UI before the server assigns a real one —
+      // it's local bookkeeping only and is never sent to the server (unlike
+      // `extra`, which gets merged into the request body).
+      queue.push({ id: 'PEND-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7), action, payload, extra, clientTempId, queuedAt: Date.now() });
       savePendingQueue(queue);
+    }
+
+    // Finds a still-unsynced 'createTransaction' in the queue by its local
+    // temp id. Used to let edit/delete act on the queue entry directly
+    // instead of sending an update/delete for an id the server has never
+    // seen — sending one would silently no-op once the create finally syncs
+    // under a different, server-assigned id.
+    function findPendingCreateByTempId(tempId) {
+      if (!tempId || !String(tempId).startsWith('TRX-TEMP-')) return null;
+      const queue = getPendingQueue();
+      const index = queue.findIndex(item => item.action === 'createTransaction' && item.clientTempId === tempId);
+      return index === -1 ? null : { queue, index, item: queue[index] };
+    }
+
+    function updatePendingCreatePayload(tempId, newPayload) {
+      const found = findPendingCreateByTempId(tempId);
+      if (!found) return false;
+      found.queue[found.index].payload = newPayload;
+      savePendingQueue(found.queue);
+      return true;
+    }
+
+    function removePendingCreate(tempId) {
+      const found = findPendingCreateByTempId(tempId);
+      if (!found) return false;
+      found.queue.splice(found.index, 1);
+      savePendingQueue(found.queue);
+      return true;
     }
 
     function updatePendingBadge(count) {
@@ -1096,6 +1129,7 @@
       isFlushingQueue = true;
       showSyncIndicator(true);
       let synced = 0;
+      const skippedMessages = [];
 
       while (true) {
         const current = getPendingQueue();
@@ -1111,10 +1145,21 @@
           savePendingQueue(current);
           synced++;
         } catch (err) {
-          // Still offline, or the item failed for a non-network reason —
-          // either way, stop here and leave the rest of the queue intact
-          // for the next trigger (online event / app foreground).
-          break;
+          if (err.isNetworkError) {
+            // Still offline — stop here, this item and everything queued
+            // behind it stays put for the next trigger (online event / app
+            // foreground).
+            break;
+          }
+          // Non-network failure: the server actively rejected this specific
+          // write (e.g. a queued delete/update for a transaction that no
+          // longer exists — already removed by another synced action). This
+          // exact item can never succeed as-is, and leaving it at the front
+          // would jam every other queued item behind it forever. Drop just
+          // this one and keep going.
+          current.shift();
+          savePendingQueue(current);
+          skippedMessages.push(err.message);
         }
       }
 
@@ -1122,7 +1167,17 @@
       showSyncIndicator(false);
       if (synced > 0) {
         showToast(synced === 1 ? "1 offline change synced." : `${synced} offline changes synced.`, "success");
-        renderAllViews();
+      }
+      if (skippedMessages.length > 0) {
+        showToast(
+          skippedMessages.length === 1
+            ? `1 offline change couldn't be applied and was skipped: ${skippedMessages[0]}`
+            : `${skippedMessages.length} offline changes couldn't be applied and were skipped — please check History.`,
+          "error"
+        );
+      }
+      if (synced > 0 || skippedMessages.length > 0) {
+        loadAppData(true); // Re-sync from server so local state matches reality
       }
     }
 
@@ -1630,7 +1685,7 @@
         const isSelected = opt.value === currentVal;
         const borderCls = isSelected ? 'border-mochi ring-2 ring-mochi/20' : 'border-[var(--border-color)]';
         return `
-          <div onclick="vibrate(30); selectType('${opt.value}')" class="floating-item flex justify-between items-center px-4 py-3 cursor-pointer tap-shrink border ${borderCls} transition-all">
+          <div onclick="vibrate(30); selectType('${opt.value}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="floating-item flex justify-between items-center px-4 py-3 cursor-pointer tap-shrink border ${borderCls} transition-all">
             <div class="flex items-center space-x-3">
               <div class="icon-chip ${opt.chip}"><i data-lucide="${opt.icon}" class="w-4 h-4"></i></div>
               <span class="font-extrabold text-main text-[13px]">${opt.label}</span>
@@ -1879,6 +1934,13 @@
       // the backend for the common case where the user changes their mind.
       setTimeout(() => {
         if (undone) return;
+
+        // Deleting a transaction that's still sitting in the offline queue
+        // as an unsynced 'createTransaction' — it never reached the server,
+        // so the correct "delete" is just dropping it from the queue, not
+        // sending a deleteTransaction for an id the server never assigned.
+        if (removePendingCreate(transactionId)) return;
+
         postApi('deleteTransaction', { transactionId })
           .then(result => {
             if (result && result.data) {
@@ -1887,8 +1949,13 @@
             }
           })
           .catch(err => {
-            showToast("Connection failed! Couldn't delete from server.", "error");
-            loadAppData(true); // Rollback
+            if (err.isNetworkError) {
+              enqueuePending('deleteTransaction', { transactionId });
+              showToast("You're offline — deletion will sync automatically.", "info");
+            } else {
+              showToast("Connection failed! Couldn't delete from server.", "error");
+              loadAppData(true); // Rollback
+            }
           });
       }, 1200);
     }
@@ -1988,9 +2055,18 @@
       closeModal('modalTransactionForm');
       renderHistory();
       renderDashboard();
-      
+
       showRewardAnimation(isEdit ? "Transaction Updated" : "Saved");
-      
+
+      // Editing a transaction that's still sitting in the offline queue as
+      // an unsynced 'createTransaction' (TRX-TEMP-* id, never reached the
+      // server) — rewrite that queued payload in place instead of sending
+      // an update for an id the server has never heard of.
+      if (isEdit && updatePendingCreatePayload(transactionId, payload)) {
+        btn.disabled = false;
+        return;
+      }
+
       // Lakukan sync di background murni tanpa memblokir atau menampilkan loading
       postApi(isEdit ? 'updateTransaction' : 'createTransaction', payload)
         .then(result => {
@@ -2000,8 +2076,15 @@
           }
         })
         .catch(err => {
-          showToast("Koneksi gagal! Transaksi batal disimpan ke server.", "error");
-          loadAppData(true); // Rollback state
+          if (err.isNetworkError) {
+            // Confirmed the request never reached the server — safe to queue
+            // for automatic retry instead of discarding the user's input.
+            enqueuePending(isEdit ? 'updateTransaction' : 'createTransaction', payload, {}, isEdit ? null : newTrx.transactionId);
+            showToast("You're offline — saved locally, will sync automatically.", "info");
+          } else {
+            showToast("Connection failed! Transaction wasn't saved to server.", "error");
+            loadAppData(true); // Rollback state
+          }
         })
         .finally(() => {
           btn.disabled = false;
@@ -2119,7 +2202,7 @@
       if (dueContainer) {
         if (monthlyDue > 0) {
           dueContainer.innerHTML = `
-            <div onclick="vibrate(30); switchTab('payables')" class="floating-card p-5 mb-5 space-y-3.5 bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-subtle-2)] border border-[var(--border-color)] rounded-2xl shadow-sm cursor-pointer tap-shrink">
+            <div onclick="vibrate(30); switchTab('payables')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" aria-label="Go to Payables" class="floating-card p-5 mb-5 space-y-3.5 bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-subtle-2)] border border-[var(--border-color)] rounded-2xl shadow-sm cursor-pointer tap-shrink">
               <div class="flex justify-between items-center pb-2.5 border-b border-[var(--border-color)]">
                 <div class="flex items-center space-x-2">
                   <div class="w-7 h-7 rounded-lg bg-[var(--chip-out-bg)] amount-out flex items-center justify-center">
@@ -2421,7 +2504,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
           : `Left ${formatRupiah(remaining)}`;
 
         return `
-          <div onclick="vibrate(30); showBudgetDetail('${escapeAttr(cat)}')" class="p-5 bg-transparent rounded-2xl border border-[var(--border-color)] cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3.5 select-none">
+          <div onclick="vibrate(30); showBudgetDetail('${escapeAttr(cat)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="p-5 bg-transparent rounded-2xl border border-[var(--border-color)] cursor-pointer card-hover transition tap-shrink space-y-3.5 mb-3.5 select-none">
             <div class="flex justify-between items-center pb-3 border-b border-[var(--border-color)]">
               <div class="flex items-center space-x-3 min-w-0 pr-2">
                 <div class="w-9 h-9 rounded-xl bg-[var(--bg-subtle-2)] flex items-center justify-center flex-shrink-0 border border-[var(--border-color)]">
@@ -2532,7 +2615,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
         recentTrxHtml = `<p class="text-xs text-faint italic py-2">No transaction history.</p>`;
       } else {
         recentTrxHtml = categoryTrx.slice(0, 5).map(t => `
-          <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 rounded-xl bg-[var(--bg-subtle-2)] cursor-pointer card-hover transition mb-1.5 last:mb-0">
+          <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="flex justify-between items-center text-xs p-3.5 rounded-xl bg-[var(--bg-subtle-2)] cursor-pointer card-hover transition mb-1.5 last:mb-0">
             <div class="truncate pr-2">
               <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
               <p class="text-[10px] text-faint font-medium mt-0.5">${formatDateWithTime(t.date)} • ${escapeHtml(t.sourceAccount || '-')}</p>
@@ -2894,7 +2977,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
 
         return `
           ${dividerHtml}
-          <div onclick="vibrate(30); currentModalBackFn = null; showTransactionDetail('${trx.transactionId}')" class="floating-item p-3.5 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item select-none" style="animation-delay:${Math.min(i, 10) * 0.04}s">
+          <div onclick="vibrate(30); currentModalBackFn = null; showTransactionDetail('${trx.transactionId}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" aria-label="${escapeAttr((trx.description || trx.category) + ', ' + meta.prefix + formatRupiah(trx.amount))}" class="floating-item p-3.5 flex justify-between items-center cursor-pointer card-hover transition tap-shrink stagger-item select-none" style="animation-delay:${Math.min(i, 10) * 0.04}s">
             <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
               ${iconChipHtml(trx.type, trx.category)}
               <div class="truncate">
@@ -3074,7 +3157,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
             </div>
           </div>
 
-          <div onclick="vibrate(30); showAccountHistory('${escapeAttr(acc.accountName)}')">
+          <div onclick="vibrate(30); showAccountHistory('${escapeAttr(acc.accountName)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0">
             <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">${statusLabel}</span>
             <span class="text-[18px] font-black ${balanceColorClass} block leading-none tracking-tight">${formatRupiah(acc.runningBalance)}</span>
           </div>
@@ -3853,7 +3936,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
               <div class="bg-[var(--bg-card)]">`;
             items.forEach(acc => {
               html += `
-                <div onclick="selectItemPicker('${type}', '${escapeAttr(acc.accountName)}')" class="px-4 py-3 hover:bg-[var(--bg-subtle-2)]/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center border-t border-[var(--border-color)] first:border-0">
+                <div onclick="selectItemPicker('${type}', '${escapeAttr(acc.accountName)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="px-4 py-3 hover:bg-[var(--bg-subtle-2)]/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center border-t border-[var(--border-color)] first:border-0">
                   <div class="w-7 h-7 rounded-lg ${acc._meta.bg} flex items-center justify-center mr-3"><i data-lucide="${acc._meta.icon}" class="w-3.5 h-3.5"></i></div>
                   <div class="flex-1 truncate">
                     <span class="block truncate">${escapeHtml(acc.accountName)}</span>
@@ -3878,7 +3961,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
           html += `<div class="floating-item border border-[var(--border-color)] overflow-hidden bg-[var(--bg-card)]">`;
           activePayables.forEach(p => {
             html += `
-              <div onclick="selectItemPicker('${type}', '${escapeAttr(p.payableName)}')" class="px-4 py-3 hover:bg-[var(--bg-subtle-2)]/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between border-t border-[var(--border-color)] first:border-0">
+              <div onclick="selectItemPicker('${type}', '${escapeAttr(p.payableName)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="px-4 py-3 hover:bg-[var(--bg-subtle-2)]/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between border-t border-[var(--border-color)] first:border-0">
                 <div class="flex items-center space-x-3 truncate">
                   <div class="w-7 h-7 rounded-lg bg-[var(--chip-out-bg)] amount-out flex items-center justify-center"><i data-lucide="credit-card" class="w-3.5 h-3.5"></i></div>
                   <span class="truncate">${escapeHtml(p.payableName)}</span>
@@ -3901,7 +3984,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
           html += `<div class="floating-item border border-[var(--border-color)] overflow-hidden bg-[var(--bg-card)]">`;
           activeReceivables.forEach(r => {
             html += `
-              <div onclick="selectItemPicker('${type}', '${escapeAttr(r.receivableName)}')" class="px-4 py-3 hover:bg-[var(--bg-subtle-2)]/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between border-t border-[var(--border-color)] first:border-0">
+              <div onclick="selectItemPicker('${type}', '${escapeAttr(r.receivableName)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="px-4 py-3 hover:bg-[var(--bg-subtle-2)]/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between border-t border-[var(--border-color)] first:border-0">
                 <div class="flex items-center space-x-3 truncate">
                   <div class="w-7 h-7 rounded-lg bg-[var(--chip-info-bg)] amount-info flex items-center justify-center"><i data-lucide="hand-coins" class="w-3.5 h-3.5"></i></div>
                   <span class="truncate">${escapeHtml(r.receivableName)}</span>
@@ -3955,7 +4038,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
 
         if (onlyMainItem) {
           html += `
-            <div onclick="vibrate(30); selectCategory('${escapeAttr(group.items[0].categoryName)}')" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-[var(--border-color)] transition-colors">
+            <div onclick="vibrate(30); selectCategory('${escapeAttr(group.items[0].categoryName)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="floating-item flex justify-between items-center px-4 py-3 mb-2 cursor-pointer tap-shrink border border-[var(--border-color)] transition-colors">
               <div class="flex items-center space-x-3">
                 <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
                 <span class="font-extrabold text-main text-[13px]">${escapeHtml(main)}</span>
@@ -3965,7 +4048,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
         } else {
           html += `
             <div class="mb-2 floating-item border border-[var(--border-color)] overflow-hidden">
-              <div onclick="vibrate(30); toggleCategoryGroup('${escapeAttr(main)}')" class="flex justify-between items-center px-4 py-3 bg-[var(--bg-subtle)] dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
+              <div onclick="vibrate(30); toggleCategoryGroup('${escapeAttr(main)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="flex justify-between items-center px-4 py-3 bg-[var(--bg-subtle)] dark:bg-[var(--bg-subtle)] cursor-pointer transition tap-shrink">
                 <div class="flex items-center space-x-3">
                   <div class="icon-chip ${mMain.chip}"><i data-lucide="${mMain.icon}" class="w-4 h-4"></i></div>
                   <span class="font-extrabold text-main text-[13px]">${escapeHtml(main)}</span>
@@ -3980,7 +4063,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
             const mSub = getCategoryIconMeta(label, group.type);
 
             html += `
-              <div onclick="vibrate(30); selectCategory('${escapeAttr(item.categoryName)}')" class="px-4 py-3 hover:bg-[var(--bg-subtle-2)]/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between ${borderCls}">
+              <div onclick="vibrate(30); selectCategory('${escapeAttr(item.categoryName)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="px-4 py-3 hover:bg-[var(--bg-subtle-2)]/50 dark:hover:bg-[var(--bg-subtle-2)] cursor-pointer text-main font-semibold tap-shrink transition text-[13px] flex items-center justify-between ${borderCls}">
                 <div class="flex items-center space-x-3">
                   <div class="icon-chip ${mSub.chip} w-7 h-7"><i data-lucide="${mSub.icon}" class="w-3.5 h-3.5"></i></div>
                   <span class="text-main">${escapeHtml(label)}</span>
@@ -4392,7 +4475,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
         historyItems.forEach(t => {
           const meta = getTypeMeta(t.type);
           html += `
-            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
               <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
                 <div class="truncate">
                   <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
@@ -4503,7 +4586,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
     relatedTrx.forEach(t => {
       const meta = getTypeMeta(t.type);
       html += `
-        <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+        <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
           <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
             <div class="truncate">
               <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
@@ -4578,7 +4661,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
         relatedTrx.forEach(t => {
           const meta = getTypeMeta(t.type);
           html += `
-            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
+            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
               <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
                 <div class="truncate">
                   <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
@@ -4968,6 +5051,11 @@ window.addEventListener('DOMContentLoaded', () => {
       if (savedTab && TABS.includes(savedTab)) {
         switchTab(savedTab);
       }
+
+      // Reflect any writes still waiting from a previous offline session,
+      // and try to flush them immediately if we're already online.
+      updatePendingBadge(getPendingQueue().length);
+      flushPendingQueue();
 
       loadAppData().then(() => {
         const params = new URLSearchParams(location.search);
