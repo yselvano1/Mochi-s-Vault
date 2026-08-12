@@ -1,4 +1,4 @@
-const APP_VERSION = "v36.0"; // Bump versi ini setiap kali index.html berubah agar HP memperbarui cache
+const APP_VERSION = "v37.0"; // Bump versi ini setiap kali index.html berubah agar HP memperbarui cache
 const CACHE_NAME = "mochis-vault-" + APP_VERSION;
 
 // Aset same-origin: HARUS berhasil semua, ini yang bikin app tetap jalan offline.
