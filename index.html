@@ -135,6 +135,10 @@
     .ios-input[tabindex]:focus { outline: none; }
 
     .text-main { color: var(--text-primary); } .text-muted { color: var(--text-secondary); } .text-faint { color: var(--text-tertiary); }
+    .date-divider { display: flex; align-items: center; gap: 0.625rem; padding: 0.5rem 0.25rem 0.375rem; }
+    .date-divider:first-child { padding-top: 0; }
+    .date-divider .date-divider-line { flex: 1; height: 1px; background: var(--border-color); }
+    .date-divider .date-divider-label { font-size: 10px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-tertiary); white-space: nowrap; }
     .amount-in, .amount-out, .amount-info, .amount-warn {
       font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif; font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
     }
@@ -1004,21 +1008,13 @@
       if (navigator.vibrate) navigator.vibrate(Math.max(ms, 25));
     }
 
-    // Distinct haptic patterns so success and error *feel* different, not just look different.
-    function vibrateSuccess() {
-      if (navigator.vibrate) navigator.vibrate([15, 45, 25]); // light double-tap, ascending
-    }
-
-    function vibrateError() {
-      if (navigator.vibrate) navigator.vibrate([40, 70, 40, 70, 40]); // sharp insistent triple-buzz
-    }
-
     function handleBackdropClick(event, modalId) {
       if (event.target.id === modalId) closeModal(modalId);
     }
 
     function triggerInputError(elementId, message) {
-      showToast(message, "error"); // showToast() already fires vibrateError()
+      vibrate(40);
+      showToast(message, "error");
       const el = document.getElementById(elementId);
       if (el) {
         el.classList.add('input-error');
@@ -1054,10 +1050,6 @@
       const toast = document.createElement('div');
       const isError = type === 'error';
       const isInfo = type === 'info';
-
-      // Loading/info toasts stay silent — only the final outcome should buzz.
-      if (isError) vibrateError();
-      else if (!isInfo) vibrateSuccess();
 
       let bgClass = isError ? 'bg-rose-500' : (isInfo ? 'bg-slate-600' : 'bg-coffee-darkest dark:bg-white');
       let textClass = (isInfo || isError) ? 'text-white' : 'text-white dark:text-coffee-darkest';
@@ -1102,7 +1094,7 @@
           bg.classList.add('opacity-100');
           content.classList.remove('scale-50', 'opacity-0');
           content.classList.add('scale-100', 'opacity-100');
-          vibrateSuccess();
+          vibrate(50);
         });
 
         setTimeout(() => {
@@ -1268,25 +1260,28 @@
       return t ? `${d} \u2022 ${t}` : d;
     }
 
-    // Returns "Today" / "Yesterday" / "Wed, 10 Aug" (or with year if not this year) for a divider label.
-    function getDateDividerLabel(iso) {
-      const datePart = String(iso || '').split('T')[0];
-      const parts = datePart.split('-');
-      if (parts.length < 3) return datePart || '-';
+    // Returns the y-m-d key (no time) for grouping transactions by day.
+    function dateKeyOf(iso) {
+      if (!iso) return '';
+      return String(iso).split('T')[0];
+    }
 
-      const trxDate = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+    // "Today" / "Yesterday" / formatted date label for history date dividers.
+    function dateDividerLabel(iso) {
+      const key = dateKeyOf(iso);
+      if (!key) return '-';
+      const parts = key.split('-').map(Number);
+      if (parts.length < 3) return formatDate(iso);
+      const trxDate = new Date(parts[0], parts[1] - 1, parts[2]);
+
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const yesterday = new Date(today);
       yesterday.setDate(today.getDate() - 1);
 
       if (trxDate.getTime() === today.getTime()) return 'Today';
       if (trxDate.getTime() === yesterday.getTime()) return 'Yesterday';
-
-      const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      const label = `${weekdays[trxDate.getDay()]}, ${trxDate.getDate()} ${months[trxDate.getMonth()]}`;
-      return trxDate.getFullYear() !== today.getFullYear() ? `${label} ${trxDate.getFullYear()}` : label;
+      return formatDate(iso);
     }
 
     function updateScalingText(el, value) {
@@ -2568,20 +2563,21 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
       listEl.innerHTML = filtered.map((trx, i) => {
         const meta = getTypeMeta(trx.type);
 
-        const dateKey = String(trx.date || '').split('T')[0];
-        let dividerHtml = '';
-        if (dateKey !== lastDateKey) {
-          dividerHtml = `
-            <div class="date-divider flex items-center gap-2.5 px-1 ${lastDateKey === null ? 'pb-1' : 'pt-3 pb-1'}">
-              <span class="text-[10px] font-extrabold uppercase tracking-wider text-faint whitespace-nowrap">${getDateDividerLabel(trx.date)}</span>
-              <span class="flex-1 h-px bg-[var(--border-color)]"></span>
-            </div>`;
-          lastDateKey = dateKey;
-        }
-
         let accountFlowText = trx.sourceAccount || '';
         if (trx.sourceAccount && trx.targetAccount) accountFlowText += ` ➔ ${trx.targetAccount}`;
         else if (trx.targetAccount) accountFlowText = trx.targetAccount;
+
+        const dateKey = dateKeyOf(trx.date);
+        let dividerHtml = '';
+        if (dateKey !== lastDateKey) {
+          lastDateKey = dateKey;
+          dividerHtml = `
+            <div class="date-divider">
+              <span class="date-divider-label">${escapeHtml(dateDividerLabel(trx.date))}</span>
+              <span class="date-divider-line"></span>
+            </div>
+          `;
+        }
 
         return `
           ${dividerHtml}
