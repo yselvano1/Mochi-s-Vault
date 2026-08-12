@@ -135,7 +135,7 @@
     .ios-input[tabindex]:focus { outline: none; }
 
     .text-main { color: var(--text-primary); } .text-muted { color: var(--text-secondary); } .text-faint { color: var(--text-tertiary); }
-    .date-divider { display: flex; align-items: center; gap: 0.625rem; padding: 0.5rem 0.25rem 0.375rem; }
+    .date-divider { display: flex; align-items: center; gap: 0.625rem; padding: 0.65rem 0.25rem; position: sticky; top: 102px; z-index: 30; background: var(--bg-app); margin-top: -0.25rem; }
     .date-divider:first-child { padding-top: 0; }
     .date-divider .date-divider-line { flex: 1; height: 1px; background: var(--border-color); }
     .date-divider .date-divider-label { font-size: 10px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-tertiary); white-space: nowrap; }
@@ -231,6 +231,15 @@
       100% { background-position: 160% 0; }
     }
   </style>
+  <script>
+    (function() {
+      const pref = localStorage.getItem('yf-theme');
+      const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (pref === 'dark' || (!pref && systemDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
 </head>
 <body class="min-h-screen">
 
@@ -396,7 +405,7 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-[var(--border-color)] pb-4 gap-3">
           <div class="flex items-center space-x-2 text-main">
             <div class="w-8 h-8 rounded-full bg-mochi-light/20 dark:bg-mochi-light/10 flex items-center justify-center text-mochi dark:text-mochi-light"><i data-lucide="file-text" class="w-4 h-4"></i></div>
-            <span class="text-sm font-extrabold uppercase tracking-wider">e-Statement & Mutasi</span>
+            <span class="text-sm font-extrabold uppercase tracking-wider">e-Statement & Records</span>
           </div>
           
           <button ontouchstart="vibrate(30)" onclick="exportPDFStatement()" class="tap-shrink bg-mochi hover:bg-mochi-dark text-white px-4 py-2 rounded-full text-xs font-bold flex items-center shadow-[0_4px_14px_0_rgba(184,146,90,0.25)] justify-center transition-colors">
@@ -3952,7 +3961,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
 
         <div class="flex space-x-3 pt-3">
           <button onclick="handleEditTransaction('${trx.transactionId}')" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit</button>
-          <button onclick="promptDeleteTransaction('${trx.transactionId}')" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
+          <button onclick="promptDeleteTransaction('${trx.transactionId}')" class="flex-1 py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center border border-rose-600"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
         </div>
       </div>`;
 
@@ -4189,7 +4198,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
         ${!isAccount && item.owedTo ? `<div class="flex justify-between border-b border-[var(--border-color)] pb-2"><span>Creditor / Provider:</span> <span class="font-extrabold text-main">${escapeHtml(item.owedTo)}</span></div>` : ''}
         
         <div class="flex justify-between border-b border-[var(--border-color)] pb-2">
-          <span>${isAccount ? 'Statement Balance Cetak:' : 'Total Principal / Initial Debt:'}</span> 
+          <span>${isAccount ? 'Billed Statement Balance:' : 'Total Principal / Initial Debt:'}</span> 
           <span class="font-extrabold text-main font-numeric">${formatRupiah(isAccount ? amount : initial)}</span>
         </div>
 
@@ -4260,7 +4269,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
   html += `
     <div class="flex space-x-3 pt-4">
       <button onclick="${isAccount ? `openEditAccountModal('${escapeAttr(name)}')` : `openEditPayableModal('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit Details</button>
-      <button onclick="${isAccount ? `promptDeleteAccount('${escapeAttr(name)}')` : `promptDeletePayable('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
+      <button onclick="${isAccount ? `promptDeleteAccount('${escapeAttr(name)}')` : `promptDeletePayable('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center border border-rose-600"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
     </div>`;
   document.getElementById('modal-detail-inner').innerHTML = html;
   openModal('modalDetail');
@@ -4335,7 +4344,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       html += `
         <div class="flex space-x-3 pt-4">
           <button onclick="openEditReceivableModal('${escapeAttr(name)}')" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit</button>
-          <button onclick="promptDeleteReceivable('${escapeAttr(name)}')" class="flex-1 py-3.5 bg-[var(--chip-out-bg)] hover:bg-[rgba(185,56,56,0.2)] amount-out font-extrabold rounded-xl tap-shrink text-xs transition-colors flex items-center justify-center border border-[var(--border-color)]"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
+          <button onclick="promptDeleteReceivable('${escapeAttr(name)}')" class="flex-1 py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center border border-rose-600"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
         </div>`;
       document.getElementById('modal-detail-inner').innerHTML = html;
       openModal('modalDetail');
@@ -4506,7 +4515,7 @@ function openMasterModal(type, isEdit = false) {
           <input type="date" id="master-payable-start" class="w-full ios-input py-2 px-2 text-xs">
         </div>
         <div>
-          <label for="master-payable-due" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="calendar-clock"></i></span><span class="field-label-text">Jatuh Tempo</span></label>
+          <label for="master-payable-due" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="calendar-clock"></i></span><span class="field-label-text">Due Date</span></label>
           <input type="date" id="master-payable-due" class="w-full ios-input py-2 px-2 text-xs">
         </div>
       </div>
@@ -4581,7 +4590,7 @@ function openMasterModal(type, isEdit = false) {
       
       <div class="grid grid-cols-2 gap-3 mt-3">
         <div>
-          <label for="master-receivable-total" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="banknote"></i></span><span class="field-label-text">Total Piutang (Rp)</span></label>
+          <label for="master-receivable-total" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="banknote"></i></span><span class="field-label-text">Total Receivable Amount</span></label>
           <input type="number" id="master-receivable-total" class="w-full ios-input py-2.5 font-black text-info" value="0" required>
         </div>
         <div>
