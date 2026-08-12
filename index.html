@@ -3962,25 +3962,52 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       closeModal('modalCategoryPicker');
     }
 
-    function handleTypeChange() {
-      const type = document.getElementById('form-type').value;
-      const meta = getTypeMeta(type);
-      const show = (id, isShow) => {
-        const el = document.getElementById(id);
-        if (isShow) el.classList.remove('hidden'); else el.classList.add('hidden');
-      };
-      show('wrap-source-account', meta.showSource);
-      show('wrap-target-account', meta.showTarget);
-      show('wrap-payable', meta.showPayable);
-      show('wrap-receivable', meta.showReceivable);
+  function handleTypeChange() {
+  const type = document.getElementById('form-type').value;
+  const meta = getTypeMeta(type);
 
-      const selectedCategoryName = document.getElementById('form-category').value;
-      if (selectedCategoryName) {
-        const currentCategoryObj = (GLOBAL_DATA.categories || []).find(c => c.categoryName === selectedCategoryName);
-        if (currentCategoryObj && !isCategoryMatchingType(currentCategoryObj, type)) resetCategoryPicker();
-      }
+  // 1. Logika untuk membersihkan data jika field disembunyikan (Mencegah Nilai Siluman)
+  if (!meta.showSource) {
+    document.getElementById('form-source-account').value = "";
+    const disp = document.getElementById('display-source-account');
+    if (disp) { disp.innerText = "Select Account..."; disp.classList.add('text-faint'); }
+  }
+  if (!meta.showTarget) {
+    document.getElementById('form-target-account').value = "";
+    const disp = document.getElementById('display-target-account');
+    if (disp) { disp.innerText = "Select Account..."; disp.classList.add('text-faint'); }
+  }
+  if (!meta.showPayable) {
+    document.getElementById('form-payable').value = "";
+    const disp = document.getElementById('display-payable');
+    if (disp) { disp.innerText = "Select Payable..."; disp.classList.add('text-faint'); }
+  }
+  if (!meta.showReceivable) {
+    document.getElementById('form-receivable').value = "";
+    const disp = document.getElementById('display-receivable');
+    if (disp) { disp.innerText = "Select Receivable..."; disp.classList.add('text-faint'); }
+  }
+
+  // 2. Logika bawaan untuk menampilkan/menyembunyikan elemen form
+  const show = (id, isShow) => {
+    const el = document.getElementById(id);
+    if (isShow) el.classList.remove('hidden'); else el.classList.add('hidden');
+  };
+  
+  show('wrap-source-account', meta.showSource);
+  show('wrap-target-account', meta.showTarget);
+  show('wrap-payable', meta.showPayable);
+  show('wrap-receivable', meta.showReceivable);
+
+  // 3. Logika bawaan untuk memvalidasi/reset kategori jika tidak cocok dengan tipe transaksi
+  const selectedCategoryName = document.getElementById('form-category').value;
+  if (selectedCategoryName) {
+    const currentCategoryObj = (GLOBAL_DATA.categories || []).find(c => c.categoryName === selectedCategoryName);
+    if (currentCategoryObj && !isCategoryMatchingType(currentCategoryObj, type)) {
+      resetCategoryPicker();
     }
-
+  }
+}
     function showKpiDetail(kpiName) {
       currentModalBackFn = null;
       let kpiColor = 'text-main';
