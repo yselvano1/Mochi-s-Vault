@@ -1229,6 +1229,7 @@
       void activeSection.offsetWidth;
       activeSection.classList.add('page-animate');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      localStorage.setItem('mochi_active_tab', tabId);
     }
 
     let touchStartX = 0, touchStartY = 0;
@@ -4531,6 +4532,12 @@ window.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
       initVaultTilt();
       document.getElementById('form-date').valueAsDate = new Date();
+
+      // Pulihkan tab terakhir yang dibuka
+      const savedTab = localStorage.getItem('mochi_active_tab');
+      if (savedTab && TABS.includes(savedTab)) {
+        switchTab(savedTab);
+      }
 
       loadAppData().then(() => {
         const params = new URLSearchParams(location.search);
