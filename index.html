@@ -3401,6 +3401,36 @@ async function handleSaveMaster(event) {
       }, 400);
     }
 
+    function promptDeletePayable(payableName) {
+      vibrate(40);
+      closeModal('modalDetail');
+
+      const titleEl = document.getElementById('delete-modal-title');
+      const descEl = document.getElementById('delete-modal-desc');
+      if (titleEl) titleEl.innerText = `Delete "${payableName}"?`;
+      if (descEl) descEl.innerText = "Removing this payable will hide it from AP/R. Transaction history linked to it will be preserved.";
+
+      document.getElementById('btn-confirm-delete').onclick = async () => {
+        vibrate(30);
+        closeModal('modalDelete');
+        showToast("Payable deleted!");
+
+        postApi('deleteMasterData', { payableName }, { type: 'payable' })
+          .then(result => {
+            if (result && result.data) {
+              GLOBAL_DATA = result.data;
+              localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+              renderAllViews();
+            }
+          })
+          .catch(err => {
+            showToast("Couldn't delete on server!", "error");
+            loadAppData(true);
+          });
+      };
+      openModal('modalDelete');
+    }
+
     function promptDeleteReceivable(receivableName) {
       vibrate(40);
       closeModal('modalDetail');
