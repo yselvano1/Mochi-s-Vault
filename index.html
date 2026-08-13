@@ -139,17 +139,19 @@
     .date-divider:first-child { padding-top: 0; }
     .date-divider .date-divider-line { flex: 1; height: 1px; background: var(--border-color); }
     .date-divider .date-divider-label { font-size: 10px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-tertiary); white-space: nowrap; }
-    .amount-in, .amount-out, .amount-info, .amount-warn {
+    .amount-in, .amount-out, .amount-info, .amount-warn, .amount-slate {
       font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif; font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
     }
     .amount-in { color: var(--amount-in) !important; } .amount-out { color: var(--amount-out) !important; }
     .amount-info { color: var(--amount-info) !important; } .amount-warn { color: var(--amount-warn) !important; }
+    .amount-slate { color: #94a3b8 !important; }
 
     .icon-chip { width: 36px; height: 36px; border-radius: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .chip-pemasukan { background-color: var(--chip-in-bg); color: var(--amount-in); }
     .chip-pengeluaran { background-color: var(--chip-out-bg); color: var(--amount-out); }
     .chip-info { background-color: var(--chip-info-bg); color: var(--amount-info); }
     .chip-warn { background-color: var(--chip-warn-bg); color: var(--amount-warn); }
+    .chip-slate { background-color: #f1f5f9; color: #64748b; }
 
     .clean-topbar { background: linear-gradient(180deg, var(--bg-app) 85%, transparent 100%); backdrop-filter: blur(12px); padding-top: max(2rem, env(safe-area-inset-top)); }
     .nav-bar-bottom { background-color: var(--glass-bg) !important; backdrop-filter: blur(20px); border-top: 1px solid var(--glass-border); padding-bottom: env(safe-area-inset-bottom); }
@@ -461,10 +463,10 @@
               <option value="Expense">Expense (-)</option>
               <option value="Internal Transfer">Internal Transfer</option>
               <option value="External Transfer">External Transfer (-)</option>
-              <option value="Give Receivable">Give Receivable</option>
-              <option value="Receive Receivable">Receive Receivable (+)</option>
-              <option value="Receive Payable">Receive Payable (+)</option>
-              <option value="Pay Installment">Pay Installment (-)</option>
+              <option value="Give Receivable">Lend Money</option>
+              <option value="Receive Receivable">Collect Payment (+)</option>
+              <option value="Receive Payable">Borrow Money (+)</option>
+              <option value="Pay Installment">Pay Debt (-)</option>
             </select>
           </div>
           <div>
@@ -1606,7 +1608,9 @@
       'Give Receivable':    { direction: 'neutral', cls: 'amount-info', prefix: '',  showSource: true,  showTarget: false, showPayable: false, showReceivable: true,  categoryType: 'Receivable' },
       'Receive Receivable': { direction: 'in',      cls: 'amount-in',   prefix: '+', showSource: false, showTarget: true,  showPayable: false, showReceivable: true,  categoryType: 'Receivable' },
       'Receive Payable':    { direction: 'in',      cls: 'amount-in',   prefix: '+', showSource: false, showTarget: true,  showPayable: true,  showReceivable: false, categoryType: 'Payable' },
-      'Pay Installment':    { direction: 'out',     cls: 'amount-out',  prefix: '-', showSource: true,  showTarget: false, showPayable: true,  showReceivable: false, categoryType: 'Payable' }
+      'Pay Installment':    { direction: 'out',     cls: 'amount-out',  prefix: '-', showSource: true,  showTarget: false, showPayable: true,  showReceivable: false, categoryType: 'Payable' },
+      'Write-Off Receivable': { direction: 'neutral', cls: 'amount-slate', prefix: '', showSource: false, showTarget: false, showPayable: false, showReceivable: true,  categoryType: 'Receivable' },
+      'Debt Forgiven':        { direction: 'neutral', cls: 'amount-slate', prefix: '', showSource: false, showTarget: false, showPayable: true,  showReceivable: false, categoryType: 'Payable' }
     };
 
     function getTypeMeta(type) {
@@ -1620,6 +1624,8 @@
       if (type === 'Receive Payable') return { icon: 'piggy-bank', chip: 'chip-pemasukan' };
       if (type === 'Give Receivable') return { icon: 'send', chip: 'chip-info' };
       if (type === 'Pay Installment') return { icon: 'credit-card', chip: 'chip-pengeluaran' };
+      if (type === 'Write-Off Receivable') return { icon: 'file-x', chip: 'chip-slate' };
+      if (type === 'Debt Forgiven') return { icon: 'file-check', chip: 'chip-slate' };
       if (type === 'External Transfer') return { icon: 'arrow-up-right', chip: 'chip-pengeluaran' };
       if (type === 'Internal Transfer') return { icon: 'arrow-right-left', chip: 'chip-info' };
 
@@ -1680,10 +1686,12 @@
       { value: 'Income', label: 'Income (+)', icon: 'trending-up', chip: 'chip-pemasukan', badge: '🟢' },
       { value: 'Internal Transfer', label: 'Internal Transfer', icon: 'arrow-right-left', chip: 'chip-info', badge: '🔵' },
       { value: 'External Transfer', label: 'External Transfer (-)', icon: 'arrow-up-right', chip: 'chip-pengeluaran', badge: '🔴' },
-      { value: 'Give Receivable', label: 'Give Receivable', icon: 'send', chip: 'chip-info', badge: '🔵' },
-      { value: 'Receive Receivable', label: 'Receive Receivable (+)', icon: 'hand-coins', chip: 'chip-pemasukan', badge: '🟢' },
-      { value: 'Receive Payable', label: 'Receive Payable (+)', icon: 'piggy-bank', chip: 'chip-pemasukan', badge: '🟢' },
-      { value: 'Pay Installment', label: 'Pay Installment (-)', icon: 'credit-card', chip: 'chip-pengeluaran', badge: '🔴' }
+      { value: 'Give Receivable', label: 'Lend Money', icon: 'send', chip: 'chip-info', badge: '🔵' },
+      { value: 'Receive Receivable', label: 'Collect Payment (+)', icon: 'hand-coins', chip: 'chip-pemasukan', badge: '🟢' },
+      { value: 'Receive Payable', label: 'Borrow Money (+)', icon: 'piggy-bank', chip: 'chip-pemasukan', badge: '🟢' },
+      { value: 'Pay Installment', label: 'Pay Debt (-)', icon: 'credit-card', chip: 'chip-pengeluaran', badge: '🔴' },
+      { value: 'Write-Off Receivable', label: 'Write-Off (Bad Debt)', icon: 'file-x', chip: 'chip-slate', badge: '⚪' },
+      { value: 'Debt Forgiven', label: 'Debt Forgiven', icon: 'file-check', chip: 'chip-slate', badge: '⚪' }
     ];
 
     function openTypePicker() {
@@ -3336,6 +3344,7 @@ async function handleSaveMaster(event) {
     payload.interestRate = Number(document.getElementById('master-payable-interest').value) || 0;
     payload.adminFee = cleanNum('master-payable-admin'); // <-- PAKAI cleanNum
     payload.netPrincipal = cleanNum('master-payable-net'); // <-- PAKAI cleanNum
+    payload.skipDisbursement = document.getElementById('master-payable-skip-disbursement') ? document.getElementById('master-payable-skip-disbursement').checked : false;
   } else if (type === 'receivable') {
     if (!name) { triggerInputError('master-name', "Receivable name is required."); return; }
     payload.receivableName = name;
@@ -3360,6 +3369,7 @@ async function handleSaveMaster(event) {
       payload.adminFee = 0;
       payload.netPrincipal = 0;
     }
+    payload.skipDisbursement = document.getElementById('master-receivable-skip-disbursement') ? document.getElementById('master-receivable-skip-disbursement').checked : false;
   }
 
   closeModal('modalMaster');
@@ -4620,24 +4630,29 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       </div>
 
       <div>
-        <p class="font-bold text-[10px] text-muted mb-2.5 uppercase tracking-wider">Payment History & Related Transactions</p>
+        <div class="flex items-center justify-between mb-2.5">
+          <p class="font-bold text-[10px] text-muted uppercase tracking-wider">Payment History & Related Transactions</p>
+          <button type="button" onclick="hideSettledDetail = !hideSettledDetail; showPayableDetail(${isAccount ? `GLOBAL_DATA.accounts.find(a=>a.accountName==='${escapeAttr(name)}')` : `GLOBAL_DATA.payables.find(p=>p.payableName==='${escapeAttr(name)}')`}, ${isAccount})" class="text-[10px] font-bold ${hideSettledDetail ? 'text-mochi' : 'text-faint'}">${hideSettledDetail ? 'Show Settled' : 'Hide Settled'}</button>
+        </div>
         <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
   `;
 
-  if (relatedTrx.length === 0) {
-    html += `<p class="text-xs text-center text-muted py-6 font-semibold flex flex-col items-center"><i data-lucide="inbox" class="w-5 h-5 mb-2 text-faint"></i>No installment transactions recorded yet.</p>`;
+  const visibleTrx = hideSettledDetail ? relatedTrx.filter(t => !t.settled) : relatedTrx;
+  if (visibleTrx.length === 0) {
+    html += `<p class="text-xs text-center text-muted py-6 font-semibold flex flex-col items-center"><i data-lucide="inbox" class="w-5 h-5 mb-2 text-faint"></i>${relatedTrx.length === 0 ? 'No installment transactions recorded yet.' : 'Everything here is settled.'}</p>`;
   } else {
-    relatedTrx.forEach(t => {
+    visibleTrx.forEach(t => {
       const meta = getTypeMeta(t.type);
       html += `
-        <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-          <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
+        <div class="flex justify-between items-center text-xs p-3.5 floating-item transition select-none">
+          <input type="checkbox" ${t.settled ? 'checked' : ''} onclick="event.stopPropagation(); handleSettleTogglePayable('${t.transactionId}', this.checked, '${escapeAttr(name)}', ${isAccount})" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Settled">
+          <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" role="button" tabindex="0" class="flex items-center space-x-3 min-w-0 flex-1 pr-2 cursor-pointer">
             <div class="truncate">
-              <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
+              <p class="font-bold text-main truncate ${t.settled ? 'line-through opacity-50' : ''}">${escapeHtml(t.description || t.category)}</p>
               <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDateWithTime(t.date)}</p>
             </div>
           </div>
-          <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] font-numeric pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
+          <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] font-numeric ${t.settled ? 'opacity-50' : ''}">${meta.prefix}${formatRupiah(t.amount)}</span>
         </div>
       `;
     });
@@ -4645,6 +4660,10 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
 
   html += `</div></div></div>`;
   html += `
+    ${(!isAccount && item.status !== 'FORGIVEN' && amount > 0) ? `
+    <button onclick="promptForgivePayable('${escapeAttr(name)}', ${amount})" class="w-full py-2.5 mt-1 bg-transparent text-slate-500 font-bold rounded-xl tap-shrink text-[11px] border border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center">
+      <i data-lucide="file-check" class="w-3.5 h-3.5 mr-1.5"></i> Mark as Forgiven (Debt Written Down)
+    </button>` : ''}
     <div class="flex space-x-3 pt-4">
       <button onclick="${isAccount ? `openEditAccountModal('${escapeAttr(name)}')` : `openEditPayableModal('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit Details</button>
       <button onclick="${isAccount ? `promptDeleteAccount('${escapeAttr(name)}')` : `promptDeletePayable('${escapeAttr(name)}')`}" class="flex-1 py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center border border-rose-600"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
@@ -4695,24 +4714,29 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
           </div>
 
           <div>
-            <p class="font-bold text-[10px] text-muted mb-3 uppercase tracking-wider">Related Transaction History</p>
+            <div class="flex items-center justify-between mb-2.5">
+              <p class="font-bold text-[10px] text-muted uppercase tracking-wider">Related Transaction History</p>
+              <button type="button" onclick="hideSettledDetail = !hideSettledDetail; showReceivableDetail(GLOBAL_DATA.receivables.find(x=>x.receivableName==='${escapeAttr(name)}'))" class="text-[10px] font-bold ${hideSettledDetail ? 'text-mochi' : 'text-faint'}">${hideSettledDetail ? 'Show Settled' : 'Hide Settled'}</button>
+            </div>
             <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
       `;
 
-      if (relatedTrx.length === 0) {
-        html += `<p class="text-xs text-center text-muted py-6 font-semibold flex flex-col items-center"><i data-lucide="inbox" class="w-5 h-5 mb-2 text-faint"></i>No linked transactions yet.</p>`;
+      const visibleTrx = hideSettledDetail ? relatedTrx.filter(t => !t.settled) : relatedTrx;
+      if (visibleTrx.length === 0) {
+        html += `<p class="text-xs text-center text-muted py-6 font-semibold flex flex-col items-center"><i data-lucide="inbox" class="w-5 h-5 mb-2 text-faint"></i>${relatedTrx.length === 0 ? 'No linked transactions yet.' : 'Everything here is settled.'}</p>`;
       } else {
-        relatedTrx.forEach(t => {
+        visibleTrx.forEach(t => {
           const meta = getTypeMeta(t.type);
           html += `
-            <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0" class="flex justify-between items-center text-xs p-3.5 floating-item cursor-pointer card-hover transition tap-shrink select-none">
-              <div class="flex items-center space-x-3 min-w-0 flex-1 pr-2 pointer-events-none">
+            <div class="flex justify-between items-center text-xs p-3.5 floating-item transition select-none">
+              <input type="checkbox" ${t.settled ? 'checked' : ''} onclick="event.stopPropagation(); handleSettleToggleReceivable('${t.transactionId}', this.checked, '${escapeAttr(name)}')" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Settled">
+              <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" role="button" tabindex="0" class="flex items-center space-x-3 min-w-0 flex-1 pr-2 cursor-pointer">
                 <div class="truncate">
-                  <p class="font-bold text-main truncate">${escapeHtml(t.description || t.category)}</p>
+                  <p class="font-bold text-main truncate ${t.settled ? 'line-through opacity-50' : ''}">${escapeHtml(t.description || t.category)}</p>
                   <p class="text-[10px] text-faint font-semibold mt-0.5 truncate">${formatDateWithTime(t.date)}</p>
                 </div>
               </div>
-              <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] pointer-events-none">${meta.prefix}${formatRupiah(t.amount)}</span>
+              <span class="font-black ${meta.cls} flex-shrink-0 whitespace-nowrap text-[13px] ${t.settled ? 'opacity-50' : ''}">${meta.prefix}${formatRupiah(t.amount)}</span>
             </div>
           `;
         });
@@ -4720,6 +4744,10 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
 
       html += `</div></div></div>`;
       html += `
+        ${(status !== 'WRITTEN_OFF' && amount > 0) ? `
+        <button onclick="promptWriteOffReceivable('${escapeAttr(name)}', ${amount})" class="w-full py-2.5 mt-1 bg-transparent text-slate-500 font-bold rounded-xl tap-shrink text-[11px] border border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center">
+          <i data-lucide="file-x" class="w-3.5 h-3.5 mr-1.5"></i> Mark as Bad Debt (Write-Off)
+        </button>` : ''}
         <div class="flex space-x-3 pt-4">
           <button onclick="openEditReceivableModal('${escapeAttr(name)}')" class="flex-1 py-3.5 bg-obsidian dark:bg-white text-white dark:text-obsidian font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center"><i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1.5"></i> Edit</button>
           <button onclick="promptDeleteReceivable('${escapeAttr(name)}')" class="flex-1 py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-extrabold rounded-xl tap-shrink text-xs shadow-md transition-colors flex items-center justify-center border border-rose-600"><i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete</button>
@@ -4727,6 +4755,118 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       document.getElementById('modal-detail-inner').innerHTML = html;
       openModal('modalDetail');
       lucide.createIcons();
+    }
+
+    let hideSettledDetail = false;
+
+    async function handleSettleTogglePayable(transactionId, checked, payableName, isAccount) {
+      vibrate(20);
+      try {
+        const result = await postApi('toggleSettled', { transactionId, settled: checked });
+        if (result && result.data) {
+          GLOBAL_DATA = result.data;
+          localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+          renderAllViews();
+          const p = isAccount
+            ? (GLOBAL_DATA.accounts || []).find(x => x.accountName === payableName)
+            : (GLOBAL_DATA.payables || []).find(x => x.payableName === payableName);
+          if (p) showPayableDetail(p, isAccount);
+        }
+      } catch (err) {
+        showToast("Couldn't update settlement status!", "error");
+      }
+    }
+
+    async function handleSettleToggleReceivable(transactionId, checked, receivableName) {
+      vibrate(20);
+      try {
+        const result = await postApi('toggleSettled', { transactionId, settled: checked });
+        if (result && result.data) {
+          GLOBAL_DATA = result.data;
+          localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+          renderAllViews();
+          const r = (GLOBAL_DATA.receivables || []).find(x => x.receivableName === receivableName);
+          if (r) showReceivableDetail(r);
+        }
+      } catch (err) {
+        showToast("Couldn't update settlement status!", "error");
+      }
+    }
+
+    function promptWriteOffReceivable(receivableName, remainingAmount) {
+      vibrate(40);
+      closeModal('modalDetail');
+
+      const titleEl = document.getElementById('delete-modal-title');
+      const descEl = document.getElementById('delete-modal-desc');
+      if (titleEl) titleEl.innerText = `Write off "${receivableName}"?`;
+      if (descEl) descEl.innerText = `This marks the remaining ${formatRupiah(remainingAmount)} as a bad debt loss — your Net Worth drops by this amount right away. No cash account is touched, only the receivable is written down. This isn't easily undone.`;
+
+      document.getElementById('btn-confirm-delete').onclick = async () => {
+        vibrate(30);
+        closeModal('modalDelete');
+        showToast("Marked as bad debt.");
+
+        postApi('createTransaction', {
+          date: new Date().toISOString().slice(0, 10),
+          type: 'Write-Off Receivable',
+          amount: remainingAmount,
+          relatedReceivable: receivableName,
+          description: 'Write-off: ' + receivableName,
+          notes: 'Marked as bad debt (uncollectible)'
+        })
+          .then(result => {
+            if (result && result.data) {
+              GLOBAL_DATA = result.data;
+              localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+              renderAllViews();
+            }
+          })
+          .catch(err => {
+            showToast("Couldn't write off on server!", "error");
+            loadAppData(true);
+          });
+      };
+
+      setTimeout(() => openModal('modalDelete'), 400);
+    }
+
+    function promptForgivePayable(payableName, remainingAmount) {
+      vibrate(40);
+      closeModal('modalDetail');
+
+      const titleEl = document.getElementById('delete-modal-title');
+      const descEl = document.getElementById('delete-modal-desc');
+      if (titleEl) titleEl.innerText = `Forgive "${payableName}"?`;
+      if (descEl) descEl.innerText = `This marks the remaining ${formatRupiah(remainingAmount)} as forgiven — your Net Worth rises by this amount right away. No cash account is touched, only the debt is written down. This isn't easily undone.`;
+
+      document.getElementById('btn-confirm-delete').onclick = async () => {
+        vibrate(30);
+        closeModal('modalDelete');
+        showToast("Debt marked as forgiven.");
+
+        postApi('createTransaction', {
+          date: new Date().toISOString().slice(0, 10),
+          type: 'Debt Forgiven',
+          amount: remainingAmount,
+          relatedPayable: payableName,
+          description: 'Debt forgiven: ' + payableName,
+          notes: 'Marked as forgiven'
+        })
+          .then(result => {
+            if (result && result.data) {
+              GLOBAL_DATA = result.data;
+              localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+              renderAllViews();
+            }
+          })
+          .catch(err => {
+            showToast("Couldn't update on server!", "error");
+            loadAppData(true);
+          });
+      };
+
+      setTimeout(() => openModal('modalDelete'), 400);
     }
 
     function handleMainCategorySelectChange() {
@@ -4923,6 +5063,10 @@ function openMasterModal(type, isEdit = false) {
         <label for="master-payable-notes" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="align-left"></i></span><span class="field-label-text">Notes</span></label>
         <input type="text" id="master-payable-notes" class="w-full ios-input py-2.5" placeholder="Additional notes...">
       </div>
+      <label class="flex items-start gap-2.5 mt-1 cursor-pointer">
+        <input type="checkbox" id="master-payable-skip-disbursement" class="mt-0.5">
+        <span class="text-xs text-secondary leading-snug">Skip auto-disbursement — this is a backdated debt already recorded manually, don't create a duplicate "Borrow Money" transaction.</span>
+      </label>
     `;
 
     setTimeout(() => {
@@ -5025,6 +5169,10 @@ function openMasterModal(type, isEdit = false) {
         <label for="master-receivable-notes" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="align-left"></i></span><span class="field-label-text">Notes</span></label>
         <textarea id="master-receivable-notes" rows="2" class="w-full ios-input py-2.5" placeholder="Reimbursement notes..."></textarea>
       </div>
+      <label class="flex items-start gap-2.5 mt-1 cursor-pointer">
+        <input type="checkbox" id="master-receivable-skip-disbursement" class="mt-0.5">
+        <span class="text-xs text-secondary leading-snug">Skip auto-disbursement — this is a backdated loan already recorded manually, don't create a duplicate "Lend Money" transaction.</span>
+      </label>
     `;
 
     setTimeout(() => {
