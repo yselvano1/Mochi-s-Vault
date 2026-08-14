@@ -4605,7 +4605,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
   // resolution transactions remain fully visible in the main History tab.
   const relatedTrx = isAccount 
     ? (GLOBAL_DATA.transactions || []).filter(t => t.sourceAccount === name || t.targetAccount === name)
-    : (GLOBAL_DATA.transactions || []).filter(t => t.relatedPayable === name && t.type === 'Receive Payable');
+    : (GLOBAL_DATA.transactions || []).filter(t => t.relatedPayable === name && t.linkRole === 'OPEN');
 
   let html = `
     <div class="space-y-4 pt-1">
@@ -4688,7 +4688,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       // Debt Forgiven — and previously, by bug, even the checklist's own
       // freshly-created settlement transaction) is a resolution record, not
       // an open item, so it gets no checkbox at all.
-      const checkboxHtml = (isAccount || t.type !== 'Receive Payable') ? '' : (
+      const checkboxHtml = (isAccount || t.linkRole !== 'OPEN') ? '' : (
         t.settled
           ? `<input type="checkbox" checked onclick="event.stopPropagation(); handleSettleTogglePayable('${t.transactionId}', this.checked, '${escapeAttr(name)}', false)" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Unsettle">`
           : `<input type="checkbox" ${selectedForSettle[t.transactionId] !== undefined ? 'checked' : ''} onclick="event.stopPropagation(); toggleSettleSelection('${t.transactionId}', this.checked, ${t.amount})" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Select to settle">`
@@ -4740,7 +4740,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
 
       // Mirror of the Payable-side filter above: only Give Receivable
       // (origin items) show here, never the resolution transactions.
-      const relatedTrx = (GLOBAL_DATA.transactions || []).filter(t => t.relatedReceivable === name && t.type === 'Give Receivable');
+      const relatedTrx = (GLOBAL_DATA.transactions || []).filter(t => t.relatedReceivable === name && t.linkRole === 'OPEN');
 
       let html = `
         <div class="space-y-4 pt-1">
@@ -4790,7 +4790,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
           // Mirror of the Payable-side fix: only "Give Receivable" is an
           // origin IOU line item. Write-Off/Receive Receivable/etc. are
           // resolution records and get no checkbox.
-          const checkboxHtml = t.type !== 'Give Receivable' ? '' : (
+          const checkboxHtml = t.linkRole !== 'OPEN' ? '' : (
             t.settled
               ? `<input type="checkbox" checked onclick="event.stopPropagation(); handleSettleToggleReceivable('${t.transactionId}', this.checked, '${escapeAttr(name)}')" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Unsettle">`
               : `<input type="checkbox" ${selectedForSettle[t.transactionId] !== undefined ? 'checked' : ''} onclick="event.stopPropagation(); toggleSettleSelection('${t.transactionId}', this.checked, ${t.amount})" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Select to settle">`
