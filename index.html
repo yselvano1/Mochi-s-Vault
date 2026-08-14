@@ -567,7 +567,7 @@
           <h3 class="text-xs font-extrabold uppercase tracking-wider amount-out flex items-center">
             <i data-lucide="credit-card" class="w-4 h-4 mr-2"></i> Active Payables
           </h3>
-          <button type="button" onclick="vibrate(30); openMasterModal('payable')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New Payable</button>
+          <button type="button" onclick="vibrate(30); openModal('modalPayableChooser')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New Payable</button>
         </div>
         <div id="list-payables-active" class="space-y-3"></div>
       </div>
@@ -713,7 +713,7 @@
               <span class="field-label-icon"><i data-lucide="credit-card"></i></span>
               <span class="field-label-text">Related Payable</span>
             </label>
-            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('payable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Payable</button>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openModal('modalPayableChooser')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Payable</button>
           </div>
           <div tabindex="0" ontouchstart="vibrate(30)" onclick="openItemPicker('payable')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
             <span id="display-payable" class="font-semibold text-faint truncate">Select Payable...</span>
@@ -941,7 +941,7 @@
               <div class="w-7 h-7 rounded-lg bg-[var(--bg-subtle-2)] flex items-center justify-center mr-2"><i data-lucide="tag" class="w-3.5 h-3.5 text-main"></i></div>
               <span class="text-xs font-extrabold text-main">New Category</span>
             </button>
-            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>openMasterModal('payable'), 300)" class="tap-shrink flex items-center p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
+            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>openModal('modalPayableChooser'), 300)" class="tap-shrink flex items-center p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
               <div class="w-7 h-7 rounded-lg bg-rose-500/10 flex items-center justify-center mr-2"><i data-lucide="credit-card" class="w-3.5 h-3.5 text-rose-500"></i></div>
               <span class="text-xs font-extrabold text-main">New Payable</span>
             </button>
@@ -996,6 +996,42 @@
       </div>
     </div>
   </div>
+
+  <!-- New Payable chooser — routes to the right existing form instead of
+       dumping everyone into one giant form. New users looking for "add my
+       credit card" would never think to look under Wallets; this fixes that
+       without duplicating any account/payable creation logic underneath. -->
+  <div id="modalPayableChooser" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalPayableChooser')">
+    <div class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl">
+      <h3 class="text-lg font-black text-main mb-1 tracking-tight text-center">What kind of debt is this?</h3>
+      <p class="text-xs font-medium text-muted mb-5 px-2 text-center">This just picks the right form — nothing is created yet.</p>
+      <div class="space-y-2.5">
+        <button type="button" onclick="vibrate(30); closeModal('modalPayableChooser'); setTimeout(() => openMasterModal('account', false, 'Credit Card / PayLater'), 300)" class="tap-shrink w-full flex items-center p-4 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm text-left">
+          <div class="w-9 h-9 rounded-lg bg-violet-500/10 flex items-center justify-center mr-3 flex-shrink-0"><i data-lucide="credit-card" class="w-4 h-4 text-violet-500"></i></div>
+          <div>
+            <p class="text-xs font-extrabold text-main">Credit Card / PayLater</p>
+            <p class="text-[10px] text-muted font-semibold">Shopee PayLater, GoPayLater, actual credit cards</p>
+          </div>
+        </button>
+        <button type="button" onclick="vibrate(30); closeModal('modalPayableChooser'); setTimeout(() => openMasterModal('payable', false, 'Other'), 300)" class="tap-shrink w-full flex items-center p-4 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm text-left">
+          <div class="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center mr-3 flex-shrink-0"><i data-lucide="hand-coins" class="w-4 h-4 text-amber-500"></i></div>
+          <div>
+            <p class="text-xs font-extrabold text-main">Informal Loan</p>
+            <p class="text-[10px] text-muted font-semibold">Borrowed from a friend/family, no interest or fixed term</p>
+          </div>
+        </button>
+        <button type="button" onclick="vibrate(30); closeModal('modalPayableChooser'); setTimeout(() => openMasterModal('payable', false, 'Personal Loan'), 300)" class="tap-shrink w-full flex items-center p-4 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm text-left">
+          <div class="w-9 h-9 rounded-lg bg-rose-500/10 flex items-center justify-center mr-3 flex-shrink-0"><i data-lucide="landmark" class="w-4 h-4 text-rose-500"></i></div>
+          <div>
+            <p class="text-xs font-extrabold text-main">Bank / Fintech Loan</p>
+            <p class="text-[10px] text-muted font-semibold">GoPinjam, KTA, vehicle installment — has a term & interest</p>
+          </div>
+        </button>
+      </div>
+      <button type="button" onclick="closeModal('modalPayableChooser')" class="w-full mt-4 py-2.5 text-xs font-bold text-faint">Cancel</button>
+    </div>
+  </div>
+
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbwHCQ2m26t3uo1lMDYL_izn5YqALyoxw1gbVNUfTGx68MKaCY9Xvlm3jpt5rJz983as7Q/exec";
@@ -3641,6 +3677,7 @@ async function handleSaveMaster(event) {
         </div>
         ${p.termMonths ? `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-[var(--bg-subtle-2)] text-main border border-[var(--border-color)]">${p.termMonths} Months Term</span>` : ''}
       </div>
+      ${p.dueDate && getAgingBucket(p.dueDate) ? `<div>${(a => renderAgingBucketBadge(a.bucket, a.daysOverdue))(getAgingBucket(p.dueDate))}</div>` : ''}
 
       <div class="grid grid-cols-2 gap-2">
         <div>
@@ -3746,6 +3783,8 @@ async function handleSaveMaster(event) {
       const collected = Math.max(0, initial - rem);
       const pctCollected = initial > 0 ? Math.min(100, Math.round((collected / initial) * 100)) : 0;
 
+      const isStructured = r.receivableType === 'Structured Loan' || r.termMonths > 0;
+
       let dueBadgeHtml = '';
       if (r.expectedReturn) {
         const dueDate = new Date(r.expectedReturn);
@@ -3753,9 +3792,17 @@ async function handleSaveMaster(event) {
         today.setHours(0,0,0,0);
         dueDate.setHours(0,0,0,0);
         const diffDays = Math.round((dueDate - today) / (1000 * 60 * 60 * 24));
-        
+
         if (diffDays < 0) {
-          dueBadgeHtml = `<span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/20">Overdue ${Math.abs(diffDays)} Days</span>`;
+          // Structured Loan overdue = real bad-debt risk, use the same
+          // tiered risk badge as Payable's aging system. Informal
+          // reimbursements (Shopping Reimbursement etc.) get the plain,
+          // low-alarm "Overdue X Days" treatment — Mama forgetting to pay
+          // back groceries isn't a credit risk.
+          const aging = isStructured ? getAgingBucket(r.expectedReturn) : null;
+          dueBadgeHtml = aging
+            ? renderAgingBucketBadge(aging.bucket, aging.daysOverdue)
+            : `<span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/20">Overdue ${Math.abs(diffDays)} Days</span>`;
         } else if (diffDays === 0) {
           dueBadgeHtml = `<span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20">Due Today</span>`;
         } else {
@@ -3763,7 +3810,6 @@ async function handleSaveMaster(event) {
         }
       }
 
-      const isStructured = r.receivableType === 'Structured Loan' || r.termMonths > 0;
       const instAmt = isStructured && r.monthlyInstallment > 0 ? r.monthlyInstallment : (r.termMonths > 0 ? Math.min(rem, Math.round(initial / r.termMonths)) : rem);
 
       const div = document.createElement('div');
@@ -3934,6 +3980,26 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
   }
 
   return `<span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border ${badgeCls}">${label}</span>`;
+}
+
+// Computes which aging bucket a due date falls into, given today's date.
+// Returns null if not overdue (nothing to show — a current item needs no
+// badge cluttering the card). Used for both Payable.dueDate and
+// Receivable.expectedReturn — same math, same buckets, either direction.
+function getAgingBucket(dueDateStr) {
+  if (!dueDateStr) return null;
+  const due = new Date(dueDateStr);
+  if (isNaN(due.getTime())) return null;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  due.setHours(0, 0, 0, 0);
+  const daysOverdue = Math.round((today - due) / 86400000);
+  if (daysOverdue <= 0) return null;
+  let bucket = "1-30_DAYS";
+  if (daysOverdue > 90) bucket = "90PLUS_NPL";
+  else if (daysOverdue > 60) bucket = "61-90_DAYS";
+  else if (daysOverdue > 30) bucket = "31-60_DAYS";
+  return { bucket, daysOverdue };
 }
 
     function populateFormDropdowns() {
@@ -4614,6 +4680,10 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
           ${isCreditCard ? 'Kartu Kredit' : (isPayLater ? 'PayLater • Full Payment' : 'Term Loan / Cicilan')}
         </span>
         <h3 class="text-xl font-black text-main leading-tight">${escapeHtml(name)}</h3>
+        ${!isAccount ? (
+          item.status === 'FORGIVEN' ? renderAgingBucketBadge('WRITTEN_OFF', 0)
+          : (item.dueDate && item.remainingAmount > 0 && getAgingBucket(item.dueDate) ? (a => renderAgingBucketBadge(a.bucket, a.daysOverdue))(getAgingBucket(item.dueDate)) : '')
+        ) : ''}
       </div>
 
       <div class="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-[var(--shadow-item)] space-y-2.5 text-xs font-semibold text-muted p-5">
@@ -4747,6 +4817,10 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
           <div class="border-b border-[var(--border-color)] pb-4 pr-6">
             <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--chip-info-bg)] amount-info uppercase tracking-wider mb-2 inline-block">Unpaid Receivable</span>
             <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(name)}</h3>
+            ${
+              status === 'WRITTEN_OFF' ? renderAgingBucketBadge('WRITTEN_OFF', 0)
+              : (type === 'Structured Loan' && r.expectedReturn && amount > 0 && getAgingBucket(r.expectedReturn) ? (a => renderAgingBucketBadge(a.bucket, a.daysOverdue))(getAgingBucket(r.expectedReturn)) : '')
+            }
           </div>
 
           <div class="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-[var(--shadow-item)] space-y-2.5 text-xs font-semibold text-muted p-5">
@@ -5164,7 +5238,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
     }
 
     // ===== 1. MODAL ADD/EDIT MASTER DATA HUTANG & PIUTANG =====
-function openMasterModal(type, isEdit = false) {
+function openMasterModal(type, isEdit = false, presetType = null) {
   document.getElementById('master-type').value = type;
   if (!isEdit) document.getElementById('master-old-name').value = "";
   
@@ -5237,6 +5311,7 @@ function openMasterModal(type, isEdit = false) {
         </div>
       </div>
     `;
+    if (presetType) setTimeout(() => { const el = document.getElementById('master-account-type'); if (el) el.value = presetType; }, 60);
   } else if (type === 'payable') {
     titleEl.innerText = isEdit ? "Edit Payable / Installment" : "Add New Payable / Installment";
     
@@ -5346,6 +5421,7 @@ function openMasterModal(type, isEdit = false) {
 
     setTimeout(() => {
       document.getElementById('master-payable-start').valueAsDate = new Date();
+      if (presetType) document.getElementById('master-payable-type').value = presetType;
       togglePayableFields();
     }, 50);
   } else if (type === 'receivable') {
