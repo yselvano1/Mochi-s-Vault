@@ -4596,9 +4596,16 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
   const pctPaid = initial > 0 ? Math.min(100, Math.round((paid / initial) * 100)) : 0;
   const minPay = isCreditCard ? Math.max(50000, Math.round(amount * 0.10)) : amount;
 
+  // Only show the ORIGIN line items here (the money you actually fronted/lent),
+  // never the resolution transactions that settle them (Pay Installment,
+  // Debt Forgiven, etc). Those still get created for real — they're what
+  // actually moves the remaining-balance formula — but showing them as their
+  // own separate row here was confusing: an item you already see checked off
+  // doesn't need a second "Collected 1 item(s): X" row next to it. The
+  // resolution transactions remain fully visible in the main History tab.
   const relatedTrx = isAccount 
     ? (GLOBAL_DATA.transactions || []).filter(t => t.sourceAccount === name || t.targetAccount === name)
-    : (GLOBAL_DATA.transactions || []).filter(t => t.relatedPayable === name);
+    : (GLOBAL_DATA.transactions || []).filter(t => t.relatedPayable === name && t.type === 'Receive Payable');
 
   let html = `
     <div class="space-y-4 pt-1">
@@ -4731,7 +4738,9 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       const amount = Math.abs(Number(r.remainingAmount) || 0);
       const status = r.status || 'Active';
 
-      const relatedTrx = (GLOBAL_DATA.transactions || []).filter(t => t.relatedReceivable === name);
+      // Mirror of the Payable-side filter above: only Give Receivable
+      // (origin items) show here, never the resolution transactions.
+      const relatedTrx = (GLOBAL_DATA.transactions || []).filter(t => t.relatedReceivable === name && t.type === 'Give Receivable');
 
       let html = `
         <div class="space-y-4 pt-1">
@@ -4870,7 +4879,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
             </div>
           </div>
           <div class="grid grid-cols-2 gap-2">
-            <button type="button" onclick="showSettleConfirm('${escapeAttr(name)}', ${isReceivable}, 'writeoff')" class="text-[10px] font-extrabold text-slate-500 bg-slate-200 dark:bg-slate-700 px-2 py-2 rounded-lg truncate">${writeOffLabel} Selected</button>
+            <button type="button" onclick="showSettleConfirm('${escapeAttr(name)}', ${isReceivable}, 'writeoff')" class="text-[10px] font-extrabold text-slate-600 dark:text-slate-300 bg-slate-200 dark:bg-slate-700 border border-slate-400 dark:border-slate-500 px-2 py-2 rounded-lg truncate">${writeOffLabel} Selected</button>
             <button type="button" onclick="showSettleConfirm('${escapeAttr(name)}', ${isReceivable}, 'collect')" class="text-[10px] font-extrabold text-white bg-mochi px-2 py-2 rounded-lg truncate">${collectLabel} Selected</button>
           </div>
         </div>
@@ -4886,7 +4895,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       const titleEl = document.getElementById('delete-modal-title');
       const descEl = document.getElementById('delete-modal-desc');
       if (titleEl) titleEl.innerText = `Mark ${ids.length} item(s) as settled?`;
-      if (descEl) descEl.innerText = `No new transaction is created — use this only if the money was already recorded separately (e.g. a lump-sum payment logged via the regular New Transaction form) and you're just reconciling which item(s) it covered.`;
+      if (descEl) descEl.innerText = `⚠️ This does NOT reduce the remaining balance — it only crosses these items off your list. Only use this if the money was already recorded separately (a normal transaction you logged yourself). If not, use "Collect Selected" or "Write Off Selected" instead.`;
 
       document.getElementById('btn-confirm-delete').onclick = async () => {
         vibrate(30);
