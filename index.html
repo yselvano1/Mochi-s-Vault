@@ -4552,6 +4552,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
   const name = isAccount ? item.accountName : item.payableName;
   currentModalBackFn = () => showPayableDetail(item, isAccount);
   window.isNestedModalView = false;
+  resetSettleSelectionIfNeeded(name);
 
   const type = isAccount ? item.accountType : (item.payableType || 'Payable');
   const rawAmt = isAccount ? item.runningBalance : item.remainingAmount;
@@ -4632,8 +4633,9 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       <div>
         <div class="flex items-center justify-between mb-2.5">
           <p class="font-bold text-[10px] text-muted uppercase tracking-wider">Payment History & Related Transactions</p>
-          <button type="button" onclick="hideSettledDetail = !hideSettledDetail; showPayableDetail(${isAccount ? `GLOBAL_DATA.accounts.find(a=>a.accountName==='${escapeAttr(name)}')` : `GLOBAL_DATA.payables.find(p=>p.payableName==='${escapeAttr(name)}')`}, ${isAccount})" class="text-[10px] font-bold ${hideSettledDetail ? 'text-mochi' : 'text-faint'}">${hideSettledDetail ? 'Show Settled' : 'Hide Settled'}</button>
+          ${!isAccount ? `<button type="button" onclick="hideSettledDetail = !hideSettledDetail; showPayableDetail(GLOBAL_DATA.payables.find(p=>p.payableName==='${escapeAttr(name)}'), false)" class="text-[10px] font-bold ${hideSettledDetail ? 'text-mochi' : 'text-faint'}">${hideSettledDetail ? 'Show Settled' : 'Hide Settled'}</button>` : ''}
         </div>
+        ${!isAccount ? settleBarHtml(name, 'Pay Selected') : ''}
         <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
   `;
 
@@ -4643,9 +4645,14 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
   } else {
     visibleTrx.forEach(t => {
       const meta = getTypeMeta(t.type);
+      const checkboxHtml = isAccount ? '' : (
+        t.settled
+          ? `<input type="checkbox" checked onclick="event.stopPropagation(); handleSettleTogglePayable('${t.transactionId}', this.checked, '${escapeAttr(name)}', false)" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Unsettle">`
+          : `<input type="checkbox" ${selectedForSettle[t.transactionId] !== undefined ? 'checked' : ''} onclick="event.stopPropagation(); toggleSettleSelection('${t.transactionId}', this.checked, ${t.amount})" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Select to settle">`
+      );
       html += `
         <div class="flex justify-between items-center text-xs p-3.5 floating-item transition select-none">
-          <input type="checkbox" ${t.settled ? 'checked' : ''} onclick="event.stopPropagation(); handleSettleTogglePayable('${t.transactionId}', this.checked, '${escapeAttr(name)}', ${isAccount})" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Settled">
+          ${checkboxHtml}
           <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" role="button" tabindex="0" class="flex items-center space-x-3 min-w-0 flex-1 pr-2 cursor-pointer">
             <div class="truncate">
               <p class="font-bold text-main truncate ${t.settled ? 'line-through opacity-50' : ''}">${escapeHtml(t.description || t.category)}</p>
@@ -4678,6 +4685,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       window.isNestedModalView = false;
 
       const name = r.receivableName;
+      resetSettleSelectionIfNeeded(name);
       const type = r.receivableType || 'Receivable';
       const amount = Math.abs(Number(r.remainingAmount) || 0);
       const status = r.status || 'Active';
@@ -4718,6 +4726,7 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
               <p class="font-bold text-[10px] text-muted uppercase tracking-wider">Related Transaction History</p>
               <button type="button" onclick="hideSettledDetail = !hideSettledDetail; showReceivableDetail(GLOBAL_DATA.receivables.find(x=>x.receivableName==='${escapeAttr(name)}'))" class="text-[10px] font-bold ${hideSettledDetail ? 'text-mochi' : 'text-faint'}">${hideSettledDetail ? 'Show Settled' : 'Hide Settled'}</button>
             </div>
+            ${settleBarHtml(name, 'Collect Selected')}
             <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
       `;
 
@@ -4727,9 +4736,12 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       } else {
         visibleTrx.forEach(t => {
           const meta = getTypeMeta(t.type);
+          const checkboxHtml = t.settled
+            ? `<input type="checkbox" checked onclick="event.stopPropagation(); handleSettleToggleReceivable('${t.transactionId}', this.checked, '${escapeAttr(name)}')" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Unsettle">`
+            : `<input type="checkbox" ${selectedForSettle[t.transactionId] !== undefined ? 'checked' : ''} onclick="event.stopPropagation(); toggleSettleSelection('${t.transactionId}', this.checked, ${t.amount})" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Select to settle">`;
           html += `
             <div class="flex justify-between items-center text-xs p-3.5 floating-item transition select-none">
-              <input type="checkbox" ${t.settled ? 'checked' : ''} onclick="event.stopPropagation(); handleSettleToggleReceivable('${t.transactionId}', this.checked, '${escapeAttr(name)}')" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Settled">
+              ${checkboxHtml}
               <div onclick="vibrate(30); showTransactionDetail('${t.transactionId}')" role="button" tabindex="0" class="flex items-center space-x-3 min-w-0 flex-1 pr-2 cursor-pointer">
                 <div class="truncate">
                   <p class="font-bold text-main truncate ${t.settled ? 'line-through opacity-50' : ''}">${escapeHtml(t.description || t.category)}</p>
@@ -4758,6 +4770,141 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
     }
 
     let hideSettledDetail = false;
+    let selectedForSettle = {};
+    let selectedForSettleContext = null;
+
+    // Keeps in-progress checkbox selection alive across refreshes of the
+    // SAME item (Hide Settled toggle, undo-unsettle), but clears it the
+    // moment a different Payable/Receivable is opened.
+    function resetSettleSelectionIfNeeded(name) {
+      if (selectedForSettleContext !== name) {
+        selectedForSettle = {};
+        selectedForSettleContext = name;
+      }
+    }
+
+    function toggleSettleSelection(transactionId, checked, amount) {
+      if (checked) selectedForSettle[transactionId] = amount;
+      else delete selectedForSettle[transactionId];
+      updateSettleBar();
+    }
+
+    function updateSettleBar() {
+      const bar = document.getElementById('settle-bar');
+      const label = document.getElementById('settle-bar-label');
+      if (!bar || !label) return;
+      const ids = Object.keys(selectedForSettle);
+      if (ids.length === 0) { bar.classList.add('hidden'); return; }
+      const sum = ids.reduce((s, id) => s + (selectedForSettle[id] || 0), 0);
+      label.innerText = `${ids.length} selected — ${formatRupiah(sum)}`;
+      bar.classList.remove('hidden');
+    }
+
+    function settleBarHtml(name, buttonLabel) {
+      const ids = Object.keys(selectedForSettle);
+      const sum = ids.reduce((s, id) => s + (selectedForSettle[id] || 0), 0);
+      return `
+        <div id="settle-bar" class="${ids.length > 0 ? '' : 'hidden'} flex items-center justify-between gap-2 p-3 rounded-xl bg-mochi/10 border border-mochi/30 mb-2">
+          <span id="settle-bar-label" class="text-xs font-bold text-mochi">${ids.length} selected — ${formatRupiah(sum)}</span>
+          <div class="flex gap-2 flex-shrink-0">
+            <button type="button" onclick="selectedForSettle = {}; updateSettleBar()" class="text-[10px] font-bold text-faint">Clear</button>
+            <button type="button" onclick="showSettleConfirm('${escapeAttr(name)}', ${buttonLabel === 'Collect Selected'})" class="text-[10px] font-extrabold text-white bg-mochi px-3 py-1.5 rounded-lg">${buttonLabel}</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function showSettleConfirm(name, isReceivable) {
+      vibrate(30);
+      const ids = Object.keys(selectedForSettle);
+      if (ids.length === 0) return;
+      const sum = ids.reduce((s, id) => s + (selectedForSettle[id] || 0), 0);
+      const accountOptions = (GLOBAL_DATA.accounts || []).map(a => `<option value="${escapeAttr(a.accountName)}">${escapeHtml(a.accountName)}</option>`).join('');
+      const today = new Date().toISOString().slice(0, 10);
+
+      const html = `
+        <div class="space-y-4 pt-1">
+          <div class="border-b border-[var(--border-color)] pb-4 pr-6">
+            <span class="text-[10px] font-bold px-3 py-1 rounded-full ${isReceivable ? 'bg-[var(--chip-info-bg)] amount-info' : 'bg-[var(--chip-out-bg)] amount-out'} uppercase tracking-wider mb-2 inline-block">${isReceivable ? 'Collect Payment' : 'Pay Debt'}</span>
+            <h3 class="text-lg font-extrabold text-main leading-tight">${escapeHtml(name)}</h3>
+            <p class="text-[11px] text-faint font-semibold mt-1">${ids.length} item(s) selected</p>
+          </div>
+
+          <div>
+            <label for="settle-confirm-amount" class="field-label mb-1.5"><span class="field-label-text">Amount Actually ${isReceivable ? 'Received' : 'Paid'}</span></label>
+            <div class="relative">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-xs">Rp</span>
+              <input type="text" inputmode="numeric" id="settle-confirm-amount" class="w-full ios-input pl-9 py-2.5 font-black text-mochi" value="${new Intl.NumberFormat('id-ID').format(sum)}" oninput="formatInputRupiah(this)">
+            </div>
+            <p class="text-[10px] text-faint font-semibold mt-1.5">Defaults to the sum of selected items — edit if the actual transfer was rounded or partial.</p>
+          </div>
+
+          <div>
+            <label for="settle-confirm-account" class="field-label mb-1.5"><span class="field-label-text">${isReceivable ? 'Receiving' : 'Payment'} Account</span></label>
+            <select id="settle-confirm-account" class="w-full ios-input cursor-pointer py-2.5">
+              <option value="">-- Select Account --</option>
+              ${accountOptions}
+            </select>
+          </div>
+
+          <div>
+            <label for="settle-confirm-date" class="field-label mb-1.5"><span class="field-label-text">Date</span></label>
+            <input type="date" id="settle-confirm-date" class="w-full ios-input py-2.5" value="${today}">
+          </div>
+
+          <div>
+            <label for="settle-confirm-notes" class="field-label mb-1.5"><span class="field-label-text">Notes</span></label>
+            <input type="text" id="settle-confirm-notes" class="w-full ios-input py-2.5" placeholder="Optional">
+          </div>
+
+          <div class="flex space-x-3 pt-2">
+            <button type="button" onclick="currentModalBackFn && currentModalBackFn()" class="flex-1 py-3.5 bg-[var(--bg-subtle-2)] text-main font-extrabold rounded-xl tap-shrink text-xs border border-[var(--border-color)]">Cancel</button>
+            <button type="button" onclick="submitSettleSelected('${escapeAttr(name)}', ${isReceivable})" class="flex-1 py-3.5 bg-mochi hover:bg-mochi-dark text-white font-extrabold rounded-xl tap-shrink text-xs shadow-md">Confirm</button>
+          </div>
+        </div>
+      `;
+      document.getElementById('modal-detail-inner').innerHTML = html;
+      lucide.createIcons();
+    }
+
+    async function submitSettleSelected(name, isReceivable) {
+      const ids = Object.keys(selectedForSettle);
+      if (ids.length === 0) return;
+
+      const amountEl = document.getElementById('settle-confirm-amount');
+      const amount = Number((amountEl.value || '').replace(/[^0-9]/g, '')) || 0;
+      const account = document.getElementById('settle-confirm-account').value;
+      const date = document.getElementById('settle-confirm-date').value || new Date().toISOString().slice(0, 10);
+      const notes = document.getElementById('settle-confirm-notes').value;
+
+      if (amount <= 0) { triggerInputError('settle-confirm-amount', "Amount must be greater than 0."); return; }
+      if (!account) { triggerInputError('settle-confirm-account', "Account is required."); return; }
+
+      const payload = {
+        transactionIds: ids,
+        amount, date, notes,
+        type: isReceivable ? 'Receive Receivable' : 'Pay Installment',
+        description: (isReceivable ? 'Collected' : 'Paid') + ' ' + ids.length + ' item(s): ' + name
+      };
+      if (isReceivable) { payload.targetAccount = account; payload.relatedReceivable = name; }
+      else { payload.sourceAccount = account; payload.relatedPayable = name; }
+
+      vibrate(30);
+      try {
+        const result = await postApi('settleSelected', payload);
+        if (result && result.data) {
+          GLOBAL_DATA = result.data;
+          localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+          selectedForSettle = {};
+          selectedForSettleContext = null;
+          renderAllViews();
+          showToast(`Settled ${ids.length} item(s)!`);
+          closeModal('modalDetail');
+        }
+      } catch (err) {
+        showToast("Couldn't settle on server!", "error");
+      }
+    }
 
     async function handleSettleTogglePayable(transactionId, checked, payableName, isAccount) {
       vibrate(20);
