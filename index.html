@@ -3290,6 +3290,7 @@ function openEditPayableModal(payableName) {
     if (document.getElementById('master-payable-interest')) document.getElementById('master-payable-interest').value = p.interestRate || '';
     if (document.getElementById('master-payable-admin')) document.getElementById('master-payable-admin').value = p.adminFee || '';
     if (document.getElementById('master-payable-net')) document.getElementById('master-payable-net').value = p.netPrincipal || '';
+    togglePayableFields();
   }, 400);
 }
 
@@ -4675,7 +4676,12 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
   } else {
     displayTrx.forEach(t => {
       const meta = getTypeMeta(t.type);
-      const checkboxHtml = isAccount ? '' : (
+      // Only "Receive Payable" is an origin IOU line item that can ever need
+      // settling. Everything else linked to this payable (Pay Installment,
+      // Debt Forgiven — and previously, by bug, even the checklist's own
+      // freshly-created settlement transaction) is a resolution record, not
+      // an open item, so it gets no checkbox at all.
+      const checkboxHtml = (isAccount || t.type !== 'Receive Payable') ? '' : (
         t.settled
           ? `<input type="checkbox" checked onclick="event.stopPropagation(); handleSettleTogglePayable('${t.transactionId}', this.checked, '${escapeAttr(name)}', false)" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Unsettle">`
           : `<input type="checkbox" ${selectedForSettle[t.transactionId] !== undefined ? 'checked' : ''} onclick="event.stopPropagation(); toggleSettleSelection('${t.transactionId}', this.checked, ${t.amount})" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Select to settle">`
@@ -4772,9 +4778,14 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
       } else {
         displayTrx.forEach(t => {
           const meta = getTypeMeta(t.type);
-          const checkboxHtml = t.settled
-            ? `<input type="checkbox" checked onclick="event.stopPropagation(); handleSettleToggleReceivable('${t.transactionId}', this.checked, '${escapeAttr(name)}')" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Unsettle">`
-            : `<input type="checkbox" ${selectedForSettle[t.transactionId] !== undefined ? 'checked' : ''} onclick="event.stopPropagation(); toggleSettleSelection('${t.transactionId}', this.checked, ${t.amount})" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Select to settle">`;
+          // Mirror of the Payable-side fix: only "Give Receivable" is an
+          // origin IOU line item. Write-Off/Receive Receivable/etc. are
+          // resolution records and get no checkbox.
+          const checkboxHtml = t.type !== 'Give Receivable' ? '' : (
+            t.settled
+              ? `<input type="checkbox" checked onclick="event.stopPropagation(); handleSettleToggleReceivable('${t.transactionId}', this.checked, '${escapeAttr(name)}')" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Unsettle">`
+              : `<input type="checkbox" ${selectedForSettle[t.transactionId] !== undefined ? 'checked' : ''} onclick="event.stopPropagation(); toggleSettleSelection('${t.transactionId}', this.checked, ${t.amount})" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Select to settle">`
+          );
           html += `
             <div class="flex justify-between items-center text-xs p-3.5 floating-item transition select-none">
               ${checkboxHtml}
@@ -4847,16 +4858,20 @@ function renderAgingBucketBadge(bucket, daysOverdue) {
     function settleBarHtml(name, isReceivable) {
       const ids = Object.keys(selectedForSettle);
       const sum = ids.reduce((s, id) => s + (selectedForSettle[id] || 0), 0);
-      const collectLabel = isReceivable ? 'Collect Selected' : 'Pay Selected';
-      const writeOffLabel = isReceivable ? 'Write Off Selected' : 'Forgive Selected';
+      const collectLabel = isReceivable ? 'Collect' : 'Pay';
+      const writeOffLabel = isReceivable ? 'Write Off' : 'Forgive';
       return `
-        <div id="settle-bar" class="${ids.length > 0 ? '' : 'hidden'} flex items-center justify-between gap-2 p-3 rounded-xl bg-mochi/10 border border-mochi/30 mb-2 flex-wrap">
-          <span id="settle-bar-label" class="text-xs font-bold text-mochi w-full sm:w-auto">${ids.length} selected — ${formatRupiah(sum)}</span>
-          <div class="flex gap-2 flex-wrap flex-shrink-0 ml-auto">
-            <button type="button" onclick="selectedForSettle = {}; updateSettleBar()" class="text-[10px] font-bold text-faint">Clear</button>
-            <button type="button" onclick="promptBulkMarkSettled('${escapeAttr(name)}', ${isReceivable})" class="text-[10px] font-bold text-faint underline decoration-dotted">Mark Settled Only</button>
-            <button type="button" onclick="showSettleConfirm('${escapeAttr(name)}', ${isReceivable}, 'writeoff')" class="text-[10px] font-extrabold text-slate-500 bg-slate-200 dark:bg-slate-700 px-3 py-1.5 rounded-lg">${writeOffLabel}</button>
-            <button type="button" onclick="showSettleConfirm('${escapeAttr(name)}', ${isReceivable}, 'collect')" class="text-[10px] font-extrabold text-white bg-mochi px-3 py-1.5 rounded-lg">${collectLabel}</button>
+        <div id="settle-bar" class="${ids.length > 0 ? '' : 'hidden'} p-3 rounded-xl bg-mochi/10 border border-mochi/30 mb-2">
+          <div class="flex items-center justify-between mb-2">
+            <span id="settle-bar-label" class="text-xs font-bold text-mochi">${ids.length} selected — ${formatRupiah(sum)}</span>
+            <div class="flex gap-3 flex-shrink-0">
+              <button type="button" onclick="selectedForSettle = {}; updateSettleBar()" class="text-[10px] font-bold text-faint">Clear</button>
+              <button type="button" onclick="promptBulkMarkSettled('${escapeAttr(name)}', ${isReceivable})" class="text-[10px] font-bold text-faint underline decoration-dotted">Settled Only</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="showSettleConfirm('${escapeAttr(name)}', ${isReceivable}, 'writeoff')" class="text-[10px] font-extrabold text-slate-500 bg-slate-200 dark:bg-slate-700 px-2 py-2 rounded-lg truncate">${writeOffLabel} Selected</button>
+            <button type="button" onclick="showSettleConfirm('${escapeAttr(name)}', ${isReceivable}, 'collect')" class="text-[10px] font-extrabold text-white bg-mochi px-2 py-2 rounded-lg truncate">${collectLabel} Selected</button>
           </div>
         </div>
       `;
@@ -5222,7 +5237,7 @@ function openMasterModal(type, isEdit = false) {
       <div class="grid grid-cols-2 gap-3">
         <div>
           <label for="master-payable-type" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="credit-card"></i></span><span class="field-label-text">Payable Type</span></label>
-          <select id="master-payable-type" class="w-full ios-input cursor-pointer py-2.5">
+          <select id="master-payable-type" class="w-full ios-input cursor-pointer py-2.5" onchange="togglePayableFields()">
             <option value="Personal Loan">Personal Loan / FinTech</option>
             <option value="Vehicle Installment">Vehicle Installment</option>
             <option value="Bank Loan">Bank Loan / KTA</option>
@@ -5244,6 +5259,7 @@ function openMasterModal(type, isEdit = false) {
       </div>
       
       <!-- SMART HYBRID CALCULATOR -->
+      <div id="payable-structured-fields" class="space-y-3">
       <div class="grid grid-cols-2 gap-3">
         <div>
           <label for="master-payable-net" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="banknote"></i></span><span class="field-label-text">Net Principal</span></label>
@@ -5270,11 +5286,12 @@ function openMasterModal(type, isEdit = false) {
           </div>
         </div>
       </div>
+      </div>
 
       <div class="border-t border-[var(--border-color)] my-3 pt-3">
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label for="master-payable-total" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="banknote"></i></span><span class="field-label-text">Total Debt (Principal)</span></label>
+            <label for="master-payable-total" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="banknote"></i></span><span class="field-label-text" id="master-payable-total-label">Total Debt (Principal)</span></label>
             <div class="relative">
               <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-xs">Rp</span>
               <input type="text" inputmode="numeric" id="master-payable-total" class="w-full ios-input pl-9 py-2.5 font-black text-mochi" placeholder="0" oninput="formatInputRupiah(this)" required>
@@ -5320,6 +5337,7 @@ function openMasterModal(type, isEdit = false) {
 
     setTimeout(() => {
       document.getElementById('master-payable-start').valueAsDate = new Date();
+      togglePayableFields();
     }, 50);
   } else if (type === 'receivable') {
     titleEl.innerText = isEdit ? "Edit Receivable" : "Add New Receivable";
@@ -5456,6 +5474,21 @@ function calcSmartReceivable() {
     
     if (term > 0) {
       document.getElementById('master-receivable-installment').value = new Intl.NumberFormat('id-ID').format(Math.round(totalDebt / term));
+    }
+  }
+}
+
+function togglePayableFields() {
+  const type = document.getElementById('master-payable-type').value;
+  const wrap = document.getElementById('payable-structured-fields');
+  const totalLabel = document.getElementById('master-payable-total-label');
+  if (wrap) {
+    if (type === 'Other') {
+      wrap.classList.add('hidden');
+      if (totalLabel) totalLabel.textContent = 'Total Owed';
+    } else {
+      wrap.classList.remove('hidden');
+      if (totalLabel) totalLabel.textContent = 'Total Debt (Principal)';
     }
   }
 }
