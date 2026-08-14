@@ -510,7 +510,7 @@
           <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
             <i data-lucide="building-2" class="w-4 h-4 mr-2"></i> Bank Accounts
           </h3>
-          <button type="button" onclick="vibrate(30); openMasterModal('account')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New</button>
+          <button type="button" onclick="vibrate(30); openModal('modalAccountChooser')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New</button>
         </div>
         <div id="list-bank-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 empty:hidden"></div>
         <div id="divider-bank" class="hidden border-t border-dashed border-[var(--border-color)] my-3"></div>
@@ -522,7 +522,7 @@
           <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
             <i data-lucide="smartphone" class="w-4 h-4 mr-2"></i> E-Wallets
           </h3>
-          <button type="button" onclick="vibrate(30); openMasterModal('account')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New</button>
+          <button type="button" onclick="vibrate(30); openModal('modalAccountChooser')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New</button>
         </div>
         <div id="list-ewallet-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 empty:hidden"></div>
         <div id="divider-ewallet" class="hidden border-t border-dashed border-[var(--border-color)] my-3"></div>
@@ -534,7 +534,7 @@
           <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
             <i data-lucide="banknote" class="w-4 h-4 mr-2"></i> Physical Cash
           </h3>
-          <button type="button" onclick="vibrate(30); openMasterModal('account')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New</button>
+          <button type="button" onclick="vibrate(30); openModal('modalAccountChooser')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New</button>
         </div>
         <div id="list-cash-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 empty:hidden"></div>
         <div id="divider-cash" class="hidden border-t border-dashed border-[var(--border-color)] my-3"></div>
@@ -546,7 +546,7 @@
           <h3 class="text-xs font-extrabold uppercase tracking-wider text-muted flex items-center">
             <i data-lucide="credit-card" class="w-4 h-4 mr-2"></i> Credit Cards & PayLater
           </h3>
-          <button type="button" onclick="vibrate(30); openMasterModal('account')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New</button>
+          <button type="button" onclick="vibrate(30); openModal('modalAccountChooser')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New</button>
         </div>
         <div id="list-cc-operational" class="grid grid-cols-1 md:grid-cols-2 gap-3 empty:hidden"></div>
       </div>
@@ -558,7 +558,7 @@
           <h3 class="text-xs font-extrabold uppercase tracking-wider amount-info flex items-center">
             <i data-lucide="hand-coins" class="w-4 h-4 mr-2"></i> Unpaid Receivables
           </h3>
-          <button type="button" onclick="vibrate(30); openMasterModal('receivable')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New Receivable</button>
+          <button type="button" onclick="vibrate(30); openModal('modalReceivableChooser')" class="text-[10px] font-extrabold text-mochi dark:text-mochi-light hover:underline uppercase">+ New Receivable</button>
         </div>
         <div id="list-receivables-active" class="space-y-3"></div>
       </div>
@@ -668,7 +668,7 @@
               <span class="field-label-icon"><i data-lucide="wallet"></i></span>
               <span class="field-label-text">Source Account</span>
             </label>
-            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openModal('modalAccountChooser')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
           </div>
           <div tabindex="0" ontouchstart="vibrate(30)" onclick="openItemPicker('source-account')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
             <span id="display-source-account" class="font-semibold text-faint truncate">Select Account...</span>
@@ -683,7 +683,7 @@
               <span class="field-label-icon"><i data-lucide="wallet"></i></span>
               <span class="field-label-text">Target Account</span>
             </label>
-            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('account')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openModal('modalAccountChooser')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Account</button>
           </div>
           <div tabindex="0" ontouchstart="vibrate(30)" onclick="openItemPicker('target-account')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
             <span id="display-target-account" class="font-semibold text-faint truncate">Select Account...</span>
@@ -728,7 +728,7 @@
               <span class="field-label-icon"><i data-lucide="hand-coins"></i></span>
               <span class="field-label-text">Related Receivable</span>
             </label>
-            <button type="button" ontouchstart="vibrate(30)" onclick="openMasterModal('receivable')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Receivable</button>
+            <button type="button" ontouchstart="vibrate(30)" onclick="openModal('modalReceivableChooser')" class="text-[10px] text-mochi dark:text-mochi-light font-extrabold uppercase hover:underline">+ New Receivable</button>
           </div>
           <div tabindex="0" ontouchstart="vibrate(30)" onclick="openItemPicker('receivable')" class="w-full ios-input flex justify-between items-center cursor-pointer transition tap-shrink">
             <span id="display-receivable" class="font-semibold text-faint truncate">Select Receivable...</span>
@@ -933,7 +933,7 @@
         <div>
           <p class="text-[10px] text-muted font-bold uppercase tracking-wider mb-2 px-1">Master Data Shortcuts</p>
           <div class="grid grid-cols-2 gap-2">
-            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>openMasterModal('account'), 300)" class="tap-shrink flex items-center p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
+            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>openModal('modalAccountChooser'), 300)" class="tap-shrink flex items-center p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
               <div class="w-7 h-7 rounded-lg bg-[var(--bg-subtle-2)] flex items-center justify-center mr-2"><i data-lucide="wallet" class="w-3.5 h-3.5 text-main"></i></div>
               <span class="text-xs font-extrabold text-main">New Account</span>
             </button>
@@ -945,7 +945,7 @@
               <div class="w-7 h-7 rounded-lg bg-rose-500/10 flex items-center justify-center mr-2"><i data-lucide="credit-card" class="w-3.5 h-3.5 text-rose-500"></i></div>
               <span class="text-xs font-extrabold text-main">New Payable</span>
             </button>
-            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>openMasterModal('receivable'), 300)" class="tap-shrink flex items-center p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
+            <button onclick="closeModal('modalCommandCenter'); setTimeout(()=>openModal('modalReceivableChooser'), 300)" class="tap-shrink flex items-center p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm">
               <div class="w-7 h-7 rounded-lg bg-sky-500/10 flex items-center justify-center mr-2"><i data-lucide="hand-coins" class="w-3.5 h-3.5 text-sky-500"></i></div>
               <span class="text-xs font-extrabold text-main">New Receivable</span>
             </button>
@@ -997,7 +997,78 @@
     </div>
   </div>
 
-  <!-- New Payable chooser — routes to the right existing form instead of
+  <!-- New Receivable chooser — mirror of the Payable one above. -->
+  <div id="modalReceivableChooser" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalReceivableChooser')">
+    <div class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl">
+      <h3 class="text-lg font-black text-main mb-1 tracking-tight text-center">What kind of receivable is this?</h3>
+      <p class="text-xs font-medium text-muted mb-5 px-2 text-center">This just picks the right form — nothing is created yet.</p>
+      <div class="space-y-2.5">
+        <button type="button" onclick="vibrate(30); closeModal('modalReceivableChooser'); setTimeout(() => openMasterModal('receivable', false, 'Shopping Reimbursement'), 300)" class="tap-shrink w-full flex items-center p-4 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm text-left">
+          <div class="w-9 h-9 rounded-lg bg-sky-500/10 flex items-center justify-center mr-3 flex-shrink-0"><i data-lucide="receipt" class="w-4 h-4 text-sky-500"></i></div>
+          <div>
+            <p class="text-xs font-extrabold text-main">Reimbursement</p>
+            <p class="text-[10px] text-muted font-semibold">You fronted money for Mama/family, they'll pay you back</p>
+          </div>
+        </button>
+        <button type="button" onclick="vibrate(30); closeModal('modalReceivableChooser'); setTimeout(() => openMasterModal('receivable', false, 'Other'), 300)" class="tap-shrink w-full flex items-center p-4 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm text-left">
+          <div class="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center mr-3 flex-shrink-0"><i data-lucide="hand-coins" class="w-4 h-4 text-amber-500"></i></div>
+          <div>
+            <p class="text-xs font-extrabold text-main">Informal Loan</p>
+            <p class="text-[10px] text-muted font-semibold">Lent cash to a friend/sibling, no interest or fixed term</p>
+          </div>
+        </button>
+        <button type="button" onclick="vibrate(30); closeModal('modalReceivableChooser'); setTimeout(() => openMasterModal('receivable', false, 'Structured Loan'), 300)" class="tap-shrink w-full flex items-center p-4 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm text-left">
+          <div class="w-9 h-9 rounded-lg bg-rose-500/10 flex items-center justify-center mr-3 flex-shrink-0"><i data-lucide="landmark" class="w-4 h-4 text-rose-500"></i></div>
+          <div>
+            <p class="text-xs font-extrabold text-main">Structured Loan</p>
+            <p class="text-[10px] text-muted font-semibold">Lent money to a person/business with interest, admin fee, term</p>
+          </div>
+        </button>
+      </div>
+      <button type="button" onclick="closeModal('modalReceivableChooser')" class="w-full mt-4 py-2.5 text-xs font-bold text-faint">Cancel</button>
+    </div>
+  </div>
+
+  <!-- New Account chooser -->
+  <div id="modalAccountChooser" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalAccountChooser')">
+    <div class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl">
+      <h3 class="text-lg font-black text-main mb-1 tracking-tight text-center">Which account type?</h3>
+      <p class="text-xs font-medium text-muted mb-5 px-2 text-center">This just picks the right form — nothing is created yet.</p>
+      <div class="space-y-2.5">
+        <button type="button" onclick="vibrate(30); closeModal('modalAccountChooser'); setTimeout(() => openMasterModal('account', false, 'Bank Account'), 300)" class="tap-shrink w-full flex items-center p-4 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm text-left">
+          <div class="w-9 h-9 rounded-lg bg-sky-500/10 flex items-center justify-center mr-3 flex-shrink-0"><i data-lucide="landmark" class="w-4 h-4 text-sky-500"></i></div>
+          <div>
+            <p class="text-xs font-extrabold text-main">Bank Account</p>
+            <p class="text-[10px] text-muted font-semibold">BCA, Mandiri, BRI, etc.</p>
+          </div>
+        </button>
+        <button type="button" onclick="vibrate(30); closeModal('modalAccountChooser'); setTimeout(() => openMasterModal('account', false, 'E-Wallet'), 300)" class="tap-shrink w-full flex items-center p-4 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm text-left">
+          <div class="w-9 h-9 rounded-lg bg-emerald-500/10 flex items-center justify-center mr-3 flex-shrink-0"><i data-lucide="smartphone" class="w-4 h-4 text-emerald-500"></i></div>
+          <div>
+            <p class="text-xs font-extrabold text-main">E-Wallet</p>
+            <p class="text-[10px] text-muted font-semibold">OVO, Dana, ShopeePay, GoPay</p>
+          </div>
+        </button>
+        <button type="button" onclick="vibrate(30); closeModal('modalAccountChooser'); setTimeout(() => openMasterModal('account', false, 'Cash'), 300)" class="tap-shrink w-full flex items-center p-4 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm text-left">
+          <div class="w-9 h-9 rounded-lg bg-teal-500/10 flex items-center justify-center mr-3 flex-shrink-0"><i data-lucide="banknote" class="w-4 h-4 text-teal-500"></i></div>
+          <div>
+            <p class="text-xs font-extrabold text-main">Cash</p>
+            <p class="text-[10px] text-muted font-semibold">Physical cash in your wallet</p>
+          </div>
+        </button>
+        <button type="button" onclick="vibrate(30); closeModal('modalAccountChooser'); setTimeout(() => openMasterModal('account', false, 'Credit Card / PayLater'), 300)" class="tap-shrink w-full flex items-center p-4 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm text-left">
+          <div class="w-9 h-9 rounded-lg bg-violet-500/10 flex items-center justify-center mr-3 flex-shrink-0"><i data-lucide="credit-card" class="w-4 h-4 text-violet-500"></i></div>
+          <div>
+            <p class="text-xs font-extrabold text-main">Credit Card / PayLater</p>
+            <p class="text-[10px] text-muted font-semibold">Revolving credit line with a running balance</p>
+          </div>
+        </button>
+      </div>
+      <button type="button" onclick="closeModal('modalAccountChooser')" class="w-full mt-4 py-2.5 text-xs font-bold text-faint">Cancel</button>
+    </div>
+  </div>
+
+
        dumping everyone into one giant form. New users looking for "add my
        credit card" would never think to look under Wallets; this fixes that
        without duplicating any account/payable creation logic underneath. -->
