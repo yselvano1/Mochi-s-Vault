@@ -5390,6 +5390,11 @@ function getAgingBucket(dueDateStr) {
 
     async function handleSettleTogglePayable(transactionId, checked, payableName, isAccount) {
       vibrate(20);
+      // A stale selection entry for this same transaction (left over from
+      // the "select to settle" checkbox mode) must never survive a settled
+      // state change, or the row can re-render checked again right after
+      // the person unticks it — looking like the untick silently failed.
+      delete selectedForSettle[transactionId];
       try {
         const result = await postApi('toggleSettled', { transactionId, settled: checked });
         if (result && result.data) {
@@ -5402,12 +5407,22 @@ function getAgingBucket(dueDateStr) {
           if (p) showPayableDetail(p, isAccount);
         }
       } catch (err) {
-        showToast("Couldn't update settlement status!", "error");
+        // The click already flipped the checkbox visually — if the save
+        // failed, the on-screen state no longer matches the server, so we
+        // re-render from the last-known-good data to snap it back rather
+        // than leaving a checkbox that lies about what's actually saved.
+        showToast("Couldn't update settlement status — change was not saved.", "error");
+        renderAllViews();
+        const p = isAccount
+          ? (GLOBAL_DATA.accounts || []).find(x => x.accountName === payableName)
+          : (GLOBAL_DATA.payables || []).find(x => x.payableName === payableName);
+        if (p) showPayableDetail(p, isAccount);
       }
     }
 
     async function handleSettleToggleReceivable(transactionId, checked, receivableName) {
       vibrate(20);
+      delete selectedForSettle[transactionId];
       try {
         const result = await postApi('toggleSettled', { transactionId, settled: checked });
         if (result && result.data) {
@@ -5418,7 +5433,10 @@ function getAgingBucket(dueDateStr) {
           if (r) showReceivableDetail(r);
         }
       } catch (err) {
-        showToast("Couldn't update settlement status!", "error");
+        showToast("Couldn't update settlement status — change was not saved.", "error");
+        renderAllViews();
+        const r = (GLOBAL_DATA.receivables || []).find(x => x.receivableName === receivableName);
+        if (r) showReceivableDetail(r);
       }
     }
 
@@ -5735,9 +5753,13 @@ function openMasterModal(type, isEdit = false, presetType = null) {
         <label for="master-payable-notes" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="align-left"></i></span><span class="field-label-text">Notes</span></label>
         <input type="text" id="master-payable-notes" class="w-full ios-input py-2.5" placeholder="Additional notes...">
       </div>
-      <label class="flex items-start gap-2.5 mt-1 cursor-pointer">
-        <input type="checkbox" id="master-payable-skip-disbursement" class="mt-0.5">
-        <span class="text-xs text-secondary leading-snug">Skip auto-disbursement — this is a backdated debt already recorded manually, don't create a duplicate "Borrow Money" transaction.</span>
+      <label class="flex items-start gap-3 mt-1 p-3.5 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] cursor-pointer transition-colors">
+        <span class="relative flex items-center justify-center w-5 h-5 mt-0.5 flex-shrink-0">
+          <input type="checkbox" id="master-payable-skip-disbursement" class="peer sr-only">
+          <span class="w-5 h-5 rounded-md border-2 border-[var(--border-color)] peer-checked:border-mochi peer-checked:bg-mochi transition-colors duration-150"></span>
+          <i data-lucide="check" class="w-3 h-3 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity duration-150 pointer-events-none"></i>
+        </span>
+        <span class="text-xs text-muted leading-snug font-semibold">Skip auto-disbursement — this is a backdated debt already recorded manually, don't create a duplicate "Borrow Money" transaction.</span>
       </label>
     `;
 
@@ -5810,14 +5832,14 @@ function openMasterModal(type, isEdit = false, presetType = null) {
           <label for="master-receivable-total" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="banknote"></i></span><span class="field-label-text">Total Receivable Amount</span></label>
           <div class="relative">
             <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-xs">Rp</span>
-            <input type="text" inputmode="numeric" id="master-receivable-total" class="w-full ios-input pl-9 py-2.5 font-black text-info" placeholder="0" oninput="formatInputRupiah(this)" required>
+            <input type="text" inputmode="numeric" id="master-receivable-total" class="w-full ios-input pl-9 py-2.5 font-black amount-info" placeholder="0" oninput="formatInputRupiah(this)" required>
           </div>
         </div>
         <div>
           <label for="master-receivable-installment" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="repeat"></i></span><span class="field-label-text">Monthly Installment</span></label>
           <div class="relative">
             <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-xs">Rp</span>
-            <input type="text" inputmode="numeric" id="master-receivable-installment" class="w-full ios-input pl-9 py-2.5 font-black text-info" placeholder="Optional" oninput="formatInputRupiah(this)">
+            <input type="text" inputmode="numeric" id="master-receivable-installment" class="w-full ios-input pl-9 py-2.5 font-black amount-info" placeholder="Optional" oninput="formatInputRupiah(this)">
           </div>
         </div>
       </div>
@@ -5843,9 +5865,13 @@ function openMasterModal(type, isEdit = false, presetType = null) {
         <label for="master-receivable-notes" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="align-left"></i></span><span class="field-label-text">Notes</span></label>
         <textarea id="master-receivable-notes" rows="2" class="w-full ios-input py-2.5" placeholder="Reimbursement notes..."></textarea>
       </div>
-      <label class="flex items-start gap-2.5 mt-1 cursor-pointer">
-        <input type="checkbox" id="master-receivable-skip-disbursement" class="mt-0.5">
-        <span class="text-xs text-secondary leading-snug">Skip auto-disbursement — this is a backdated loan already recorded manually, don't create a duplicate "Lend Money" transaction.</span>
+      <label class="flex items-start gap-3 mt-1 p-3.5 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] cursor-pointer transition-colors">
+        <span class="relative flex items-center justify-center w-5 h-5 mt-0.5 flex-shrink-0">
+          <input type="checkbox" id="master-receivable-skip-disbursement" class="peer sr-only">
+          <span class="w-5 h-5 rounded-md border-2 border-[var(--border-color)] peer-checked:border-mochi peer-checked:bg-mochi transition-colors duration-150"></span>
+          <i data-lucide="check" class="w-3 h-3 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity duration-150 pointer-events-none"></i>
+        </span>
+        <span class="text-xs text-muted leading-snug font-semibold">Skip auto-disbursement — this is a backdated loan already recorded manually, don't create a duplicate "Lend Money" transaction.</span>
       </label>
     `;
 
