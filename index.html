@@ -345,41 +345,41 @@
       </div>
 
       <div class="grid grid-cols-2 gap-3">
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="tap-shrink cursor-pointer bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-[var(--shadow-item)] p-4 flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background: var(--chip-in-bg);">
-            <i data-lucide="coins" class="w-5 h-5 amount-in"></i>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Cash')" class="tap-shrink cursor-pointer bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-[var(--shadow-item)] p-4 flex flex-col gap-2">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style="background: var(--chip-in-bg);">
+              <i data-lucide="coins" class="w-3.5 h-3.5 amount-in"></i>
+            </div>
+            <span class="text-[10px] text-muted font-bold uppercase tracking-wider truncate">Cash</span>
           </div>
-          <div class="min-w-0">
-            <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-0.5">Cash</span>
-            <span id="kpi-cash" class="font-numeric text-sm sm:text-base font-bold amount-in truncate block">-</span>
-          </div>
+          <span id="kpi-cash" class="font-numeric text-base sm:text-lg font-bold amount-in truncate block">-</span>
         </div>
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="tap-shrink cursor-pointer bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-[var(--shadow-item)] p-4 flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background: var(--chip-info-bg);">
-            <i data-lucide="hand-coins" class="w-5 h-5 amount-info"></i>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Receivables')" class="tap-shrink cursor-pointer bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-[var(--shadow-item)] p-4 flex flex-col gap-2">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style="background: var(--chip-info-bg);">
+              <i data-lucide="hand-coins" class="w-3.5 h-3.5 amount-info"></i>
+            </div>
+            <span class="text-[10px] text-muted font-bold uppercase tracking-wider truncate">Receivables</span>
           </div>
-          <div class="min-w-0">
-            <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-0.5">Receivables</span>
-            <span id="kpi-receivables" class="font-numeric text-sm sm:text-base font-bold amount-info truncate block">-</span>
-          </div>
+          <span id="kpi-receivables" class="font-numeric text-base sm:text-lg font-bold amount-info truncate block">-</span>
         </div>
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="tap-shrink cursor-pointer bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-[var(--shadow-item)] p-4 flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background: var(--chip-in-bg);">
-            <i data-lucide="piggy-bank" class="w-5 h-5 amount-in"></i>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Net Operating Savings')" class="tap-shrink cursor-pointer bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-[var(--shadow-item)] p-4 flex flex-col gap-2">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style="background: var(--chip-in-bg);">
+              <i data-lucide="piggy-bank" class="w-3.5 h-3.5 amount-in"></i>
+            </div>
+            <span class="text-[10px] text-muted font-bold uppercase tracking-wider truncate">Savings</span>
           </div>
-          <div class="min-w-0">
-            <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-0.5">Savings</span>
-            <span id="kpi-savings" class="font-numeric text-sm sm:text-base font-bold amount-in truncate block">-</span>
-          </div>
+          <span id="kpi-savings" class="font-numeric text-base sm:text-lg font-bold amount-in truncate block">-</span>
         </div>
-        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="tap-shrink cursor-pointer bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-[var(--shadow-item)] p-4 flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background: var(--chip-out-bg);">
-            <i data-lucide="credit-card" class="w-5 h-5 amount-out"></i>
+        <div ontouchstart="vibrate(30)" onclick="showKpiDetail('Total Payables')" class="tap-shrink cursor-pointer bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-[var(--shadow-item)] p-4 flex flex-col gap-2">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style="background: var(--chip-out-bg);">
+              <i data-lucide="credit-card" class="w-3.5 h-3.5 amount-out"></i>
+            </div>
+            <span class="text-[10px] text-muted font-bold uppercase tracking-wider truncate">Payables</span>
           </div>
-          <div class="min-w-0">
-            <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-0.5">Payables</span>
-            <span id="kpi-payables" class="font-numeric text-sm sm:text-base font-bold amount-out truncate block">-</span>
-          </div>
+          <span id="kpi-payables" class="font-numeric text-base sm:text-lg font-bold amount-out truncate block">-</span>
         </div>
       </div>
 
@@ -618,8 +618,8 @@
       </button>
 
       <button ontouchstart="vibrate(30)" onclick="switchTab('wallets')" id="tab-wallets" class="nav-item text-faint hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink">
-        <i data-lucide="wallet" class="w-5 h-5 flex-shrink-0"></i>
-        <span class="nav-text text-[12px] font-extrabold tracking-wide">Wallets</span>
+        <i data-lucide="vault" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="nav-text text-[12px] font-extrabold tracking-wide">Vault</span>
       </button>
 
       <button ontouchstart="vibrate(30)" onclick="switchTab('payables')" id="tab-payables" class="nav-item text-faint hover:text-mochi-dark dark:hover:text-mochi-light p-2.5 flex items-center justify-center space-x-2 tap-shrink relative">
@@ -3447,7 +3447,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
       const titleEl = document.getElementById('delete-modal-title');
       const descEl = document.getElementById('delete-modal-desc');
       if (titleEl) titleEl.innerText = `Delete "${accountName}"?`;
-      if (descEl) descEl.innerText = "Removing this account will hide it from Wallets. Transaction history associated with this account will be preserved.";
+      if (descEl) descEl.innerText = "Removing this account will hide it from your Vault. Transaction history associated with this account will be preserved.";
 
       document.getElementById('btn-confirm-delete').onclick = async () => {
         vibrate(30);
@@ -5016,8 +5016,8 @@ function getAgingBucket(dueDateStr) {
       // an open item, so it gets no checkbox at all.
       const checkboxHtml = (isAccount || t.linkRole !== 'OPEN') ? '' : (
         t.settled
-          ? `<input type="checkbox" checked onclick="event.stopPropagation(); handleSettleTogglePayable('${t.transactionId}', this.checked, '${escapeAttr(name)}', false)" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Unsettle">`
-          : `<input type="checkbox" ${selectedForSettle[t.transactionId] !== undefined ? 'checked' : ''} onclick="event.stopPropagation(); toggleSettleSelection('${t.transactionId}', this.checked, ${t.amount})" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Select to settle">`
+          ? renderCheckToggle(true, `handleSettleTogglePayable('${t.transactionId}', this.checked, '${escapeAttr(name)}', false)`, 'Unsettle')
+          : renderCheckToggle(selectedForSettle[t.transactionId] !== undefined, `toggleSettleSelection('${t.transactionId}', this.checked, ${t.amount})`, 'Select to settle')
       );
       html += `
         <div class="flex justify-between items-center text-xs p-3.5 floating-item transition select-none">
@@ -5122,8 +5122,8 @@ function getAgingBucket(dueDateStr) {
           // resolution records and get no checkbox.
           const checkboxHtml = t.linkRole !== 'OPEN' ? '' : (
             t.settled
-              ? `<input type="checkbox" checked onclick="event.stopPropagation(); handleSettleToggleReceivable('${t.transactionId}', this.checked, '${escapeAttr(name)}')" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Unsettle">`
-              : `<input type="checkbox" ${selectedForSettle[t.transactionId] !== undefined ? 'checked' : ''} onclick="event.stopPropagation(); toggleSettleSelection('${t.transactionId}', this.checked, ${t.amount})" class="mr-3 flex-shrink-0 w-4 h-4 cursor-pointer" title="Select to settle">`
+              ? renderCheckToggle(true, `handleSettleToggleReceivable('${t.transactionId}', this.checked, '${escapeAttr(name)}')`, 'Unsettle')
+              : renderCheckToggle(selectedForSettle[t.transactionId] !== undefined, `toggleSettleSelection('${t.transactionId}', this.checked, ${t.amount})`, 'Select to settle')
           );
           html += `
             <div class="flex justify-between items-center text-xs p-3.5 floating-item transition select-none">
@@ -5165,6 +5165,19 @@ function getAgingBucket(dueDateStr) {
     let selectedForSettle = {};
     let selectedForSettleContext = null;
 
+    // Custom circular checkbox: visually ~20px (matches app's compact
+    // aesthetic) but wrapped in a 36px tap target so it's actually easy to
+    // hit with a thumb, without moving it away from the left edge where it
+    // reads naturally alongside the transaction row.
+    function renderCheckToggle(checked, onclickJs, title) {
+      return `
+        <label class="relative flex items-center justify-center w-9 h-9 -ml-2 mr-0.5 flex-shrink-0 cursor-pointer" onclick="event.stopPropagation()">
+          <input type="checkbox" ${checked ? 'checked' : ''} onclick="event.stopPropagation(); ${onclickJs}" class="peer sr-only" title="${title}">
+          <span class="w-5 h-5 rounded-full border-2 border-[var(--border-color)] peer-checked:border-mochi peer-checked:bg-mochi transition-colors duration-150"></span>
+          <i data-lucide="check" class="w-3 h-3 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity duration-150 pointer-events-none"></i>
+        </label>`;
+    }
+
     // Keeps in-progress checkbox selection alive across refreshes of the
     // SAME item (Hide Settled toggle, undo-unsettle), but clears it — and
     // the "show all" pagination expansion — the moment a different
@@ -5186,11 +5199,13 @@ function getAgingBucket(dueDateStr) {
     function updateSettleBar() {
       const bar = document.getElementById('settle-bar');
       const label = document.getElementById('settle-bar-label');
+      const countEl = document.getElementById('settle-bar-count');
       if (!bar || !label) return;
       const ids = Object.keys(selectedForSettle);
       if (ids.length === 0) { bar.classList.add('hidden'); return; }
       const sum = ids.reduce((s, id) => s + (selectedForSettle[id] || 0), 0);
-      label.innerText = `${ids.length} selected — ${formatRupiah(sum)}`;
+      label.innerText = formatRupiah(sum);
+      if (countEl) countEl.innerText = ids.length;
       bar.classList.remove('hidden');
     }
 
@@ -5198,20 +5213,31 @@ function getAgingBucket(dueDateStr) {
       const ids = Object.keys(selectedForSettle);
       const sum = ids.reduce((s, id) => s + (selectedForSettle[id] || 0), 0);
       const collectLabel = isReceivable ? 'Collect' : 'Pay';
+      const collectIcon = isReceivable ? 'hand-coins' : 'banknote';
       const writeOffLabel = isReceivable ? 'Write Off' : 'Forgive';
       return `
-        <div id="settle-bar" class="${ids.length > 0 ? '' : 'hidden'} p-3 rounded-xl bg-mochi/10 border border-mochi/30 mb-2">
-          <div class="flex items-center justify-between mb-2">
-            <span id="settle-bar-label" class="text-xs font-bold text-mochi">${ids.length} selected — ${formatRupiah(sum)}</span>
-            <div class="flex gap-3 flex-shrink-0">
-              <button type="button" onclick="selectedForSettle = {}; updateSettleBar()" class="text-[10px] font-bold text-faint">Clear</button>
-              <button type="button" onclick="promptBulkMarkSettled('${escapeAttr(name)}', ${isReceivable})" class="text-[10px] font-bold text-faint underline decoration-dotted">Settled Only</button>
+        <div id="settle-bar" class="${ids.length > 0 ? '' : 'hidden'} rounded-2xl bg-[var(--bg-card)] border border-mochi/30 shadow-[var(--shadow-item)] p-4 mb-3">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span id="settle-bar-count" class="w-7 h-7 rounded-full bg-mochi text-white flex items-center justify-center text-[11px] font-black flex-shrink-0">${ids.length}</span>
+              <div class="min-w-0">
+                <p class="text-[10px] font-bold text-muted uppercase tracking-wider leading-none mb-1">Selected</p>
+                <p id="settle-bar-label" class="text-sm font-black text-main font-numeric truncate">${formatRupiah(sum)}</p>
+              </div>
             </div>
+            <button type="button" onclick="selectedForSettle = {}; updateSettleBar()" class="tap-shrink w-7 h-7 rounded-full bg-[var(--bg-subtle-2)] border border-[var(--border-color)] flex items-center justify-center flex-shrink-0" title="Clear selection">
+              <i data-lucide="x" class="w-3.5 h-3.5 text-faint"></i>
+            </button>
           </div>
-          <div class="grid grid-cols-2 gap-2">
-            <button type="button" onclick="showSettleConfirm('${escapeAttr(name)}', ${isReceivable}, 'writeoff')" class="text-[10px] font-extrabold text-slate-600 dark:text-slate-300 bg-slate-200 dark:bg-slate-700 border border-slate-400 dark:border-slate-500 px-2 py-2 rounded-lg truncate">${writeOffLabel} Selected</button>
-            <button type="button" onclick="showSettleConfirm('${escapeAttr(name)}', ${isReceivable}, 'collect')" class="text-[10px] font-extrabold text-white bg-mochi px-2 py-2 rounded-lg truncate">${collectLabel} Selected</button>
+          <div class="grid grid-cols-2 gap-2.5">
+            <button type="button" onclick="showSettleConfirm('${escapeAttr(name)}', ${isReceivable}, 'writeoff')" class="tap-shrink flex items-center justify-center gap-1.5 text-[11px] font-extrabold text-main bg-[var(--bg-subtle-2)] border border-[var(--border-color)] py-3 rounded-xl truncate">
+              <i data-lucide="file-x" class="w-3.5 h-3.5 flex-shrink-0"></i> ${writeOffLabel}
+            </button>
+            <button type="button" onclick="showSettleConfirm('${escapeAttr(name)}', ${isReceivable}, 'collect')" class="tap-shrink flex items-center justify-center gap-1.5 text-[11px] font-extrabold text-white bg-mochi hover:bg-mochi-dark py-3 rounded-xl shadow-[0_4px_14px_0_rgba(184,146,90,0.25)] truncate">
+              <i data-lucide="${collectIcon}" class="w-3.5 h-3.5 flex-shrink-0"></i> ${collectLabel}
+            </button>
           </div>
+          <button type="button" onclick="promptBulkMarkSettled('${escapeAttr(name)}', ${isReceivable})" class="tap-shrink w-full text-center text-[10px] font-semibold text-faint underline decoration-dotted mt-2.5">Already recorded elsewhere? Mark settled only</button>
         </div>
       `;
     }
