@@ -1072,7 +1072,69 @@
     </div>
   </div>
 
-  <!-- New Receivable chooser — mirror of the Payable one above. -->
+  <!-- Buy More (adds a new FIFO lot) -->
+  <div id="modalBuyHolding" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalBuyHolding')">
+    <div class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
+      <h3 class="text-lg font-black text-main mb-1 tracking-tight">Buy More <span id="buy-holding-asset-name" class="text-mochi"></span></h3>
+      <p class="text-xs font-medium text-muted mb-5">This creates a new purchase lot and transfers the Rupiah out of the account you pick.</p>
+      <input type="hidden" id="buy-holding-asset">
+      <div class="space-y-4">
+        <div>
+          <label class="field-label mb-1.5"><span class="field-label-icon"><i data-lucide="hash"></i></span><span class="field-label-text">Quantity Bought</span></label>
+          <input type="text" inputmode="decimal" id="buy-holding-quantity" placeholder="0" class="w-full ios-input py-2.5 font-extrabold text-main" oninput="updateBuyHoldingPreview()">
+        </div>
+        <div>
+          <label class="field-label mb-1.5"><span class="field-label-icon"><i data-lucide="banknote"></i></span><span class="field-label-text">Total Paid (Rp)</span></label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-sm">Rp</span>
+            <input type="text" inputmode="numeric" id="buy-holding-cost" placeholder="0" class="w-full ios-input pl-10 py-2.5 font-extrabold text-main" oninput="formatInputRupiah(this); updateBuyHoldingPreview();">
+          </div>
+        </div>
+        <div>
+          <label class="field-label mb-1.5"><span class="field-label-icon"><i data-lucide="wallet"></i></span><span class="field-label-text">Paid From</span></label>
+          <select id="buy-holding-payment-account" class="w-full ios-input cursor-pointer py-2.5"></select>
+        </div>
+        <p id="buy-holding-preview" class="text-[11px] font-bold text-muted bg-[var(--bg-subtle-2)] rounded-xl p-3"></p>
+      </div>
+      <div class="flex space-x-3 mt-6">
+        <button type="button" onclick="vibrate(30); closeModal('modalBuyHolding')" class="flex-1 py-3 bg-[var(--bg-subtle-2)] text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-[var(--border-color)]">Cancel</button>
+        <button type="button" onclick="submitBuyHolding()" class="flex-1 py-3 bg-mochi hover:bg-mochi-dark text-white font-extrabold rounded-xl tap-shrink shadow-sm">Confirm Buy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sell (FIFO — consumes oldest open lots first, live preview before commit) -->
+  <div id="modalSellHolding" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalSellHolding')">
+    <div class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
+      <h3 class="text-lg font-black text-main mb-1 tracking-tight">Sell <span id="sell-holding-asset-name" class="text-mochi"></span></h3>
+      <p class="text-xs font-medium text-muted mb-5">FIFO — consumes your oldest purchase(s) first, so the cost basis is always traceable.</p>
+      <input type="hidden" id="sell-holding-asset">
+      <div class="space-y-4">
+        <div>
+          <label class="field-label mb-1.5"><span class="field-label-icon"><i data-lucide="hash"></i></span><span class="field-label-text">Quantity Sold</span></label>
+          <input type="text" inputmode="decimal" id="sell-holding-quantity" placeholder="0" class="w-full ios-input py-2.5 font-extrabold text-main" oninput="updateSellHoldingPreview()">
+          <p id="sell-holding-available" class="text-[10px] text-muted font-semibold mt-1"></p>
+        </div>
+        <div>
+          <label class="field-label mb-1.5"><span class="field-label-icon"><i data-lucide="banknote"></i></span><span class="field-label-text">Proceeds Received (Rp)</span></label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-sm">Rp</span>
+            <input type="text" inputmode="numeric" id="sell-holding-proceeds" placeholder="0" class="w-full ios-input pl-10 py-2.5 font-extrabold text-main" oninput="formatInputRupiah(this); updateSellHoldingPreview();">
+          </div>
+        </div>
+        <div>
+          <label class="field-label mb-1.5"><span class="field-label-icon"><i data-lucide="wallet"></i></span><span class="field-label-text">Proceeds Go To</span></label>
+          <select id="sell-holding-target-account" class="w-full ios-input cursor-pointer py-2.5"></select>
+        </div>
+        <div id="sell-holding-preview" class="text-[11px] font-bold rounded-xl p-3 space-y-1"></div>
+      </div>
+      <div class="flex space-x-3 mt-6">
+        <button type="button" onclick="vibrate(30); closeModal('modalSellHolding')" class="flex-1 py-3 bg-[var(--bg-subtle-2)] text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-[var(--border-color)]">Cancel</button>
+        <button type="button" onclick="submitSellHolding()" class="flex-1 py-3 bg-mochi hover:bg-mochi-dark text-white font-extrabold rounded-xl tap-shrink shadow-sm">Confirm Sell</button>
+      </div>
+    </div>
+  </div>
+
   <div id="modalReceivableChooser" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalReceivableChooser')">
     <div class="glass-modal-content w-full max-w-sm rounded-[2rem] p-6 shadow-2xl">
       <h3 class="text-lg font-black text-main mb-1 tracking-tight text-center">What kind of receivable is this?</h3>
@@ -3635,6 +3697,10 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
             <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full ${gainBg} ${gainCls}">${gainSign}${formatRupiah(t.unrealizedGainLoss)} (${pctText})</span>
             ${refreshBtnHtml}
           </div>
+          <div class="flex items-center space-x-2 mt-3">
+            <button type="button" onclick="vibrate(30); openBuyHoldingModal('${escapeAttr(t.assetName)}')" class="flex-1 py-2 text-[11px] font-extrabold rounded-lg bg-[var(--chip-in-bg)] amount-in tap-shrink flex items-center justify-center"><i data-lucide="plus" class="w-3 h-3 mr-1"></i>Buy More</button>
+            <button type="button" onclick="vibrate(30); openSellHoldingModal('${escapeAttr(t.assetName)}')" class="flex-1 py-2 text-[11px] font-extrabold rounded-lg bg-[var(--chip-out-bg)] amount-out tap-shrink flex items-center justify-center"><i data-lucide="minus" class="w-3 h-3 mr-1"></i>Sell</button>
+          </div>
           <p class="text-[9px] text-faint font-semibold mt-2">Last price update: ${lastUpdatedText} — estimated, not counted in Net Worth</p>
         `;
         listEl.appendChild(card);
@@ -3654,6 +3720,172 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
       });
 
       lucide.createIcons();
+    }
+
+    function cashLikeAccountOptions() {
+      return (GLOBAL_DATA.accounts || [])
+        .filter(a => {
+          const t = (a.accountType || '').toLowerCase();
+          return !t.includes('investment') && !t.includes('property');
+        })
+        .map(a => `<option value="${escapeAttr(a.accountName)}">${escapeHtml(a.accountName)} (${formatRupiah(a.runningBalance)})</option>`)
+        .join('');
+    }
+
+    function openBuyHoldingModal(assetName) {
+      document.getElementById('buy-holding-asset').value = assetName;
+      document.getElementById('buy-holding-asset-name').textContent = assetName;
+      document.getElementById('buy-holding-quantity').value = '';
+      document.getElementById('buy-holding-cost').value = '';
+      document.getElementById('buy-holding-payment-account').innerHTML = cashLikeAccountOptions();
+      updateBuyHoldingPreview();
+      openModal('modalBuyHolding');
+    }
+
+    function updateBuyHoldingPreview() {
+      const qty = parseFloat(document.getElementById('buy-holding-quantity').value) || 0;
+      const cost = Number(document.getElementById('buy-holding-cost').dataset.rawValue) || 0;
+      const previewEl = document.getElementById('buy-holding-preview');
+      if (qty > 0 && cost > 0) {
+        previewEl.textContent = `≈ ${formatRupiah(Math.round(cost / qty))} per unit — creates a new lot.`;
+      } else {
+        previewEl.textContent = 'Enter quantity and total paid to see the cost per unit.';
+      }
+    }
+
+    function submitBuyHolding() {
+      const assetName = document.getElementById('buy-holding-asset').value;
+      const quantity = parseFloat(document.getElementById('buy-holding-quantity').value) || 0;
+      const totalCost = Number(document.getElementById('buy-holding-cost').dataset.rawValue) || 0;
+      const paymentAccount = document.getElementById('buy-holding-payment-account').value;
+      if (quantity <= 0) { triggerInputError('buy-holding-quantity', 'Enter how much you bought.'); return; }
+      if (totalCost <= 0) { triggerInputError('buy-holding-cost', 'Enter how much you paid.'); return; }
+      if (!paymentAccount) { showToast("Pick which account paid for it.", "error"); return; }
+
+      vibrate(30);
+      closeModal('modalBuyHolding');
+      showToast("Recording purchase...", "info");
+
+      postApi('buyTreasuryLot', { assetName, quantity, totalCost, paymentAccount, date: todayDateStringLocal() })
+        .then(result => {
+          if (result && result.data) {
+            GLOBAL_DATA = result.data;
+            localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+            renderAllViews();
+            showToast("Purchase recorded!");
+          }
+        })
+        .catch(err => {
+          showToast(err.message || "Couldn't record the purchase!", "error");
+          loadAppData(true);
+        });
+    }
+
+    function openSellHoldingModal(assetName) {
+      document.getElementById('sell-holding-asset').value = assetName;
+      document.getElementById('sell-holding-asset-name').textContent = assetName;
+      document.getElementById('sell-holding-quantity').value = '';
+      document.getElementById('sell-holding-proceeds').value = '';
+      document.getElementById('sell-holding-target-account').innerHTML = cashLikeAccountOptions();
+
+      const t = (GLOBAL_DATA.treasury || []).find(x => x.assetName === assetName);
+      const availableEl = document.getElementById('sell-holding-available');
+      if (availableEl) availableEl.textContent = t ? `You have ${t.quantity} ${t.unit} available.` : '';
+
+      updateSellHoldingPreview();
+      openModal('modalSellHolding');
+    }
+
+    // Simulates the exact same FIFO consumption the backend does (oldest
+    // open lot first), purely from GLOBAL_DATA.lots — so the person sees
+    // the real book value / gain-loss split before committing to anything.
+    function simulateFifoSale(assetName, sellQuantity) {
+      const lots = (GLOBAL_DATA.lots || [])
+        .filter(l => l.assetName === assetName && l.remainingQuantity > 0)
+        .sort((a, b) => new Date(a.purchaseDate) - new Date(b.purchaseDate));
+
+      const totalAvailable = lots.reduce((sum, l) => sum + l.remainingQuantity, 0);
+      let remaining = sellQuantity;
+      let costBasis = 0;
+      const consumedLots = [];
+      for (const lot of lots) {
+        if (remaining <= 0) break;
+        const consumeQty = Math.min(lot.remainingQuantity, remaining);
+        costBasis += consumeQty * lot.costPerUnit;
+        consumedLots.push({ date: lot.purchaseDate, quantity: consumeQty, costPerUnit: lot.costPerUnit });
+        remaining -= consumeQty;
+      }
+      return { totalAvailable, costBasis, sufficient: remaining <= 0.0000001, consumedLots };
+    }
+
+    function updateSellHoldingPreview() {
+      const assetName = document.getElementById('sell-holding-asset').value;
+      const qty = parseFloat(document.getElementById('sell-holding-quantity').value) || 0;
+      const proceeds = Number(document.getElementById('sell-holding-proceeds').dataset.rawValue) || 0;
+      const previewEl = document.getElementById('sell-holding-preview');
+      if (!previewEl) return;
+
+      if (qty <= 0) {
+        previewEl.className = "text-[11px] font-bold rounded-xl p-3 space-y-1 bg-[var(--bg-subtle-2)] text-muted";
+        previewEl.innerHTML = "Enter a quantity to see which lots this would sell from.";
+        return;
+      }
+
+      const sim = simulateFifoSale(assetName, qty);
+      if (!sim.sufficient) {
+        previewEl.className = "text-[11px] font-bold rounded-xl p-3 space-y-1 bg-[var(--chip-out-bg)] amount-out";
+        previewEl.innerHTML = `Only ${sim.totalAvailable} available — you're trying to sell more than you have.`;
+        return;
+      }
+
+      const gainLoss = proceeds - sim.costBasis;
+      const isGain = gainLoss >= 0;
+      const lotBreakdown = sim.consumedLots.map(l => `${l.quantity} unit from ${formatDate(l.date)} lot (@ ${formatRupiah(Math.round(l.costPerUnit))})`).join('; ');
+
+      previewEl.className = `text-[11px] font-bold rounded-xl p-3 space-y-1 ${isGain ? 'bg-[var(--chip-in-bg)] amount-in' : 'bg-[var(--chip-out-bg)] amount-out'}`;
+      previewEl.innerHTML = `
+        <p>Cost basis (from ${sim.consumedLots.length} lot${sim.consumedLots.length > 1 ? 's' : ''}): ${formatRupiah(Math.round(sim.costBasis))}</p>
+        <p>${isGain ? 'Estimated gain' : 'Estimated loss'}: ${isGain ? '+' : ''}${formatRupiah(Math.round(gainLoss))}</p>
+        <p class="text-[9px] font-semibold opacity-80">${lotBreakdown}</p>
+      `;
+    }
+
+    function submitSellHolding() {
+      const assetName = document.getElementById('sell-holding-asset').value;
+      const quantity = parseFloat(document.getElementById('sell-holding-quantity').value) || 0;
+      const proceeds = Number(document.getElementById('sell-holding-proceeds').dataset.rawValue) || 0;
+      const targetAccount = document.getElementById('sell-holding-target-account').value;
+
+      if (quantity <= 0) { triggerInputError('sell-holding-quantity', 'Enter how much you sold.'); return; }
+      if (proceeds <= 0) { triggerInputError('sell-holding-proceeds', 'Enter how much you received.'); return; }
+      if (!targetAccount) { showToast("Pick where the proceeds landed.", "error"); return; }
+
+      const sim = simulateFifoSale(assetName, quantity);
+      if (!sim.sufficient) { showToast(`Only ${sim.totalAvailable} available.`, "error"); return; }
+
+      vibrate(30);
+      closeModal('modalSellHolding');
+      showToast("Recording sale...", "info");
+
+      postApi('sellTreasuryLot', { assetName, quantity, proceeds, targetAccount, date: todayDateStringLocal() })
+        .then(result => {
+          if (result && result.data) {
+            GLOBAL_DATA = result.data;
+            localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+            renderAllViews();
+            showToast("Sale recorded!");
+          }
+        })
+        .catch(err => {
+          showToast(err.message || "Couldn't record the sale!", "error");
+          loadAppData(true);
+        });
+    }
+
+    function todayDateStringLocal() {
+      const d = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     }
 
     // ===== 2. OPEN EDIT PAYABLE WITH FULL FIELDS =====
