@@ -692,6 +692,19 @@
           <input type="hidden" id="form-target-account">
         </div>
 
+        <div id="wrap-fx-amount" class="field-group space-y-1 hidden">
+          <label class="field-label mb-0">
+            <span class="field-label-icon"><i data-lucide="dollar-sign"></i></span>
+            <span id="fx-amount-label" class="field-label-text">USD Amount</span>
+          </label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-sm">$</span>
+            <input type="text" inputmode="decimal" id="form-fx-amount" oninput="updateFxRateDisplay()" placeholder="0.00" class="w-full ios-input pl-8 text-base font-extrabold text-main">
+          </div>
+          <p id="fx-amount-hint" class="text-[10px] text-muted font-semibold mt-1"></p>
+          <p id="fx-rate-display" class="text-[10px] text-muted font-semibold mt-1"></p>
+        </div>
+
         <div class="field-group space-y-1">
           <div class="flex justify-between items-center">
             <label class="field-label mb-0">
@@ -744,7 +757,7 @@
           </label>
           <div class="relative">
             <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-sm">Rp</span>
-            <input type="text" inputmode="numeric" id="form-amount-display" oninput="formatInputRupiah(this, 'form-amount-value')" placeholder="0" class="w-full ios-input pl-10 text-base font-extrabold text-main" required>
+            <input type="text" inputmode="numeric" id="form-amount-display" oninput="formatInputRupiah(this, 'form-amount-value'); updateFxRateDisplay();" placeholder="0" class="w-full ios-input pl-10 text-base font-extrabold text-main" required>
           </div>
           <input type="hidden" id="form-amount-value">
         </div>
@@ -1609,6 +1622,11 @@
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(number);
     }
 
+    function formatUSD(number) {
+      if (number === undefined || number === null) return "$0.00";
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(number);
+    }
+
     function formatInputRupiah(input, hiddenTargetId) {
       let val = input.value.replace(/[^0-9]/g, '');
       let numberVal = Number(val) || 0;
@@ -2140,6 +2158,12 @@
         relatedReceivable: relatedRec,
         notes: document.getElementById('form-notes').value
       };
+
+      const fxWrap = document.getElementById('wrap-fx-amount');
+      if (fxWrap && !fxWrap.classList.contains('hidden')) {
+        const fxVal = parseFloat(document.getElementById('form-fx-amount').value) || 0;
+        if (fxVal > 0) payload.fxAmount = fxVal;
+      }
       
       if (isEdit) payload.transactionId = transactionId;
 
@@ -3255,6 +3279,13 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
 
         const nameHasOwner = acc.owner && acc.accountName.toLowerCase().includes(acc.owner.toLowerCase());
         const badgeText = nameHasOwner ? escapeHtml(acc.accountType) : `${escapeHtml(acc.accountType)} • ${ownerLabel}`;
+        const isUSD = (acc.currency || 'IDR') === 'USD';
+        const fxLineHtml = isUSD
+          ? `<span class="text-[11px] text-faint font-bold block mt-0.5">≈ ${formatUSD(acc.fxBalance)} <span class="opacity-70">(est.)</span></span>`
+          : '';
+        const usdBadgeHtml = isUSD
+          ? `<span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full uppercase bg-[var(--chip-in-bg)] amount-in">USD</span>`
+          : '';
 
         const div = document.createElement('div');
         div.className = "floating-item p-5 cursor-pointer card-hover transition stagger-item flex flex-col justify-between";
@@ -3270,6 +3301,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
                 <h4 class="text-[13px] font-extrabold text-main leading-tight truncate pr-1">${escapeHtml(acc.accountName)}</h4>
                 <div class="flex items-center space-x-1.5 mt-1">
                   <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase ${badgeBgClass}">${badgeText}</span>
+                  ${usdBadgeHtml}
                 </div>
               </div>
             </div>
@@ -3287,6 +3319,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
           <div onclick="vibrate(30); showAccountHistory('${escapeAttr(acc.accountName)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" role="button" tabindex="0">
             <span class="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">${statusLabel}</span>
             <span class="text-[18px] font-black ${balanceColorClass} block leading-none tracking-tight">${formatRupiah(acc.runningBalance)}</span>
+            ${fxLineHtml}
           </div>
         `;
 
@@ -3336,6 +3369,9 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
       document.getElementById('master-function-category').value = acc.functionCategory || 'Daily Operations';
       document.getElementById('master-account-owner').value = acc.owner || 'Yosa & Fani';
       document.getElementById('master-initial-balance').value = acc.initialBalance || 0;
+      document.getElementById('master-account-currency').value = acc.currency || 'IDR';
+      document.getElementById('master-initial-fx-balance').value = acc.fxBalance || 0;
+      toggleAccountCurrencyFields();
     }
 
     function promptDeleteAccount(accountName) {
@@ -3426,6 +3462,8 @@ async function handleSaveMaster(event) {
     payload.owner = document.getElementById('master-account-owner').value;
     payload.functionCategory = document.getElementById('master-function-category').value;
     payload.initialBalance = cleanNum('master-initial-balance'); // <-- PAKAI cleanNum
+    payload.currency = document.getElementById('master-account-currency').value;
+    payload.initialFXBalance = payload.currency === 'USD' ? (parseFloat(document.getElementById('master-initial-fx-balance').value) || 0) : 0;
   } else if (type === 'category') {
     const mainSel = document.getElementById('master-main-category-select').value;
     const mainCategory = mainSel === '__NEW__' ? document.getElementById('master-main-category-new').value.trim() : mainSel;
@@ -4223,6 +4261,7 @@ function getAgingBucket(dueDateStr) {
         displayEl.innerText = value;
         displayEl.classList.remove('text-faint');
       }
+      if (type === 'source-account' || type === 'target-account') updateFxAmountFieldVisibility();
       closeModal('modalItemPicker');
     }
 
@@ -4307,6 +4346,69 @@ function getAgingBucket(dueDateStr) {
       closeModal('modalCategoryPicker');
     }
 
+    function getAccountCurrency(accountName) {
+      const acc = (GLOBAL_DATA.accounts || []).find(a => a.accountName === accountName);
+      return acc ? (acc.currency || 'IDR') : 'IDR';
+    }
+
+    // Internal Transfer is the only place a USD account gets funded or
+    // drawn down. Rupiah amount always drives the real ledger (Net Worth
+    // never touches this field) — the USD figure here is purely the
+    // foreign-currency unit count for that one transfer, used later to
+    // show "≈ $X held" on the account card.
+    // Any transaction that actually moves money into/out of a USD account
+    // needs this — not just Internal Transfer. Being handed USD cash or
+    // paid in USD is an Income straight into the USD account (no Rupiah
+    // account on the other side); paying for something out of USD cash is
+    // an Expense straight out of it. Rupiah amount always drives the real
+    // ledger (Net Worth never touches this field) — for Income specifically,
+    // that Rupiah figure is the fair-value book value at the rate on the
+    // day you received it, same principle as recording any gift-in-kind.
+    function updateFxAmountFieldVisibility() {
+      const type = document.getElementById('form-type').value;
+      const meta = getTypeMeta(type);
+      const wrap = document.getElementById('wrap-fx-amount');
+      if (!wrap) return;
+      const sourceCur = meta.showSource ? getAccountCurrency(document.getElementById('form-source-account').value) : 'IDR';
+      const targetCur = meta.showTarget ? getAccountCurrency(document.getElementById('form-target-account').value) : 'IDR';
+      const involvesUSD = sourceCur === 'USD' || targetCur === 'USD';
+      wrap.classList.toggle('hidden', !involvesUSD);
+
+      const labelEl = document.getElementById('fx-amount-label');
+      const hintEl = document.getElementById('fx-amount-hint');
+      if (labelEl && hintEl) {
+        if (type === 'Income') {
+          labelEl.textContent = 'USD Received';
+          hintEl.textContent = 'Fill in the Rupiah amount above as the fair value on the day you received it (your best estimate) — that becomes this money\'s book value going forward.';
+        } else if (type === 'Expense') {
+          labelEl.textContent = 'USD Spent';
+          hintEl.textContent = '';
+        } else {
+          labelEl.textContent = 'USD Amount';
+          hintEl.textContent = '';
+        }
+      }
+
+      if (!involvesUSD) {
+        document.getElementById('form-fx-amount').value = '';
+        document.getElementById('fx-rate-display').textContent = '';
+      } else {
+        updateFxRateDisplay();
+      }
+    }
+
+    function updateFxRateDisplay() {
+      const rupiah = Number(document.getElementById('form-amount-value').value) || 0;
+      const usd = parseFloat(document.getElementById('form-fx-amount').value) || 0;
+      const rateEl = document.getElementById('fx-rate-display');
+      if (!rateEl) return;
+      if (rupiah > 0 && usd > 0) {
+        rateEl.textContent = `Implied rate: ${formatRupiah(Math.round(rupiah / usd))} / USD`;
+      } else {
+        rateEl.textContent = 'Enter the Rupiah amount above and the USD you actually got/gave, and the rate works itself out.';
+      }
+    }
+
   function handleTypeChange() {
   const type = document.getElementById('form-type').value;
   const meta = getTypeMeta(type);
@@ -4343,6 +4445,7 @@ function getAgingBucket(dueDateStr) {
   show('wrap-target-account', meta.showTarget);
   show('wrap-payable', meta.showPayable);
   show('wrap-receivable', meta.showReceivable);
+  updateFxAmountFieldVisibility();
 
   // 3. Logika bawaan untuk memvalidasi/reset kategori jika tidak cocok dengan tipe transaksi
   const selectedCategoryName = document.getElementById('form-category').value;
@@ -5353,6 +5456,14 @@ function openMasterModal(type, isEdit = false, presetType = null) {
         </select>
       </div>
       <div>
+        <label for="master-account-currency" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="coins"></i></span><span class="field-label-text">Currency</span></label>
+        <select id="master-account-currency" class="w-full ios-input cursor-pointer py-2.5" onchange="toggleAccountCurrencyFields()">
+          <option value="IDR">Rupiah (IDR)</option>
+          <option value="USD">US Dollar (USD)</option>
+        </select>
+        <p class="text-[10px] text-muted font-semibold mt-1.5">USD is for physical cash, a bank account, or an e-wallet actually held in dollars — not for tracking daily Rupiah spending.</p>
+      </div>
+      <div>
         <label for="master-account-owner" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="user"></i></span><span class="field-label-text">Account Owner</span></label>
         <select id="master-account-owner" class="w-full ios-input cursor-pointer py-2.5">
           <option value="Yosa">Yosa</option>
@@ -5373,9 +5484,19 @@ function openMasterModal(type, isEdit = false, presetType = null) {
           <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-sm">Rp</span>
           <input type="text" inputmode="numeric" id="master-initial-balance" class="w-full ios-input pl-10 py-2.5 font-extrabold text-main" placeholder="0" oninput="formatInputRupiah(this)">
         </div>
+        <p class="text-[10px] text-muted font-semibold mt-1.5">This is the Rupiah book value (what it cost you) — always the real accounting figure, never a market estimate.</p>
+      </div>
+      <div id="account-fx-initial-wrap" class="hidden">
+        <label for="master-initial-fx-balance" class="field-label mb-1.5 cursor-pointer"><span class="field-label-icon"><i data-lucide="dollar-sign"></i></span><span class="field-label-text">Initial USD Held</span></label>
+        <div class="relative">
+          <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-extrabold text-main text-sm">$</span>
+          <input type="text" inputmode="decimal" id="master-initial-fx-balance" class="w-full ios-input pl-8 py-2.5 font-extrabold text-main" placeholder="0.00">
+        </div>
+        <p class="text-[10px] text-muted font-semibold mt-1.5">Only if you already hold dollars before adding this account. New future USD comes in through Internal Transfer.</p>
       </div>
     `;
     if (presetType) setTimeout(() => { const el = document.getElementById('master-account-type'); if (el) el.value = presetType; }, 60);
+    setTimeout(() => toggleAccountCurrencyFields(), 60);
   } else if (type === 'payable') {
     titleEl.innerText = isEdit ? "Edit Payable / Installment" : "Add New Payable / Installment";
     
@@ -5623,6 +5744,13 @@ function calcSmartReceivable() {
       document.getElementById('master-receivable-installment').value = new Intl.NumberFormat('id-ID').format(Math.round(totalDebt / term));
     }
   }
+}
+
+function toggleAccountCurrencyFields() {
+  const currencyEl = document.getElementById('master-account-currency');
+  const wrap = document.getElementById('account-fx-initial-wrap');
+  if (!currencyEl || !wrap) return;
+  wrap.classList.toggle('hidden', currencyEl.value !== 'USD');
 }
 
 function togglePayableFields() {
