@@ -212,6 +212,51 @@
     #mochi-chat-messages::-webkit-scrollbar { width: 4px; }
     #mochi-chat-messages::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 9999px; }
 
+    /* ---- Mochi AI "live" glow — same spirit as Gemini's assistant glow,
+       recolored to the app's gold/mochi palette. Used on the FAB while the
+       sheet is open, around the avatar while Mochi is thinking, and as an
+       ambient wash behind the fullscreen chat. ---- */
+    @keyframes mochiGlowSpin { to { transform: rotate(1turn); } }
+    @keyframes mochiGlowBreathe { 0%, 100% { opacity: 0.5; filter: blur(7px); } 50% { opacity: 0.95; filter: blur(10px); } }
+    .mochi-glow-ring { position: relative; isolation: isolate; }
+    .mochi-glow-ring::before {
+      content: ''; position: absolute; inset: -4px; border-radius: inherit; z-index: -1;
+      background: conic-gradient(from 0deg, #F2D9A8, #DFC08A, #B8925A, #8C6C3E, #DFC08A, #F2D9A8);
+      opacity: 0; transform: rotate(0deg);
+      transition: opacity 0.45s ease;
+      pointer-events: none;
+    }
+    .mochi-glow-ring.glow-active::before {
+      opacity: 0.9;
+      animation: mochiGlowSpin 3.2s linear infinite, mochiGlowBreathe 2.1s ease-in-out infinite;
+    }
+
+    .mochi-ambient-glow {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: 0;
+      background:
+        radial-gradient(circle at 15% -10%, rgba(223, 192, 138, 0.4), transparent 45%),
+        radial-gradient(circle at 105% 10%, rgba(184, 146, 90, 0.3), transparent 42%),
+        radial-gradient(circle at 50% 115%, rgba(140, 108, 62, 0.28), transparent 50%);
+      transition: opacity 0.6s ease;
+    }
+    .mochi-ambient-glow.active { opacity: 1; animation: mochiAmbientDrift 7s ease-in-out infinite alternate; }
+    @keyframes mochiAmbientDrift { from { transform: scale(1) rotate(0deg); } to { transform: scale(1.12) rotate(4deg); } }
+
+    /* ---- Mochi AI sheet: starts compact and grows with the conversation
+       (like Gemini's floating overlay), then caps out and scrolls
+       internally. Height is set inline in px by JS so this transition
+       can animate it smoothly; fullscreen mode overrides everything. ---- */
+    #modalMochiChat-content {
+      transition: height 0.38s cubic-bezier(0.32, 0.72, 0, 1), border-radius 0.38s ease, max-height 0.38s ease;
+    }
+    #modalMochiChat-content.mochi-chat-fullscreen {
+      height: 100dvh !important; max-height: 100dvh !important; width: 100%;
+      border-radius: 0 !important; max-width: none !important;
+    }
+    #modalMochiChat-content.mochi-chat-dragging { transition: none; }
+    #mochi-chat-expand-btn i { transition: transform 0.3s ease; }
+    #modalMochiChat-content.mochi-chat-fullscreen #mochi-chat-expand-btn i { transform: rotate(180deg); }
+
     @keyframes floatIdle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
     .animate-float { animation: floatIdle 3s ease-in-out infinite; }
 
@@ -708,7 +753,7 @@
       </div>
 
       <!-- Mochi AI FAB -->
-      <button ontouchstart="vibrate(35)" onclick="toggleMochiAIMenu()" id="mochi-ai-fab" class="paw-fab tap-shrink absolute right-5 bottom-0 w-16 h-16 rounded-[18px] bg-[var(--bg-card)] border border-[var(--border-color)] shadow-lg flex items-center justify-center pointer-events-auto group p-2 transition-transform duration-200 z-10">
+      <button ontouchstart="vibrate(35)" onclick="toggleMochiAIMenu()" id="mochi-ai-fab" class="paw-fab tap-shrink mochi-glow-ring absolute right-5 bottom-0 w-16 h-16 rounded-[18px] bg-[var(--bg-card)] border border-[var(--border-color)] shadow-lg flex items-center justify-center pointer-events-auto group p-2 transition-transform duration-200 z-10">
         <img src="assets/mochi-ai-fab-light.png" alt="Mochi AI" class="block dark:hidden w-full h-full object-contain transition-transform group-active:scale-90">
         <img src="assets/mochi-ai-fab-dark.png" alt="Mochi AI" class="hidden dark:block w-full h-full object-contain transition-transform group-active:scale-90">
       </button>
@@ -1203,14 +1248,16 @@
 
   <!-- Mochi AI Chat -->
   <div id="modalMochiChat" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-end sm:items-center justify-center modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMochiChat')">
-    <div class="glass-modal-content w-full sm:max-w-sm sm:rounded-[2rem] rounded-t-[2rem] shadow-2xl h-[88vh] sm:h-[75vh] flex flex-col overflow-hidden" onclick="event.stopPropagation()">
-      <div class="modal-drag-handle sm:hidden mt-3"></div>
+    <div id="modalMochiChat-content" class="glass-modal-content mochi-glow-ring w-full sm:max-w-sm sm:rounded-[2rem] rounded-t-[2rem] shadow-2xl flex flex-col overflow-hidden relative" style="height:300px; max-height:82vh;" onclick="event.stopPropagation()">
+      <div class="mochi-ambient-glow" id="mochi-ambient-glow"></div>
 
-      <div class="relative flex-shrink-0 overflow-hidden">
+      <div class="modal-drag-handle sm:hidden mt-3 relative z-10" ontouchstart="mochiSheetDragStart(event)" ontouchmove="mochiSheetDragMove(event)" ontouchend="mochiSheetDragEnd(event)"></div>
+
+      <div class="relative flex-shrink-0 overflow-hidden z-10" ontouchstart="mochiSheetDragStart(event)" ontouchmove="mochiSheetDragMove(event)" ontouchend="mochiSheetDragEnd(event)">
         <div class="absolute inset-0 bg-gradient-to-br from-mochi-light/25 via-transparent to-transparent pointer-events-none"></div>
         <div class="flex items-center justify-between px-5 py-4 relative">
           <div class="flex items-center space-x-3 min-w-0">
-            <div class="relative w-11 h-11 rounded-full bg-gradient-to-br from-mochi-light/40 to-mochi/10 p-[2.5px] shadow-sm flex-shrink-0">
+            <div id="mochi-chat-avatar-wrap" class="mochi-glow-ring relative w-11 h-11 rounded-full bg-gradient-to-br from-mochi-light/40 to-mochi/10 p-[2.5px] shadow-sm flex-shrink-0">
               <img id="mochi-chat-avatar" src="mochi-chill-open.png" alt="Mochi" class="w-full h-full rounded-full object-contain bg-[var(--bg-card)] border border-[var(--border-color)] p-0.5">
               <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[var(--bg-card)]"></span>
             </div>
@@ -1219,18 +1266,21 @@
               <p class="text-[10.5px] text-muted font-semibold truncate">Chat, atau minta catat transaksi</p>
             </div>
           </div>
-          <button type="button" onclick="vibrate(30); closeModal('modalMochiChat')" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-subtle-2)] flex items-center justify-center text-faint flex-shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
+          <div class="flex items-center space-x-1.5 flex-shrink-0">
+            <button type="button" id="mochi-chat-expand-btn" onclick="vibrate(20); toggleMochiFullscreen();" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-subtle-2)] flex items-center justify-center text-faint flex-shrink-0"><i data-lucide="chevron-up" class="w-4 h-4"></i></button>
+            <button type="button" onclick="vibrate(30); closeModal('modalMochiChat')" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-subtle-2)] flex items-center justify-center text-faint flex-shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
+          </div>
         </div>
         <div class="h-px bg-[var(--border-color)]"></div>
       </div>
 
-      <div id="mochi-chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-3" style="background: radial-gradient(circle at 20% 0%, var(--chip-accent-bg) 0%, transparent 50%);"></div>
+      <div id="mochi-chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-3 relative z-10" style="background: radial-gradient(circle at 20% 0%, var(--chip-accent-bg) 0%, transparent 50%);"></div>
 
-      <div class="px-3 pt-2.5 border-t border-[var(--border-color)] flex-shrink-0" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom))">
+      <div class="px-3 pt-2.5 border-t border-[var(--border-color)] flex-shrink-0 relative z-10" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom))">
         <div class="flex items-center space-x-2 bg-[var(--bg-subtle-2)] rounded-full pl-4 pr-1.5 py-1.5 border border-transparent focus-within:border-mochi-light/50 transition-colors">
-          <input type="text" id="mochi-chat-input" placeholder="Tanya Mochi, atau bilang 'kopi 25rb dari cash'..." class="flex-1 bg-transparent text-sm font-semibold text-main placeholder:text-faint placeholder:font-medium focus:outline-none" onkeydown="if(event.key==='Enter'){sendMochiChatMessage();}">
+          <input type="text" id="mochi-chat-input" placeholder="Tanya Mochi, atau bilang 'kopi 25rb dari cash'..." class="flex-1 bg-transparent text-sm font-semibold text-main placeholder:text-faint placeholder:font-medium focus:outline-none" onfocus="mochiChatInputFocused()" onkeydown="if(event.key==='Enter'){sendMochiChatMessage();}">
           <button type="button" onclick="vibrate(30); document.getElementById('receipt-file-input').click();" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0"><i data-lucide="camera" class="w-4 h-4"></i></button>
-          <button type="button" id="mochi-voice-btn" onclick="toggleMochiVoiceInput()" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0"><i data-lucide="mic" class="w-4 h-4"></i></button>
+          <button type="button" id="mochi-voice-btn" onclick="toggleMochiVoiceInput()" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0 mochi-glow-ring"><i data-lucide="mic" class="w-4 h-4"></i></button>
           <button type="button" onclick="sendMochiChatMessage()" class="tap-shrink w-9 h-9 rounded-full bg-gradient-to-br from-mochi-light to-mochi hover:from-mochi hover:to-mochi-dark text-white flex items-center justify-center flex-shrink-0 shadow-[0_4px_12px_-2px_rgba(184,146,90,0.5)]"><i data-lucide="arrow-up" class="w-4 h-4"></i></button>
         </div>
         <p id="mochi-voice-status" class="hidden text-[10px] font-bold text-mochi text-center mt-2">🎤 Mochi lagi dengerin... bicara sekarang</p>
@@ -2285,7 +2335,7 @@
       document.getElementById('mochi-ai-menu').classList.remove('hidden');
       document.getElementById('mochi-ai-backdrop').classList.remove('hidden');
       const fab = document.getElementById('mochi-ai-fab');
-      if (fab) fab.style.transform = 'rotate(45deg)';
+      if (fab) { fab.style.transform = 'rotate(45deg)'; fab.classList.add('glow-active'); }
     }
 
     function closeMochiAIMenu() {
@@ -2293,7 +2343,7 @@
       document.getElementById('mochi-ai-menu').classList.add('hidden');
       document.getElementById('mochi-ai-backdrop').classList.add('hidden');
       const fab = document.getElementById('mochi-ai-fab');
-      if (fab) fab.style.transform = '';
+      if (fab) { fab.style.transform = ''; fab.classList.remove('glow-active'); }
     }
 
     // Each of these will grow into a real Gemini-backed feature later
@@ -2308,8 +2358,11 @@
     }
 
     let mochiChatHistory = [];
+    let mochiChatFullscreen = false;
+    let mochiSheetDrag = null; // { startY, startHeight, wasFullscreen }
 
     function openMochiChatModal() {
+      exitMochiFullscreen(true); // always reopen compact, like Gemini's overlay
       openModal('modalMochiChat');
       const chatAvatarEl = document.getElementById('mochi-chat-avatar');
       if (chatAvatarEl && currentMochiMood) chatAvatarEl.src = `mochi-${currentMochiMood}-open.png`;
@@ -2317,8 +2370,129 @@
         mochiChatHistory.push({ role: 'welcome' });
         renderMochiChatMessages();
       }
+      setTimeout(() => updateMochiChatSheetHeight(), 50);
       setTimeout(() => document.getElementById('mochi-chat-input').focus(), 200);
     }
+
+    // Tapping the input to type a longer message feels natural in the
+    // full-height view, same as Gemini expanding when you start typing —
+    // so we grow the sheet a bit further (not full fullscreen, just roomier).
+    function mochiChatInputFocused() {
+      if (!mochiChatFullscreen) updateMochiChatSheetHeight();
+    }
+
+    // Measures how tall the sheet WANTS to be based on its content (header +
+    // messages + input bar), then clamps it between a compact minimum and an
+    // 82vh cap. This is what makes the sheet start small and grow with the
+    // conversation instead of always taking up 75% of the screen.
+    function updateMochiChatSheetHeight() {
+      const content = document.getElementById('modalMochiChat-content');
+      if (!content || mochiChatFullscreen) return;
+      const header = content.querySelector('.relative.flex-shrink-0.overflow-hidden.z-10');
+      const messagesEl = document.getElementById('mochi-chat-messages');
+      const inputBar = content.querySelector('.border-t');
+      const headerH = header ? header.offsetHeight : 76;
+      const inputH = inputBar ? inputBar.offsetHeight : 68;
+      const dragHandleH = 20;
+      const naturalMsgH = messagesEl ? messagesEl.scrollHeight + 24 : 0;
+
+      const minCompact = 300;
+      const maxCap = Math.round(window.innerHeight * 0.82);
+      const wanted = headerH + inputH + dragHandleH + naturalMsgH;
+      const clamped = Math.max(minCompact, Math.min(wanted, maxCap));
+      content.style.height = clamped + 'px';
+    }
+
+    function toggleMochiFullscreen() {
+      mochiChatFullscreen ? exitMochiFullscreen() : enterMochiFullscreen();
+    }
+
+    function enterMochiFullscreen() {
+      mochiChatFullscreen = true;
+      vibrate(25);
+      const content = document.getElementById('modalMochiChat-content');
+      if (content) {
+        content.classList.remove('mochi-chat-dragging');
+        content.style.transform = '';
+        content.classList.add('mochi-chat-fullscreen');
+      }
+      const glow = document.getElementById('mochi-ambient-glow');
+      if (glow) glow.classList.add('active');
+      const icon = document.querySelector('#mochi-chat-expand-btn i');
+      if (icon) icon.setAttribute('data-lucide', 'chevron-down');
+      lucide.createIcons();
+    }
+
+    function exitMochiFullscreen(silent) {
+      const wasFullscreen = mochiChatFullscreen;
+      mochiChatFullscreen = false;
+      const content = document.getElementById('modalMochiChat-content');
+      if (content) {
+        content.classList.remove('mochi-chat-dragging');
+        content.style.transform = '';
+        content.classList.remove('mochi-chat-fullscreen');
+      }
+      const glow = document.getElementById('mochi-ambient-glow');
+      if (glow) glow.classList.remove('active');
+      const icon = document.querySelector('#mochi-chat-expand-btn i');
+      if (icon) icon.setAttribute('data-lucide', 'chevron-up');
+      if (!silent) { vibrate(20); lucide.createIcons(); }
+      if (wasFullscreen) setTimeout(() => updateMochiChatSheetHeight(), 20);
+    }
+
+    // Swipe-up-to-expand / swipe-down-to-collapse on the drag handle & header,
+    // mirroring Gemini's overlay gesture. A firm downward swipe from the
+    // compact (non-fullscreen) state closes the sheet entirely.
+    function mochiSheetDragStart(e) {
+      const content = document.getElementById('modalMochiChat-content');
+      if (!content) return;
+      mochiSheetDrag = {
+        startY: e.touches[0].clientY,
+        startHeight: content.getBoundingClientRect().height,
+        wasFullscreen: mochiChatFullscreen
+      };
+      content.classList.add('mochi-chat-dragging');
+    }
+
+    function mochiSheetDragMove(e) {
+      if (!mochiSheetDrag) return;
+      const content = document.getElementById('modalMochiChat-content');
+      if (!content) return;
+      const deltaY = e.touches[0].clientY - mochiSheetDrag.startY;
+
+      if (mochiSheetDrag.wasFullscreen) {
+        // Dragging down out of fullscreen: follow the finger.
+        if (deltaY > 0) content.style.transform = `translateY(${deltaY}px)`;
+      } else {
+        // Dragging up grows the sheet live; dragging down shrinks/previews close.
+        const next = Math.max(140, Math.min(mochiSheetDrag.startHeight - deltaY, window.innerHeight));
+        content.style.height = next + 'px';
+      }
+    }
+
+    function mochiSheetDragEnd(e) {
+      if (!mochiSheetDrag) return;
+      const content = document.getElementById('modalMochiChat-content');
+      const deltaY = (e.changedTouches ? e.changedTouches[0].clientY : mochiSheetDrag.startY) - mochiSheetDrag.startY;
+      content.classList.remove('mochi-chat-dragging');
+      content.style.transform = '';
+
+      if (mochiSheetDrag.wasFullscreen) {
+        if (deltaY > 120) exitMochiFullscreen();
+        else enterMochiFullscreen();
+      } else {
+        if (deltaY < -80) enterMochiFullscreen();
+        else if (deltaY > 90) closeModal('modalMochiChat');
+        else updateMochiChatSheetHeight();
+      }
+      mochiSheetDrag = null;
+    }
+
+    window.addEventListener('resize', () => {
+      if (!document.getElementById('modalMochiChat').classList.contains('hidden') && !mochiChatFullscreen) {
+        updateMochiChatSheetHeight();
+      }
+    });
 
     function renderMochiChatMessages() {
       const el = document.getElementById('mochi-chat-messages');
@@ -2370,6 +2544,17 @@
       }).join('');
       el.scrollTop = el.scrollHeight;
       lucide.createIcons();
+
+      // Mochi "thinking" (typing bubble visible) gets the same glow treatment
+      // as Gemini's active-listening/thinking state, recolored to the app's
+      // gold palette — on the avatar ring and, in fullscreen, the ambient wash.
+      const isThinking = mochiChatHistory.some(m => m.role === 'typing');
+      const avatarWrap = document.getElementById('mochi-chat-avatar-wrap');
+      if (avatarWrap) avatarWrap.classList.toggle('glow-active', isThinking);
+      const ambientGlow = document.getElementById('mochi-ambient-glow');
+      if (ambientGlow && mochiChatFullscreen) ambientGlow.classList.toggle('active', true);
+
+      if (!mochiChatFullscreen) updateMochiChatSheetHeight();
     }
 
     function renderMochiActionCard(action, msgIdx) {
@@ -2687,7 +2872,7 @@
 
       mochiRecognition.onstart = () => {
         mochiListening = true;
-        if (btn) btn.className = "tap-shrink w-9 h-9 rounded-full bg-mochi text-white flex items-center justify-center flex-shrink-0 animate-pulse";
+        if (btn) { btn.className = "tap-shrink w-9 h-9 rounded-full bg-mochi text-white flex items-center justify-center flex-shrink-0 mochi-glow-ring glow-active"; }
         if (statusEl) statusEl.classList.remove('hidden');
       };
 
@@ -2705,7 +2890,7 @@
 
       mochiRecognition.onend = () => {
         mochiListening = false;
-        if (btn) btn.className = "tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0";
+        if (btn) btn.className = "tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0 mochi-glow-ring";
         if (statusEl) statusEl.classList.add('hidden');
       };
 
