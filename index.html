@@ -708,9 +708,9 @@
       </div>
 
       <!-- Mochi AI FAB -->
-      <button ontouchstart="vibrate(35)" onclick="toggleMochiAIMenu()" id="mochi-ai-fab" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-[var(--bg-card)] rounded-full shadow-[0_8px_20px_-4px_rgba(184,146,90,0.3)] flex items-center justify-center pointer-events-auto group p-2 transition-transform duration-200 z-10">
-        <img src="assets/mochi-ai-fab-light.png" alt="Mochi AI" class="block dark:hidden w-full h-full object-contain filter drop-shadow-sm transition-transform group-active:scale-90">
-        <img src="assets/mochi-ai-fab-dark.png" alt="Mochi AI" class="hidden dark:block w-full h-full object-contain filter drop-shadow-sm transition-transform group-active:scale-90">
+      <button ontouchstart="vibrate(35)" onclick="toggleMochiAIMenu()" id="mochi-ai-fab" class="paw-fab tap-shrink absolute right-5 bottom-0 w-16 h-16 rounded-2xl flex items-center justify-center pointer-events-auto group transition-transform duration-200 z-10">
+        <img src="assets/mochi-ai-fab-light.png" alt="Mochi AI" class="block dark:hidden w-full h-full object-contain filter drop-shadow-[0_6px_14px_rgba(184,146,90,0.45)] transition-transform group-active:scale-90">
+        <img src="assets/mochi-ai-fab-dark.png" alt="Mochi AI" class="hidden dark:block w-full h-full object-contain filter drop-shadow-[0_6px_14px_rgba(184,146,90,0.45)] transition-transform group-active:scale-90">
       </button>
       <input type="file" id="receipt-file-input" accept="image/*" capture="environment" class="hidden" onchange="handleReceiptFileSelected(event)">
     </div>
