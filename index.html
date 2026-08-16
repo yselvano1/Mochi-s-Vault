@@ -711,6 +711,7 @@
       <button ontouchstart="vibrate(35)" onclick="toggleMochiAIMenu()" id="mochi-ai-fab" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-[var(--bg-card)] rounded-full shadow-[0_8px_20px_-4px_rgba(184,146,90,0.3)] flex items-center justify-center pointer-events-auto border-2 border-mochi-light/40 group p-2.5 transition-transform duration-200 z-10">
         <img src="assets/cat-paw-3d.png" alt="Mochi AI" class="w-full h-full object-contain filter drop-shadow-sm transition-transform group-active:scale-90">
       </button>
+      <input type="file" id="receipt-file-input" accept="image/*" capture="environment" class="hidden" onchange="handleReceiptFileSelected(event)">
     </div>
   </div>
 
@@ -1227,8 +1228,10 @@
       <div class="px-3 pt-2.5 border-t border-[var(--border-color)] flex-shrink-0" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom))">
         <div class="flex items-center space-x-2 bg-[var(--bg-subtle-2)] rounded-full pl-4 pr-1.5 py-1.5 border border-transparent focus-within:border-mochi-light/50 transition-colors">
           <input type="text" id="mochi-chat-input" placeholder="Ketik pesan atau 'kopi 25rb dari cash'..." class="flex-1 bg-transparent text-sm font-semibold text-main placeholder:text-faint placeholder:font-medium focus:outline-none" onkeydown="if(event.key==='Enter'){sendMochiChatMessage();}">
+          <button type="button" id="mochi-voice-btn" onclick="toggleMochiVoiceInput()" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0"><i data-lucide="mic" class="w-4 h-4"></i></button>
           <button type="button" onclick="sendMochiChatMessage()" class="tap-shrink w-9 h-9 rounded-full bg-gradient-to-br from-mochi-light to-mochi hover:from-mochi hover:to-mochi-dark text-white flex items-center justify-center flex-shrink-0 shadow-[0_4px_12px_-2px_rgba(184,146,90,0.5)]"><i data-lucide="arrow-up" class="w-4 h-4"></i></button>
         </div>
+        <p id="mochi-voice-status" class="hidden text-[10px] font-bold text-mochi text-center mt-2">🎤 Mochi lagi dengerin... bicara sekarang</p>
       </div>
     </div>
   </div>
@@ -2298,8 +2301,8 @@
       closeMochiAIMenu();
       if (kind === 'chat') { openMochiChatModal(); return; }
       if (kind === 'add') { openNewTransactionForm(); return; }
-      const labels = { scan: "Scan Struk", voice: "Input Suara" };
-      showToast(`${labels[kind] || 'Fitur ini'} lagi disiapin Mochi — coming soon!`, "info");
+      if (kind === 'scan') { document.getElementById('receipt-file-input').click(); return; }
+      if (kind === 'voice') { openMochiChatModal(); setTimeout(() => toggleMochiVoiceInput(), 250); return; }
     }
 
     let mochiChatHistory = [];
@@ -2555,6 +2558,132 @@
           mochiChatHistory.push({ role: 'mochi', text: "Ngeong? Koneksi ke otak AI-ku lagi bermasalah 🙀 Coba lagi ya." });
           renderMochiChatMessages();
         });
+    }
+
+    // Receipts are read into the SAME chat + action-card flow as a typed
+    // message — Mochi "sees" the photo, replies with a comment, and if it
+    // could read a total, offers the exact same editable confirm card
+    // (with the same TYPE_META-aware fields) used everywhere else. No
+    // separate modal, no separate save path, no auto-save.
+    function handleReceiptFileSelected(event) {
+      const file = event.target.files && event.target.files[0];
+      event.target.value = ''; // allow re-selecting the same file next time
+      if (!file) return;
+
+      openMochiChatModal();
+      mochiChatHistory.push({ role: 'user', text: '📷 Foto struk' });
+      mochiChatHistory.push({ role: 'typing' });
+      renderMochiChatMessages();
+
+      const promptSentAt = new Date().toISOString();
+
+      compressImageToBase64(file, 1280, 0.7)
+        .then(({ base64, mimeType }) => postApi('scanReceipt', { imageBase64: base64, mimeType }))
+        .then(result => {
+          mochiChatHistory = mochiChatHistory.filter(m => m.role !== 'typing');
+          let action = null;
+          if (result.amount > 0) {
+            action = {
+              type: 'add_transaction',
+              transactionType: 'Expense',
+              amount: result.amount,
+              category: result.category || '',
+              description: result.merchant || 'Belanja',
+              promptTimestamp: promptSentAt
+            };
+          }
+          let replyText = result.note || "Ini yang Mochi baca dari strukmu!";
+          if (result.date) replyText += ` (Tanggal di struk: ${formatDate(result.date)} — Mochi tetap catat hari ini, edit manual kalau perlu ya)`;
+          mochiChatHistory.push({ role: 'mochi', text: replyText, action });
+          renderMochiChatMessages();
+        })
+        .catch(err => {
+          mochiChatHistory = mochiChatHistory.filter(m => m.role !== 'typing');
+          mochiChatHistory.push({ role: 'mochi', text: "Ngeong? Mochi nggak bisa baca strukmu — ada gangguan koneksi 🙀 Coba lagi atau isi manual ya." });
+          renderMochiChatMessages();
+        });
+    }
+
+    // Resizes + re-encodes as JPEG client-side before upload — a raw phone
+    // photo can be 5-10MB, which is slow to upload and unnecessarily
+    // expensive to send to Gemini. 1280px is plenty for reading a receipt.
+    function compressImageToBase64(file, maxWidth, quality) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        const reader = new FileReader();
+        reader.onload = (e) => { img.src = e.target.result; };
+        reader.onerror = reject;
+        img.onload = () => {
+          const scale = Math.min(1, maxWidth / img.width);
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve({ base64: dataUrl.split(',')[1], mimeType: 'image/jpeg' });
+        };
+        img.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Voice → text happens entirely on-device via the browser's Web Speech
+    // API (no audio ever leaves the phone, no backend involved) — the
+    // transcript just lands in the chat input for the person to review and
+    // send, going through the exact same mochiChat parsing as if they'd
+    // typed it. NOTE: this API isn't implemented in Safari/iOS at all
+    // (Apple's WebKit doesn't ship SpeechRecognition), so voice input is
+    // Android/Chrome-only for now — the mic button quietly won't work
+    // there instead of pretending to.
+    let mochiRecognition = null;
+    let mochiListening = false;
+
+    function toggleMochiVoiceInput() {
+      const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognitionCtor) {
+        showToast("Input suara belum didukung di browser ini (coba Chrome di Android).", "error");
+        return;
+      }
+
+      if (mochiListening) {
+        mochiRecognition.stop();
+        return;
+      }
+
+      mochiRecognition = new SpeechRecognitionCtor();
+      mochiRecognition.lang = 'id-ID';
+      mochiRecognition.interimResults = false;
+      mochiRecognition.maxAlternatives = 1;
+
+      const btn = document.getElementById('mochi-voice-btn');
+      const statusEl = document.getElementById('mochi-voice-status');
+
+      mochiRecognition.onstart = () => {
+        mochiListening = true;
+        if (btn) btn.className = "tap-shrink w-9 h-9 rounded-full bg-mochi text-white flex items-center justify-center flex-shrink-0 animate-pulse";
+        if (statusEl) statusEl.classList.remove('hidden');
+      };
+
+      mochiRecognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        const input = document.getElementById('mochi-chat-input');
+        if (input) { input.value = transcript; input.focus(); }
+      };
+
+      mochiRecognition.onerror = (event) => {
+        if (event.error !== 'no-speech' && event.error !== 'aborted') {
+          showToast("Mochi nggak bisa dengar dengan jelas, coba lagi ya.", "error");
+        }
+      };
+
+      mochiRecognition.onend = () => {
+        mochiListening = false;
+        if (btn) btn.className = "tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0";
+        if (statusEl) statusEl.classList.add('hidden');
+      };
+
+      mochiRecognition.start();
     }
 
     function openNewTransactionForm() {
