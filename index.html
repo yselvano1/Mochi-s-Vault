@@ -280,9 +280,9 @@
   <div id="toast-container" class="fixed left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4" style="top: max(1.25rem, env(safe-area-inset-top))"></div>
 
   <header class="clean-topbar sticky top-0 z-40 px-5 pt-8 pb-5 flex items-center justify-between max-w-3xl mx-auto">
-    <div class="flex flex-col justify-center min-w-0 flex-1 pr-3">
+    <div class="flex flex-col justify-center min-w-0 flex-1 pr-3 pl-6">
       <span id="greeting-subtext" class="text-[11px] text-faint font-bold uppercase tracking-wider mb-0.5">Good day</span>
-      <h1 class="text-xl md:text-2xl font-black text-main leading-tight tracking-tight truncate">Hello, Hoo-Man</h1>
+      <h1 id="greeting-name" class="font-display text-2xl md:text-3xl font-black text-main leading-tight tracking-tight truncate">Hello, Hoo-Man</h1>
     </div>
 
     <div class="flex items-center space-x-2.5 flex-shrink-0">
@@ -290,10 +290,10 @@
         <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
         <i data-lucide="moon" id="icon-moon" class="w-5 h-5"></i>
       </button>
-      <div class="relative w-12 h-12 rounded-full bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0 cursor-pointer tap-shrink" onclick="openCommandCenter()">
-        <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Avatar" class="w-full h-full object-contain rounded-full filter drop-shadow-sm transition-all duration-300">
+      <button onclick="openCommandCenter()" class="relative tap-shrink w-11 h-11 rounded-full bg-card border border-[var(--border-color)] flex items-center justify-center text-main shadow-sm" aria-label="Settings">
+        <i data-lucide="settings" class="w-5 h-5"></i>
         <span id="pending-sync-badge" title="Changes waiting to sync" class="hidden absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-amber-500 text-white text-[10px] font-black flex items-center justify-center shadow-sm border-2 border-[var(--bg-app)]"></span>
-      </div>
+      </button>
     </div>
   </header>
   
@@ -372,19 +372,26 @@
       </div>
 
       <div class="floating-card p-5 relative overflow-hidden cursor-pointer tap-shrink" onclick="vibrate(30); openMochiChatModal();">
-        <div class="flex items-center justify-between mb-3">
-          <div class="flex items-center space-x-2">
-            <div class="w-6 h-6 rounded-lg bg-[var(--chip-accent-bg)] text-mochi dark:text-mochi-light flex items-center justify-center">
-              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-            </div>
-            <span class="text-[11px] font-extrabold uppercase tracking-wider text-muted">Mochi AI</span>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="relative w-14 h-14 rounded-full bg-[var(--bg-subtle-2)] border-2 border-[var(--border-color)] p-1 shadow-sm flex items-center justify-center flex-shrink-0">
+            <img id="mochi-mood-img" src="mochi-chill-open.png" alt="Mochi Avatar" class="w-full h-full object-contain rounded-full filter drop-shadow-sm transition-all duration-300">
           </div>
-          <span id="mochi-mood-badge" class="text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-in-bg)] amount-in">Rich Mochi</span>
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              <span class="text-[11px] font-extrabold uppercase tracking-wider text-muted">Mochi AI</span>
+              <span id="mochi-mood-badge" class="text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider bg-[var(--chip-in-bg)] amount-in">Rich Mochi</span>
+            </div>
+            <p id="mochi-state-text" class="text-[12px] font-bold text-main leading-snug">-</p>
+          </div>
         </div>
+
         <div class="bg-[var(--bg-subtle-2)] rounded-2xl rounded-tl-sm p-4 relative">
           <p id="mochi-quip-text" class="text-[13px] font-bold text-main leading-snug">Hai Hoo-Man! Kondisi dompetmu lagi aku pantau nih~ 👀</p>
         </div>
-        <p id="mochi-quip-subtext" class="text-[10px] text-muted font-semibold mt-2 px-1">Tap untuk ngobrol sama Mochi</p>
+        <div class="flex items-center gap-1.5 mt-2 px-1">
+          <i data-lucide="message-circle" class="w-3 h-3 text-muted flex-shrink-0"></i>
+          <p id="mochi-quip-subtext" class="text-[10px] text-muted font-semibold">Tap untuk ngobrol sama Mochi — ada yang bisa dibantu?</p>
+        </div>
       </div>
 
       <div id="dashboard-treasury-widget" class="floating-card p-5 relative overflow-hidden hidden">
@@ -682,12 +689,12 @@
           <span class="text-xs font-extrabold text-main">Suara</span>
           <div class="w-9 h-9 rounded-full bg-[var(--chip-accent-bg)] text-mochi dark:text-mochi-light flex items-center justify-center flex-shrink-0"><i data-lucide="mic" class="w-4 h-4"></i></div>
         </button>
+        <!-- Placed last (closest to the FAB) so it's the easiest one to reach with a thumb — manual add is the most-used action. -->
+        <button ontouchstart="vibrate(30)" onclick="mochiAIAction('add')" class="tap-shrink flex items-center space-x-2.5 bg-[var(--bg-card)] pl-4 pr-2 py-2 rounded-full shadow-lg border border-[var(--border-color)]">
+          <span class="text-xs font-extrabold text-main">Tambah Transaksi</span>
+          <div class="w-9 h-9 rounded-full bg-[var(--chip-accent-bg)] text-mochi dark:text-mochi-light flex items-center justify-center flex-shrink-0"><i data-lucide="plus" class="w-4 h-4"></i></div>
+        </button>
       </div>
-
-      <!-- Quick manual add — kept separate & always reachable so fast manual entry never gets buried behind the AI menu -->
-      <button ontouchstart="vibrate(30)" onclick="openNewTransactionForm()" title="Add Transaction" class="tap-shrink absolute right-[4.75rem] bottom-1 w-11 h-11 bg-[var(--bg-card)] rounded-full shadow-[0_6px_16px_-4px_rgba(184,146,90,0.3)] flex items-center justify-center pointer-events-auto border-2 border-mochi-light/30 text-mochi dark:text-mochi-light">
-        <i data-lucide="plus" class="w-5 h-5"></i>
-      </button>
 
       <!-- Mochi AI FAB -->
       <button ontouchstart="vibrate(35)" onclick="toggleMochiAIMenu()" id="mochi-ai-fab" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-[var(--bg-card)] rounded-full shadow-[0_8px_20px_-4px_rgba(184,146,90,0.3)] flex items-center justify-center pointer-events-auto border-2 border-mochi-light/40 group p-2.5 transition-transform duration-200 z-10">
@@ -1741,6 +1748,11 @@
       // device belongs to, so it doesn't have to be picked every time.
       const formUserEl = document.getElementById('form-user');
       if (formUserEl && user) formUserEl.value = user;
+
+      // Keep the top-bar greeting ("Hello, Yosa/Fani") in sync whenever the
+      // active user is set or switched, not just on the next mood render.
+      const greetingNameEl = document.getElementById('greeting-name');
+      if (greetingNameEl) greetingNameEl.textContent = `Hello, ${user || 'Hoo-Man'}`;
     }
 
     function ensureActiveUserSet() {
@@ -1749,8 +1761,12 @@
         // first-run prompt, not something the back button should dismiss
         // into a half-configured state.
         const modal = document.getElementById('modalActiveUserPicker');
+        const content = document.getElementById('modalActiveUserPicker-content');
         modal.classList.remove('hidden');
-        requestAnimationFrame(() => modal.classList.add('show'));
+        requestAnimationFrame(() => {
+          modal.classList.add('show');
+          if (content) content.classList.add('show');
+        });
       } else {
         updateActiveUserUI();
       }
@@ -2259,6 +2275,7 @@
     function mochiAIAction(kind) {
       closeMochiAIMenu();
       if (kind === 'chat') { openMochiChatModal(); return; }
+      if (kind === 'add') { openNewTransactionForm(); return; }
       const labels = { scan: "Scan Struk", voice: "Input Suara" };
       showToast(`${labels[kind] || 'Fitur ini'} lagi disiapin Mochi — coming soon!`, "info");
     }
@@ -3028,11 +3045,18 @@
     function updateGreeting() {
       const hour = new Date().getHours();
       const el = document.getElementById('greeting-subtext');
-      if (!el) return;
-      if (hour < 11) el.textContent = "Good morning";
-      else if (hour < 15) el.textContent = "Good afternoon";
-      else if (hour < 19) el.textContent = "Good evening";
-      else el.textContent = "Good night";
+      if (el) {
+        if (hour < 11) el.textContent = "Good morning";
+        else if (hour < 15) el.textContent = "Good afternoon";
+        else if (hour < 19) el.textContent = "Good evening";
+        else el.textContent = "Good night";
+      }
+
+      const nameEl = document.getElementById('greeting-name');
+      if (nameEl) {
+        const user = getActiveUser();
+        nameEl.textContent = `Hello, ${user || 'Hoo-Man'}`;
+      }
     }
 
     function renderMochiMood() {
@@ -3075,8 +3099,29 @@
     badgeEl.className = `text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${badgeClass}`;
   }
 
+  renderMochiStateText(mood, displayPct, dsr);
   renderMochiQuip(mood, displayPct, dsr);
   startMochiBlinking();
+}
+
+// Deterministic (not randomized like the quip below) — this is the factual
+// "here's your financial state" line, always the same for the same numbers,
+// so it reads as a status readout rather than a random comment.
+function renderMochiStateText(mood, displayPct, dsr) {
+  const stateEl = document.getElementById('mochi-state-text');
+  if (!stateEl) return;
+
+  let text;
+  if (mood === 'anxious' && dsr > 30) {
+    text = `DSR kamu ${dsr}% bulan ini — di atas batas aman (30%).`;
+  } else if (mood === 'anxious') {
+    text = `${displayPct}% dari pemasukan bulan ini udah kepake buat pengeluaran.`;
+  } else if (mood === 'rich') {
+    text = `Cuma ${displayPct}% pemasukan yang kepake bulan ini — sisanya aman.`;
+  } else {
+    text = `${displayPct}% dari pemasukan bulan ini terpakai — masih stabil.`;
+  }
+  stateEl.textContent = text;
 }
 
 // Rule-based, not an LLM call — instant, free, and every line traces back
