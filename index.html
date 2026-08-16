@@ -212,6 +212,156 @@
     #mochi-chat-messages::-webkit-scrollbar { width: 4px; }
     #mochi-chat-messages::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 9999px; }
 
+    /* ---- Mochi AI "live" glow — same spirit as Gemini's assistant glow,
+       recolored to the app's gold/mochi palette. Used on the FAB while the
+       sheet is open, around the avatar while Mochi is thinking, and as an
+       ambient wash behind the fullscreen chat. ---- */
+    @keyframes mochiGlowSpin { to { transform: rotate(1turn); } }
+    @keyframes mochiGlowBreathe { 0%, 100% { opacity: 0.5; filter: blur(7px); } 50% { opacity: 0.95; filter: blur(10px); } }
+    .mochi-glow-ring { position: relative; isolation: isolate; }
+    .mochi-glow-ring::before {
+      content: ''; position: absolute; inset: -4px; border-radius: inherit; z-index: -1;
+      background: conic-gradient(from 0deg, #F2D9A8, #DFC08A, #B8925A, #8C6C3E, #DFC08A, #F2D9A8);
+      opacity: 0; transform: rotate(0deg);
+      transition: opacity 0.45s ease;
+      pointer-events: none;
+    }
+    .mochi-glow-ring.glow-active::before {
+      opacity: 0.9;
+      animation: mochiGlowSpin 3.2s linear infinite, mochiGlowBreathe 2.1s ease-in-out infinite;
+    }
+
+    .mochi-ambient-glow {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: 0;
+      background:
+        radial-gradient(circle at 15% -10%, rgba(223, 192, 138, 0.4), transparent 45%),
+        radial-gradient(circle at 105% 10%, rgba(184, 146, 90, 0.3), transparent 42%),
+        radial-gradient(circle at 50% 115%, rgba(140, 108, 62, 0.28), transparent 50%);
+      transition: opacity 0.6s ease;
+    }
+    .mochi-ambient-glow.active { opacity: 1; animation: mochiAmbientDrift 7s ease-in-out infinite alternate; }
+    @keyframes mochiAmbientDrift { from { transform: scale(1) rotate(0deg); } to { transform: scale(1.12) rotate(4deg); } }
+
+    /* ---- FAB continuous ambient glow — the same layered-stroke halo
+       technique as the full-screen edge glow (see #global-edge-glow),
+       scaled down to the FAB and dialed calm so it can run permanently
+       as the button's resting state instead of only flashing on trigger.
+       Brightens slightly while the AI menu is open via .glow-active,
+       toggled by the existing openMochiAIMenu/closeMochiAIMenu JS. ---- */
+    .mochi-fab-glow {
+      position: absolute; inset: -5px; z-index: -1; pointer-events: none;
+      opacity: 0.55; transition: opacity 0.4s ease;
+      animation: edgeGlowBreathe 3.6s ease-in-out infinite;
+    }
+    #mochi-ai-fab.glow-active .mochi-fab-glow { opacity: 1; }
+    .mochi-fab-glow rect { fill: none; stroke: url(#fabGlowGrad); }
+    .fab-glow-outer  { stroke-width: 6px;   opacity: 0.30; filter: url(#fabGlowBlurOuter); }
+    .fab-glow-mid    { stroke-width: 3px;   opacity: 0.45; filter: url(#fabGlowBlurMid); }
+    .fab-glow-core   { stroke-width: 1.3px; opacity: 0.75; filter: url(#fabGlowBlurCore); }
+    .fab-glow-bright { stroke-width: 0.6px; opacity: 0.95; }
+
+    /* ---- Global screen-edge glow — the "Mochi AI is active" ambient
+       frame, styled after Apple Intelligence's edge glow: several
+       stacked strokes at increasing blur/width create a real soft halo
+       (not a single thin line), with a slowly rotating gradient sweep
+       across the app's own gold/brass palette instead of a rainbow.
+       viewBox is set to the actual pixel size of the screen in JS
+       (see initEdgeGlow) so 1 SVG unit = 1 css px — this keeps the
+       stroke crisp and even on all four sides regardless of aspect
+       ratio, instead of the old 100x100 non-uniform stretch.
+       Triggered briefly for one-shot moments (reward, scan) and held on
+       for as long as an AI surface is actually listening/open. ---- */
+    #global-edge-glow {
+      position: fixed; inset: 0; width: 100%; height: 100%; z-index: 200;
+      pointer-events: none; opacity: 0; transition: opacity 0.6s ease;
+    }
+    #global-edge-glow.active { opacity: 1; animation: edgeGlowBreathe 3.4s ease-in-out infinite; }
+    #global-edge-glow rect { fill: none; stroke: url(#edgeGlowGradLight); }
+    html.dark #global-edge-glow rect { stroke: url(#edgeGlowGrad); }
+    .edge-glow-outer  { stroke-width: 22px; opacity: 0.30; filter: url(#edgeGlowBlurOuter); }
+    .edge-glow-mid    { stroke-width: 11px; opacity: 0.45; filter: url(#edgeGlowBlurMid); }
+    .edge-glow-core   { stroke-width: 4px;  opacity: 0.75; filter: url(#edgeGlowBlurCore); }
+    .edge-glow-bright { stroke-width: 1.5px; opacity: 0.95; }
+    @keyframes edgeGlowBreathe {
+      0%, 100% { opacity: 0.85; }
+      50% { opacity: 1; }
+    }
+
+    /* ---- Voice bar — replaces the text input row while Mochi is
+       listening, styled after Gemini's Live voice pill: cancel on the
+       left, a live waveform in the middle, a glowing mic on the right. ---- */
+    /* Kedua state input (teks & voice) di-stack di container yg sama (h-12,
+       relative) dan saling crossfade — ini yg bikin transisinya seamless
+       kayak Gemini Live, bukan cut instan lewat class 'hidden'. */
+    .mochi-input-slot {
+      position: absolute;
+      inset: 0;
+      transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity: 1;
+      transform: scale(1);
+    }
+    .mochi-input-slot-inactive { opacity: 0; transform: scale(0.96); pointer-events: none; }
+    .voice-wave-bar {
+      width: 3px; min-width: 3px; border-radius: 9999px; flex-shrink: 0;
+      background: linear-gradient(180deg, var(--mochi-light, #DFC08A), var(--mochi, #B8925A));
+      animation: voiceWaveBounce 1s ease-in-out infinite;
+      transform-origin: center;
+    }
+    @keyframes voiceWaveBounce { 0%, 100% { transform: scaleY(0.28); opacity: 0.65; } 50% { transform: scaleY(1); opacity: 1; } }
+
+    /* ---- Quick Ask — Apple Intelligence–style floating answer: a frosted
+       glass card sitting over a soft mesh-gradient glow, right above the
+       FAB, WITHOUT opening the full modalMochiChat sheet. Tapping the card
+       hands off into the full sheet, which already has the same message
+       in mochiChatHistory so nothing is re-fetched. ---- */
+    #mochi-quick-ask-backdrop { background: rgba(20, 16, 14, 0.01); }
+    .mochi-quick-glow {
+      position: absolute; left: 6%; right: 6%; bottom: -10px; height: 170px; z-index: -1;
+      background:
+        radial-gradient(55% 100% at 25% 100%, rgba(223, 192, 138, 0.6), transparent 70%),
+        radial-gradient(50% 90% at 78% 100%, rgba(184, 146, 90, 0.5), transparent 70%),
+        radial-gradient(40% 85% at 50% 30%, rgba(255, 243, 221, 0.55), transparent 70%);
+      filter: blur(30px);
+      animation: mochiAmbientDrift 6s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+    html.dark .mochi-quick-glow {
+      background:
+        radial-gradient(55% 100% at 25% 100%, rgba(223, 192, 138, 0.35), transparent 70%),
+        radial-gradient(50% 90% at 78% 100%, rgba(140, 108, 62, 0.4), transparent 70%),
+        radial-gradient(40% 85% at 50% 30%, rgba(184, 146, 90, 0.3), transparent 70%);
+    }
+    .mochi-quick-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(22px) saturate(1.5);
+      -webkit-backdrop-filter: blur(22px) saturate(1.5);
+      border-radius: 1.75rem;
+      box-shadow: 0 16px 40px -10px rgba(20, 16, 14, 0.28), 0 2px 10px rgba(20, 16, 14, 0.08);
+    }
+    #mochi-quick-answer-card { padding: 1rem 1.1rem; animation: mochiQuickPop 0.32s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    #mochi-quick-thinking { padding: 0.85rem 1.1rem; animation: mochiQuickPop 0.28s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .mochi-quick-card-input { padding: 0.375rem 0.375rem 0.375rem 1rem; border-radius: 9999px; animation: mochiQuickPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    @keyframes mochiQuickPop { from { opacity: 0; transform: translateY(10px) scale(0.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .mochi-quick-dot { width: 5px; height: 5px; border-radius: 9999px; background: var(--mochi, #B8925A); animation: chatDotBounce 1.1s ease-in-out infinite; }
+    .mochi-quick-dot:nth-child(2) { animation-delay: 0.15s; }
+    .mochi-quick-dot:nth-child(3) { animation-delay: 0.3s; }
+
+    /* ---- Mochi AI sheet: starts compact and grows with the conversation
+       (like Gemini's floating overlay), then caps out and scrolls
+       internally. Height is set inline in px by JS so this transition
+       can animate it smoothly; fullscreen mode overrides everything. ---- */
+    #modalMochiChat-content {
+      transition: height 0.38s cubic-bezier(0.32, 0.72, 0, 1), border-radius 0.38s ease, max-height 0.38s ease;
+    }
+    #modalMochiChat-content.mochi-chat-fullscreen {
+      height: 100dvh !important; max-height: 100dvh !important; width: 100%;
+      border-radius: 0 !important; max-width: none !important;
+    }
+    #modalMochiChat-content.mochi-chat-dragging { transition: none; }
+    #mochi-chat-expand-btn i { transition: transform 0.3s ease; }
+    #modalMochiChat-content.mochi-chat-fullscreen #mochi-chat-expand-btn i { transform: rotate(180deg); }
+
     @keyframes floatIdle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
     .animate-float { animation: floatIdle 3s ease-in-out infinite; }
 
@@ -244,6 +394,24 @@
       0% { background-position: -60% 0; }
       100% { background-position: 160% 0; }
     }
+
+    /* ---- Reward confetti — small gold/mochi particles that burst from
+       the center and fall away, layered behind the paw+subtitle so the
+       "Purr-fect!" moment reads as a celebration rather than a plain
+       popup. Each particle's direction/speed/rotation is randomized
+       inline by JS via CSS custom properties (--tx, --ty, --rot, --dur). ---- */
+    .confetti-piece {
+      position: absolute; top: 50%; left: 50%; width: 7px; height: 7px;
+      opacity: 0; pointer-events: none;
+      animation: confettiBurst var(--dur, 1.1s) cubic-bezier(0.16, 0.84, 0.44, 1) both;
+    }
+    .confetti-piece.is-square { border-radius: 2px; }
+    .confetti-piece.is-round { border-radius: 9999px; }
+    @keyframes confettiBurst {
+      0% { opacity: 0; transform: translate(-50%, -50%) translate(0, 0) rotate(0deg) scale(0.6); }
+      12% { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1); }
+    }
   </style>
   <script>
     (function() {
@@ -259,6 +427,44 @@
 
   <div class="ambient-blob ambient-blob-1" aria-hidden="true"></div>
   <div class="ambient-blob ambient-blob-2" aria-hidden="true"></div>
+
+  <svg id="global-edge-glow" aria-hidden="true">
+    <defs>
+      <!-- Dark mode (unchanged) — pale cream-to-brass sweep, reads bright
+           against a dark background. -->
+      <linearGradient id="edgeGlowGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="0">
+        <stop offset="0%"  stop-color="#FFF3DD"/>
+        <stop offset="20%" stop-color="#F2D9A8"/>
+        <stop offset="40%" stop-color="#DFC08A"/>
+        <stop offset="60%" stop-color="#B8925A"/>
+        <stop offset="80%" stop-color="#8C6C3E"/>
+        <stop offset="100%" stop-color="#FFF3DD"/>
+        <animateTransform id="edgeGlowGradSpin" attributeName="gradientTransform" type="rotate"
+          from="0 0 0" to="360 0 0" dur="7s" repeatCount="indefinite"/>
+      </linearGradient>
+      <!-- Light mode — same brand gold/brown family, but inverted toward
+           deeper/more saturated stops (amber → copper → espresso) since a
+           pale cream sweep disappears against the #F7F4EE app background.
+           Darker colors are what actually pops on a light surface. -->
+      <linearGradient id="edgeGlowGradLight" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="0">
+        <stop offset="0%"  stop-color="#E8A94A"/>
+        <stop offset="20%" stop-color="#D98C3D"/>
+        <stop offset="40%" stop-color="#B8925A"/>
+        <stop offset="60%" stop-color="#96652F"/>
+        <stop offset="80%" stop-color="#6B4A28"/>
+        <stop offset="100%" stop-color="#E8A94A"/>
+        <animateTransform attributeName="gradientTransform" type="rotate"
+          from="0 0 0" to="360 0 0" dur="7s" repeatCount="indefinite"/>
+      </linearGradient>
+      <filter id="edgeGlowBlurOuter" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="12"/></filter>
+      <filter id="edgeGlowBlurMid" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="6"/></filter>
+      <filter id="edgeGlowBlurCore" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="2"/></filter>
+    </defs>
+    <rect class="edge-glow-outer"  x="0.5" y="0.5" width="99" height="99"/>
+    <rect class="edge-glow-mid"    x="0.5" y="0.5" width="99" height="99"/>
+    <rect class="edge-glow-core"   x="0.5" y="0.5" width="99" height="99"/>
+    <rect class="edge-glow-bright" x="0.5" y="0.5" width="99" height="99"/>
+  </svg>
 
   <div id="top-progress-bar" class="fixed top-0 left-0 right-0 h-[3px] z-[160] pointer-events-none">
     <div id="top-progress-fill" class="h-full w-full"></div>
@@ -277,16 +483,15 @@
   </div>
 
   <div id="reward-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center pointer-events-none">
-    <div class="absolute inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/80 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="reward-bg"></div>
+    <div class="absolute inset-0 bg-coffee-darkest/35 dark:bg-coffee-darkest/55 opacity-0 transition-opacity duration-300" id="reward-bg"></div>
+    <div id="reward-confetti" class="absolute inset-0 overflow-hidden z-[5]" aria-hidden="true"></div>
     <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="reward-content">
-      <div class="relative">
-        <div class="absolute inset-0 bg-mochi-light/50 rounded-full animate-ping opacity-75 blur-md"></div>
-        <img src="assets/cat-paw-3d.png" alt="Purrfect Paw" class="w-28 h-28 object-contain relative z-10 filter drop-shadow-[0_12px_25px_rgba(184,146,90,0.6)]">
-      </div>
+      <img src="assets/cat-paw-3d.png" alt="Purrfect Paw" class="w-28 h-28 object-contain relative z-10 filter drop-shadow-[0_12px_25px_rgba(184,146,90,0.6)]">
       <h2 class="text-white text-3xl font-black mt-4 drop-shadow-lg tracking-tight">Purr-fect! 🐾</h2>
       <p id="reward-subtitle" class="text-mochi-light font-bold mt-1.5 drop-shadow-md text-sm bg-coffee-dark/50 px-4 py-1 rounded-full">Saved</p>
     </div>
   </div>
+
 
   <div id="toast-container" class="fixed left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4" style="top: max(1.25rem, env(safe-area-inset-top))"></div>
 
@@ -708,10 +913,69 @@
       </div>
 
       <!-- Mochi AI FAB -->
-      <button ontouchstart="vibrate(35)" onclick="toggleMochiAIMenu()" id="mochi-ai-fab" class="paw-fab tap-shrink absolute right-5 bottom-0 w-14 h-14 bg-[var(--bg-card)] rounded-full shadow-[0_8px_20px_-4px_rgba(184,146,90,0.3)] flex items-center justify-center pointer-events-auto border-2 border-mochi-light/40 group p-2.5 transition-transform duration-200 z-10">
-        <img src="assets/cat-paw-3d.png" alt="Mochi AI" class="w-full h-full object-contain filter drop-shadow-sm transition-transform group-active:scale-90">
+      <button ontouchstart="vibrate(35)" onclick="toggleMochiAIMenu()" id="mochi-ai-fab" class="paw-fab tap-shrink absolute right-5 bottom-0 w-16 h-16 rounded-[18px] bg-[var(--bg-card)] border border-[var(--border-color)] shadow-lg flex items-center justify-center pointer-events-auto group p-2 transition-transform duration-200 z-10">
+        <svg class="mochi-fab-glow" viewBox="0 0 74 74" aria-hidden="true">
+          <defs>
+            <linearGradient id="fabGlowGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="74" y2="74">
+              <stop offset="0%"  stop-color="#FFF3DD"/>
+              <stop offset="20%" stop-color="#F2D9A8"/>
+              <stop offset="40%" stop-color="#DFC08A"/>
+              <stop offset="60%" stop-color="#B8925A"/>
+              <stop offset="80%" stop-color="#8C6C3E"/>
+              <stop offset="100%" stop-color="#FFF3DD"/>
+              <animateTransform attributeName="gradientTransform" type="rotate" from="0 37 37" to="360 37 37" dur="7s" repeatCount="indefinite"/>
+            </linearGradient>
+            <filter id="fabGlowBlurOuter" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="4"/></filter>
+            <filter id="fabGlowBlurMid" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="2"/></filter>
+            <filter id="fabGlowBlurCore" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="0.8"/></filter>
+          </defs>
+          <rect class="fab-glow-outer"  x="3" y="3" width="68" height="68" rx="21"/>
+          <rect class="fab-glow-mid"    x="3" y="3" width="68" height="68" rx="21"/>
+          <rect class="fab-glow-core"   x="3" y="3" width="68" height="68" rx="21"/>
+          <rect class="fab-glow-bright" x="3" y="3" width="68" height="68" rx="21"/>
+        </svg>
+        <img src="assets/mochi-ai-fab-light.png" alt="Mochi AI" class="block dark:hidden w-full h-full object-contain transition-transform group-active:scale-90">
+        <img src="assets/mochi-ai-fab-dark.png" alt="Mochi AI" class="hidden dark:block w-full h-full object-contain transition-transform group-active:scale-90">
       </button>
       <input type="file" id="receipt-file-input" accept="image/*" capture="environment" class="hidden" onchange="handleReceiptFileSelected(event)">
+    </div>
+  </div>
+
+  <!-- Quick Ask — Apple Intelligence–style floating answer. Independent of
+       modalMochiChat: opens for a fast question, shows the reply as a
+       glass card right here, and only hands off to the full sheet if the
+       person taps the card (see expandMochiQuickAsk()). -->
+  <div id="mochi-quick-ask-backdrop" onclick="closeMochiQuickAsk()" class="hidden fixed inset-0 pointer-events-auto z-[54]"></div>
+  <div id="mochi-quick-ask" class="hidden fixed left-0 right-0 bottom-[5.5rem] z-[55] px-5 pointer-events-none" style="padding-bottom: env(safe-area-inset-bottom)">
+    <div class="max-w-md mx-auto relative">
+      <div class="mochi-quick-glow" aria-hidden="true"></div>
+
+      <!-- Answer card: tap anywhere on it to open the full conversation -->
+      <button type="button" id="mochi-quick-answer-card" onclick="expandMochiQuickAsk()" class="hidden mochi-quick-card tap-shrink text-left w-full mb-3 pointer-events-auto">
+        <p id="mochi-quick-answer-text" class="text-[13px] font-semibold text-main leading-relaxed"></p>
+        <div class="flex items-center justify-between mt-3 pt-2.5 border-t border-[var(--border-color)]">
+          <div class="flex items-center space-x-1.5">
+            <img src="mochi-logo-new.png" class="w-4 h-4 object-contain rounded-full">
+            <span class="text-[10px] font-bold text-muted">Mochi AI · Ketuk untuk buka obrolan lengkap</span>
+          </div>
+          <i data-lucide="chevron-up" class="w-3.5 h-3.5 text-faint flex-shrink-0"></i>
+        </div>
+      </button>
+
+      <!-- Thinking state: same card shell so it doesn't jump in size when the reply lands -->
+      <div id="mochi-quick-thinking" class="hidden mochi-quick-card w-full mb-3 pointer-events-none">
+        <div class="flex items-center space-x-1">
+          <span class="mochi-quick-dot"></span><span class="mochi-quick-dot"></span><span class="mochi-quick-dot"></span>
+        </div>
+      </div>
+
+      <!-- Quick input pill — same 48px spec as the in-modal pill -->
+      <div class="mochi-quick-card mochi-quick-card-input flex items-center space-x-2 w-full pointer-events-auto">
+        <button type="button" onclick="closeMochiQuickAsk()" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
+        <input type="text" id="mochi-quick-input" placeholder="Tanya Mochi..." class="flex-1 bg-transparent text-sm font-semibold text-main placeholder:text-faint placeholder:font-medium focus:outline-none" onkeydown="if(event.key==='Enter'){sendMochiQuickMessage();}">
+        <button type="button" id="mochi-quick-voice-btn" onclick="toggleMochiQuickVoice()" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0 mochi-glow-ring"><i data-lucide="mic" class="w-4 h-4"></i></button>
+        <button type="button" onclick="sendMochiQuickMessage()" class="tap-shrink w-9 h-9 rounded-full bg-gradient-to-br from-mochi-light to-mochi hover:from-mochi hover:to-mochi-dark text-white flex items-center justify-center flex-shrink-0 shadow-[0_4px_12px_-2px_rgba(184,146,90,0.5)]"><i data-lucide="arrow-up" class="w-4 h-4"></i></button>
+      </div>
     </div>
   </div>
 
@@ -1202,14 +1466,16 @@
 
   <!-- Mochi AI Chat -->
   <div id="modalMochiChat" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-end sm:items-center justify-center modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMochiChat')">
-    <div class="glass-modal-content w-full sm:max-w-sm sm:rounded-[2rem] rounded-t-[2rem] shadow-2xl h-[88vh] sm:h-[75vh] flex flex-col overflow-hidden" onclick="event.stopPropagation()">
-      <div class="modal-drag-handle sm:hidden mt-3"></div>
+    <div id="modalMochiChat-content" class="glass-modal-content mochi-glow-ring w-full sm:max-w-sm sm:rounded-[2rem] rounded-t-[2rem] shadow-2xl flex flex-col overflow-hidden relative" style="height:300px; max-height:82vh;" onclick="event.stopPropagation()">
+      <div class="mochi-ambient-glow" id="mochi-ambient-glow"></div>
 
-      <div class="relative flex-shrink-0 overflow-hidden">
+      <div class="modal-drag-handle sm:hidden mt-3 relative z-10" ontouchstart="mochiSheetDragStart(event)" ontouchmove="mochiSheetDragMove(event)" ontouchend="mochiSheetDragEnd(event)"></div>
+
+      <div class="relative flex-shrink-0 overflow-hidden z-10" ontouchstart="mochiSheetDragStart(event)" ontouchmove="mochiSheetDragMove(event)" ontouchend="mochiSheetDragEnd(event)">
         <div class="absolute inset-0 bg-gradient-to-br from-mochi-light/25 via-transparent to-transparent pointer-events-none"></div>
         <div class="flex items-center justify-between px-5 py-4 relative">
           <div class="flex items-center space-x-3 min-w-0">
-            <div class="relative w-11 h-11 rounded-full bg-gradient-to-br from-mochi-light/40 to-mochi/10 p-[2.5px] shadow-sm flex-shrink-0">
+            <div id="mochi-chat-avatar-wrap" class="mochi-glow-ring relative w-11 h-11 rounded-full bg-gradient-to-br from-mochi-light/40 to-mochi/10 p-[2.5px] shadow-sm flex-shrink-0">
               <img id="mochi-chat-avatar" src="mochi-chill-open.png" alt="Mochi" class="w-full h-full rounded-full object-contain bg-[var(--bg-card)] border border-[var(--border-color)] p-0.5">
               <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[var(--bg-card)]"></span>
             </div>
@@ -1218,18 +1484,31 @@
               <p class="text-[10.5px] text-muted font-semibold truncate">Chat, atau minta catat transaksi</p>
             </div>
           </div>
-          <button type="button" onclick="vibrate(30); closeModal('modalMochiChat')" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-subtle-2)] flex items-center justify-center text-faint flex-shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
+          <div class="flex items-center space-x-1.5 flex-shrink-0">
+            <button type="button" id="mochi-chat-expand-btn" onclick="vibrate(20); toggleMochiFullscreen();" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-subtle-2)] flex items-center justify-center text-faint flex-shrink-0"><i data-lucide="chevron-up" class="w-4 h-4"></i></button>
+            <button type="button" onclick="vibrate(30); closeModal('modalMochiChat')" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-subtle-2)] flex items-center justify-center text-faint flex-shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
+          </div>
         </div>
         <div class="h-px bg-[var(--border-color)]"></div>
       </div>
 
-      <div id="mochi-chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-3" style="background: radial-gradient(circle at 20% 0%, var(--chip-accent-bg) 0%, transparent 50%);"></div>
+      <div id="mochi-chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-3 relative z-10" style="background: radial-gradient(circle at 20% 0%, var(--chip-accent-bg) 0%, transparent 50%);"></div>
 
-      <div class="px-3 pt-2.5 border-t border-[var(--border-color)] flex-shrink-0" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom))">
-        <div class="flex items-center space-x-2 bg-[var(--bg-subtle-2)] rounded-full pl-4 pr-1.5 py-1.5 border border-transparent focus-within:border-mochi-light/50 transition-colors">
-          <input type="text" id="mochi-chat-input" placeholder="Ketik pesan atau 'kopi 25rb dari cash'..." class="flex-1 bg-transparent text-sm font-semibold text-main placeholder:text-faint placeholder:font-medium focus:outline-none" onkeydown="if(event.key==='Enter'){sendMochiChatMessage();}">
-          <button type="button" id="mochi-voice-btn" onclick="toggleMochiVoiceInput()" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0"><i data-lucide="mic" class="w-4 h-4"></i></button>
-          <button type="button" onclick="sendMochiChatMessage()" class="tap-shrink w-9 h-9 rounded-full bg-gradient-to-br from-mochi-light to-mochi hover:from-mochi hover:to-mochi-dark text-white flex items-center justify-center flex-shrink-0 shadow-[0_4px_12px_-2px_rgba(184,146,90,0.5)]"><i data-lucide="arrow-up" class="w-4 h-4"></i></button>
+      <div class="px-3 pt-2.5 border-t border-[var(--border-color)] flex-shrink-0 relative z-10" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom))">
+        <div id="mochi-chat-input-wrap" class="relative h-12">
+          <div id="mochi-chat-input-row" class="mochi-input-slot flex items-center space-x-2 bg-[var(--bg-subtle-2)] rounded-full pl-4 pr-1.5 py-1.5 border border-mochi-light/40 focus-within:border-mochi-light/60">
+            <input type="text" id="mochi-chat-input" placeholder="Tanya Mochi, atau bilang 'kopi 25rb dari cash'..." class="flex-1 bg-transparent text-sm font-semibold text-main placeholder:text-faint placeholder:font-medium focus:outline-none" onfocus="mochiChatInputFocused()" onkeydown="if(event.key==='Enter'){sendMochiChatMessage();}">
+            <button type="button" onclick="vibrate(30); document.getElementById('receipt-file-input').click();" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0"><i data-lucide="camera" class="w-4 h-4"></i></button>
+            <button type="button" id="mochi-voice-btn" onclick="toggleMochiVoiceInput()" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0 mochi-glow-ring"><i data-lucide="mic" class="w-4 h-4"></i></button>
+            <button type="button" onclick="sendMochiChatMessage()" class="tap-shrink w-9 h-9 rounded-full bg-gradient-to-br from-mochi-light to-mochi hover:from-mochi hover:to-mochi-dark text-white flex items-center justify-center flex-shrink-0 shadow-[0_4px_12px_-2px_rgba(184,146,90,0.5)]"><i data-lucide="arrow-up" class="w-4 h-4"></i></button>
+          </div>
+
+          <!-- Gemini Live–style voice bar: identik ukuran (h-9/36px tombol, pill 48px) dgn row teks di atas, crossfade lewat .mochi-input-slot -->
+          <div id="mochi-voice-bar" class="mochi-input-slot mochi-input-slot-inactive flex items-center space-x-2 bg-[var(--bg-subtle-2)] rounded-full pl-1.5 pr-1.5 py-1.5 border border-mochi-light/40">
+            <button type="button" onclick="cancelMochiVoiceInput()" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
+            <div id="mochi-voice-wave" class="flex-1 flex items-center justify-center space-x-[3px] h-9 overflow-hidden"></div>
+            <button type="button" onclick="toggleMochiVoiceInput()" class="tap-shrink w-9 h-9 rounded-full bg-gradient-to-br from-mochi-light to-mochi text-white flex items-center justify-center flex-shrink-0 shadow-[0_4px_14px_-2px_rgba(184,146,90,0.6)] mochi-glow-ring glow-active"><i data-lucide="mic" class="w-4 h-4"></i></button>
+          </div>
         </div>
         <p id="mochi-voice-status" class="hidden text-[10px] font-bold text-mochi text-center mt-2">🎤 Mochi lagi dengerin... bicara sekarang</p>
       </div>
@@ -1710,6 +1989,39 @@
       return toast;
     }
 
+    // Spawns a burst of small gold/mochi confetti pieces from the center of
+    // the reward overlay — randomized angle, distance, rotation and timing
+    // per piece so the burst reads as organic rather than a repeating
+    // pattern. Self-cleans after the last piece's animation finishes.
+    function spawnRewardConfetti() {
+      const field = document.getElementById('reward-confetti');
+      if (!field) return;
+      field.innerHTML = '';
+      const colors = ['#F2D9A8', '#DFC08A', '#B8925A', '#8C6C3E', '#FFFFFF'];
+      const pieceCount = 26;
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < pieceCount; i++) {
+        const piece = document.createElement('span');
+        piece.className = 'confetti-piece ' + (Math.random() < 0.5 ? 'is-square' : 'is-round');
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 90 + Math.random() * 150;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance - 40; // slight upward bias before falling
+        const size = 5 + Math.round(Math.random() * 6);
+        piece.style.width = size + 'px';
+        piece.style.height = (size * (0.6 + Math.random() * 0.8)) + 'px';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.setProperty('--tx', tx.toFixed(0) + 'px');
+        piece.style.setProperty('--ty', ty.toFixed(0) + 'px');
+        piece.style.setProperty('--rot', (Math.random() * 720 - 360).toFixed(0) + 'deg');
+        piece.style.setProperty('--dur', (0.9 + Math.random() * 0.6).toFixed(2) + 's');
+        piece.style.animationDelay = (Math.random() * 0.12).toFixed(2) + 's';
+        frag.appendChild(piece);
+      }
+      field.appendChild(frag);
+      setTimeout(() => { field.innerHTML = ''; }, 1700);
+    }
+
     function showRewardAnimation(subtitleText = "Saved") {
       return new Promise(resolve => {
         const overlay = document.getElementById('reward-overlay');
@@ -1727,6 +2039,7 @@
           bg.classList.add('opacity-100');
           content.classList.remove('scale-50', 'opacity-0');
           content.classList.add('scale-100', 'opacity-100');
+          spawnRewardConfetti();
           vibrate(50);
         });
 
@@ -1829,6 +2142,8 @@
         if (content) content.classList.add('show');
       });
       lucide.createIcons();
+      // Any Mochi AI surface holds the ambient edge glow for as long as it's open.
+      if (id === 'modalMochiChat') holdEdgeGlow();
     }
 
     function closeModal(id) {
@@ -1849,6 +2164,7 @@
         setTimeout(() => modal.classList.add('hidden'), 400);
       }
       activeModals = activeModals.filter(m => m !== id);
+      if (id === 'modalMochiChat') { stopEdgeGlow(); cancelMochiVoiceInput(); }
     }
 
     let currentWalletsView = 'accounts';
@@ -2272,6 +2588,66 @@
       requestAnimationFrame(tick);
     }
 
+    // ===== Global screen-edge glow =====
+    // One shared ambient layer for every "Mochi AI is active" moment —
+    // opening the chat/voice sheet or scanning a receipt. `hold` keeps
+    // it on until stopEdgeGlow() is called (used while a sheet is open /
+    // actively listening); without `hold` it pulses briefly then fades
+    // on its own. Deliberately NOT used by the generic reward overlay —
+    // glow is reserved for Mochi AI activity specifically.
+    //
+    // The SVG's viewBox/rect/gradient coordinates are set here in real
+    // screen pixels (instead of a stretched 0-100 box) so the layered
+    // strokes stay crisp and even on every edge regardless of aspect
+    // ratio — this is what actually made the old version look like a
+    // faint uneven line.
+    function initEdgeGlow() {
+      const svg = document.getElementById('global-edge-glow');
+      if (!svg) return;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      svg.querySelectorAll('rect').forEach(r => {
+        r.setAttribute('x', 0.5);
+        r.setAttribute('y', 0.5);
+        r.setAttribute('width', w - 1);
+        r.setAttribute('height', h - 1);
+      });
+      const grad = document.getElementById('edgeGlowGrad');
+      if (grad) {
+        grad.setAttribute('x1', 0); grad.setAttribute('y1', 0);
+        grad.setAttribute('x2', w); grad.setAttribute('y2', h);
+        const spin = document.getElementById('edgeGlowGradSpin');
+        if (spin) {
+          const cx = w / 2, cy = h / 2;
+          spin.setAttribute('from', `0 ${cx} ${cy}`);
+          spin.setAttribute('to', `360 ${cx} ${cy}`);
+        }
+      }
+    }
+    window.addEventListener('resize', initEdgeGlow);
+
+    let edgeGlowTimer = null;
+    function triggerEdgeGlow(duration = 1400) {
+      const el = document.getElementById('global-edge-glow');
+      if (!el) return;
+      clearTimeout(edgeGlowTimer);
+      el.classList.add('active');
+      edgeGlowTimer = setTimeout(() => el.classList.remove('active'), duration);
+    }
+    function holdEdgeGlow() {
+      const el = document.getElementById('global-edge-glow');
+      if (!el) return;
+      clearTimeout(edgeGlowTimer);
+      el.classList.add('active');
+    }
+    function stopEdgeGlow() {
+      const el = document.getElementById('global-edge-glow');
+      if (!el) return;
+      clearTimeout(edgeGlowTimer);
+      el.classList.remove('active');
+    }
+
     let mochiAIMenuOpen = false;
 
     function toggleMochiAIMenu() {
@@ -2283,7 +2659,7 @@
       document.getElementById('mochi-ai-menu').classList.remove('hidden');
       document.getElementById('mochi-ai-backdrop').classList.remove('hidden');
       const fab = document.getElementById('mochi-ai-fab');
-      if (fab) fab.style.transform = 'rotate(45deg)';
+      if (fab) { fab.style.transform = 'rotate(45deg)'; fab.classList.add('glow-active'); }
     }
 
     function closeMochiAIMenu() {
@@ -2291,32 +2667,262 @@
       document.getElementById('mochi-ai-menu').classList.add('hidden');
       document.getElementById('mochi-ai-backdrop').classList.add('hidden');
       const fab = document.getElementById('mochi-ai-fab');
-      if (fab) fab.style.transform = '';
+      if (fab) { fab.style.transform = ''; fab.classList.remove('glow-active'); }
     }
 
-    // Each of these will grow into a real Gemini-backed feature later
-    // (chat over your actual transaction data, receipt OCR, voice entry).
-    // For now they're an honest "coming soon" rather than pretending to work.
+    // "Chat" and "Suara" open the lightweight Quick Ask card (Apple
+    // Intelligence–style floating answer) instead of jumping straight into
+    // the full sheet — same mochiChat backend, just a faster surface for a
+    // one-off question. The full modalMochiChat is still reachable by
+    // tapping the reply card, or via the dashboard "Mochi AI" widget for an
+    // ongoing conversation.
     function mochiAIAction(kind) {
       closeMochiAIMenu();
-      if (kind === 'chat') { openMochiChatModal(); return; }
+      if (kind === 'chat') { openMochiQuickAsk(); return; }
       if (kind === 'add') { openNewTransactionForm(); return; }
-      if (kind === 'scan') { document.getElementById('receipt-file-input').click(); return; }
-      if (kind === 'voice') { openMochiChatModal(); setTimeout(() => toggleMochiVoiceInput(), 250); return; }
+      if (kind === 'scan') { triggerEdgeGlow(1600); document.getElementById('receipt-file-input').click(); return; }
+      if (kind === 'voice') { openMochiQuickAsk(); setTimeout(() => toggleMochiQuickVoice(), 250); return; }
     }
 
     let mochiChatHistory = [];
+    let mochiChatFullscreen = false;
+    let mochiSheetDrag = null; // { startY, startHeight, wasFullscreen }
 
     function openMochiChatModal() {
+      exitMochiFullscreen(true); // always reopen compact, like Gemini's overlay
       openModal('modalMochiChat');
       const chatAvatarEl = document.getElementById('mochi-chat-avatar');
       if (chatAvatarEl && currentMochiMood) chatAvatarEl.src = `mochi-${currentMochiMood}-open.png`;
-      if (mochiChatHistory.length === 0) {
-        mochiChatHistory.push({ role: 'mochi', text: "Hai Hoo-Man! 😸 Mau ngobrol, tanya soal keuanganmu, atau bilang aja transaksi yang mau dicatat — misal 'kopi 25rb dari cash'." });
-        renderMochiChatMessages();
-      }
+      if (mochiChatHistory.length === 0) mochiChatHistory.push({ role: 'welcome' });
+      renderMochiChatMessages(); // always re-render — history may already hold a Quick Ask exchange
+      setTimeout(() => updateMochiChatSheetHeight(), 50);
       setTimeout(() => document.getElementById('mochi-chat-input').focus(), 200);
     }
+
+    // ---- Quick Ask (Apple Intelligence–style floating answer) ----
+    // Shares mochiChatHistory and the same mochiChat backend call as the
+    // full sheet, so a question asked here already exists in history if
+    // the person later opens the full conversation — nothing is re-sent.
+    function openMochiQuickAsk() {
+      document.getElementById('mochi-quick-ask-backdrop').classList.remove('hidden');
+      document.getElementById('mochi-quick-ask').classList.remove('hidden');
+      document.getElementById('mochi-quick-answer-card').classList.add('hidden');
+      document.getElementById('mochi-quick-thinking').classList.add('hidden');
+      holdEdgeGlow();
+      setTimeout(() => document.getElementById('mochi-quick-input').focus(), 150);
+    }
+
+    function closeMochiQuickAsk() {
+      if (mochiQuickListening && mochiQuickRecognition) mochiQuickRecognition.abort();
+      document.getElementById('mochi-quick-ask-backdrop').classList.add('hidden');
+      document.getElementById('mochi-quick-ask').classList.add('hidden');
+      document.getElementById('mochi-quick-input').value = '';
+      stopEdgeGlow();
+    }
+
+    // Tapping the reply card hands off to the full sheet — same history,
+    // so it opens already showing this exchange plus anything earlier.
+    function expandMochiQuickAsk() {
+      vibrate(30);
+      document.getElementById('mochi-quick-ask-backdrop').classList.add('hidden');
+      document.getElementById('mochi-quick-ask').classList.add('hidden');
+      document.getElementById('mochi-quick-input').value = '';
+      openMochiChatModal();
+    }
+
+    function sendMochiQuickMessage() {
+      const input = document.getElementById('mochi-quick-input');
+      const message = input.value.trim();
+      if (!message) return;
+
+      const promptSentAt = new Date().toISOString();
+      mochiChatHistory.push({ role: 'user', text: message });
+      input.value = '';
+
+      document.getElementById('mochi-quick-answer-card').classList.add('hidden');
+      document.getElementById('mochi-quick-thinking').classList.remove('hidden');
+
+      const historyForApi = mochiChatHistory.filter(m => m.role === 'user' || m.role === 'mochi').slice(-6);
+
+      postApi('mochiChat', { message, history: historyForApi, activeUser: getActiveUser() })
+        .then(result => {
+          const action = result.action || null;
+          if (action) action.promptTimestamp = promptSentAt;
+          mochiChatHistory.push({ role: 'mochi', text: result.reply, action });
+          showMochiQuickAnswer(result.reply);
+        })
+        .catch(err => {
+          const fallback = "Ngeong? Koneksi ke otak AI-ku lagi bermasalah 🙀 Coba lagi ya.";
+          mochiChatHistory.push({ role: 'mochi', text: fallback });
+          showMochiQuickAnswer(fallback);
+        });
+    }
+
+    function showMochiQuickAnswer(text) {
+      document.getElementById('mochi-quick-thinking').classList.add('hidden');
+      const card = document.getElementById('mochi-quick-answer-card');
+      document.getElementById('mochi-quick-answer-text').textContent = text;
+      card.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Same on-device Web Speech API as the full sheet's voice bar, just
+    // targeting the quick input instead of #mochi-chat-input.
+    let mochiQuickRecognition = null;
+    let mochiQuickListening = false;
+    function toggleMochiQuickVoice() {
+      const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognitionCtor) {
+        showToast("Input suara belum didukung di browser ini (coba Chrome di Android).", "error");
+        return;
+      }
+      if (mochiQuickListening) { mochiQuickRecognition.stop(); return; }
+
+      mochiQuickRecognition = new SpeechRecognitionCtor();
+      mochiQuickRecognition.lang = 'id-ID';
+      mochiQuickRecognition.interimResults = false;
+      mochiQuickRecognition.maxAlternatives = 1;
+
+      const btn = document.getElementById('mochi-quick-voice-btn');
+      mochiQuickRecognition.onstart = () => {
+        mochiQuickListening = true;
+        if (btn) btn.classList.add('glow-active');
+      };
+      mochiQuickRecognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        const input = document.getElementById('mochi-quick-input');
+        if (input) { input.value = transcript; input.focus(); }
+      };
+      mochiQuickRecognition.onend = () => {
+        mochiQuickListening = false;
+        if (btn) btn.classList.remove('glow-active');
+      };
+      mochiQuickRecognition.onerror = () => {
+        mochiQuickListening = false;
+        if (btn) btn.classList.remove('glow-active');
+      };
+      mochiQuickRecognition.start();
+    }
+
+    // Tapping the input to type a longer message feels natural in the
+    // full-height view, same as Gemini expanding when you start typing —
+    // so we grow the sheet a bit further (not full fullscreen, just roomier).
+    function mochiChatInputFocused() {
+      if (!mochiChatFullscreen) updateMochiChatSheetHeight();
+    }
+
+    // Measures how tall the sheet WANTS to be based on its content (header +
+    // messages + input bar), then clamps it between a compact minimum and an
+    // 82vh cap. This is what makes the sheet start small and grow with the
+    // conversation instead of always taking up 75% of the screen.
+    function updateMochiChatSheetHeight() {
+      const content = document.getElementById('modalMochiChat-content');
+      if (!content || mochiChatFullscreen) return;
+      const header = content.querySelector('.relative.flex-shrink-0.overflow-hidden.z-10');
+      const messagesEl = document.getElementById('mochi-chat-messages');
+      const inputBar = content.querySelector('.border-t');
+      const headerH = header ? header.offsetHeight : 76;
+      const inputH = inputBar ? inputBar.offsetHeight : 68;
+      const dragHandleH = 20;
+      const naturalMsgH = messagesEl ? messagesEl.scrollHeight + 24 : 0;
+
+      const minCompact = 300;
+      const maxCap = Math.round(window.innerHeight * 0.82);
+      const wanted = headerH + inputH + dragHandleH + naturalMsgH;
+      const clamped = Math.max(minCompact, Math.min(wanted, maxCap));
+      content.style.height = clamped + 'px';
+    }
+
+    function toggleMochiFullscreen() {
+      mochiChatFullscreen ? exitMochiFullscreen() : enterMochiFullscreen();
+    }
+
+    function enterMochiFullscreen() {
+      mochiChatFullscreen = true;
+      vibrate(25);
+      const content = document.getElementById('modalMochiChat-content');
+      if (content) {
+        content.classList.remove('mochi-chat-dragging');
+        content.style.transform = '';
+        content.classList.add('mochi-chat-fullscreen');
+      }
+      const glow = document.getElementById('mochi-ambient-glow');
+      if (glow) glow.classList.add('active');
+      const icon = document.querySelector('#mochi-chat-expand-btn i');
+      if (icon) icon.setAttribute('data-lucide', 'chevron-down');
+      lucide.createIcons();
+    }
+
+    function exitMochiFullscreen(silent) {
+      const wasFullscreen = mochiChatFullscreen;
+      mochiChatFullscreen = false;
+      const content = document.getElementById('modalMochiChat-content');
+      if (content) {
+        content.classList.remove('mochi-chat-dragging');
+        content.style.transform = '';
+        content.classList.remove('mochi-chat-fullscreen');
+      }
+      const glow = document.getElementById('mochi-ambient-glow');
+      if (glow) glow.classList.remove('active');
+      const icon = document.querySelector('#mochi-chat-expand-btn i');
+      if (icon) icon.setAttribute('data-lucide', 'chevron-up');
+      if (!silent) { vibrate(20); lucide.createIcons(); }
+      if (wasFullscreen) setTimeout(() => updateMochiChatSheetHeight(), 20);
+    }
+
+    // Swipe-up-to-expand / swipe-down-to-collapse on the drag handle & header,
+    // mirroring Gemini's overlay gesture. A firm downward swipe from the
+    // compact (non-fullscreen) state closes the sheet entirely.
+    function mochiSheetDragStart(e) {
+      const content = document.getElementById('modalMochiChat-content');
+      if (!content) return;
+      mochiSheetDrag = {
+        startY: e.touches[0].clientY,
+        startHeight: content.getBoundingClientRect().height,
+        wasFullscreen: mochiChatFullscreen
+      };
+      content.classList.add('mochi-chat-dragging');
+    }
+
+    function mochiSheetDragMove(e) {
+      if (!mochiSheetDrag) return;
+      const content = document.getElementById('modalMochiChat-content');
+      if (!content) return;
+      const deltaY = e.touches[0].clientY - mochiSheetDrag.startY;
+
+      if (mochiSheetDrag.wasFullscreen) {
+        // Dragging down out of fullscreen: follow the finger.
+        if (deltaY > 0) content.style.transform = `translateY(${deltaY}px)`;
+      } else {
+        // Dragging up grows the sheet live; dragging down shrinks/previews close.
+        const next = Math.max(140, Math.min(mochiSheetDrag.startHeight - deltaY, window.innerHeight));
+        content.style.height = next + 'px';
+      }
+    }
+
+    function mochiSheetDragEnd(e) {
+      if (!mochiSheetDrag) return;
+      const content = document.getElementById('modalMochiChat-content');
+      const deltaY = (e.changedTouches ? e.changedTouches[0].clientY : mochiSheetDrag.startY) - mochiSheetDrag.startY;
+      content.classList.remove('mochi-chat-dragging');
+      content.style.transform = '';
+
+      if (mochiSheetDrag.wasFullscreen) {
+        if (deltaY > 120) exitMochiFullscreen();
+        else enterMochiFullscreen();
+      } else {
+        if (deltaY < -80) enterMochiFullscreen();
+        else if (deltaY > 90) closeModal('modalMochiChat');
+        else updateMochiChatSheetHeight();
+      }
+      mochiSheetDrag = null;
+    }
+
+    window.addEventListener('resize', () => {
+      if (!document.getElementById('modalMochiChat').classList.contains('hidden') && !mochiChatFullscreen) {
+        updateMochiChatSheetHeight();
+      }
+    });
 
     function renderMochiChatMessages() {
       const el = document.getElementById('mochi-chat-messages');
@@ -2325,6 +2931,30 @@
       const mochiAvatarHtml = `<img src="${avatarSrc}" alt="Mochi" class="w-7 h-7 rounded-full object-contain bg-[var(--bg-card)] border border-[var(--border-color)] p-0.5 flex-shrink-0 self-end">`;
 
       el.innerHTML = mochiChatHistory.map((m, idx) => {
+        if (m.role === 'welcome') {
+          return `<div class="chat-bubble-in bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[1.75rem] p-5 space-y-4 shadow-sm">
+            <div class="flex items-center gap-2.5">
+              <img src="mochi-chill-open.png" alt="Mochi" class="w-10 h-10 rounded-full object-contain bg-[var(--bg-subtle-2)] border border-[var(--border-color)] p-0.5 flex-shrink-0">
+              <div class="min-w-0">
+                <h4 class="text-[15px] font-black text-main leading-tight tracking-tight">Hai, aku Mochi 🐾</h4>
+                <p class="text-[10.5px] text-muted font-semibold">Asisten keuangan harian kamu</p>
+              </div>
+            </div>
+            <div class="space-y-3.5">
+              <div class="flex items-start justify-between gap-3">
+                <p class="text-[12.5px] text-main leading-snug flex-1"><span class="font-extrabold">Scan struk.</span> Foto struk belanja, Mochi otomatis baca &amp; catat transaksinya.</p>
+                <button type="button" onclick="vibrate(30); document.getElementById('receipt-file-input').click();" class="tap-shrink flex-shrink-0 text-[10.5px] font-extrabold text-mochi dark:text-mochi-light bg-[var(--chip-accent-bg)] px-3 py-1.5 rounded-full">Coba</button>
+              </div>
+              <div class="flex items-start justify-between gap-3">
+                <p class="text-[12.5px] text-main leading-snug flex-1"><span class="font-extrabold">Ngobrol bebas.</span> Tanya soal keuanganmu, atau bilang aja transaksinya — misal "kopi 25rb dari cash".</p>
+              </div>
+              <div class="flex items-start justify-between gap-3">
+                <p class="text-[12.5px] text-main leading-snug flex-1"><span class="font-extrabold">Mode suara.</span> Tap ikon mic dan ngobrol langsung tanpa ngetik.</p>
+                <button type="button" onclick="vibrate(30); toggleMochiVoiceInput();" class="tap-shrink flex-shrink-0 text-[10.5px] font-extrabold text-mochi dark:text-mochi-light bg-[var(--chip-accent-bg)] px-3 py-1.5 rounded-full">Coba</button>
+              </div>
+            </div>
+          </div>`;
+        }
         if (m.role === 'user') {
           return `<div class="flex justify-end chat-bubble-in"><div class="bg-gradient-to-br from-mochi-light to-mochi text-white text-[13px] font-semibold rounded-2xl rounded-br-md px-4 py-2.5 max-w-[80%] shadow-[0_2px_10px_-2px_rgba(184,146,90,0.4)]">${escapeHtml(m.text)}</div></div>`;
         }
@@ -2344,6 +2974,17 @@
       }).join('');
       el.scrollTop = el.scrollHeight;
       lucide.createIcons();
+
+      // Mochi "thinking" (typing bubble visible) gets the same glow treatment
+      // as Gemini's active-listening/thinking state, recolored to the app's
+      // gold palette — on the avatar ring and, in fullscreen, the ambient wash.
+      const isThinking = mochiChatHistory.some(m => m.role === 'typing');
+      const avatarWrap = document.getElementById('mochi-chat-avatar-wrap');
+      if (avatarWrap) avatarWrap.classList.toggle('glow-active', isThinking);
+      const ambientGlow = document.getElementById('mochi-ambient-glow');
+      if (ambientGlow && mochiChatFullscreen) ambientGlow.classList.toggle('active', true);
+
+      if (!mochiChatFullscreen) updateMochiChatSheetHeight();
     }
 
     function renderMochiActionCard(action, msgIdx) {
@@ -2498,6 +3139,7 @@
       action.confirmed = true;
       renderMochiChatMessages();
       showToast("Transaksi tersimpan!");
+      showRewardAnimation("Saved via Mochi AI");
 
       postApi('createTransaction', payload)
         .then(result => {
@@ -2639,6 +3281,45 @@
     let mochiRecognition = null;
     let mochiListening = false;
 
+    // Builds the little live waveform inside the voice bar — a fistful of
+    // bars each with its own randomized height/speed so the bounce looks
+    // organic (like an audio level meter) instead of a single repeating tick.
+    function buildMochiVoiceWave() {
+      const wave = document.getElementById('mochi-voice-wave');
+      if (!wave) return;
+      wave.innerHTML = '';
+      const barCount = 26;
+      for (let i = 0; i < barCount; i++) {
+        const bar = document.createElement('span');
+        bar.className = 'voice-wave-bar';
+        const baseHeight = 8 + Math.round(Math.random() * 20);
+        bar.style.height = baseHeight + 'px';
+        bar.style.animationDuration = (0.6 + Math.random() * 0.6).toFixed(2) + 's';
+        bar.style.animationDelay = (Math.random() * 0.8).toFixed(2) + 's';
+        wave.appendChild(bar);
+      }
+    }
+
+    function showMochiVoiceBar() {
+      const row = document.getElementById('mochi-chat-input-row');
+      const bar = document.getElementById('mochi-voice-bar');
+      if (row) row.classList.add('mochi-input-slot-inactive');
+      if (bar) bar.classList.remove('mochi-input-slot-inactive');
+      buildMochiVoiceWave();
+    }
+
+    function hideMochiVoiceBar() {
+      const row = document.getElementById('mochi-chat-input-row');
+      const bar = document.getElementById('mochi-voice-bar');
+      if (bar) bar.classList.add('mochi-input-slot-inactive');
+      if (row) row.classList.remove('mochi-input-slot-inactive');
+    }
+
+    function cancelMochiVoiceInput() {
+      if (mochiListening && mochiRecognition) mochiRecognition.abort();
+      hideMochiVoiceBar();
+    }
+
     function toggleMochiVoiceInput() {
       const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognitionCtor) {
@@ -2661,8 +3342,10 @@
 
       mochiRecognition.onstart = () => {
         mochiListening = true;
-        if (btn) btn.className = "tap-shrink w-9 h-9 rounded-full bg-mochi text-white flex items-center justify-center flex-shrink-0 animate-pulse";
+        if (btn) { btn.className = "tap-shrink w-9 h-9 rounded-full bg-mochi text-white flex items-center justify-center flex-shrink-0 mochi-glow-ring glow-active"; }
         if (statusEl) statusEl.classList.remove('hidden');
+        showMochiVoiceBar();
+        holdEdgeGlow();
       };
 
       mochiRecognition.onresult = (event) => {
@@ -2679,8 +3362,16 @@
 
       mochiRecognition.onend = () => {
         mochiListening = false;
-        if (btn) btn.className = "tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0";
+        if (btn) btn.className = "tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0 mochi-glow-ring";
         if (statusEl) statusEl.classList.add('hidden');
+        hideMochiVoiceBar();
+        // The chat sheet itself is still open, so keep its own ambient glow;
+        // just drop back from "listening" intensity to the sheet-open hold.
+        if (document.getElementById('modalMochiChat').classList.contains('show')) {
+          holdEdgeGlow();
+        } else {
+          stopEdgeGlow();
+        }
       };
 
       mochiRecognition.start();
@@ -2821,6 +3512,7 @@
       GLOBAL_DATA.transactions = GLOBAL_DATA.transactions.filter(t => t.transactionId !== transactionId);
       renderHistory();
       renderDashboard();
+      showRewardAnimation("Deleted");
 
       let undone = false;
 
@@ -3313,18 +4005,15 @@ function detectMochiSpendingPatterns() {
   return { coffeeCount, pricestMeal };
 }
 
-function renderMochiQuip(mood, displayPct, dsr) {
-  const textEl = document.getElementById('mochi-quip-text');
-  const subEl = document.getElementById('mochi-quip-subtext');
-  if (!textEl) return;
-
+// Last-resort local fallback — only used if the request to our own backend
+// fails outright (e.g. device is offline). The backend has its own Gemini
+// fallback lines for when Gemini itself is down, so this is a second,
+// independent safety net purely for "can't even reach our server."
+function getLocalMochiQuipFallback(mood, displayPct, dsr) {
   const patterns = detectMochiSpendingPatterns();
   const pick = arr => arr[Math.floor(Math.random() * arr.length)];
   let lines;
 
-  // Priority: financial-health warning > flavor commentary on a detected
-  // pattern > celebratory > neutral filler. A real DSR/overspend warning
-  // always wins over a cute coffee joke.
   if (mood === 'anxious') {
     lines = dsr > 30 ? [
       `Hoo-Man... DSR-mu udah ${dsr}%! Mochi mulai keringetan nih 😿`,
@@ -3362,7 +4051,26 @@ function renderMochiQuip(mood, displayPct, dsr) {
     ];
   }
 
-  textEl.textContent = pick(lines);
+  return pick(lines);
+}
+
+// The quip is now real Gemini output (see getMochiQuip in Code.gs), refreshed
+// on a random 6–16h cadence tracked server-side — so calling this on every
+// data load is cheap: most calls just return the still-cached line instead
+// of hitting Gemini again. Only a total network failure (can't reach our
+// own backend at all) falls back to the local rule-based lines below.
+async function renderMochiQuip(mood, displayPct, dsr) {
+  const textEl = document.getElementById('mochi-quip-text');
+  const subEl = document.getElementById('mochi-quip-subtext');
+  if (!textEl) return;
+
+  try {
+    const result = await postApi('getMochiQuip', { mood, displayPct, dsr });
+    textEl.textContent = result.quip;
+  } catch (err) {
+    textEl.textContent = getLocalMochiQuipFallback(mood, displayPct, dsr);
+  }
+
   if (subEl) subEl.textContent = "Tap untuk ngobrol sama Mochi";
 }
 
@@ -4466,7 +5174,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
             GLOBAL_DATA = result.data;
             localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
             renderAllViews();
-            showToast("Purchase recorded!");
+            showRewardAnimation("Purchase Recorded");
           }
         })
         .catch(err => {
@@ -4567,7 +5275,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
             GLOBAL_DATA = result.data;
             localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
             renderAllViews();
-            showToast("Sale recorded!");
+            showRewardAnimation("Sale Recorded");
           }
         })
         .catch(err => {
@@ -6413,7 +7121,7 @@ function getAgingBucket(dueDateStr) {
             selectedForSettle = {};
             selectedForSettleContext = null;
             renderAllViews();
-            showToast(`Marked ${ids.length} item(s) settled.`);
+            showRewardAnimation(`Marked ${ids.length} Item(s) Settled`);
           }
         } catch (err) {
           showToast("Couldn't update on server!", "error");
@@ -6529,7 +7237,7 @@ function getAgingBucket(dueDateStr) {
           selectedForSettle = {};
           selectedForSettleContext = null;
           renderAllViews();
-          showToast(isWriteOff ? `Wrote off ${ids.length} item(s).` : `Settled ${ids.length} item(s)!`);
+          showRewardAnimation(isWriteOff ? `Wrote Off ${ids.length} Item(s)` : `Settled ${ids.length} Item(s)`);
           closeModal('modalDetail');
         }
       } catch (err) {
@@ -6550,6 +7258,7 @@ function getAgingBucket(dueDateStr) {
           GLOBAL_DATA = result.data;
           localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
           renderAllViews();
+          if (checked) showRewardAnimation("Marked as Paid");
           const p = isAccount
             ? (GLOBAL_DATA.accounts || []).find(x => x.accountName === payableName)
             : (GLOBAL_DATA.payables || []).find(x => x.payableName === payableName);
@@ -6578,6 +7287,7 @@ function getAgingBucket(dueDateStr) {
           GLOBAL_DATA = result.data;
           localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
           renderAllViews();
+          if (checked) showRewardAnimation("Marked as Received");
           const r = (GLOBAL_DATA.receivables || []).find(x => x.receivableName === receivableName);
           if (r) showReceivableDetail(r);
         }
@@ -6616,6 +7326,7 @@ function getAgingBucket(dueDateStr) {
               GLOBAL_DATA = result.data;
               localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
               renderAllViews();
+              showRewardAnimation("Written Off");
             }
           })
           .catch(err => {
@@ -6654,6 +7365,7 @@ function getAgingBucket(dueDateStr) {
               GLOBAL_DATA = result.data;
               localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
               renderAllViews();
+              showRewardAnimation("Forgiven");
             }
           })
           .catch(err => {
@@ -7175,6 +7887,7 @@ window.addEventListener('DOMContentLoaded', () => {
       applyDarkModePref();
       lucide.createIcons();
       initVaultTilt();
+      initEdgeGlow();
       document.getElementById('form-date').valueAsDate = new Date();
       ensureActiveUserSet();
 
