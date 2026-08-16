@@ -243,29 +243,29 @@
     @keyframes mochiAmbientDrift { from { transform: scale(1) rotate(0deg); } to { transform: scale(1.12) rotate(4deg); } }
 
     /* ---- Global screen-edge glow — the "Mochi AI is active" ambient
-       frame (same spirit as Gemini Live's edge light), gold/mochi
-       colored. A single thin gradient line traced just inside the four
-       screen edges, with a bright comet-like segment continuously
-       travelling around the perimeter and a soft matching blur behind
-       it — same shimmer language as the top-progress-bar loader, just
-       wrapped around the whole viewport instead of one straight bar.
+       frame, styled after Apple Intelligence's edge glow: several
+       stacked strokes at increasing blur/width create a real soft halo
+       (not a single thin line), with a slowly rotating gradient sweep
+       across the app's own gold/brass palette instead of a rainbow.
+       viewBox is set to the actual pixel size of the screen in JS
+       (see initEdgeGlow) so 1 SVG unit = 1 css px — this keeps the
+       stroke crisp and even on all four sides regardless of aspect
+       ratio, instead of the old 100x100 non-uniform stretch.
        Triggered briefly for one-shot moments (reward, scan) and held on
        for as long as an AI surface is actually listening/open. ---- */
     #global-edge-glow {
       position: fixed; inset: 0; width: 100%; height: 100%; z-index: 200;
-      pointer-events: none; opacity: 0; transition: opacity 0.5s ease;
+      pointer-events: none; opacity: 0; transition: opacity 0.6s ease;
     }
-    #global-edge-glow.active { opacity: 1; }
-    #global-edge-glow rect { fill: none; stroke-linecap: round; }
-    .edge-glow-blur, .edge-glow-core {
-      stroke: url(#edgeGlowGrad);
-      stroke-dasharray: 60 340;
-      animation: edgeGlowTravel 3.6s linear infinite;
-    }
-    .edge-glow-blur { stroke-width: 3px; opacity: 0.45; filter: url(#edgeGlowBlurFilter); }
-    .edge-glow-core { stroke-width: 1px; opacity: 0.9; }
-    @keyframes edgeGlowTravel {
-      to { stroke-dashoffset: -400; }
+    #global-edge-glow.active { opacity: 1; animation: edgeGlowBreathe 3.4s ease-in-out infinite; }
+    #global-edge-glow rect { fill: none; stroke: url(#edgeGlowGrad); }
+    .edge-glow-outer  { stroke-width: 22px; opacity: 0.30; filter: url(#edgeGlowBlurOuter); }
+    .edge-glow-mid    { stroke-width: 11px; opacity: 0.45; filter: url(#edgeGlowBlurMid); }
+    .edge-glow-core   { stroke-width: 4px;  opacity: 0.75; filter: url(#edgeGlowBlurCore); }
+    .edge-glow-bright { stroke-width: 1.5px; opacity: 0.95; }
+    @keyframes edgeGlowBreathe {
+      0%, 100% { opacity: 0.85; }
+      50% { opacity: 1; }
     }
 
     /* ---- Voice bar — replaces the text input row while Mochi is
@@ -361,19 +361,26 @@
   <div class="ambient-blob ambient-blob-1" aria-hidden="true"></div>
   <div class="ambient-blob ambient-blob-2" aria-hidden="true"></div>
 
-  <svg id="global-edge-glow" aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none">
+  <svg id="global-edge-glow" aria-hidden="true">
     <defs>
-      <linearGradient id="edgeGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#F2D9A8"/>
-        <stop offset="50%" stop-color="#DFC08A"/>
-        <stop offset="100%" stop-color="#B8925A"/>
+      <linearGradient id="edgeGlowGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="0">
+        <stop offset="0%"  stop-color="#FFF3DD"/>
+        <stop offset="20%" stop-color="#F2D9A8"/>
+        <stop offset="40%" stop-color="#DFC08A"/>
+        <stop offset="60%" stop-color="#B8925A"/>
+        <stop offset="80%" stop-color="#8C6C3E"/>
+        <stop offset="100%" stop-color="#FFF3DD"/>
+        <animateTransform id="edgeGlowGradSpin" attributeName="gradientTransform" type="rotate"
+          from="0 0 0" to="360 0 0" dur="7s" repeatCount="indefinite"/>
       </linearGradient>
-      <filter id="edgeGlowBlurFilter" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="1.4"/>
-      </filter>
+      <filter id="edgeGlowBlurOuter" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="12"/></filter>
+      <filter id="edgeGlowBlurMid" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="6"/></filter>
+      <filter id="edgeGlowBlurCore" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="2"/></filter>
     </defs>
-    <rect class="edge-glow-blur" x="0.5" y="0.5" width="99" height="99" pathLength="400" vector-effect="non-scaling-stroke"/>
-    <rect class="edge-glow-core" x="0.5" y="0.5" width="99" height="99" pathLength="400" vector-effect="non-scaling-stroke"/>
+    <rect class="edge-glow-outer"  x="0.5" y="0.5" width="99" height="99"/>
+    <rect class="edge-glow-mid"    x="0.5" y="0.5" width="99" height="99"/>
+    <rect class="edge-glow-core"   x="0.5" y="0.5" width="99" height="99"/>
+    <rect class="edge-glow-bright" x="0.5" y="0.5" width="99" height="99"/>
   </svg>
 
   <div id="top-progress-bar" class="fixed top-0 left-0 right-0 h-[3px] z-[160] pointer-events-none">
@@ -2440,10 +2447,43 @@
 
     // ===== Global screen-edge glow =====
     // One shared ambient layer for every "Mochi AI is active" moment —
-    // opening the chat/voice sheet, scanning a receipt, or landing a
-    // reward. `hold` keeps it on until stopEdgeGlow() is called (used
-    // while a sheet is open / actively listening); without `hold` it
-    // pulses briefly then fades on its own.
+    // opening the chat/voice sheet or scanning a receipt. `hold` keeps
+    // it on until stopEdgeGlow() is called (used while a sheet is open /
+    // actively listening); without `hold` it pulses briefly then fades
+    // on its own. Deliberately NOT used by the generic reward overlay —
+    // glow is reserved for Mochi AI activity specifically.
+    //
+    // The SVG's viewBox/rect/gradient coordinates are set here in real
+    // screen pixels (instead of a stretched 0-100 box) so the layered
+    // strokes stay crisp and even on every edge regardless of aspect
+    // ratio — this is what actually made the old version look like a
+    // faint uneven line.
+    function initEdgeGlow() {
+      const svg = document.getElementById('global-edge-glow');
+      if (!svg) return;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      svg.querySelectorAll('rect').forEach(r => {
+        r.setAttribute('x', 0.5);
+        r.setAttribute('y', 0.5);
+        r.setAttribute('width', w - 1);
+        r.setAttribute('height', h - 1);
+      });
+      const grad = document.getElementById('edgeGlowGrad');
+      if (grad) {
+        grad.setAttribute('x1', 0); grad.setAttribute('y1', 0);
+        grad.setAttribute('x2', w); grad.setAttribute('y2', h);
+        const spin = document.getElementById('edgeGlowGradSpin');
+        if (spin) {
+          const cx = w / 2, cy = h / 2;
+          spin.setAttribute('from', `0 ${cx} ${cy}`);
+          spin.setAttribute('to', `360 ${cx} ${cy}`);
+        }
+      }
+    }
+    window.addEventListener('resize', initEdgeGlow);
+
     let edgeGlowTimer = null;
     function triggerEdgeGlow(duration = 1400) {
       const el = document.getElementById('global-edge-glow');
@@ -7598,6 +7638,7 @@ window.addEventListener('DOMContentLoaded', () => {
       applyDarkModePref();
       lucide.createIcons();
       initVaultTilt();
+      initEdgeGlow();
       document.getElementById('form-date').valueAsDate = new Date();
       ensureActiveUserSet();
 
