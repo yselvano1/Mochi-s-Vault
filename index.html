@@ -393,13 +393,10 @@
   </div>
 
   <div id="reward-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center pointer-events-none">
-    <div class="absolute inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/80 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="reward-bg"></div>
+    <div class="absolute inset-0 bg-coffee-darkest/35 dark:bg-coffee-darkest/55 opacity-0 transition-opacity duration-300" id="reward-bg"></div>
     <div id="reward-confetti" class="absolute inset-0 overflow-hidden z-[5]" aria-hidden="true"></div>
     <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="reward-content">
-      <div class="relative">
-        <div class="absolute inset-0 bg-mochi-light/50 rounded-full animate-ping opacity-75 blur-md"></div>
-        <img src="assets/cat-paw-3d.png" alt="Purrfect Paw" class="w-28 h-28 object-contain relative z-10 filter drop-shadow-[0_12px_25px_rgba(184,146,90,0.6)]">
-      </div>
+      <img src="assets/cat-paw-3d.png" alt="Purrfect Paw" class="w-28 h-28 object-contain relative z-10 filter drop-shadow-[0_12px_25px_rgba(184,146,90,0.6)]">
       <h2 class="text-white text-3xl font-black mt-4 drop-shadow-lg tracking-tight">Purr-fect! 🐾</h2>
       <p id="reward-subtitle" class="text-mochi-light font-bold mt-1.5 drop-shadow-md text-sm bg-coffee-dark/50 px-4 py-1 rounded-full">Saved</p>
     </div>
@@ -3719,18 +3716,15 @@ function detectMochiSpendingPatterns() {
   return { coffeeCount, pricestMeal };
 }
 
-function renderMochiQuip(mood, displayPct, dsr) {
-  const textEl = document.getElementById('mochi-quip-text');
-  const subEl = document.getElementById('mochi-quip-subtext');
-  if (!textEl) return;
-
+// Last-resort local fallback — only used if the request to our own backend
+// fails outright (e.g. device is offline). The backend has its own Gemini
+// fallback lines for when Gemini itself is down, so this is a second,
+// independent safety net purely for "can't even reach our server."
+function getLocalMochiQuipFallback(mood, displayPct, dsr) {
   const patterns = detectMochiSpendingPatterns();
   const pick = arr => arr[Math.floor(Math.random() * arr.length)];
   let lines;
 
-  // Priority: financial-health warning > flavor commentary on a detected
-  // pattern > celebratory > neutral filler. A real DSR/overspend warning
-  // always wins over a cute coffee joke.
   if (mood === 'anxious') {
     lines = dsr > 30 ? [
       `Hoo-Man... DSR-mu udah ${dsr}%! Mochi mulai keringetan nih 😿`,
@@ -3768,7 +3762,26 @@ function renderMochiQuip(mood, displayPct, dsr) {
     ];
   }
 
-  textEl.textContent = pick(lines);
+  return pick(lines);
+}
+
+// The quip is now real Gemini output (see getMochiQuip in Code.gs), refreshed
+// on a random 6–16h cadence tracked server-side — so calling this on every
+// data load is cheap: most calls just return the still-cached line instead
+// of hitting Gemini again. Only a total network failure (can't reach our
+// own backend at all) falls back to the local rule-based lines below.
+async function renderMochiQuip(mood, displayPct, dsr) {
+  const textEl = document.getElementById('mochi-quip-text');
+  const subEl = document.getElementById('mochi-quip-subtext');
+  if (!textEl) return;
+
+  try {
+    const result = await postApi('getMochiQuip', { mood, displayPct, dsr });
+    textEl.textContent = result.quip;
+  } catch (err) {
+    textEl.textContent = getLocalMochiQuipFallback(mood, displayPct, dsr);
+  }
+
   if (subEl) subEl.textContent = "Tap untuk ngobrol sama Mochi";
 }
 
