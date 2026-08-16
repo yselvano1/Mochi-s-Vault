@@ -243,30 +243,29 @@
     @keyframes mochiAmbientDrift { from { transform: scale(1) rotate(0deg); } to { transform: scale(1.12) rotate(4deg); } }
 
     /* ---- Global screen-edge glow — the "Mochi AI is active" ambient
-       frame (same feel as Gemini Live's edge light), gold/mochi colored.
-       A fixed full-viewport layer, above everything, that stays fully
-       transparent except a soft inset vignette hugging the four edges.
+       frame (same spirit as Gemini Live's edge light), gold/mochi
+       colored. A single thin gradient line traced just inside the four
+       screen edges, with a bright comet-like segment continuously
+       travelling around the perimeter and a soft matching blur behind
+       it — same shimmer language as the top-progress-bar loader, just
+       wrapped around the whole viewport instead of one straight bar.
        Triggered briefly for one-shot moments (reward, scan) and held on
        for as long as an AI surface is actually listening/open. ---- */
     #global-edge-glow {
-      position: fixed; inset: 0; z-index: 200; pointer-events: none;
-      opacity: 0; transition: opacity 0.5s ease;
+      position: fixed; inset: 0; width: 100%; height: 100%; z-index: 200;
+      pointer-events: none; opacity: 0; transition: opacity 0.5s ease;
     }
-    #global-edge-glow.active {
-      opacity: 1;
-      animation: edgeGlowPulse 2.4s ease-in-out infinite;
+    #global-edge-glow.active { opacity: 1; }
+    #global-edge-glow rect { fill: none; stroke-linecap: round; }
+    .edge-glow-blur, .edge-glow-core {
+      stroke: url(#edgeGlowGrad);
+      stroke-dasharray: 60 340;
+      animation: edgeGlowTravel 3.6s linear infinite;
     }
-    @keyframes edgeGlowPulse {
-      0%, 100% {
-        box-shadow:
-          inset 0 0 34px 4px rgba(223,192,138,0.38),
-          inset 0 0 80px 16px rgba(184,146,90,0.20);
-      }
-      50% {
-        box-shadow:
-          inset 0 0 50px 8px rgba(242,217,168,0.58),
-          inset 0 0 110px 26px rgba(184,146,90,0.32);
-      }
+    .edge-glow-blur { stroke-width: 3px; opacity: 0.45; filter: url(#edgeGlowBlurFilter); }
+    .edge-glow-core { stroke-width: 1px; opacity: 0.9; }
+    @keyframes edgeGlowTravel {
+      to { stroke-dashoffset: -400; }
     }
 
     /* ---- Voice bar — replaces the text input row while Mochi is
@@ -362,7 +361,20 @@
   <div class="ambient-blob ambient-blob-1" aria-hidden="true"></div>
   <div class="ambient-blob ambient-blob-2" aria-hidden="true"></div>
 
-  <div id="global-edge-glow" aria-hidden="true"></div>
+  <svg id="global-edge-glow" aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="edgeGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F2D9A8"/>
+        <stop offset="50%" stop-color="#DFC08A"/>
+        <stop offset="100%" stop-color="#B8925A"/>
+      </linearGradient>
+      <filter id="edgeGlowBlurFilter" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="1.4"/>
+      </filter>
+    </defs>
+    <rect class="edge-glow-blur" x="0.5" y="0.5" width="99" height="99" pathLength="400" vector-effect="non-scaling-stroke"/>
+    <rect class="edge-glow-core" x="0.5" y="0.5" width="99" height="99" pathLength="400" vector-effect="non-scaling-stroke"/>
+  </svg>
 
   <div id="top-progress-bar" class="fixed top-0 left-0 right-0 h-[3px] z-[160] pointer-events-none">
     <div id="top-progress-fill" class="h-full w-full"></div>
@@ -1874,7 +1886,6 @@
 
         overlay.classList.remove('hidden');
         overlay.classList.add('flex');
-        triggerEdgeGlow(1500);
 
         requestAnimationFrame(() => {
           bg.classList.remove('opacity-0');
