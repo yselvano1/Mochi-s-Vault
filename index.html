@@ -314,7 +314,19 @@
        FAB, WITHOUT opening the full modalMochiChat sheet. Tapping the card
        hands off into the full sheet, which already has the same message
        in mochiChatHistory so nothing is re-fetched. ---- */
-    #mochi-quick-ask-backdrop { background: rgba(20, 16, 14, 0.01); }
+    #mochi-quick-ask-backdrop {
+      background: rgba(20, 16, 14, 0.01);
+      opacity: 0;
+      backdrop-filter: blur(0px);
+      transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
+    }
+    #mochi-quick-ask-backdrop.show {
+      background: rgba(20, 16, 14, 0.38);
+      opacity: 1;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    html.dark #mochi-quick-ask-backdrop.show { background: rgba(10, 8, 7, 0.55); }
     .mochi-quick-glow {
       position: absolute; left: 6%; right: 6%; bottom: -10px; height: 170px; z-index: -1;
       background:
@@ -970,10 +982,13 @@
       </div>
 
       <!-- Quick input pill — same 48px spec as the in-modal pill -->
-      <div class="mochi-quick-card mochi-quick-card-input flex items-center space-x-2 w-full pointer-events-auto">
+      <div class="mochi-quick-card mochi-quick-card-input flex items-center space-x-1.5 w-full pointer-events-auto">
         <button type="button" onclick="closeMochiQuickAsk()" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
-        <input type="text" id="mochi-quick-input" placeholder="Tanya Mochi..." class="flex-1 bg-transparent text-sm font-semibold text-main placeholder:text-faint placeholder:font-medium focus:outline-none" onkeydown="if(event.key==='Enter'){sendMochiQuickMessage();}">
-        <button type="button" id="mochi-quick-voice-btn" onclick="toggleMochiQuickVoice()" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0 mochi-glow-ring"><i data-lucide="mic" class="w-4 h-4"></i></button>
+        <input type="text" id="mochi-quick-input" placeholder="Ask Mochi" class="flex-1 bg-transparent text-sm font-semibold text-main placeholder:text-faint placeholder:font-medium focus:outline-none" onkeydown="if(event.key==='Enter'){sendMochiQuickMessage();}">
+        <div class="flex items-center space-x-0.5 flex-shrink-0">
+          <button type="button" onclick="vibrate(30); document.getElementById('receipt-file-input').click();" class="tap-shrink w-8 h-8 text-muted hover:text-mochi flex items-center justify-center flex-shrink-0"><i data-lucide="camera" class="w-[18px] h-[18px]"></i></button>
+          <button type="button" id="mochi-quick-voice-btn" onclick="toggleMochiQuickVoice()" class="tap-shrink w-8 h-8 text-muted hover:text-mochi flex items-center justify-center flex-shrink-0 mochi-glow-ring"><i data-lucide="mic" class="w-[18px] h-[18px]"></i></button>
+        </div>
         <button type="button" onclick="sendMochiQuickMessage()" class="tap-shrink w-9 h-9 rounded-full bg-gradient-to-br from-mochi-light to-mochi hover:from-mochi hover:to-mochi-dark text-white flex items-center justify-center flex-shrink-0 shadow-[0_4px_12px_-2px_rgba(184,146,90,0.5)]"><i data-lucide="arrow-up" class="w-4 h-4"></i></button>
       </div>
     </div>
@@ -1496,10 +1511,12 @@
 
       <div class="px-3 pt-2.5 border-t border-[var(--border-color)] flex-shrink-0 relative z-10" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom))">
         <div id="mochi-chat-input-wrap" class="relative h-12">
-          <div id="mochi-chat-input-row" class="mochi-input-slot flex items-center space-x-2 bg-[var(--bg-subtle-2)] rounded-full pl-4 pr-1.5 py-1.5 border border-mochi-light/40 focus-within:border-mochi-light/60">
-            <input type="text" id="mochi-chat-input" placeholder="Tanya Mochi, atau bilang 'kopi 25rb dari cash'..." class="flex-1 bg-transparent text-sm font-semibold text-main placeholder:text-faint placeholder:font-medium focus:outline-none" onfocus="mochiChatInputFocused()" onkeydown="if(event.key==='Enter'){sendMochiChatMessage();}">
-            <button type="button" onclick="vibrate(30); document.getElementById('receipt-file-input').click();" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0"><i data-lucide="camera" class="w-4 h-4"></i></button>
-            <button type="button" id="mochi-voice-btn" onclick="toggleMochiVoiceInput()" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0 mochi-glow-ring"><i data-lucide="mic" class="w-4 h-4"></i></button>
+          <div id="mochi-chat-input-row" class="mochi-input-slot flex items-center space-x-1.5 bg-[var(--bg-subtle-2)] rounded-full pl-4 pr-1.5 py-1.5 border border-mochi-light/40 focus-within:border-mochi-light/60">
+            <input type="text" id="mochi-chat-input" placeholder="Ask Mochi" class="flex-1 bg-transparent text-sm font-semibold text-main placeholder:text-faint placeholder:font-medium focus:outline-none" onfocus="mochiChatInputFocused()" onkeydown="if(event.key==='Enter'){sendMochiChatMessage();}">
+            <div class="flex items-center space-x-0.5 flex-shrink-0">
+              <button type="button" onclick="vibrate(30); document.getElementById('receipt-file-input').click();" class="tap-shrink w-8 h-8 text-muted hover:text-mochi flex items-center justify-center flex-shrink-0"><i data-lucide="camera" class="w-[18px] h-[18px]"></i></button>
+              <button type="button" id="mochi-voice-btn" onclick="toggleMochiVoiceInput()" class="tap-shrink w-8 h-8 text-muted hover:text-mochi flex items-center justify-center flex-shrink-0 mochi-glow-ring"><i data-lucide="mic" class="w-[18px] h-[18px]"></i></button>
+            </div>
             <button type="button" onclick="sendMochiChatMessage()" class="tap-shrink w-9 h-9 rounded-full bg-gradient-to-br from-mochi-light to-mochi hover:from-mochi hover:to-mochi-dark text-white flex items-center justify-center flex-shrink-0 shadow-[0_4px_12px_-2px_rgba(184,146,90,0.5)]"><i data-lucide="arrow-up" class="w-4 h-4"></i></button>
           </div>
 
@@ -1510,7 +1527,6 @@
             <button type="button" onclick="toggleMochiVoiceInput()" class="tap-shrink w-9 h-9 rounded-full bg-gradient-to-br from-mochi-light to-mochi text-white flex items-center justify-center flex-shrink-0 shadow-[0_4px_14px_-2px_rgba(184,146,90,0.6)] mochi-glow-ring glow-active"><i data-lucide="mic" class="w-4 h-4"></i></button>
           </div>
         </div>
-        <p id="mochi-voice-status" class="hidden text-[10px] font-bold text-mochi text-center mt-2">🎤 Mochi lagi dengerin... bicara sekarang</p>
       </div>
     </div>
   </div>
@@ -2704,19 +2720,23 @@
     // full sheet, so a question asked here already exists in history if
     // the person later opens the full conversation — nothing is re-sent.
     function openMochiQuickAsk() {
-      document.getElementById('mochi-quick-ask-backdrop').classList.remove('hidden');
+      const backdrop = document.getElementById('mochi-quick-ask-backdrop');
+      backdrop.classList.remove('hidden');
       document.getElementById('mochi-quick-ask').classList.remove('hidden');
       document.getElementById('mochi-quick-answer-card').classList.add('hidden');
       document.getElementById('mochi-quick-thinking').classList.add('hidden');
+      requestAnimationFrame(() => backdrop.classList.add('show'));
       holdEdgeGlow();
       setTimeout(() => document.getElementById('mochi-quick-input').focus(), 150);
     }
 
     function closeMochiQuickAsk() {
       if (mochiQuickListening && mochiQuickRecognition) mochiQuickRecognition.abort();
-      document.getElementById('mochi-quick-ask-backdrop').classList.add('hidden');
+      const backdrop = document.getElementById('mochi-quick-ask-backdrop');
+      backdrop.classList.remove('show');
       document.getElementById('mochi-quick-ask').classList.add('hidden');
       document.getElementById('mochi-quick-input').value = '';
+      setTimeout(() => backdrop.classList.add('hidden'), 300);
       stopEdgeGlow();
     }
 
@@ -2724,9 +2744,11 @@
     // so it opens already showing this exchange plus anything earlier.
     function expandMochiQuickAsk() {
       vibrate(30);
-      document.getElementById('mochi-quick-ask-backdrop').classList.add('hidden');
+      const backdrop = document.getElementById('mochi-quick-ask-backdrop');
+      backdrop.classList.remove('show');
       document.getElementById('mochi-quick-ask').classList.add('hidden');
       document.getElementById('mochi-quick-input').value = '';
+      setTimeout(() => backdrop.classList.add('hidden'), 300);
       openMochiChatModal();
     }
 
@@ -3338,12 +3360,9 @@
       mochiRecognition.maxAlternatives = 1;
 
       const btn = document.getElementById('mochi-voice-btn');
-      const statusEl = document.getElementById('mochi-voice-status');
 
       mochiRecognition.onstart = () => {
         mochiListening = true;
-        if (btn) { btn.className = "tap-shrink w-9 h-9 rounded-full bg-mochi text-white flex items-center justify-center flex-shrink-0 mochi-glow-ring glow-active"; }
-        if (statusEl) statusEl.classList.remove('hidden');
         showMochiVoiceBar();
         holdEdgeGlow();
       };
@@ -3362,8 +3381,7 @@
 
       mochiRecognition.onend = () => {
         mochiListening = false;
-        if (btn) btn.className = "tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0 mochi-glow-ring";
-        if (statusEl) statusEl.classList.add('hidden');
+        if (btn) btn.className = "tap-shrink w-8 h-8 text-muted hover:text-mochi flex items-center justify-center flex-shrink-0 mochi-glow-ring";
         hideMochiVoiceBar();
         // The chat sheet itself is still open, so keep its own ambient glow;
         // just drop back from "listening" intensity to the sheet-open hold.
