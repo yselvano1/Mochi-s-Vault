@@ -371,7 +371,7 @@
         </div>
       </div>
 
-      <div class="floating-card p-5 relative overflow-hidden cursor-pointer tap-shrink" onclick="vibrate(30); toggleMochiAIMenu();">
+      <div class="floating-card p-5 relative overflow-hidden cursor-pointer tap-shrink" onclick="vibrate(30); openMochiChatModal();">
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center space-x-2">
             <div class="w-6 h-6 rounded-lg bg-[var(--chip-accent-bg)] text-mochi dark:text-mochi-light flex items-center justify-center">
@@ -1161,6 +1161,29 @@
       <div class="flex space-x-3 mt-6">
         <button type="button" onclick="vibrate(30); closeModal('modalSellHolding')" class="flex-1 py-3 bg-[var(--bg-subtle-2)] text-main font-extrabold rounded-xl tap-shrink shadow-sm border border-[var(--border-color)]">Cancel</button>
         <button type="button" onclick="submitSellHolding()" class="flex-1 py-3 bg-mochi hover:bg-mochi-dark text-white font-extrabold rounded-xl tap-shrink shadow-sm">Confirm Sell</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mochi AI Chat -->
+  <div id="modalMochiChat" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[80] hidden flex items-end sm:items-center justify-center modal-backdrop backdrop-blur-sm" onclick="handleBackdropClick(event, 'modalMochiChat')">
+    <div class="glass-modal-content w-full sm:max-w-sm sm:rounded-[2rem] rounded-t-[2rem] shadow-2xl h-[85vh] sm:h-[75vh] flex flex-col overflow-hidden" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-[var(--border-color)] flex-shrink-0">
+        <div class="flex items-center space-x-2.5">
+          <img src="mochi-chill-open.png" alt="Mochi" class="w-9 h-9 rounded-full object-contain bg-[var(--bg-subtle-2)] border border-[var(--border-color)] p-0.5">
+          <div>
+            <h3 class="text-sm font-black text-main leading-tight">Mochi AI</h3>
+            <p class="text-[10px] text-muted font-semibold">Chat, atau minta catat transaksi</p>
+          </div>
+        </div>
+        <button type="button" onclick="vibrate(30); closeModal('modalMochiChat')" class="w-8 h-8 rounded-full bg-[var(--bg-subtle-2)] flex items-center justify-center text-faint"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <div id="mochi-chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-3"></div>
+
+      <div class="px-3 py-3 border-t border-[var(--border-color)] flex-shrink-0 flex items-center space-x-2">
+        <input type="text" id="mochi-chat-input" placeholder="Ketik pesan atau 'kopi 25rb dari cash'..." class="flex-1 ios-input py-2.5 text-sm" onkeydown="if(event.key==='Enter'){sendMochiChatMessage();}">
+        <button type="button" onclick="sendMochiChatMessage()" class="tap-shrink w-11 h-11 rounded-full bg-mochi hover:bg-mochi-dark text-white flex items-center justify-center flex-shrink-0"><i data-lucide="send" class="w-4 h-4"></i></button>
       </div>
     </div>
   </div>
@@ -2157,8 +2180,148 @@
     // For now they're an honest "coming soon" rather than pretending to work.
     function mochiAIAction(kind) {
       closeMochiAIMenu();
-      const labels = { chat: "Chat sama Mochi", scan: "Scan Struk", voice: "Input Suara" };
+      if (kind === 'chat') { openMochiChatModal(); return; }
+      const labels = { scan: "Scan Struk", voice: "Input Suara" };
       showToast(`${labels[kind] || 'Fitur ini'} lagi disiapin Mochi — coming soon!`, "info");
+    }
+
+    let mochiChatHistory = [];
+
+    function openMochiChatModal() {
+      openModal('modalMochiChat');
+      if (mochiChatHistory.length === 0) {
+        mochiChatHistory.push({ role: 'mochi', text: "Hai Hoo-Man! 😸 Mau ngobrol, tanya soal keuanganmu, atau bilang aja transaksi yang mau dicatat — misal 'kopi 25rb dari cash'." });
+        renderMochiChatMessages();
+      }
+      setTimeout(() => document.getElementById('mochi-chat-input').focus(), 200);
+    }
+
+    function renderMochiChatMessages() {
+      const el = document.getElementById('mochi-chat-messages');
+      if (!el) return;
+      el.innerHTML = mochiChatHistory.map((m, idx) => {
+        if (m.role === 'user') {
+          return `<div class="flex justify-end"><div class="bg-mochi text-white text-[13px] font-semibold rounded-2xl rounded-br-sm px-4 py-2.5 max-w-[80%]">${escapeHtml(m.text)}</div></div>`;
+        }
+        if (m.role === 'typing') {
+          return `<div class="flex justify-start"><div class="bg-[var(--bg-subtle-2)] text-muted text-[13px] rounded-2xl rounded-tl-sm px-4 py-2.5"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i></div></div>`;
+        }
+        let actionHtml = '';
+        if (m.action) {
+          actionHtml = renderMochiActionCard(m.action, idx);
+        }
+        return `<div class="flex justify-start"><div class="bg-[var(--bg-subtle-2)] text-main text-[13px] font-semibold rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[85%] space-y-2">
+          <p>${escapeHtml(m.text)}</p>
+          ${actionHtml}
+        </div></div>`;
+      }).join('');
+      el.scrollTop = el.scrollHeight;
+      lucide.createIcons();
+    }
+
+    function renderMochiActionCard(action, msgIdx) {
+      if (action.confirmed) {
+        return `<div class="bg-[var(--chip-in-bg)] amount-in rounded-xl px-3 py-2 text-[11px] font-extrabold flex items-center"><i data-lucide="check-circle" class="w-3.5 h-3.5 mr-1.5"></i>Tersimpan!</div>`;
+      }
+      if (action.cancelled) {
+        return `<div class="bg-[var(--bg-subtle-2)] text-faint rounded-xl px-3 py-2 text-[11px] font-bold">Dibatalkan.</div>`;
+      }
+      const isIncome = action.transactionType === 'Income';
+      const isTransfer = action.transactionType === 'Internal Transfer';
+      const catOptions = (GLOBAL_DATA.categories || [])
+        .filter(c => c.type === (action.transactionType || 'Expense'))
+        .map(c => `<option value="${escapeAttr(c.categoryName)}" ${c.categoryName === action.category ? 'selected' : ''}>${escapeHtml(c.categoryName)}</option>`).join('');
+      const acctOptions = (GLOBAL_DATA.accounts || [])
+        .map(a => `<option value="${escapeAttr(a.accountName)}">${escapeHtml(a.accountName)}</option>`).join('');
+
+      return `
+        <div class="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-3 space-y-2 mt-1">
+          <p class="text-[10px] font-extrabold uppercase tracking-wider text-muted">Konfirmasi Transaksi</p>
+          <select id="mochi-action-type-${msgIdx}" class="w-full ios-input py-2 text-xs">
+            <option value="Income" ${isIncome ? 'selected' : ''}>Income</option>
+            <option value="Expense" ${!isIncome && !isTransfer ? 'selected' : ''}>Expense</option>
+            <option value="Internal Transfer" ${isTransfer ? 'selected' : ''}>Internal Transfer</option>
+          </select>
+          <input type="text" id="mochi-action-amount-${msgIdx}" value="${action.amount || ''}" placeholder="Jumlah (Rp)" class="w-full ios-input py-2 text-xs font-bold" inputmode="numeric">
+          <select id="mochi-action-category-${msgIdx}" class="w-full ios-input py-2 text-xs">${catOptions}</select>
+          ${!isIncome ? `<select id="mochi-action-source-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">Dari akun...</option>${acctOptions}</select>` : ''}
+          ${(isIncome || isTransfer) ? `<select id="mochi-action-target-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">Ke akun...</option>${acctOptions}</select>` : ''}
+          <input type="text" id="mochi-action-desc-${msgIdx}" value="${escapeAttr(action.description || '')}" placeholder="Deskripsi" class="w-full ios-input py-2 text-xs">
+          <div class="flex space-x-2 pt-1">
+            <button type="button" onclick="cancelMochiAction(${msgIdx})" class="flex-1 py-2 text-[11px] font-extrabold rounded-lg bg-[var(--bg-subtle-2)] text-muted">Batal</button>
+            <button type="button" onclick="confirmMochiAction(${msgIdx})" class="flex-1 py-2 text-[11px] font-extrabold rounded-lg bg-mochi text-white">Simpan</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function cancelMochiAction(msgIdx) {
+      vibrate(20);
+      mochiChatHistory[msgIdx].action.cancelled = true;
+      renderMochiChatMessages();
+    }
+
+    function confirmMochiAction(msgIdx) {
+      const type = document.getElementById(`mochi-action-type-${msgIdx}`).value;
+      const amount = parseFloat((document.getElementById(`mochi-action-amount-${msgIdx}`).value || '').replace(/[^0-9.]/g, '')) || 0;
+      const category = document.getElementById(`mochi-action-category-${msgIdx}`).value;
+      const description = document.getElementById(`mochi-action-desc-${msgIdx}`).value;
+      const sourceEl = document.getElementById(`mochi-action-source-${msgIdx}`);
+      const targetEl = document.getElementById(`mochi-action-target-${msgIdx}`);
+
+      if (amount <= 0) { showToast("Jumlahnya belum diisi.", "error"); return; }
+      if (type !== 'Income' && (!sourceEl || !sourceEl.value)) { showToast("Pilih akun sumbernya dulu.", "error"); return; }
+      if (type !== 'Expense' && (!targetEl || !targetEl.value)) { showToast("Pilih akun tujuannya dulu.", "error"); return; }
+
+      const payload = {
+        type, amount, category, description,
+        date: todayDateStringLocal(),
+        time: new Date().toTimeString().substring(0, 5),
+        enteredBy: "Yosa",
+        sourceAccount: sourceEl ? sourceEl.value : '',
+        targetAccount: targetEl ? targetEl.value : ''
+      };
+
+      vibrate(30);
+      postApi('createTransaction', payload)
+        .then(result => {
+          if (result && result.data) {
+            GLOBAL_DATA = result.data;
+            localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+            renderAllViews();
+          }
+          mochiChatHistory[msgIdx].action.confirmed = true;
+          renderMochiChatMessages();
+          showToast("Transaksi tersimpan!");
+        })
+        .catch(err => {
+          showToast(err.message || "Gagal menyimpan transaksi.", "error");
+        });
+    }
+
+    function sendMochiChatMessage() {
+      const input = document.getElementById('mochi-chat-input');
+      const message = input.value.trim();
+      if (!message) return;
+
+      mochiChatHistory.push({ role: 'user', text: message });
+      mochiChatHistory.push({ role: 'typing' });
+      renderMochiChatMessages();
+      input.value = '';
+
+      const historyForApi = mochiChatHistory.filter(m => m.role === 'user' || m.role === 'mochi').slice(-6);
+
+      postApi('mochiChat', { message, history: historyForApi })
+        .then(result => {
+          mochiChatHistory = mochiChatHistory.filter(m => m.role !== 'typing');
+          mochiChatHistory.push({ role: 'mochi', text: result.reply, action: result.action || null });
+          renderMochiChatMessages();
+        })
+        .catch(err => {
+          mochiChatHistory = mochiChatHistory.filter(m => m.role !== 'typing');
+          mochiChatHistory.push({ role: 'mochi', text: "Ngeong? Koneksi ke otak AI-ku lagi bermasalah 🙀 Coba lagi ya." });
+          renderMochiChatMessages();
+        });
     }
 
     function openNewTransactionForm() {
