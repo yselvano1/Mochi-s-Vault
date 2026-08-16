@@ -242,6 +242,24 @@
     .mochi-ambient-glow.active { opacity: 1; animation: mochiAmbientDrift 7s ease-in-out infinite alternate; }
     @keyframes mochiAmbientDrift { from { transform: scale(1) rotate(0deg); } to { transform: scale(1.12) rotate(4deg); } }
 
+    /* ---- FAB continuous ambient glow — the same layered-stroke halo
+       technique as the full-screen edge glow (see #global-edge-glow),
+       scaled down to the FAB and dialed calm so it can run permanently
+       as the button's resting state instead of only flashing on trigger.
+       Brightens slightly while the AI menu is open via .glow-active,
+       toggled by the existing openMochiAIMenu/closeMochiAIMenu JS. ---- */
+    .mochi-fab-glow {
+      position: absolute; inset: -5px; z-index: -1; pointer-events: none;
+      opacity: 0.55; transition: opacity 0.4s ease;
+      animation: edgeGlowBreathe 3.6s ease-in-out infinite;
+    }
+    #mochi-ai-fab.glow-active .mochi-fab-glow { opacity: 1; }
+    .mochi-fab-glow rect { fill: none; stroke: url(#fabGlowGrad); }
+    .fab-glow-outer  { stroke-width: 6px;   opacity: 0.30; filter: url(#fabGlowBlurOuter); }
+    .fab-glow-mid    { stroke-width: 3px;   opacity: 0.45; filter: url(#fabGlowBlurMid); }
+    .fab-glow-core   { stroke-width: 1.3px; opacity: 0.75; filter: url(#fabGlowBlurCore); }
+    .fab-glow-bright { stroke-width: 0.6px; opacity: 0.95; }
+
     /* ---- Global screen-edge glow — the "Mochi AI is active" ambient
        frame, styled after Apple Intelligence's edge glow: several
        stacked strokes at increasing blur/width create a real soft halo
@@ -830,7 +848,27 @@
       </div>
 
       <!-- Mochi AI FAB -->
-      <button ontouchstart="vibrate(35)" onclick="toggleMochiAIMenu()" id="mochi-ai-fab" class="paw-fab tap-shrink mochi-glow-ring absolute right-5 bottom-0 w-16 h-16 rounded-[18px] bg-[var(--bg-card)] border border-[var(--border-color)] shadow-lg flex items-center justify-center pointer-events-auto group p-2 transition-transform duration-200 z-10">
+      <button ontouchstart="vibrate(35)" onclick="toggleMochiAIMenu()" id="mochi-ai-fab" class="paw-fab tap-shrink absolute right-5 bottom-0 w-16 h-16 rounded-[18px] bg-[var(--bg-card)] border border-[var(--border-color)] shadow-lg flex items-center justify-center pointer-events-auto group p-2 transition-transform duration-200 z-10">
+        <svg class="mochi-fab-glow" viewBox="0 0 74 74" aria-hidden="true">
+          <defs>
+            <linearGradient id="fabGlowGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="74" y2="74">
+              <stop offset="0%"  stop-color="#FFF3DD"/>
+              <stop offset="20%" stop-color="#F2D9A8"/>
+              <stop offset="40%" stop-color="#DFC08A"/>
+              <stop offset="60%" stop-color="#B8925A"/>
+              <stop offset="80%" stop-color="#8C6C3E"/>
+              <stop offset="100%" stop-color="#FFF3DD"/>
+              <animateTransform attributeName="gradientTransform" type="rotate" from="0 37 37" to="360 37 37" dur="7s" repeatCount="indefinite"/>
+            </linearGradient>
+            <filter id="fabGlowBlurOuter" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="4"/></filter>
+            <filter id="fabGlowBlurMid" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="2"/></filter>
+            <filter id="fabGlowBlurCore" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="0.8"/></filter>
+          </defs>
+          <rect class="fab-glow-outer"  x="3" y="3" width="68" height="68" rx="21"/>
+          <rect class="fab-glow-mid"    x="3" y="3" width="68" height="68" rx="21"/>
+          <rect class="fab-glow-core"   x="3" y="3" width="68" height="68" rx="21"/>
+          <rect class="fab-glow-bright" x="3" y="3" width="68" height="68" rx="21"/>
+        </svg>
         <img src="assets/mochi-ai-fab-light.png" alt="Mochi AI" class="block dark:hidden w-full h-full object-contain transition-transform group-active:scale-90">
         <img src="assets/mochi-ai-fab-dark.png" alt="Mochi AI" class="hidden dark:block w-full h-full object-contain transition-transform group-active:scale-90">
       </button>
@@ -1354,7 +1392,7 @@
       <div id="mochi-chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-3 relative z-10" style="background: radial-gradient(circle at 20% 0%, var(--chip-accent-bg) 0%, transparent 50%);"></div>
 
       <div class="px-3 pt-2.5 border-t border-[var(--border-color)] flex-shrink-0 relative z-10" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom))">
-        <div id="mochi-chat-input-row" class="flex items-center space-x-2 bg-[var(--bg-subtle-2)] rounded-full pl-4 pr-1.5 py-1.5 border border-transparent focus-within:border-mochi-light/50 transition-colors">
+        <div id="mochi-chat-input-row" class="flex items-center space-x-2 bg-[var(--bg-subtle-2)] rounded-full pl-4 pr-1.5 py-1.5 border border-mochi-light/40 focus-within:border-mochi-light/60 transition-colors">
           <input type="text" id="mochi-chat-input" placeholder="Tanya Mochi, atau bilang 'kopi 25rb dari cash'..." class="flex-1 bg-transparent text-sm font-semibold text-main placeholder:text-faint placeholder:font-medium focus:outline-none" onfocus="mochiChatInputFocused()" onkeydown="if(event.key==='Enter'){sendMochiChatMessage();}">
           <button type="button" onclick="vibrate(30); document.getElementById('receipt-file-input').click();" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0"><i data-lucide="camera" class="w-4 h-4"></i></button>
           <button type="button" id="mochi-voice-btn" onclick="toggleMochiVoiceInput()" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0 mochi-glow-ring"><i data-lucide="mic" class="w-4 h-4"></i></button>
