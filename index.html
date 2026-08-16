@@ -242,6 +242,45 @@
     .mochi-ambient-glow.active { opacity: 1; animation: mochiAmbientDrift 7s ease-in-out infinite alternate; }
     @keyframes mochiAmbientDrift { from { transform: scale(1) rotate(0deg); } to { transform: scale(1.12) rotate(4deg); } }
 
+    /* ---- Global screen-edge glow — the "Mochi AI is active" ambient
+       frame (same feel as Gemini Live's edge light), gold/mochi colored.
+       A fixed full-viewport layer, above everything, that stays fully
+       transparent except a soft inset vignette hugging the four edges.
+       Triggered briefly for one-shot moments (reward, scan) and held on
+       for as long as an AI surface is actually listening/open. ---- */
+    #global-edge-glow {
+      position: fixed; inset: 0; z-index: 200; pointer-events: none;
+      opacity: 0; transition: opacity 0.5s ease;
+    }
+    #global-edge-glow.active {
+      opacity: 1;
+      animation: edgeGlowPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes edgeGlowPulse {
+      0%, 100% {
+        box-shadow:
+          inset 0 0 34px 4px rgba(223,192,138,0.38),
+          inset 0 0 80px 16px rgba(184,146,90,0.20);
+      }
+      50% {
+        box-shadow:
+          inset 0 0 50px 8px rgba(242,217,168,0.58),
+          inset 0 0 110px 26px rgba(184,146,90,0.32);
+      }
+    }
+
+    /* ---- Voice bar — replaces the text input row while Mochi is
+       listening, styled after Gemini's Live voice pill: cancel on the
+       left, a live waveform in the middle, a glowing mic on the right. ---- */
+    #mochi-voice-bar { animation: chatBubbleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .voice-wave-bar {
+      width: 3px; min-width: 3px; border-radius: 9999px; flex-shrink: 0;
+      background: linear-gradient(180deg, var(--mochi-light, #DFC08A), var(--mochi, #B8925A));
+      animation: voiceWaveBounce 1s ease-in-out infinite;
+      transform-origin: center;
+    }
+    @keyframes voiceWaveBounce { 0%, 100% { transform: scaleY(0.28); opacity: 0.65; } 50% { transform: scaleY(1); opacity: 1; } }
+
     /* ---- Mochi AI sheet: starts compact and grows with the conversation
        (like Gemini's floating overlay), then caps out and scrolls
        internally. Height is set inline in px by JS so this transition
@@ -289,6 +328,24 @@
       0% { background-position: -60% 0; }
       100% { background-position: 160% 0; }
     }
+
+    /* ---- Reward confetti — small gold/mochi particles that burst from
+       the center and fall away, layered behind the paw+subtitle so the
+       "Purr-fect!" moment reads as a celebration rather than a plain
+       popup. Each particle's direction/speed/rotation is randomized
+       inline by JS via CSS custom properties (--tx, --ty, --rot, --dur). ---- */
+    .confetti-piece {
+      position: absolute; top: 50%; left: 50%; width: 7px; height: 7px;
+      opacity: 0; pointer-events: none;
+      animation: confettiBurst var(--dur, 1.1s) cubic-bezier(0.16, 0.84, 0.44, 1) both;
+    }
+    .confetti-piece.is-square { border-radius: 2px; }
+    .confetti-piece.is-round { border-radius: 9999px; }
+    @keyframes confettiBurst {
+      0% { opacity: 0; transform: translate(-50%, -50%) translate(0, 0) rotate(0deg) scale(0.6); }
+      12% { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1); }
+    }
   </style>
   <script>
     (function() {
@@ -304,6 +361,8 @@
 
   <div class="ambient-blob ambient-blob-1" aria-hidden="true"></div>
   <div class="ambient-blob ambient-blob-2" aria-hidden="true"></div>
+
+  <div id="global-edge-glow" aria-hidden="true"></div>
 
   <div id="top-progress-bar" class="fixed top-0 left-0 right-0 h-[3px] z-[160] pointer-events-none">
     <div id="top-progress-fill" class="h-full w-full"></div>
@@ -323,6 +382,7 @@
 
   <div id="reward-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center pointer-events-none">
     <div class="absolute inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/80 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="reward-bg"></div>
+    <div id="reward-confetti" class="absolute inset-0 overflow-hidden z-[5]" aria-hidden="true"></div>
     <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="reward-content">
       <div class="relative">
         <div class="absolute inset-0 bg-mochi-light/50 rounded-full animate-ping opacity-75 blur-md"></div>
@@ -332,6 +392,7 @@
       <p id="reward-subtitle" class="text-mochi-light font-bold mt-1.5 drop-shadow-md text-sm bg-coffee-dark/50 px-4 py-1 rounded-full">Saved</p>
     </div>
   </div>
+
 
   <div id="toast-container" class="fixed left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center space-y-3 pointer-events-none w-full max-w-sm px-4" style="top: max(1.25rem, env(safe-area-inset-top))"></div>
 
@@ -1277,11 +1338,18 @@
       <div id="mochi-chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-3 relative z-10" style="background: radial-gradient(circle at 20% 0%, var(--chip-accent-bg) 0%, transparent 50%);"></div>
 
       <div class="px-3 pt-2.5 border-t border-[var(--border-color)] flex-shrink-0 relative z-10" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom))">
-        <div class="flex items-center space-x-2 bg-[var(--bg-subtle-2)] rounded-full pl-4 pr-1.5 py-1.5 border border-transparent focus-within:border-mochi-light/50 transition-colors">
+        <div id="mochi-chat-input-row" class="flex items-center space-x-2 bg-[var(--bg-subtle-2)] rounded-full pl-4 pr-1.5 py-1.5 border border-transparent focus-within:border-mochi-light/50 transition-colors">
           <input type="text" id="mochi-chat-input" placeholder="Tanya Mochi, atau bilang 'kopi 25rb dari cash'..." class="flex-1 bg-transparent text-sm font-semibold text-main placeholder:text-faint placeholder:font-medium focus:outline-none" onfocus="mochiChatInputFocused()" onkeydown="if(event.key==='Enter'){sendMochiChatMessage();}">
           <button type="button" onclick="vibrate(30); document.getElementById('receipt-file-input').click();" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0"><i data-lucide="camera" class="w-4 h-4"></i></button>
           <button type="button" id="mochi-voice-btn" onclick="toggleMochiVoiceInput()" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0 mochi-glow-ring"><i data-lucide="mic" class="w-4 h-4"></i></button>
           <button type="button" onclick="sendMochiChatMessage()" class="tap-shrink w-9 h-9 rounded-full bg-gradient-to-br from-mochi-light to-mochi hover:from-mochi hover:to-mochi-dark text-white flex items-center justify-center flex-shrink-0 shadow-[0_4px_12px_-2px_rgba(184,146,90,0.5)]"><i data-lucide="arrow-up" class="w-4 h-4"></i></button>
+        </div>
+
+        <!-- Gemini Live–style voice bar: swaps in for the text row while Mochi is listening -->
+        <div id="mochi-voice-bar" class="hidden items-center space-x-2 bg-[var(--bg-subtle-2)] rounded-full pl-1.5 pr-1.5 py-1.5 border border-mochi-light/40">
+          <button type="button" onclick="cancelMochiVoiceInput()" class="tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
+          <div id="mochi-voice-wave" class="flex-1 flex items-center justify-center space-x-[3px] h-9 overflow-hidden"></div>
+          <button type="button" onclick="toggleMochiVoiceInput()" class="tap-shrink w-10 h-10 rounded-full bg-gradient-to-br from-mochi-light to-mochi text-white flex items-center justify-center flex-shrink-0 shadow-[0_4px_14px_-2px_rgba(184,146,90,0.6)] mochi-glow-ring glow-active"><i data-lucide="mic" class="w-4 h-4"></i></button>
         </div>
         <p id="mochi-voice-status" class="hidden text-[10px] font-bold text-mochi text-center mt-2">🎤 Mochi lagi dengerin... bicara sekarang</p>
       </div>
@@ -1762,6 +1830,39 @@
       return toast;
     }
 
+    // Spawns a burst of small gold/mochi confetti pieces from the center of
+    // the reward overlay — randomized angle, distance, rotation and timing
+    // per piece so the burst reads as organic rather than a repeating
+    // pattern. Self-cleans after the last piece's animation finishes.
+    function spawnRewardConfetti() {
+      const field = document.getElementById('reward-confetti');
+      if (!field) return;
+      field.innerHTML = '';
+      const colors = ['#F2D9A8', '#DFC08A', '#B8925A', '#8C6C3E', '#FFFFFF'];
+      const pieceCount = 26;
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < pieceCount; i++) {
+        const piece = document.createElement('span');
+        piece.className = 'confetti-piece ' + (Math.random() < 0.5 ? 'is-square' : 'is-round');
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 90 + Math.random() * 150;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance - 40; // slight upward bias before falling
+        const size = 5 + Math.round(Math.random() * 6);
+        piece.style.width = size + 'px';
+        piece.style.height = (size * (0.6 + Math.random() * 0.8)) + 'px';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.setProperty('--tx', tx.toFixed(0) + 'px');
+        piece.style.setProperty('--ty', ty.toFixed(0) + 'px');
+        piece.style.setProperty('--rot', (Math.random() * 720 - 360).toFixed(0) + 'deg');
+        piece.style.setProperty('--dur', (0.9 + Math.random() * 0.6).toFixed(2) + 's');
+        piece.style.animationDelay = (Math.random() * 0.12).toFixed(2) + 's';
+        frag.appendChild(piece);
+      }
+      field.appendChild(frag);
+      setTimeout(() => { field.innerHTML = ''; }, 1700);
+    }
+
     function showRewardAnimation(subtitleText = "Saved") {
       return new Promise(resolve => {
         const overlay = document.getElementById('reward-overlay');
@@ -1773,12 +1874,14 @@
 
         overlay.classList.remove('hidden');
         overlay.classList.add('flex');
+        triggerEdgeGlow(1500);
 
         requestAnimationFrame(() => {
           bg.classList.remove('opacity-0');
           bg.classList.add('opacity-100');
           content.classList.remove('scale-50', 'opacity-0');
           content.classList.add('scale-100', 'opacity-100');
+          spawnRewardConfetti();
           vibrate(50);
         });
 
@@ -1881,6 +1984,8 @@
         if (content) content.classList.add('show');
       });
       lucide.createIcons();
+      // Any Mochi AI surface holds the ambient edge glow for as long as it's open.
+      if (id === 'modalMochiChat') holdEdgeGlow();
     }
 
     function closeModal(id) {
@@ -1901,6 +2006,7 @@
         setTimeout(() => modal.classList.add('hidden'), 400);
       }
       activeModals = activeModals.filter(m => m !== id);
+      if (id === 'modalMochiChat') { stopEdgeGlow(); cancelMochiVoiceInput(); }
     }
 
     let currentWalletsView = 'accounts';
@@ -2324,6 +2430,33 @@
       requestAnimationFrame(tick);
     }
 
+    // ===== Global screen-edge glow =====
+    // One shared ambient layer for every "Mochi AI is active" moment —
+    // opening the chat/voice sheet, scanning a receipt, or landing a
+    // reward. `hold` keeps it on until stopEdgeGlow() is called (used
+    // while a sheet is open / actively listening); without `hold` it
+    // pulses briefly then fades on its own.
+    let edgeGlowTimer = null;
+    function triggerEdgeGlow(duration = 1400) {
+      const el = document.getElementById('global-edge-glow');
+      if (!el) return;
+      clearTimeout(edgeGlowTimer);
+      el.classList.add('active');
+      edgeGlowTimer = setTimeout(() => el.classList.remove('active'), duration);
+    }
+    function holdEdgeGlow() {
+      const el = document.getElementById('global-edge-glow');
+      if (!el) return;
+      clearTimeout(edgeGlowTimer);
+      el.classList.add('active');
+    }
+    function stopEdgeGlow() {
+      const el = document.getElementById('global-edge-glow');
+      if (!el) return;
+      clearTimeout(edgeGlowTimer);
+      el.classList.remove('active');
+    }
+
     let mochiAIMenuOpen = false;
 
     function toggleMochiAIMenu() {
@@ -2353,7 +2486,7 @@
       closeMochiAIMenu();
       if (kind === 'chat') { openMochiChatModal(); return; }
       if (kind === 'add') { openNewTransactionForm(); return; }
-      if (kind === 'scan') { document.getElementById('receipt-file-input').click(); return; }
+      if (kind === 'scan') { triggerEdgeGlow(1600); document.getElementById('receipt-file-input').click(); return; }
       if (kind === 'voice') { openMochiChatModal(); setTimeout(() => toggleMochiVoiceInput(), 250); return; }
     }
 
@@ -2709,6 +2842,7 @@
       action.confirmed = true;
       renderMochiChatMessages();
       showToast("Transaksi tersimpan!");
+      showRewardAnimation("Saved via Mochi AI");
 
       postApi('createTransaction', payload)
         .then(result => {
@@ -2850,6 +2984,45 @@
     let mochiRecognition = null;
     let mochiListening = false;
 
+    // Builds the little live waveform inside the voice bar — a fistful of
+    // bars each with its own randomized height/speed so the bounce looks
+    // organic (like an audio level meter) instead of a single repeating tick.
+    function buildMochiVoiceWave() {
+      const wave = document.getElementById('mochi-voice-wave');
+      if (!wave) return;
+      wave.innerHTML = '';
+      const barCount = 26;
+      for (let i = 0; i < barCount; i++) {
+        const bar = document.createElement('span');
+        bar.className = 'voice-wave-bar';
+        const baseHeight = 8 + Math.round(Math.random() * 20);
+        bar.style.height = baseHeight + 'px';
+        bar.style.animationDuration = (0.6 + Math.random() * 0.6).toFixed(2) + 's';
+        bar.style.animationDelay = (Math.random() * 0.8).toFixed(2) + 's';
+        wave.appendChild(bar);
+      }
+    }
+
+    function showMochiVoiceBar() {
+      const row = document.getElementById('mochi-chat-input-row');
+      const bar = document.getElementById('mochi-voice-bar');
+      if (row) row.classList.add('hidden');
+      if (bar) { bar.classList.remove('hidden'); bar.classList.add('flex'); }
+      buildMochiVoiceWave();
+    }
+
+    function hideMochiVoiceBar() {
+      const row = document.getElementById('mochi-chat-input-row');
+      const bar = document.getElementById('mochi-voice-bar');
+      if (bar) { bar.classList.add('hidden'); bar.classList.remove('flex'); }
+      if (row) row.classList.remove('hidden');
+    }
+
+    function cancelMochiVoiceInput() {
+      if (mochiListening && mochiRecognition) mochiRecognition.abort();
+      hideMochiVoiceBar();
+    }
+
     function toggleMochiVoiceInput() {
       const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognitionCtor) {
@@ -2874,6 +3047,8 @@
         mochiListening = true;
         if (btn) { btn.className = "tap-shrink w-9 h-9 rounded-full bg-mochi text-white flex items-center justify-center flex-shrink-0 mochi-glow-ring glow-active"; }
         if (statusEl) statusEl.classList.remove('hidden');
+        showMochiVoiceBar();
+        holdEdgeGlow();
       };
 
       mochiRecognition.onresult = (event) => {
@@ -2892,6 +3067,14 @@
         mochiListening = false;
         if (btn) btn.className = "tap-shrink w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] text-muted flex items-center justify-center flex-shrink-0 mochi-glow-ring";
         if (statusEl) statusEl.classList.add('hidden');
+        hideMochiVoiceBar();
+        // The chat sheet itself is still open, so keep its own ambient glow;
+        // just drop back from "listening" intensity to the sheet-open hold.
+        if (document.getElementById('modalMochiChat').classList.contains('show')) {
+          holdEdgeGlow();
+        } else {
+          stopEdgeGlow();
+        }
       };
 
       mochiRecognition.start();
@@ -3032,6 +3215,7 @@
       GLOBAL_DATA.transactions = GLOBAL_DATA.transactions.filter(t => t.transactionId !== transactionId);
       renderHistory();
       renderDashboard();
+      showRewardAnimation("Deleted");
 
       let undone = false;
 
@@ -4677,7 +4861,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
             GLOBAL_DATA = result.data;
             localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
             renderAllViews();
-            showToast("Purchase recorded!");
+            showRewardAnimation("Purchase Recorded");
           }
         })
         .catch(err => {
@@ -4778,7 +4962,7 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
             GLOBAL_DATA = result.data;
             localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
             renderAllViews();
-            showToast("Sale recorded!");
+            showRewardAnimation("Sale Recorded");
           }
         })
         .catch(err => {
@@ -6624,7 +6808,7 @@ function getAgingBucket(dueDateStr) {
             selectedForSettle = {};
             selectedForSettleContext = null;
             renderAllViews();
-            showToast(`Marked ${ids.length} item(s) settled.`);
+            showRewardAnimation(`Marked ${ids.length} Item(s) Settled`);
           }
         } catch (err) {
           showToast("Couldn't update on server!", "error");
@@ -6740,7 +6924,7 @@ function getAgingBucket(dueDateStr) {
           selectedForSettle = {};
           selectedForSettleContext = null;
           renderAllViews();
-          showToast(isWriteOff ? `Wrote off ${ids.length} item(s).` : `Settled ${ids.length} item(s)!`);
+          showRewardAnimation(isWriteOff ? `Wrote Off ${ids.length} Item(s)` : `Settled ${ids.length} Item(s)`);
           closeModal('modalDetail');
         }
       } catch (err) {
@@ -6761,6 +6945,7 @@ function getAgingBucket(dueDateStr) {
           GLOBAL_DATA = result.data;
           localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
           renderAllViews();
+          if (checked) showRewardAnimation("Marked as Paid");
           const p = isAccount
             ? (GLOBAL_DATA.accounts || []).find(x => x.accountName === payableName)
             : (GLOBAL_DATA.payables || []).find(x => x.payableName === payableName);
@@ -6789,6 +6974,7 @@ function getAgingBucket(dueDateStr) {
           GLOBAL_DATA = result.data;
           localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
           renderAllViews();
+          if (checked) showRewardAnimation("Marked as Received");
           const r = (GLOBAL_DATA.receivables || []).find(x => x.receivableName === receivableName);
           if (r) showReceivableDetail(r);
         }
@@ -6827,6 +7013,7 @@ function getAgingBucket(dueDateStr) {
               GLOBAL_DATA = result.data;
               localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
               renderAllViews();
+              showRewardAnimation("Written Off");
             }
           })
           .catch(err => {
@@ -6865,6 +7052,7 @@ function getAgingBucket(dueDateStr) {
               GLOBAL_DATA = result.data;
               localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
               renderAllViews();
+              showRewardAnimation("Forgiven");
             }
           })
           .catch(err => {
