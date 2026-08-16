@@ -1023,16 +1023,16 @@
 
       <div class="space-y-4">
         <!-- Profile -->
-        <div class="bg-[var(--bg-subtle)] dark:bg-[var(--bg-subtle)] p-4 rounded-2xl border border-[var(--border-color)] flex items-center justify-between">
+        <button type="button" onclick="vibrate(30); openActiveUserSwitcher()" class="tap-shrink w-full bg-[var(--bg-subtle)] dark:bg-[var(--bg-subtle)] p-4 rounded-2xl border border-[var(--border-color)] flex items-center justify-between">
           <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-full bg-[var(--chip-info-bg)] amount-info flex items-center justify-center font-black text-lg">YF</div>
-            <div>
-              <p class="text-[10px] text-muted font-bold uppercase tracking-wider">Active Users</p>
-              <p class="font-extrabold text-main text-sm">Yosa & Fani</p>
+            <div id="command-center-user-avatar" class="w-10 h-10 rounded-full bg-[var(--chip-info-bg)] amount-info flex items-center justify-center font-black text-lg">YF</div>
+            <div class="text-left">
+              <p class="text-[10px] text-muted font-bold uppercase tracking-wider">Kamu (perangkat ini)</p>
+              <p id="command-center-user-name" class="font-extrabold text-main text-sm">Belum diset</p>
             </div>
           </div>
-          <i data-lucide="chevron-right" class="w-4 h-4 text-faint"></i>
-        </div>
+          <span class="text-[10px] font-bold text-mochi dark:text-mochi-light uppercase">Ganti</span>
+        </button>
 
         <!-- Master Data Shortcuts -->
         <div>
@@ -1083,6 +1083,22 @@
           <p class="text-[10px] font-bold text-faint uppercase tracking-widest">Mochi's Vault v28.0</p>
           <p class="text-[9px] font-semibold text-faint mt-0.5">Core Engine Active</p>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active User Picker: one-time "which of us is on this device" setup,
+       NOT a login screen — no password, no repeat prompts. Persisted per
+       device via localStorage so it's set once and forgotten. Can always
+       be changed later from Command Center → Active User. -->
+  <div id="modalActiveUserPicker" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[90] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm">
+    <div id="modalActiveUserPicker-content" class="glass-modal-content w-full max-w-xs rounded-[2rem] p-6 shadow-2xl modal-content-center text-center">
+      <img src="mochi-chill-open.png" alt="Mochi" class="w-16 h-16 mx-auto mb-3 object-contain">
+      <h3 class="text-base font-black text-main mb-1.5">Hai! HP ini punya siapa?</h3>
+      <p class="text-xs text-muted font-semibold mb-5 px-2">Mochi cuma nanya sekali biar bisa lebih pintar mengisi form & chat buat kamu. Bisa diganti kapan pun lewat Command Center.</p>
+      <div class="space-y-2.5">
+        <button type="button" onclick="chooseActiveUser('Yosa')" class="tap-shrink w-full py-3.5 rounded-2xl bg-mochi hover:bg-mochi-dark text-white font-extrabold text-sm">Aku Yosa</button>
+        <button type="button" onclick="chooseActiveUser('Fani')" class="tap-shrink w-full py-3.5 rounded-2xl bg-[var(--bg-subtle-2)] text-main font-extrabold text-sm border border-[var(--border-color)]">Aku Fani</button>
       </div>
     </div>
   </div>
@@ -1697,6 +1713,68 @@
       });
     }
 
+    // ===== ACTIVE USER (device-local, not a login) =====
+    // Persisted per device via localStorage — set once, never asked again,
+    // changeable any time from Command Center. This is intentionally NOT an
+    // authentication system: no password, nothing server-side. It exists so
+    // the UI and Mochi AI know whose default account/enteredBy to assume.
+    const ACTIVE_USER_KEY = 'mochi_active_user';
+
+    function getActiveUser() {
+      const val = localStorage.getItem(ACTIVE_USER_KEY);
+      return (val === 'Yosa' || val === 'Fani') ? val : null;
+    }
+
+    function setActiveUser(name) {
+      localStorage.setItem(ACTIVE_USER_KEY, name);
+      updateActiveUserUI();
+    }
+
+    function updateActiveUserUI() {
+      const user = getActiveUser();
+      const nameEl = document.getElementById('command-center-user-name');
+      const avatarEl = document.getElementById('command-center-user-avatar');
+      if (nameEl) nameEl.innerText = user || 'Belum diset';
+      if (avatarEl) avatarEl.innerText = user ? user.charAt(0) : '?';
+
+      // Default the manual transaction form's "By" field to whoever this
+      // device belongs to, so it doesn't have to be picked every time.
+      const formUserEl = document.getElementById('form-user');
+      if (formUserEl && user) formUserEl.value = user;
+    }
+
+    function ensureActiveUserSet() {
+      if (!getActiveUser()) {
+        // Skip the normal modal-history stack for this one — it's a
+        // first-run prompt, not something the back button should dismiss
+        // into a half-configured state.
+        const modal = document.getElementById('modalActiveUserPicker');
+        modal.classList.remove('hidden');
+        requestAnimationFrame(() => modal.classList.add('show'));
+      } else {
+        updateActiveUserUI();
+      }
+    }
+
+    function chooseActiveUser(name) {
+      vibrate(30);
+      setActiveUser(name);
+      if (activeModals.includes('modalActiveUserPicker')) {
+        closeModal('modalActiveUserPicker');
+      } else {
+        const modal = document.getElementById('modalActiveUserPicker');
+        modal.classList.remove('show');
+        setTimeout(() => modal.classList.add('hidden'), 300);
+      }
+      showToast(`Oke, dicatat! HP ini sekarang milik ${name} 🐾`);
+    }
+
+    function openActiveUserSwitcher() {
+      // Reuses the same picker UI for switching later — same buttons, just
+      // already-visible from Command Center instead of a first-run gate.
+      openModal('modalActiveUserPicker');
+    }
+
     function openModal(id) {
       const modal = document.getElementById(id);
       const content = document.getElementById(id + '-content');
@@ -2226,26 +2304,50 @@
       if (action.cancelled) {
         return `<div class="bg-[var(--bg-subtle-2)] text-faint rounded-xl px-3 py-2 text-[11px] font-bold">Dibatalkan.</div>`;
       }
-      const isIncome = action.transactionType === 'Income';
-      const isTransfer = action.transactionType === 'Internal Transfer';
+
+      // Reuses the exact same TYPE_META the manual transaction form uses
+      // (defined once, earlier in this file) — this is what lets Mochi's
+      // chat handle Give Receivable / Receive Payable / Pay Installment
+      // correctly, instead of only ever offering Income/Expense/Transfer.
+      const type = action.transactionType || 'Expense';
+      const meta = getTypeMeta(type);
+      // Bookkeeping-only adjustments (no cash movement) stay manual-only —
+      // too easy to fat-finger via chat, they belong in the deliberate
+      // Payable/Receivable detail screens instead.
+      const chatTypeOptions = Object.keys(TYPE_META).filter(t => t !== 'Write-Off Receivable' && t !== 'Debt Forgiven');
+      const typeSelectOptions = chatTypeOptions
+        .map(t => `<option value="${escapeAttr(t)}" ${t === type ? 'selected' : ''}>${escapeHtml(t)}</option>`).join('');
+
       const catOptions = (GLOBAL_DATA.categories || [])
-        .filter(c => c.type === (action.transactionType || 'Expense'))
+        .filter(c => c.type === meta.categoryType)
         .map(c => `<option value="${escapeAttr(c.categoryName)}" ${c.categoryName === action.category ? 'selected' : ''}>${escapeHtml(c.categoryName)}</option>`).join('');
-      const acctOptions = (GLOBAL_DATA.accounts || [])
-        .map(a => `<option value="${escapeAttr(a.accountName)}">${escapeHtml(a.accountName)}</option>`).join('');
+
+      const buildAcctOptions = (selectedName) => (GLOBAL_DATA.accounts || [])
+        .map(a => `<option value="${escapeAttr(a.accountName)}" ${a.accountName === selectedName ? 'selected' : ''}>${escapeHtml(a.accountName)}</option>`).join('');
+      // action.account is the AI's resolved source account (e.g. it matched
+      // "akun yosa" to "BCA Yosa" via the owner field); action.targetAccount
+      // is the destination for Income/Transfer. Pre-selecting these means
+      // the user only has to confirm, not re-pick, when Mochi got it right.
+      const sourceAcctOptions = buildAcctOptions(action.account);
+      const targetAcctOptions = buildAcctOptions(action.targetAccount);
+
+      const activePayables = (GLOBAL_DATA.payables || []).filter(p => (p.status || '').toLowerCase() === 'active');
+      const activeReceivables = (GLOBAL_DATA.receivables || []).filter(r => !['settled', 'written_off'].includes((r.status || '').toLowerCase()));
+      const payableOptions = activePayables
+        .map(p => `<option value="${escapeAttr(p.payableName)}" ${p.payableName === action.relatedPayable ? 'selected' : ''}>${escapeHtml(p.payableName)}</option>`).join('');
+      const receivableOptions = activeReceivables
+        .map(r => `<option value="${escapeAttr(r.receivableName)}" ${r.receivableName === action.relatedReceivable ? 'selected' : ''}>${escapeHtml(r.receivableName)}</option>`).join('');
 
       return `
         <div class="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-3 space-y-2 mt-1">
           <p class="text-[10px] font-extrabold uppercase tracking-wider text-muted">Konfirmasi Transaksi</p>
-          <select id="mochi-action-type-${msgIdx}" class="w-full ios-input py-2 text-xs">
-            <option value="Income" ${isIncome ? 'selected' : ''}>Income</option>
-            <option value="Expense" ${!isIncome && !isTransfer ? 'selected' : ''}>Expense</option>
-            <option value="Internal Transfer" ${isTransfer ? 'selected' : ''}>Internal Transfer</option>
-          </select>
+          <select id="mochi-action-type-${msgIdx}" onchange="handleMochiActionTypeChange(${msgIdx})" class="w-full ios-input py-2 text-xs">${typeSelectOptions}</select>
           <input type="text" id="mochi-action-amount-${msgIdx}" value="${action.amount || ''}" placeholder="Jumlah (Rp)" class="w-full ios-input py-2 text-xs font-bold" inputmode="numeric">
-          <select id="mochi-action-category-${msgIdx}" class="w-full ios-input py-2 text-xs">${catOptions}</select>
-          ${!isIncome ? `<select id="mochi-action-source-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">Dari akun...</option>${acctOptions}</select>` : ''}
-          ${(isIncome || isTransfer) ? `<select id="mochi-action-target-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">Ke akun...</option>${acctOptions}</select>` : ''}
+          ${catOptions ? `<select id="mochi-action-category-${msgIdx}" class="w-full ios-input py-2 text-xs">${catOptions}</select>` : ''}
+          ${meta.showSource ? `<select id="mochi-action-source-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">Dari akun...</option>${sourceAcctOptions}</select>` : ''}
+          ${meta.showTarget ? `<select id="mochi-action-target-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">Ke akun...</option>${targetAcctOptions}</select>` : ''}
+          ${meta.showPayable ? `<select id="mochi-action-payable-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">Terkait hutang...</option>${payableOptions}</select>` : ''}
+          ${meta.showReceivable ? `<select id="mochi-action-receivable-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">Terkait piutang...</option>${receivableOptions}</select>` : ''}
           <input type="text" id="mochi-action-desc-${msgIdx}" value="${escapeAttr(action.description || '')}" placeholder="Deskripsi" class="w-full ios-input py-2 text-xs">
           <div class="flex space-x-2 pt-1">
             <button type="button" onclick="cancelMochiAction(${msgIdx})" class="flex-1 py-2 text-[11px] font-extrabold rounded-lg bg-[var(--bg-subtle-2)] text-muted">Batal</button>
@@ -2255,6 +2357,21 @@
       `;
     }
 
+    // Switching type mid-confirmation (e.g. Mochi guessed "Expense" but it
+    // was actually "Pay Installment") needs the card's fields to change
+    // shape — re-render, but first persist whatever the user already typed
+    // so amount/description survive the re-render.
+    function handleMochiActionTypeChange(msgIdx) {
+      const action = mochiChatHistory[msgIdx] && mochiChatHistory[msgIdx].action;
+      if (!action) return;
+      action.transactionType = document.getElementById(`mochi-action-type-${msgIdx}`).value;
+      const amountEl = document.getElementById(`mochi-action-amount-${msgIdx}`);
+      if (amountEl) action.amount = amountEl.value;
+      const descEl = document.getElementById(`mochi-action-desc-${msgIdx}`);
+      if (descEl) action.description = descEl.value;
+      renderMochiChatMessages();
+    }
+
     function cancelMochiAction(msgIdx) {
       vibrate(20);
       mochiChatHistory[msgIdx].action.cancelled = true;
@@ -2262,27 +2379,77 @@
     }
 
     function confirmMochiAction(msgIdx) {
+      const action = mochiChatHistory[msgIdx] && mochiChatHistory[msgIdx].action;
+      if (!action) return;
+
       const type = document.getElementById(`mochi-action-type-${msgIdx}`).value;
+      const meta = getTypeMeta(type);
       const amount = parseFloat((document.getElementById(`mochi-action-amount-${msgIdx}`).value || '').replace(/[^0-9.]/g, '')) || 0;
-      const category = document.getElementById(`mochi-action-category-${msgIdx}`).value;
+      const categoryEl = document.getElementById(`mochi-action-category-${msgIdx}`);
+      const category = categoryEl ? categoryEl.value : '';
       const description = document.getElementById(`mochi-action-desc-${msgIdx}`).value;
       const sourceEl = document.getElementById(`mochi-action-source-${msgIdx}`);
       const targetEl = document.getElementById(`mochi-action-target-${msgIdx}`);
+      const payableEl = document.getElementById(`mochi-action-payable-${msgIdx}`);
+      const receivableEl = document.getElementById(`mochi-action-receivable-${msgIdx}`);
 
       if (amount <= 0) { showToast("Jumlahnya belum diisi.", "error"); return; }
-      if (type !== 'Income' && (!sourceEl || !sourceEl.value)) { showToast("Pilih akun sumbernya dulu.", "error"); return; }
-      if (type !== 'Expense' && (!targetEl || !targetEl.value)) { showToast("Pilih akun tujuannya dulu.", "error"); return; }
+      if (meta.showSource && (!sourceEl || !sourceEl.value)) { showToast("Pilih akun sumbernya dulu.", "error"); return; }
+      if (meta.showTarget && (!targetEl || !targetEl.value)) { showToast("Pilih akun tujuannya dulu.", "error"); return; }
+      if (meta.showPayable && (!payableEl || !payableEl.value)) { showToast("Pilih hutang yang terkait dulu.", "error"); return; }
+      if (meta.showReceivable && (!receivableEl || !receivableEl.value)) { showToast("Pilih piutang yang terkait dulu.", "error"); return; }
+
+      // Dated to when the prompt actually came in (captured in
+      // sendMochiChatMessage), not the moment "Simpan" is tapped — so a
+      // transaction typed at 08:03 but confirmed at 08:11 still records 08:03.
+      const promptedAt = action.promptTimestamp ? new Date(action.promptTimestamp) : new Date();
+      const dateStr = todayDateStringLocal(promptedAt);
+      const timeStr = promptedAt.toTimeString().substring(0, 5);
 
       const payload = {
         type, amount, category, description,
-        date: todayDateStringLocal(),
-        time: new Date().toTimeString().substring(0, 5),
-        enteredBy: "Yosa",
-        sourceAccount: sourceEl ? sourceEl.value : '',
-        targetAccount: targetEl ? targetEl.value : ''
+        date: dateStr,
+        time: timeStr,
+        enteredBy: action.enteredBy || getActiveUser() || "Yosa",
+        sourceAccount: meta.showSource ? sourceEl.value : '',
+        targetAccount: meta.showTarget ? targetEl.value : '',
+        relatedPayable: meta.showPayable ? payableEl.value : '',
+        relatedReceivable: meta.showReceivable ? receivableEl.value : ''
       };
 
       vibrate(30);
+
+      // OPTIMISTIC UI — same pattern as the manual transaction form: drop
+      // it into the transaction list and mark the chat card "Tersimpan!"
+      // immediately, then sync to Sheets in the background. This is what
+      // makes Mochi feel snappy instead of waiting on an Apps Script +
+      // Sheets round-trip before responding.
+      const tempId = "TRX-TEMP-" + Date.now();
+      const newTrx = {
+        transactionId: tempId,
+        date: payload.date + "T" + timeStr + ":00",
+        month: payload.date.substring(0, 7),
+        type: payload.type,
+        sourceAccount: payload.sourceAccount,
+        targetAccount: payload.targetAccount,
+        category: payload.category,
+        description: payload.description,
+        amount: payload.amount,
+        enteredBy: payload.enteredBy,
+        relatedPayable: payload.relatedPayable,
+        relatedReceivable: payload.relatedReceivable,
+        notes: '',
+        mainCategory: payload.category
+      };
+      GLOBAL_DATA.transactions.unshift(newTrx);
+      GLOBAL_DATA.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+      renderHistory();
+      renderDashboard();
+
+      action.confirmed = true;
+      renderMochiChatMessages();
+      showToast("Transaksi tersimpan!");
+
       postApi('createTransaction', payload)
         .then(result => {
           if (result && result.data) {
@@ -2290,12 +2457,25 @@
             localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
             renderAllViews();
           }
-          mochiChatHistory[msgIdx].action.confirmed = true;
-          renderMochiChatMessages();
-          showToast("Transaksi tersimpan!");
         })
         .catch(err => {
-          showToast(err.message || "Gagal menyimpan transaksi.", "error");
+          if (err.isNetworkError) {
+            // Confirmed the request never reached the server — safe to
+            // queue for automatic retry, same as the manual form.
+            enqueuePending('createTransaction', payload, {}, tempId);
+            showToast("Offline — tersimpan lokal, akan disinkron otomatis.", "info");
+          } else {
+            // Server actually rejected it — roll back the optimistic
+            // insert and let the user know, instead of leaving a phantom
+            // "Tersimpan!" for a transaction that never really saved.
+            const idx = GLOBAL_DATA.transactions.findIndex(t => t.transactionId === tempId);
+            if (idx !== -1) GLOBAL_DATA.transactions.splice(idx, 1);
+            renderHistory();
+            renderDashboard();
+            action.confirmed = false;
+            renderMochiChatMessages();
+            showToast(err.message || "Gagal menyimpan transaksi.", "error");
+          }
         });
     }
 
@@ -2304,6 +2484,11 @@
       const message = input.value.trim();
       if (!message) return;
 
+      // Captured now — this is the timestamp that ends up on the saved
+      // transaction, not whenever the user later taps "Simpan" on the
+      // confirmation card (which could be minutes later).
+      const promptSentAt = new Date().toISOString();
+
       mochiChatHistory.push({ role: 'user', text: message });
       mochiChatHistory.push({ role: 'typing' });
       renderMochiChatMessages();
@@ -2311,10 +2496,12 @@
 
       const historyForApi = mochiChatHistory.filter(m => m.role === 'user' || m.role === 'mochi').slice(-6);
 
-      postApi('mochiChat', { message, history: historyForApi })
+      postApi('mochiChat', { message, history: historyForApi, activeUser: getActiveUser() })
         .then(result => {
           mochiChatHistory = mochiChatHistory.filter(m => m.role !== 'typing');
-          mochiChatHistory.push({ role: 'mochi', text: result.reply, action: result.action || null });
+          const action = result.action || null;
+          if (action) action.promptTimestamp = promptSentAt;
+          mochiChatHistory.push({ role: 'mochi', text: result.reply, action });
           renderMochiChatMessages();
         })
         .catch(err => {
@@ -2352,6 +2539,9 @@
 
       document.getElementById('form-type').value = "Expense";
       updateTypeDisplay("Expense");
+
+      const activeUser = getActiveUser();
+      if (activeUser) document.getElementById('form-user').value = activeUser;
 
       handleTypeChange();
       openModal('modalTransactionForm');
@@ -4183,8 +4373,8 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
         });
     }
 
-    function todayDateStringLocal() {
-      const d = new Date();
+    function todayDateStringLocal(d) {
+      d = d || new Date();
       const pad = n => String(n).padStart(2, '0');
       return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     }
@@ -6783,6 +6973,7 @@ window.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
       initVaultTilt();
       document.getElementById('form-date').valueAsDate = new Date();
+      ensureActiveUserSet();
 
       // Pulihkan tab terakhir yang dibuka
       const savedTab = localStorage.getItem('mochi_active_tab');
