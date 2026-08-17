@@ -669,7 +669,7 @@
         </div>
         <div class="flex items-center gap-1.5 mt-2 px-1">
           <i data-lucide="message-circle" class="w-3 h-3 text-muted flex-shrink-0"></i>
-          <p id="mochi-quip-subtext" class="text-2xs text-muted font-semibold">Tap to chat with Mochi — need a hand with anything?</p>
+          <p id="mochi-quip-subtext" class="text-2xs text-muted font-semibold">Tap untuk ngobrol sama Mochi — ada yang bisa dibantu?</p>
         </div>
       </div>
 
@@ -970,7 +970,7 @@
         </button>
         <!-- Placed last (closest to the FAB) so it's the easiest one to reach with a thumb — manual add is the most-used action. -->
         <button ontouchstart="vibrate(30)" onclick="mochiAIAction('add')" class="tap-shrink flex items-center space-x-2.5 bg-[var(--bg-card)] pl-4 pr-2 py-2 rounded-full shadow-lg border border-[var(--border-color)]">
-          <span class="text-xs font-extrabold text-main">Add Transaction</span>
+          <span class="text-xs font-extrabold text-main">Tambah Transaksi</span>
           <div class="w-9 h-9 rounded-full bg-[var(--chip-accent-bg)] text-mochi dark:text-mochi-light flex items-center justify-center flex-shrink-0"><i data-lucide="plus" class="w-4 h-4"></i></div>
         </button>
       </div>
@@ -1019,7 +1019,7 @@
         <div class="flex items-center justify-between mt-3 pt-2.5 border-t border-[var(--border-color)]">
           <div class="flex items-center space-x-1.5">
             <img src="mochi-logo-new.png" alt="Mochi" class="w-4 h-4 object-contain rounded-full">
-            <span class="text-2xs font-bold text-muted">Mochi AI · Tap to open full chat</span>
+            <span class="text-2xs font-bold text-muted">Mochi AI · Ketuk untuk buka obrolan lengkap</span>
           </div>
           <i data-lucide="chevron-up" class="w-3.5 h-3.5 text-faint flex-shrink-0"></i>
         </div>
@@ -1381,11 +1381,11 @@
           <div class="flex items-center space-x-3">
             <div id="command-center-user-avatar" class="w-10 h-10 rounded-full bg-[var(--chip-info-bg)] amount-info flex items-center justify-center font-black text-lg">YF</div>
             <div class="text-left">
-              <p class="text-2xs text-muted font-bold uppercase tracking-wider">You (this device)</p>
-              <p id="command-center-user-name" class="font-extrabold text-main text-sm">Not set</p>
+              <p class="text-2xs text-muted font-bold uppercase tracking-wider">Kamu (perangkat ini)</p>
+              <p id="command-center-user-name" class="font-extrabold text-main text-sm">Belum diset</p>
             </div>
           </div>
-          <span class="text-2xs font-bold text-mochi dark:text-mochi-light uppercase">Switch</span>
+          <span class="text-2xs font-bold text-mochi dark:text-mochi-light uppercase">Ganti</span>
         </button>
 
         <!-- Master Data Shortcuts -->
@@ -1448,11 +1448,11 @@
   <div id="modalActiveUserPicker" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[150] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm">
     <div id="modalActiveUserPicker-content" class="glass-modal-content w-full max-w-xs rounded-[2rem] p-6 shadow-2xl modal-content-center text-center">
       <img src="mochi-chill-open.png" alt="Mochi" class="w-16 h-16 mx-auto mb-3 object-contain">
-      <h3 class="text-base font-black text-main mb-1.5">Hey! Whose phone is this?</h3>
-      <p class="text-xs text-muted font-semibold mb-5 px-2">Mochi only asks once so she can fill in forms & chat smarter for you. You can change this anytime from Command Center.</p>
+      <h3 class="text-base font-black text-main mb-1.5">Hai! HP ini punya siapa?</h3>
+      <p class="text-xs text-muted font-semibold mb-5 px-2">Mochi cuma nanya sekali biar bisa lebih pintar mengisi form & chat buat kamu. Bisa diganti kapan pun lewat Command Center.</p>
       <div class="space-y-2.5">
-        <button type="button" onclick="chooseActiveUser('Yosa')" class="tap-shrink w-full btn-primary py-3.5 text-sm">I'm Yosa</button>
-        <button type="button" onclick="chooseActiveUser('Fani')" class="tap-shrink w-full py-3.5 rounded-2xl bg-[var(--bg-subtle-2)] text-main font-extrabold text-sm border border-[var(--border-color)]">I'm Fani</button>
+        <button type="button" onclick="chooseActiveUser('Yosa')" class="tap-shrink w-full btn-primary py-3.5 text-sm">Aku Yosa</button>
+        <button type="button" onclick="chooseActiveUser('Fani')" class="tap-shrink w-full py-3.5 rounded-2xl bg-[var(--bg-subtle-2)] text-main font-extrabold text-sm border border-[var(--border-color)]">Aku Fani</button>
       </div>
     </div>
   </div>
@@ -1552,7 +1552,7 @@
             </div>
             <div class="min-w-0">
               <h3 class="text-base font-black text-main leading-tight tracking-tight">Mochi AI</h3>
-              <p class="text-[10.5px] text-muted font-semibold truncate">Chat, or ask Mochi to log a transaction</p>
+              <p class="text-[10.5px] text-muted font-semibold truncate">Chat, atau minta catat transaksi</p>
             </div>
           </div>
           <div class="flex items-center space-x-1.5 flex-shrink-0">
@@ -2151,7 +2151,7 @@
       const user = getActiveUser();
       const nameEl = document.getElementById('command-center-user-name');
       const avatarEl = document.getElementById('command-center-user-avatar');
-      if (nameEl) nameEl.innerText = user || 'Not set';
+      if (nameEl) nameEl.innerText = user || 'Belum diset';
       if (avatarEl) avatarEl.innerText = user ? user.charAt(0) : '?';
 
       // Default the manual transaction form's "By" field to whoever this
@@ -2192,7 +2192,7 @@
         modal.classList.remove('show');
         setTimeout(() => modal.classList.add('hidden'), 300);
       }
-      showToast(`Got it! This phone now belongs to ${name} 🐾`);
+      showToast(`Oke, dicatat! HP ini sekarang milik ${name} 🐾`);
     }
 
     function openActiveUserSwitcher() {
@@ -2851,7 +2851,7 @@
     function toggleMochiQuickVoice() {
       const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognitionCtor) {
-        showToast("Voice input isn't supported in this browser (try Chrome on Android).", "error");
+        showToast("Input suara belum didukung di browser ini (coba Chrome di Android).", "error");
         return;
       }
       if (mochiQuickListening) { mochiQuickRecognition.stop(); return; }
@@ -3021,14 +3021,14 @@
             <div class="space-y-3.5">
               <div class="flex items-start justify-between gap-3">
                 <p class="text-[12.5px] text-main leading-snug flex-1"><span class="font-extrabold">Scan struk.</span> Foto struk belanja, Mochi otomatis baca &amp; catat transaksinya.</p>
-                <button type="button" onclick="vibrate(30); document.getElementById('receipt-file-input').click();" class="tap-shrink flex-shrink-0 text-[10.5px] font-extrabold text-mochi dark:text-mochi-light bg-[var(--chip-accent-bg)] px-3 py-1.5 rounded-full">Try</button>
+                <button type="button" onclick="vibrate(30); document.getElementById('receipt-file-input').click();" class="tap-shrink flex-shrink-0 text-[10.5px] font-extrabold text-mochi dark:text-mochi-light bg-[var(--chip-accent-bg)] px-3 py-1.5 rounded-full">Coba</button>
               </div>
               <div class="flex items-start justify-between gap-3">
                 <p class="text-[12.5px] text-main leading-snug flex-1"><span class="font-extrabold">Ngobrol bebas.</span> Tanya soal keuanganmu, atau bilang aja transaksinya — misal "kopi 25rb dari cash".</p>
               </div>
               <div class="flex items-start justify-between gap-3">
                 <p class="text-[12.5px] text-main leading-snug flex-1"><span class="font-extrabold">Mode suara.</span> Tap ikon mic dan ngobrol langsung tanpa ngetik.</p>
-                <button type="button" onclick="vibrate(30); toggleMochiVoiceInput();" class="tap-shrink flex-shrink-0 text-[10.5px] font-extrabold text-mochi dark:text-mochi-light bg-[var(--chip-accent-bg)] px-3 py-1.5 rounded-full">Try</button>
+                <button type="button" onclick="vibrate(30); toggleMochiVoiceInput();" class="tap-shrink flex-shrink-0 text-[10.5px] font-extrabold text-mochi dark:text-mochi-light bg-[var(--chip-accent-bg)] px-3 py-1.5 rounded-full">Coba</button>
               </div>
             </div>
           </div>`;
@@ -3067,10 +3067,10 @@
 
     function renderMochiActionCard(action, msgIdx) {
       if (action.confirmed) {
-        return `<div class="bg-[var(--chip-in-bg)] amount-in rounded-xl px-3 py-2.5 text-3xs font-extrabold flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>Saved!</div>`;
+        return `<div class="bg-[var(--chip-in-bg)] amount-in rounded-xl px-3 py-2.5 text-3xs font-extrabold flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>Tersimpan!</div>`;
       }
       if (action.cancelled) {
-        return `<div class="bg-[var(--bg-subtle-2)] text-faint rounded-xl px-3 py-2.5 text-3xs font-bold">Cancelled.</div>`;
+        return `<div class="bg-[var(--bg-subtle-2)] text-faint rounded-xl px-3 py-2.5 text-3xs font-bold">Dibatalkan.</div>`;
       }
 
       // Reuses the exact same TYPE_META the manual transaction form uses
@@ -3108,18 +3108,18 @@
 
       return `
         <div class="bg-[var(--bg-subtle-2)] rounded-2xl p-3.5 space-y-2.5 mt-1 border border-[var(--border-color)]">
-          <p class="text-2xs font-extrabold uppercase tracking-wider text-muted flex items-center gap-1.5"><i data-lucide="receipt-text" class="w-3 h-3"></i>Confirm Transaction</p>
+          <p class="text-2xs font-extrabold uppercase tracking-wider text-muted flex items-center gap-1.5"><i data-lucide="receipt-text" class="w-3 h-3"></i>Konfirmasi Transaksi</p>
           <select id="mochi-action-type-${msgIdx}" onchange="handleMochiActionTypeChange(${msgIdx})" class="w-full ios-input py-2 text-xs">${typeSelectOptions}</select>
-          <input type="text" id="mochi-action-amount-${msgIdx}" value="${action.amount || ''}" placeholder="Amount (Rp)" class="w-full ios-input py-2 text-xs font-bold" inputmode="numeric">
+          <input type="text" id="mochi-action-amount-${msgIdx}" value="${action.amount || ''}" placeholder="Jumlah (Rp)" class="w-full ios-input py-2 text-xs font-bold" inputmode="numeric">
           ${catOptions ? `<select id="mochi-action-category-${msgIdx}" class="w-full ios-input py-2 text-xs">${catOptions}</select>` : ''}
-          ${meta.showSource ? `<select id="mochi-action-source-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">From account...</option>${sourceAcctOptions}</select>` : ''}
-          ${meta.showTarget ? `<select id="mochi-action-target-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">To account...</option>${targetAcctOptions}</select>` : ''}
-          ${meta.showPayable ? `<select id="mochi-action-payable-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">Related debt...</option>${payableOptions}</select>` : ''}
-          ${meta.showReceivable ? `<select id="mochi-action-receivable-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">Related receivable...</option>${receivableOptions}</select>` : ''}
-          <input type="text" id="mochi-action-desc-${msgIdx}" value="${escapeAttr(action.description || '')}" placeholder="Description" class="w-full ios-input py-2 text-xs">
+          ${meta.showSource ? `<select id="mochi-action-source-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">Dari akun...</option>${sourceAcctOptions}</select>` : ''}
+          ${meta.showTarget ? `<select id="mochi-action-target-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">Ke akun...</option>${targetAcctOptions}</select>` : ''}
+          ${meta.showPayable ? `<select id="mochi-action-payable-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">Terkait hutang...</option>${payableOptions}</select>` : ''}
+          ${meta.showReceivable ? `<select id="mochi-action-receivable-${msgIdx}" class="w-full ios-input py-2 text-xs"><option value="">Terkait piutang...</option>${receivableOptions}</select>` : ''}
+          <input type="text" id="mochi-action-desc-${msgIdx}" value="${escapeAttr(action.description || '')}" placeholder="Deskripsi" class="w-full ios-input py-2 text-xs">
           <div class="flex space-x-2 pt-1">
-            <button type="button" onclick="cancelMochiAction(${msgIdx})" class="tap-shrink flex-1 py-2.5 text-3xs font-extrabold rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-muted">Cancel</button>
-            <button type="button" onclick="confirmMochiAction(${msgIdx})" class="tap-shrink flex-1 py-2.5 text-3xs font-extrabold rounded-xl bg-gradient-to-br from-mochi-light to-mochi hover:from-mochi hover:to-mochi-dark text-white shadow-[0_4px_12px_-2px_rgba(184,146,90,0.4)]">Save</button>
+            <button type="button" onclick="cancelMochiAction(${msgIdx})" class="tap-shrink flex-1 py-2.5 text-3xs font-extrabold rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-muted">Batal</button>
+            <button type="button" onclick="confirmMochiAction(${msgIdx})" class="tap-shrink flex-1 py-2.5 text-3xs font-extrabold rounded-xl bg-gradient-to-br from-mochi-light to-mochi hover:from-mochi hover:to-mochi-dark text-white shadow-[0_4px_12px_-2px_rgba(184,146,90,0.4)]">Simpan</button>
           </div>
         </div>
       `;
@@ -3161,11 +3161,11 @@
       const payableEl = document.getElementById(`mochi-action-payable-${msgIdx}`);
       const receivableEl = document.getElementById(`mochi-action-receivable-${msgIdx}`);
 
-      if (amount <= 0) { showToast("Amount is required.", "error"); return; }
-      if (meta.showSource && (!sourceEl || !sourceEl.value)) { showToast("Select the source account first.", "error"); return; }
-      if (meta.showTarget && (!targetEl || !targetEl.value)) { showToast("Select the target account first.", "error"); return; }
-      if (meta.showPayable && (!payableEl || !payableEl.value)) { showToast("Select the related debt first.", "error"); return; }
-      if (meta.showReceivable && (!receivableEl || !receivableEl.value)) { showToast("Select the related receivable first.", "error"); return; }
+      if (amount <= 0) { showToast("Jumlahnya belum diisi.", "error"); return; }
+      if (meta.showSource && (!sourceEl || !sourceEl.value)) { showToast("Pilih akun sumbernya dulu.", "error"); return; }
+      if (meta.showTarget && (!targetEl || !targetEl.value)) { showToast("Pilih akun tujuannya dulu.", "error"); return; }
+      if (meta.showPayable && (!payableEl || !payableEl.value)) { showToast("Pilih hutang yang terkait dulu.", "error"); return; }
+      if (meta.showReceivable && (!receivableEl || !receivableEl.value)) { showToast("Pilih piutang yang terkait dulu.", "error"); return; }
 
       // Dated to when the prompt actually came in (captured in
       // sendMochiChatMessage), not the moment "Simpan" is tapped — so a
@@ -3216,7 +3216,7 @@
 
       action.confirmed = true;
       renderMochiChatMessages();
-      showToast("Transaction saved!");
+      showToast("Transaksi tersimpan!");
       showRewardAnimation("Saved via Mochi AI");
 
       postApi('createTransaction', payload)
@@ -3232,7 +3232,7 @@
             // Confirmed the request never reached the server — safe to
             // queue for automatic retry, same as the manual form.
             enqueuePending('createTransaction', payload, {}, tempId);
-            showToast("Offline — saved locally, will sync automatically.", "info");
+            showToast("Offline — tersimpan lokal, akan disinkron otomatis.", "info");
           } else {
             // Server actually rejected it — roll back the optimistic
             // insert and let the user know, instead of leaving a phantom
@@ -3243,7 +3243,7 @@
             renderDashboard();
             action.confirmed = false;
             renderMochiChatMessages();
-            showToast(err.message || "Failed to save transaction.", "error");
+            showToast(err.message || "Gagal menyimpan transaksi.", "error");
           }
         });
     }
@@ -3401,7 +3401,7 @@
     function toggleMochiVoiceInput() {
       const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognitionCtor) {
-        showToast("Voice input isn't supported in this browser (try Chrome on Android).", "error");
+        showToast("Input suara belum didukung di browser ini (coba Chrome di Android).", "error");
         return;
       }
 
@@ -4145,7 +4145,7 @@ async function renderMochiQuip(mood, displayPct, dsr) {
     textEl.textContent = getLocalMochiQuipFallback(mood, displayPct, dsr);
   }
 
-  if (subEl) subEl.textContent = "Tap to chat with Mochi";
+  if (subEl) subEl.textContent = "Tap untuk ngobrol sama Mochi";
 }
 
 /**
@@ -6864,7 +6864,7 @@ function getAgingBucket(dueDateStr) {
     <div class="space-y-4 pt-1">
       <div class="border-b border-[var(--border-color)] pb-4 pr-6">
         <span class="text-2xs font-bold px-3 py-1 rounded-full bg-[var(--chip-out-bg)] amount-out uppercase tracking-wider mb-2 inline-block">
-          ${isCreditCard ? 'Credit Card' : (isPayLater ? 'PayLater • Full Payment' : 'Term Loan / Installment')}
+          ${isCreditCard ? 'Kartu Kredit' : (isPayLater ? 'PayLater • Full Payment' : 'Term Loan / Cicilan')}
         </span>
         <h3 class="text-xl font-black text-main leading-tight">${escapeHtml(name)}</h3>
         ${!isAccount ? (
@@ -6894,7 +6894,7 @@ function getAgingBucket(dueDateStr) {
         
         ${!isAccount && item.termMonths ? `<div class="flex justify-between border-b border-[var(--border-color)] pb-2"><span>Loan Term:</span> <span class="font-extrabold text-main">${item.termMonths} Months</span></div>` : ''}
         ${!isAccount && item.monthlyInstallment ? `<div class="flex justify-between border-b border-[var(--border-color)] pb-2"><span>Monthly Installment:</span> <span class="font-extrabold amount-out font-numeric">${formatRupiah(item.monthlyInstallment)}/mo</span></div>` : ''}
-        ${!isAccount && item.dueDate ? `<div class="flex justify-between border-b border-[var(--border-color)] pb-2"><span>Due Date:</span> <span class="font-extrabold text-main">${formatDate(item.dueDate)}</span></div>` : ''}
+        ${!isAccount && item.dueDate ? `<div class="flex justify-between border-b border-[var(--border-color)] pb-2"><span>Tanggal Due Date:</span> <span class="font-extrabold text-main">${formatDate(item.dueDate)}</span></div>` : ''}
 
         <div class="flex justify-between pt-1 items-center">
           <span>Remaining Bill:</span> 
