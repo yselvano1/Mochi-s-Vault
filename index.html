@@ -471,7 +471,7 @@
        between "splash" and "login". See ensureActiveUserSet(). */
     #splashLoginScreen { background-color: var(--bg-app); }
     .splash-logo-wrap {
-      width: 104px; height: 104px;
+      width: min(42vw, 168px); height: min(42vw, 168px);
       animation: splashLogoIn 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) both;
     }
     @keyframes splashLogoIn { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
@@ -480,6 +480,7 @@
       transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
     }
     #splashWelcomeCopy.show, #splashLoginButtons.show { opacity: 1; transform: translateY(0); }
+    #splashWelcomeCopy h1 { text-wrap: balance; }
     #splashLoginScreen.exit { opacity: 0; transition: opacity 0.45s ease; pointer-events: none; }
 
     /* Sticky picker-modal header — canonical header for "Select X"
@@ -576,22 +577,22 @@
     <div class="ambient-blob ambient-blob-1"></div>
     <div class="ambient-blob ambient-blob-2"></div>
 
-    <div class="flex flex-col items-center justify-center flex-1 w-full px-8 relative z-10">
+    <div class="flex flex-col items-center justify-center flex-1 w-full px-6 relative z-10">
       <div class="splash-logo-wrap flex items-center justify-center">
         <img src="mochi-logo-new.png" alt="Mochi Vault" class="w-full h-full object-contain">
       </div>
 
-      <div id="splashWelcomeCopy" class="text-center mt-6 max-w-[260px]">
-        <h1 class="font-display text-2xl font-black text-main tracking-tight">Welcome to Mochi Vault</h1>
-        <p class="text-xs text-muted font-semibold mt-2 leading-relaxed">Catat & pantau keuangan kalian berdua, di satu tempat.</p>
+      <div id="splashWelcomeCopy" class="text-center mt-7 max-w-[300px]">
+        <h1 class="font-display text-xl leading-tight font-black text-main tracking-tight">Welcome to Mochi Vault</h1>
+        <p class="text-xs text-muted font-semibold mt-2 leading-relaxed">Track your shared finances, together in one place.</p>
       </div>
     </div>
 
     <div id="splashLoginButtons" class="w-full max-w-xs px-8 pb-12 relative z-10">
-      <p class="text-2xs font-black tracking-widest uppercase text-faint text-center mb-3">HP ini punya siapa?</p>
+      <p class="text-2xs font-black tracking-widest uppercase text-faint text-center mb-3">Who's using this phone?</p>
       <div class="space-y-2.5">
-        <button type="button" onclick="chooseSplashUser('Yosa')" class="tap-shrink w-full btn-primary py-3.5 text-sm">Aku Yosa</button>
-        <button type="button" onclick="chooseSplashUser('Fani')" class="tap-shrink w-full py-3.5 rounded-2xl bg-transparent text-mochi dark:text-mochi-light font-extrabold text-sm border-2 border-mochi">Aku Fani</button>
+        <button type="button" onclick="chooseSplashUser('Yosa')" class="tap-shrink w-full btn-primary py-3.5 text-sm">I'm Yosa</button>
+        <button type="button" onclick="chooseSplashUser('Fani')" class="tap-shrink w-full py-3.5 rounded-2xl bg-transparent text-mochi dark:text-mochi-light font-extrabold text-sm border-2 border-mochi">I'm Fani</button>
       </div>
     </div>
   </div>
@@ -1005,23 +1006,29 @@
       <!-- Backdrop to dismiss the expand menu -->
       <div id="mochi-ai-backdrop" onclick="closeMochiAIMenu()" class="hidden fixed inset-0 bg-coffee-darkest/40 dark:bg-coffee-darkest/70 backdrop-blur-[2px] pointer-events-auto z-0"></div>
 
-      <!-- Expand menu: Chat / Scan / Voice -->
+      <!-- Expand menu: Force Sync / Chat / Scan / Voice / New Transaction -->
       <div id="mochi-ai-menu" class="hidden absolute right-5 bottom-[4.5rem] flex flex-col items-end space-y-3 pointer-events-auto z-10">
+        <!-- Placed first (farthest from the FAB) — a utility action, not
+             part of the core create-transaction flow the other four serve. -->
+        <button ontouchstart="vibrate(30)" onclick="mochiAIAction('sync')" class="tap-shrink flex items-center space-x-2.5 bg-[var(--bg-card)] pl-4 pr-2 py-2 rounded-full shadow-lg border border-[var(--border-color)]">
+          <span class="text-xs font-extrabold text-main">Force Sync</span>
+          <div class="w-9 h-9 rounded-full bg-[var(--chip-accent-bg)] text-mochi dark:text-mochi-light flex items-center justify-center flex-shrink-0"><i data-lucide="refresh-cw" class="w-4 h-4"></i></div>
+        </button>
         <button ontouchstart="vibrate(30)" onclick="mochiAIAction('chat')" class="tap-shrink flex items-center space-x-2.5 bg-[var(--bg-card)] pl-4 pr-2 py-2 rounded-full shadow-lg border border-[var(--border-color)]">
-          <span class="text-xs font-extrabold text-main">Chat</span>
+          <span class="text-xs font-extrabold text-main">AI Chat</span>
           <div class="w-9 h-9 rounded-full bg-[var(--chip-accent-bg)] text-mochi dark:text-mochi-light flex items-center justify-center flex-shrink-0"><i data-lucide="message-circle" class="w-4 h-4"></i></div>
         </button>
         <button ontouchstart="vibrate(30)" onclick="mochiAIAction('scan')" class="tap-shrink flex items-center space-x-2.5 bg-[var(--bg-card)] pl-4 pr-2 py-2 rounded-full shadow-lg border border-[var(--border-color)]">
-          <span class="text-xs font-extrabold text-main">Scan Struk</span>
+          <span class="text-xs font-extrabold text-main">Scan Receipt</span>
           <div class="w-9 h-9 rounded-full bg-[var(--chip-accent-bg)] text-mochi dark:text-mochi-light flex items-center justify-center flex-shrink-0"><i data-lucide="camera" class="w-4 h-4"></i></div>
         </button>
         <button ontouchstart="vibrate(30)" onclick="mochiAIAction('voice')" class="tap-shrink flex items-center space-x-2.5 bg-[var(--bg-card)] pl-4 pr-2 py-2 rounded-full shadow-lg border border-[var(--border-color)]">
-          <span class="text-xs font-extrabold text-main">Suara</span>
+          <span class="text-xs font-extrabold text-main">Voice Command</span>
           <div class="w-9 h-9 rounded-full bg-[var(--chip-accent-bg)] text-mochi dark:text-mochi-light flex items-center justify-center flex-shrink-0"><i data-lucide="mic" class="w-4 h-4"></i></div>
         </button>
         <!-- Placed last (closest to the FAB) so it's the easiest one to reach with a thumb — manual add is the most-used action. -->
         <button ontouchstart="vibrate(30)" onclick="mochiAIAction('add')" class="tap-shrink flex items-center space-x-2.5 bg-[var(--bg-card)] pl-4 pr-2 py-2 rounded-full shadow-lg border border-[var(--border-color)]">
-          <span class="text-xs font-extrabold text-main">Tambah Transaksi</span>
+          <span class="text-xs font-extrabold text-main">New Transaction</span>
           <div class="w-9 h-9 rounded-full bg-[var(--chip-accent-bg)] text-mochi dark:text-mochi-light flex items-center justify-center flex-shrink-0"><i data-lucide="plus" class="w-4 h-4"></i></div>
         </button>
       </div>
@@ -1070,7 +1077,7 @@
         <div class="flex items-center justify-between mt-3 pt-2.5 border-t border-[var(--border-color)]">
           <div class="flex items-center space-x-1.5">
             <img src="mochi-logo-new.png" alt="Mochi" class="w-4 h-4 object-contain rounded-full">
-            <span class="text-2xs font-bold text-muted">Mochi AI · Ketuk untuk buka obrolan lengkap</span>
+            <span class="text-2xs font-bold text-muted">Mochi AI · Tap to open full chat</span>
           </div>
           <i data-lucide="chevron-up" class="w-3.5 h-3.5 text-faint flex-shrink-0"></i>
         </div>
@@ -1499,11 +1506,11 @@
   <div id="modalActiveUserPicker" class="fixed inset-0 bg-coffee-darkest/60 dark:bg-coffee-darkest/95 z-[150] hidden flex items-center justify-center p-4 modal-backdrop backdrop-blur-sm">
     <div id="modalActiveUserPicker-content" class="glass-modal-content w-full max-w-xs rounded-[2rem] p-6 shadow-2xl modal-content-center text-center">
       <img src="mochi-chill-open.png" alt="Mochi" class="w-16 h-16 mx-auto mb-3 object-contain">
-      <h3 class="text-base font-black text-main mb-1.5">Hai! HP ini punya siapa?</h3>
-      <p class="text-xs text-muted font-semibold mb-5 px-2">Mochi cuma nanya sekali biar bisa lebih pintar mengisi form & chat buat kamu. Bisa diganti kapan pun lewat Command Center.</p>
+      <h3 class="text-base font-black text-main mb-1.5">Hey! Who's using this phone?</h3>
+      <p class="text-xs text-muted font-semibold mb-5 px-2">Mochi only asks once, so it can fill forms & chat smarter for you. You can change this anytime from Command Center.</p>
       <div class="space-y-2.5">
-        <button type="button" onclick="chooseActiveUser('Yosa')" class="tap-shrink w-full btn-primary py-3.5 text-sm">Aku Yosa</button>
-        <button type="button" onclick="chooseActiveUser('Fani')" class="tap-shrink w-full py-3.5 rounded-2xl bg-[var(--bg-subtle-2)] text-main font-extrabold text-sm border border-[var(--border-color)]">Aku Fani</button>
+        <button type="button" onclick="chooseActiveUser('Yosa')" class="tap-shrink w-full btn-primary py-3.5 text-sm">I'm Yosa</button>
+        <button type="button" onclick="chooseActiveUser('Fani')" class="tap-shrink w-full py-3.5 rounded-2xl bg-[var(--bg-subtle-2)] text-main font-extrabold text-sm border border-[var(--border-color)]">I'm Fani</button>
       </div>
     </div>
   </div>
@@ -2258,7 +2265,7 @@
         }, 450);
       }
 
-      showToast(`Oke, dicatat! HP ini sekarang milik ${name} 🐾`);
+      showToast(`Got it! This phone is now set to ${name} 🐾`);
     }
 
     function chooseActiveUser(name) {
@@ -2271,7 +2278,7 @@
         modal.classList.remove('show');
         setTimeout(() => modal.classList.add('hidden'), 300);
       }
-      showToast(`Oke, dicatat! HP ini sekarang milik ${name} 🐾`);
+      showToast(`Got it! This phone is now set to ${name} 🐾`);
     }
 
     function openActiveUserSwitcher() {
@@ -2829,6 +2836,7 @@
     // ongoing conversation.
     function mochiAIAction(kind) {
       closeMochiAIMenu();
+      if (kind === 'sync') { showToast('Syncing your data…', 'info'); setTimeout(() => loadAppData(), 200); return; }
       if (kind === 'chat') { openMochiQuickAsk(); return; }
       if (kind === 'add') { openNewTransactionForm(); return; }
       if (kind === 'scan') { triggerEdgeGlow(1600); document.getElementById('receipt-file-input').click(); return; }
@@ -2858,8 +2866,16 @@
       const backdrop = document.getElementById('mochi-quick-ask-backdrop');
       backdrop.classList.remove('hidden');
       document.getElementById('mochi-quick-ask').classList.remove('hidden');
-      document.getElementById('mochi-quick-answer-card').classList.add('hidden');
       document.getElementById('mochi-quick-thinking').classList.add('hidden');
+
+      // Default state: show the reply card with a greeting instead of
+      // hiding it — same card used for real replies (image 2's asset),
+      // just pre-filled so there's never an empty gap above the input.
+      // If there's already an exchange this session, show that reply
+      // instead of overwriting it with the greeting again.
+      const lastMochiMsg = [...mochiChatHistory].reverse().find(m => m.role === 'mochi');
+      showMochiQuickAnswer(lastMochiMsg ? lastMochiMsg.text : "Hi, I'm Mochi! How can I help you today? 🐾");
+
       requestAnimationFrame(() => backdrop.classList.add('show'));
       holdEdgeGlow();
       setTimeout(() => document.getElementById('mochi-quick-input').focus(), 150);
@@ -8038,6 +8054,14 @@ function calcSmartPayable() {
 // ===== 2. OPEN EDIT PAYABLE WITH FULL FIELDS =====
 window.addEventListener('DOMContentLoaded', () => {
       applyDarkModePref();
+      // Set the greeting (time-of-day text + name) synchronously, first
+      // thing — before anything async runs. It was previously only set
+      // inside renderMochiMood(), which waits on data loading, so the
+      // static "Good day / Hello, Hoo-Man" placeholder from the HTML
+      // stayed on screen and flashed to the real greeting a beat later
+      // on every refresh. Calling it here means the correct greeting is
+      // already in place before the user sees anything.
+      updateGreeting();
       lucide.createIcons();
       initVaultTilt();
       initEdgeGlow();
