@@ -3850,6 +3850,11 @@
           if (result && result.data) {
             GLOBAL_DATA = result.data;
             localStorage.setItem('mochi_vault_global_data', JSON.stringify(GLOBAL_DATA));
+            // Transaksi baru (bukan edit) sudah men-invalidate cache quip
+            // di backend — panggil ulang renderMochiMood di sini supaya
+            // Mochi langsung bereaksi ke transaksi ini tanpa nunggu buka
+            // app lagi. Untuk edit dilewati karena bukan event "baru".
+            if (!isEdit) renderMochiMood();
           }
         })
         .catch(err => {
@@ -4228,10 +4233,12 @@ function getLocalMochiQuipFallback(mood, displayPct, dsr) {
   return pick(lines);
 }
 
-// The quip is now real Gemini output (see getMochiQuip in Code.gs), refreshed
-// on a random 6–16h cadence tracked server-side — so calling this on every
-// data load is cheap: most calls just return the still-cached line instead
-// of hitting Gemini again. Only a total network failure (can't reach our
+// The quip is real AI output (see getMochiQuip in Code.gs — Gemini with a
+// Groq fallback). Server-side cache normally refreshes on a random ~90–150
+// min cadence, but a new transaction invalidates it immediately so Mochi
+// reacts right away (see the createTransaction success handler above,
+// which calls renderMochiMood() again after a save). Most calls here are
+// still cheap cache hits. Only a total network failure (can't reach our
 // own backend at all) falls back to the local rule-based lines below.
 async function renderMochiQuip(mood, displayPct, dsr) {
   const textEl = document.getElementById('mochi-quip-text');
