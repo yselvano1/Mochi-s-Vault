@@ -1006,12 +1006,14 @@
       <!-- Backdrop to dismiss the expand menu -->
       <div id="mochi-ai-backdrop" onclick="closeMochiAIMenu()" class="hidden fixed inset-0 bg-coffee-darkest/40 dark:bg-coffee-darkest/70 backdrop-blur-[2px] pointer-events-auto z-0"></div>
 
-      <!-- Expand menu: Force Sync / Chat / Scan / Voice / New Transaction -->
+      <!-- Expand menu: Sync / Chat / Scan / Voice / New Transaction -->
       <div id="mochi-ai-menu" class="hidden absolute right-5 bottom-[4.5rem] flex flex-col items-end space-y-3 pointer-events-auto z-10">
         <!-- Placed first (farthest from the FAB) — a utility action, not
-             part of the core create-transaction flow the other four serve. -->
+             part of the core create-transaction flow the other four serve.
+             Shortcut to the exact same Force Sync Data action as Command
+             Center — see mochiAIAction('sync'). -->
         <button ontouchstart="vibrate(30)" onclick="mochiAIAction('sync')" class="tap-shrink flex items-center space-x-2.5 bg-[var(--bg-card)] pl-4 pr-2 py-2 rounded-full shadow-lg border border-[var(--border-color)]">
-          <span class="text-xs font-extrabold text-main">Force Sync</span>
+          <span class="text-xs font-extrabold text-main">Sync</span>
           <div class="w-9 h-9 rounded-full bg-[var(--chip-accent-bg)] text-mochi dark:text-mochi-light flex items-center justify-center flex-shrink-0"><i data-lucide="refresh-cw" class="w-4 h-4"></i></div>
         </button>
         <button ontouchstart="vibrate(30)" onclick="mochiAIAction('chat')" class="tap-shrink flex items-center space-x-2.5 bg-[var(--bg-card)] pl-4 pr-2 py-2 rounded-full shadow-lg border border-[var(--border-color)]">
@@ -2836,7 +2838,10 @@
     // ongoing conversation.
     function mochiAIAction(kind) {
       closeMochiAIMenu();
-      if (kind === 'sync') { showToast('Syncing your data…', 'info'); setTimeout(() => loadAppData(), 200); return; }
+      // Shortcut to the exact same action as Command Center's "Force
+      // Sync Data" — same delay, no extra toast in between, so it
+      // feels just as instant/reliable rather than its own thing.
+      if (kind === 'sync') { setTimeout(() => loadAppData(), 300); return; }
       if (kind === 'chat') { openMochiQuickAsk(); return; }
       if (kind === 'add') { openNewTransactionForm(); return; }
       if (kind === 'scan') { triggerEdgeGlow(1600); document.getElementById('receipt-file-input').click(); return; }
