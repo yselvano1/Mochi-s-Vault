@@ -464,6 +464,24 @@
     .btn-primary:hover { background-color: var(--mochi-dark); }
     .btn-primary:active { transform: scale(0.97); }
 
+    /* ===== Splash + first-run login screen =====
+       Logo is a single element that never moves or resizes — only the
+       welcome copy and the Yosa/Fani buttons fade+rise in around it,
+       so it reads as one continuous screen rather than a hard cut
+       between "splash" and "login". See ensureActiveUserSet(). */
+    #splashLoginScreen { background-color: var(--bg-app); }
+    .splash-logo-wrap {
+      width: 104px; height: 104px;
+      animation: splashLogoIn 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    @keyframes splashLogoIn { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
+    #splashWelcomeCopy, #splashLoginButtons {
+      opacity: 0; transform: translateY(10px);
+      transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
+    }
+    #splashWelcomeCopy.show, #splashLoginButtons.show { opacity: 1; transform: translateY(0); }
+    #splashLoginScreen.exit { opacity: 0; transition: opacity 0.45s ease; pointer-events: none; }
+
     /* Sticky picker-modal header — canonical header for "Select X"
        bottom sheets. Was h3/h4 mixed, text-sm/text-base mixed,
        sticky present on only 2 of 5 sheets that scroll. */
@@ -543,6 +561,39 @@
       <div class="skeleton-block h-20"></div>
     </div>
     <div class="skeleton-block h-32 w-full"></div>
+  </div>
+
+  <!-- ================= SPLASH + FIRST-RUN LOGIN =================
+       Shown ONLY when this device doesn't know who's using it yet
+       (no active user saved to localStorage) — i.e. right after
+       install, or after data/storage gets cleared. It will NOT show
+       again on ordinary reloads/refreshes or after being away a
+       while, as long as an active user is still saved. See
+       ensureActiveUserSet(). The logo keeps one fixed size/position
+       the whole time; only the welcome text and buttons fade in
+       around it. -->
+  <div id="splashLoginScreen" class="fixed inset-0 z-[200] hidden flex-col items-center overflow-hidden">
+    <div class="ambient-blob ambient-blob-1"></div>
+    <div class="ambient-blob ambient-blob-2"></div>
+
+    <div class="flex flex-col items-center justify-center flex-1 w-full px-8 relative z-10">
+      <div class="splash-logo-wrap flex items-center justify-center">
+        <img src="mochi-logo-new.png" alt="Mochi Vault" class="w-full h-full object-contain">
+      </div>
+
+      <div id="splashWelcomeCopy" class="text-center mt-6 max-w-[260px]">
+        <h1 class="font-display text-2xl font-black text-main tracking-tight">Welcome to Mochi Vault</h1>
+        <p class="text-xs text-muted font-semibold mt-2 leading-relaxed">Catat & pantau keuangan kalian berdua, di satu tempat.</p>
+      </div>
+    </div>
+
+    <div id="splashLoginButtons" class="w-full max-w-xs px-8 pb-12 relative z-10">
+      <p class="text-2xs font-black tracking-widest uppercase text-faint text-center mb-3">HP ini punya siapa?</p>
+      <div class="space-y-2.5">
+        <button type="button" onclick="chooseSplashUser('Yosa')" class="tap-shrink w-full btn-primary py-3.5 text-sm">Aku Yosa</button>
+        <button type="button" onclick="chooseSplashUser('Fani')" class="tap-shrink w-full py-3.5 rounded-2xl bg-transparent text-mochi dark:text-mochi-light font-extrabold text-sm border-2 border-mochi">Aku Fani</button>
+      </div>
+    </div>
   </div>
 
   <div id="reward-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center pointer-events-none">
@@ -2167,19 +2218,47 @@
 
     function ensureActiveUserSet() {
       if (!getActiveUser()) {
-        // Skip the normal modal-history stack for this one — it's a
-        // first-run prompt, not something the back button should dismiss
-        // into a half-configured state.
-        const modal = document.getElementById('modalActiveUserPicker');
-        const content = document.getElementById('modalActiveUserPicker-content');
-        modal.classList.remove('hidden');
-        requestAnimationFrame(() => {
-          modal.classList.add('show');
-          if (content) content.classList.add('show');
-        });
+        // First run only (no active user saved yet — fresh install, or
+        // storage got cleared). Plays the full splash → welcome/login
+        // sequence. Every later app open, reload or refresh skips this
+        // entirely and goes straight to updateActiveUserUI() below,
+        // since getActiveUser() will already return a name.
+        runSplashLoginSequence();
       } else {
         updateActiveUserUI();
       }
+    }
+
+    function runSplashLoginSequence() {
+      const screen = document.getElementById('splashLoginScreen');
+      const copy = document.getElementById('splashWelcomeCopy');
+      const buttons = document.getElementById('splashLoginButtons');
+      if (!screen) return;
+
+      screen.classList.remove('hidden');
+      screen.classList.add('flex');
+
+      // Pure brand moment first — just the logo, nothing else — then
+      // the welcome copy and the Yosa/Fani buttons fade + rise in
+      // around it. The logo itself never moves or resizes.
+      setTimeout(() => copy && copy.classList.add('show'), 650);
+      setTimeout(() => buttons && buttons.classList.add('show'), 1000);
+    }
+
+    function chooseSplashUser(name) {
+      vibrate(30);
+      setActiveUser(name);
+
+      const screen = document.getElementById('splashLoginScreen');
+      if (screen) {
+        screen.classList.add('exit');
+        setTimeout(() => {
+          screen.classList.remove('flex', 'exit');
+          screen.classList.add('hidden');
+        }, 450);
+      }
+
+      showToast(`Oke, dicatat! HP ini sekarang milik ${name} 🐾`);
     }
 
     function chooseActiveUser(name) {
