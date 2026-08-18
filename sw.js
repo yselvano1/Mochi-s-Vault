@@ -1,4 +1,4 @@
-const APP_VERSION = "63.0.3"; // Bump versi ini setiap kali index.html berubah agar HP memperbarui cache
+const APP_VERSION = "64.0.0"; // Bump versi ini setiap kali index.html/css/js berubah agar HP memperbarui cache
 const CACHE_NAME = "mochis-vault-" + APP_VERSION;
 
 // Aset same-origin: HARUS berhasil semua, ini yang bikin app tetap jalan offline.
@@ -13,7 +13,31 @@ const LOCAL_ASSETS = [
   "./mochi-chill-closed.png",
   "./mochi-anxious-open.png",
   "./mochi-anxious-closed.png",
-  "./assets/cat-paw-3d.png"
+  "./assets/cat-paw-3d.png",
+
+  // CSS (dipisah dari index.html)
+  "./css/styles.css",
+
+  // JS (dipisah dari index.html — urutan harus sama seperti di index.html)
+  "./js/api.js",
+  "./js/state-utils.js",
+  "./js/auth-user.js",
+  "./js/modal-tabs-theme.js",
+  "./js/formatters.js",
+  "./js/ui-visuals.js",
+  "./js/mochi-ai.js",
+  "./js/transactions-form.js",
+  "./js/app-lifecycle.js",
+  "./js/render-dashboard.js",
+  "./js/budget-category.js",
+  "./js/render-history.js",
+  "./js/render-wallets-treasury.js",
+  "./js/payables-receivables.js",
+  "./js/form-pickers.js",
+  "./js/detail-modals.js",
+  "./js/settle-flow.js",
+  "./js/master-modal.js",
+  "./js/app-init.js"
 ];
 
 // Aset pihak ketiga (CDN): dicoba tapi tidak boleh menggagalkan seluruh
