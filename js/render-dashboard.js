@@ -166,7 +166,7 @@
   const imgEl = document.getElementById('mochi-mood-img');
   const badgeEl = document.getElementById('mochi-mood-badge');
 
-  if (imgEl) imgEl.src = `mochi-${mood}-open.png`;
+  if (imgEl) imgEl.src = `assets/mochi-${mood}-open.png`;
   if (badgeEl) {
     badgeEl.innerText = badgeText;
     badgeEl.className = `text-2xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${badgeClass}`;
@@ -378,11 +378,11 @@ function quickPayCommitment(targetName, isAccount, defaultAmount, categoryTag) {
       mochiBlinkTimeout = setTimeout(() => {
         const imgEl = document.getElementById('mochi-mood-img');
         if (imgEl && currentMochiMood) {
-          imgEl.src = `mochi-${currentMochiMood}-closed.png`;
+          imgEl.src = `assets/mochi-${currentMochiMood}-closed.png`;
           
           setTimeout(() => {
             if (imgEl && currentMochiMood) {
-              imgEl.src = `mochi-${currentMochiMood}-open.png`;
+              imgEl.src = `assets/mochi-${currentMochiMood}-open.png`;
               startMochiBlinking();
             }
           }, 2500);

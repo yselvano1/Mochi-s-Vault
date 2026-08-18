@@ -44,7 +44,7 @@
       exitMochiFullscreen(true); // always reopen compact, like Gemini's overlay
       openModal('modalMochiChat');
       const chatAvatarEl = document.getElementById('mochi-chat-avatar');
-      if (chatAvatarEl && currentMochiMood) chatAvatarEl.src = `mochi-${currentMochiMood}-open.png`;
+      if (chatAvatarEl && currentMochiMood) chatAvatarEl.src = `assets/mochi-${currentMochiMood}-open.png`;
       if (mochiChatHistory.length === 0) mochiChatHistory.push({ role: 'welcome' });
       renderMochiChatMessages(); // always re-render — history may already hold a Quick Ask exchange
       setTimeout(() => updateMochiChatSheetHeight(), 50);
@@ -293,14 +293,14 @@
     function renderMochiChatMessages() {
       const el = document.getElementById('mochi-chat-messages');
       if (!el) return;
-      const avatarSrc = `mochi-${currentMochiMood || 'chill'}-open.png`;
+      const avatarSrc = `assets/mochi-${currentMochiMood || 'chill'}-open.png`;
       const mochiAvatarHtml = `<img src="${avatarSrc}" alt="Mochi" class="w-7 h-7 rounded-full object-contain bg-[var(--bg-card)] border border-[var(--border-color)] p-0.5 flex-shrink-0 self-end">`;
 
       el.innerHTML = mochiChatHistory.map((m, idx) => {
         if (m.role === 'welcome') {
           return `<div class="chat-bubble-in bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[1.75rem] p-5 space-y-4 shadow-sm">
             <div class="flex items-center gap-2.5">
-              <img src="mochi-chill-open.png" alt="Mochi" class="w-10 h-10 rounded-full object-contain bg-[var(--bg-subtle-2)] border border-[var(--border-color)] p-0.5 flex-shrink-0">
+              <img src="assets/mochi-chill-open.png" alt="Mochi" class="w-10 h-10 rounded-full object-contain bg-[var(--bg-subtle-2)] border border-[var(--border-color)] p-0.5 flex-shrink-0">
               <div class="min-w-0">
                 <h4 class="text-base font-black text-main leading-tight tracking-tight">Hai, aku Mochi 🐾</h4>
                 <p class="text-[10.5px] text-muted font-semibold">Asisten keuangan harian kamu</p>
