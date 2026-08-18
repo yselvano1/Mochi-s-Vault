@@ -12,15 +12,15 @@
   "theme_color": "#F7F4EE",
   "categories": ["finance", "productivity"],
   "icons": [
-    { "src": "./mochi-logo-new.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "./mochi-logo-new.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+    { "src": "./assets/mochi-logo-new.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./assets/mochi-logo-new.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
   ],
   "shortcuts": [
     {
       "name": "Add Transaction",
       "short_name": "Add",
       "url": "./index.html?action=add",
-      "icons": [{ "src": "./mochi-logo-new.png", "sizes": "192x192" }]
+      "icons": [{ "src": "./assets/mochi-logo-new.png", "sizes": "192x192" }]
     }
   ]
 }
